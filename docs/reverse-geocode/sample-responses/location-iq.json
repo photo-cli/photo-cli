@@ -1,0 +1,27 @@
+{
+  "place_id": "93767640",
+  "licence": "https:\/\/locationiq.com\/attribution",
+  "osm_type": "way",
+  "osm_id": "9779903",
+  "lat": "39.9266859",
+  "lon": "32.836603409371946",
+  "display_name": "An\u0131tkabir, Ata Sokak, Y\u00fccetepe Mahallesi, Ankara, \u00c7ankaya, Ankara, Central Anatolia Region, 06570, Turkey",
+  "address": {
+    "barracks": "An\u0131tkabir",
+    "road": "Ata Sokak",
+    "suburb": "Y\u00fccetepe Mahallesi",
+    "city": "Ankara",
+    "town": "\u00c7ankaya",
+    "province": "Ankara",
+    "region": "Central Anatolia Region",
+    "postcode": "06570",
+    "country": "Turkey",
+    "country_code": "tr"
+  },
+  "boundingbox": [
+    "39.9216778",
+    "39.9317837",
+    "32.8308225",
+    "32.8416601"
+  ]
+}

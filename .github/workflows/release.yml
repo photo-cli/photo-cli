@@ -1,0 +1,41 @@
+on:
+  push:
+    tags:
+    - "v[0-9]+.[0-9]+.[0-9]+"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup .NET 6.0
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Set VERSION variable from tag
+      run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+    - name: Install SonarCloud global tool
+      run: dotnet tool install --global dotnet-sonarscanner
+    - name: Begin SonarCloud scan
+      run: dotnet sonarscanner begin -d:sonar.qualitygate.wait=true /o:"photo-cli" /k:"photo-cli_photo-cli" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"  /d:sonar.login=${{secrets.SONAR_TOKEN}} /d:sonar.host.url="https://sonarcloud.io"
+      env:
+        SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+    - name: Build
+      run: dotnet build --configuration Release /p:Version=${VERSION}
+    - name: Test
+      env:
+        PHOTO_CLI_BIG_DATA_CLOUD_API_KEY: ${{secrets.PHOTO_CLI_BIG_DATA_CLOUD_API_KEY}}
+        PHOTO_CLI_GOOGLE_MAPS_API_KEY: ${{secrets.PHOTO_CLI_GOOGLE_MAPS_API_KEY}}
+        PHOTO_CLI_MAPQUEST_API_KEY: ${{secrets.PHOTO_CLI_MAPQUEST_API_KEY}}
+        PHOTO_CLI_LOCATIONIQ_API_KEY: ${{secrets.PHOTO_CLI_LOCATIONIQ_API_KEY}}
+      run: dotnet test --configuration Release /p:Version=${VERSION} --no-build
+    - name: End SonarCloud scan
+      run: dotnet sonarscanner end /d:sonar.login=${{secrets.SONAR_TOKEN}}
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+    - name: Pack
+      run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output .
+    - name: Publish
+      run: dotnet nuget push *.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json

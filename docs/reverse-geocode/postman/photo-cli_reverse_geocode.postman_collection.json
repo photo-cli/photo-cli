@@ -1,0 +1,202 @@
+{
+	"info": {
+		"_postman_id": "c3cbb4ea-6216-491f-b4cf-9137b5125154",
+		"name": "photo-cli | Reverse Geocode",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "OpenStreetMap",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://nominatim.openstreetmap.org/reverse?format=json&lat=39.925054&lon=32.8347552&language=en",
+					"protocol": "https",
+					"host": [
+						"nominatim",
+						"openstreetmap",
+						"org"
+					],
+					"path": [
+						"reverse"
+					],
+					"query": [
+						{
+							"key": "format",
+							"value": "json"
+						},
+						{
+							"key": "lat",
+							"value": "39.925054"
+						},
+						{
+							"key": "lon",
+							"value": "32.8347552"
+						},
+						{
+							"key": "language",
+							"value": "en"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "BigDataCloud",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.bigdatacloud.net/data/reverse-geocode?latitude=39.925054&longitude=32.8347552&localityLanguage=en&key={{BigDataCloud-ApiKey}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"bigdatacloud",
+						"net"
+					],
+					"path": [
+						"data",
+						"reverse-geocode"
+					],
+					"query": [
+						{
+							"key": "latitude",
+							"value": "39.925054"
+						},
+						{
+							"key": "longitude",
+							"value": "32.8347552"
+						},
+						{
+							"key": "localityLanguage",
+							"value": "en"
+						},
+						{
+							"key": "key",
+							"value": "{{BigDataCloud-ApiKey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MapQuest",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://open.mapquestapi.com/nominatim/v1/reverse.php?key={{MapQuest-ApiKey}}&format=json&lat=39.925054&lon=32.8347552",
+					"protocol": "https",
+					"host": [
+						"open",
+						"mapquestapi",
+						"com"
+					],
+					"path": [
+						"nominatim",
+						"v1",
+						"reverse.php"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{MapQuest-ApiKey}}"
+						},
+						{
+							"key": "format",
+							"value": "json"
+						},
+						{
+							"key": "lat",
+							"value": "39.925054"
+						},
+						{
+							"key": "lon",
+							"value": "32.8347552"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LocationIq",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://us1.locationiq.com/v1/reverse.php?key=pk.{{LocationIq-ApiKey}}&lat=39.925054&lon=32.8347552&format=json",
+					"protocol": "https",
+					"host": [
+						"us1",
+						"locationiq",
+						"com"
+					],
+					"path": [
+						"v1",
+						"reverse.php"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "pk.{{LocationIq-ApiKey}}"
+						},
+						{
+							"key": "lat",
+							"value": "39.925054"
+						},
+						{
+							"key": "lon",
+							"value": "32.8347552"
+						},
+						{
+							"key": "format",
+							"value": "json"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Google Maps",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://maps.googleapis.com/maps/api/geocode/json?latlng=39.925054,32.8347552&key={{GoogleMaps-ApiKey}}&language=en",
+					"protocol": "https",
+					"host": [
+						"maps",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"maps",
+						"api",
+						"geocode",
+						"json"
+					],
+					"query": [
+						{
+							"key": "latlng",
+							"value": "39.925054,32.8347552"
+						},
+						{
+							"key": "key",
+							"value": "{{GoogleMaps-ApiKey}}"
+						},
+						{
+							"key": "language",
+							"value": "en"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

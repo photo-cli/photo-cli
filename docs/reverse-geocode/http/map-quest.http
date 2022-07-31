@@ -1,0 +1,1 @@
+GET https://open.mapquestapi.com/nominatim/v1/reverse.php?format=json&lat=39.925054&lon=32.8347552&key={{MapQuest-ApiKey}}

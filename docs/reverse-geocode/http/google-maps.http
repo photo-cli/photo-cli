@@ -1,0 +1,1 @@
+GET https://maps.googleapis.com/maps/api/geocode/json?latlng=39.925054,32.8347552&language=en&key={{GoogleMaps-ApiKey}}

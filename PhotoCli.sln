@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoCli", "src\PhotoCli.csproj", "{780948EF-559B-44F8-94FE-53F0D9EB8B39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoCli.Tests", "tests\PhotoCli.Tests.csproj", "{48AFCE4F-B842-4745-A789-AB3732EB3A82}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{780948EF-559B-44F8-94FE-53F0D9EB8B39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{780948EF-559B-44F8-94FE-53F0D9EB8B39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{780948EF-559B-44F8-94FE-53F0D9EB8B39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{780948EF-559B-44F8-94FE-53F0D9EB8B39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48AFCE4F-B842-4745-A789-AB3732EB3A82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48AFCE4F-B842-4745-A789-AB3732EB3A82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48AFCE4F-B842-4745-A789-AB3732EB3A82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48AFCE4F-B842-4745-A789-AB3732EB3A82}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

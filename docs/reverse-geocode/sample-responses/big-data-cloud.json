@@ -1,0 +1,76 @@
+{
+  "latitude": 39.925052642822266,
+  "longitude": 32.834754943847656,
+  "plusCode": "8GFJWRGM+2W",
+  "localityLanguageRequested": "en",
+  "continent": "Asia",
+  "continentCode": "AS",
+  "countryName": "Turkey",
+  "countryCode": "TR",
+  "principalSubdivision": "Ankara Province",
+  "principalSubdivisionCode": "TR-06",
+  "city": "",
+  "locality": "Mebusevleri Mahallesi",
+  "postcode": "",
+  "localityInfo": {
+    "administrative": [
+      {
+        "order": 2,
+        "adminLevel": 2,
+        "name": "Turkey",
+        "description": "country spanning Southeastern Europe and Western Asia",
+        "isoName": "Turkey",
+        "isoCode": "TR",
+        "wikidataId": "Q43",
+        "geonameId": 298795
+      },
+      {
+        "order": 4,
+        "adminLevel": 3,
+        "name": "Central Anatolia Region",
+        "description": "region of Turkey",
+        "wikidataId": "Q155526"
+      },
+      {
+        "order": 5,
+        "adminLevel": 4,
+        "name": "Ankara Province",
+        "description": "province in central Turkey",
+        "isoName": "Ankara",
+        "isoCode": "TR-06",
+        "wikidataId": "Q2297724",
+        "geonameId": 323784
+      },
+      {
+        "order": 6,
+        "adminLevel": 6,
+        "name": "Çankaya",
+        "description": "district of Ankara, Turkey",
+        "wikidataId": "Q1020646",
+        "geonameId": 6955677
+      },
+      {
+        "order": 7,
+        "adminLevel": 8,
+        "name": "Mebusevleri Mahallesi"
+      }
+    ],
+    "informative": [
+      {
+        "order": 1,
+        "name": "Asia",
+        "description": "continent on Earth, mainly on the Earth's northeastern quadrant",
+        "isoCode": "AS",
+        "wikidataId": "Q48",
+        "geonameId": 6255147
+      },
+      {
+        "order": 3,
+        "name": "Anatolia",
+        "description": "peninsula in West Asia",
+        "wikidataId": "Q51614",
+        "geonameId": 323835
+      }
+    ]
+  }
+}

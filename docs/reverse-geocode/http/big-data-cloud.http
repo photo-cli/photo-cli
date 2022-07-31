@@ -1,0 +1,1 @@
+GET https://api.bigdatacloud.net/data/reverse-geocode?latitude=39.925054&longitude=32.8347552&localityLanguage=en&key={{BigDataCloud-ApiKey}}

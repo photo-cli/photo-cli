@@ -1,0 +1,1 @@
+GET https://us1.locationiq.com/v1/reverse.php?lat=39.925054&lon=32.8347552&format=json&key={{LocationIq-ApiKey}}
