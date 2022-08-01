@@ -83,7 +83,7 @@ AdminLevel8: Arezzo"
 ""isoCode"": ""EU"",
 ""name"": ""Europe"",
 ""order"": 1,
-""description"": ""continent on Earth, mainly on the northeastern quadrant, i.e. north-western Eurasia"",
+""description"": ""continent"",
 ""wikidataId"": ""Q46"",
 ""geonameId"": 6255148
 },
