@@ -26,9 +26,19 @@ public class PhotoCollectorService : IPhotoCollectorService
 
 		_consoleWriter.ProgressStart(ProgressName);
 		var searchOption = allDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-		var filePaths = _fileSystem.Directory
-			.GetFiles(folderPath, "*.*", searchOption)
-			.Where(w => SupportedExtensions.Any(a => w.EndsWith(a, StringComparison.InvariantCultureIgnoreCase))).ToArray();
+		string[] filePaths;
+		try
+		{
+			filePaths = _fileSystem.Directory
+				.GetFiles(folderPath, "*.*", searchOption)
+				.Where(w => SupportedExtensions.Any(a => w.EndsWith(a, StringComparison.InvariantCultureIgnoreCase))).ToArray();
+		}
+		catch(UnauthorizedAccessException unauthorizedAccessException)
+		{
+			const string message = "Cannot read files with the current user. Give more specific folder as input or give user a read access for the path listed in error.";
+			_logger.LogCritical(unauthorizedAccessException, message);
+			throw new PhotoCliException($"{message} -> {unauthorizedAccessException.Message}");
+		}
 		_consoleWriter.ProgressFinish(ProgressName, $"{filePaths.Length} photos found.");
 		_statistics.PhotosFound = filePaths.Length;
 		return filePaths;
