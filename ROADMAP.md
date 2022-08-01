@@ -2,16 +2,15 @@
 
 [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html) is using on our project.
 
-| Version          | Planned Date - Possible Reason                   |
-|------------------|--------------------------------------------------|
-| 0.0.0-preview3   | Current. Waiting for feedback and issues         |
-| 0.0.0-preview(N) | May release new previews after critical bugfixes |
-| 0.0.0            | June 2022                                        |
-| 0.0.1-preview(N) | Testing critical bugfixes                        |
-| 0.0.1            | Release after critical bugfixes                  |
-| 0.1.0-preview(N) | Future - Testing new features                    |
-| 0.1.0            | Future - Release after new features              |
-| N.0.0            | Future - new breaking changes                    |
+| Version             | Planned Date - Possible Reason                  |
+|---------------------|-------------------------------------------------|
+| 0.0.0-preview(0-5)  | Testing releases                                |
+| 0.0.0               | August 2022                                     |
+| 0.0.1-preview(N)    | Testing critical bugfixes                       |
+| 0.0.1               | December 2022 - Release after critical bugfixes |
+| 0.1.0-preview(N)    | Future - Testing new features                   |
+| 0.1.0               | Future - Release after new features             |
+| N.0.0               | Future - new breaking changes                   |
 
 ## Issues Planned For Each Version
 

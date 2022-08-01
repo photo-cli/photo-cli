@@ -6,11 +6,11 @@
   </picture>
 </p>
 
-[![Nuget pre-release](https://img.shields.io/nuget/vpre/photo-cli)](https://www.nuget.org/packages/photo-cli/) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=coverage)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![.github/workflows/CI.yml](https://github.com/photo-cli/photo-cli/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/photo-cli/photo-cli/actions/workflows/CI.yml) [![.github/workflows/preview.yml](https://github.com/photo-cli/photo-cli/actions/workflows/preview.yml/badge.svg)](https://github.com/photo-cli/photo-cli/actions/workflows/preview.yml) [![.github/workflows/release.yml](https://github.com/photo-cli/photo-cli/actions/workflows/release.yml/badge.svg)](https://github.com/photo-cli/photo-cli/actions/workflows/release.yml) [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://github.com/photo-cli/photo-cli/blob/main/LICENSE)
+[![Nuget release](https://img.shields.io/nuget/v/photo-cli)](https://www.nuget.org/packages/photo-cli/) [![.github/workflows/release.yml](https://github.com/photo-cli/photo-cli/actions/workflows/release.yml/badge.svg)](https://github.com/photo-cli/photo-cli/actions/workflows/release.yml) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=coverage)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Nuget pre-release](https://img.shields.io/nuget/vpre/photo-cli)](https://www.nuget.org/packages/photo-cli/) [![.github/workflows/preview.yml](https://github.com/photo-cli/photo-cli/actions/workflows/preview.yml/badge.svg)](https://github.com/photo-cli/photo-cli/actions/workflows/preview.yml) [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://github.com/photo-cli/photo-cli/blob/main/LICENSE)
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=bugs)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli)
+[![Nuget release](https://img.shields.io/badge/docs-photocli.com-red)](https://photocli.com) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=bugs)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![.github/workflows/CI.yml](https://github.com/photo-cli/photo-cli/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/photo-cli/photo-cli/actions/workflows/CI.yml)
 
-`photo-cli` is [CLI](https://en.wikipedia.org/wiki/Command-line_interface) tool (works on Linux & macOS & Windows) that extracts when and where ([reverse geocode](https://en.wikipedia.org/wiki/Reverse_geocoding)) your photographs are taken, copy into a new organized folder (not modifying source folder) with various [folder](#folder-append-type---a---folder-append-) & [file naming](#naming-style---s---naming-style-) strategies or export all data into [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) (can view on Microsoft Excel, Libre/OpenOffice Calc, Apple Numbers, Google Sheets) files. With this exported CSV file you can [navigate your photo locations on Google Maps & Earth with your custom label and pin style](#navigate-your-photo-locations-on-google-maps--earth-optional).
+`photo-cli` is [CLI](https://en.wikipedia.org/wiki/Command-line_interface) tool (works on Linux & macOS & Windows) that extracts when and where ([reverse geocode](https://en.wikipedia.org/wiki/Reverse_geocoding)) your photographs are taken, copy into a new organized folder (not modifying source folder) with various [folder](#folder-append-type---a---folder-append-) & [file naming](#naming-style---s---naming-style-) strategies or export all data into [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) (can view on Microsoft Excel, Libre/OpenOffice Calc, Apple Numbers, Google Sheets) files. With this exported CSV file you can [navigate your photo locations on Google Maps & Earth with your custom label and pin style](#3-navigate-your-photo-locations-on-google-maps--earth).
 
 ## Contents
 
@@ -36,9 +36,9 @@
 
 There is three main feature that can be explain better with examples.
 
-1. [Copy into a new organized folder](#copy-into-a-new-organized-folder-example-with-photo-cli-copy-command)
-2. [Export all extracted information into a CSV Report](#export-all-extracted-information-into-a-csv-report-with-photo-cli-info-command)
-3. [Navigate Your Photo Locations on Google Maps & Earth](#navigate-your-photo-locations-on-google-maps--earth)
+1. [Copy into a new organized folder](#1-copy-into-a-new-organized-folder-example-with-photo-cli-copy-command)
+2. [Export all extracted information into a CSV Report](#2-export-all-extracted-information-into-a-csv-report-with-photo-cli-info-command)
+3. [Navigate Your Photo Locations on Google Maps & Earth](#3-navigate-your-photo-locations-on-google-maps--earth)
 
 ### 1. Copy Into a New Organized Folder Example With `photo-cli copy` Command
 
@@ -204,7 +204,7 @@ PhotoPath,PhotoNewPath,PhotoDateTaken,ReverseGeocodeFormatted,Latitude,Longitude
 
 ### 2. Export all extracted information into a CSV Report With `photo-cli info` Command
 
-#### Contents of photo-info.csv File in Markdown Table (output of info command](#info))
+#### Contents of photo-info.csv File in Markdown Table (output of `info` command)
 
 <details>
   <summary>Click to expand</summary>
@@ -231,7 +231,7 @@ PhotoPath,PhotoNewPath,PhotoDateTaken,ReverseGeocodeFormatted,Latitude,Longitude
 
 </details>
 
-#### Contents of `photo-info.csv` File in Raw Text Format (report of [info command](#info))
+#### Contents of `photo-info.csv` File in Raw Text Format (report of `info` command)
 
 <details>
   <summary>Click to expand</summary>
@@ -284,7 +284,7 @@ Writing csv report: finished.
 - 1 photos has no taken date and coordinate.
 ```
 
-#### Step By Step [photo-cli info](#info) Process
+#### Step By Step `photo-cli info` Process
 
 1. As [all folders](#all-folders---a---all-folders-) is selected. We are gathering all photo paths in the source folder within subfolders.
 2. Extract EXIF data of each photograph's taken date and coordinate.
@@ -320,9 +320,9 @@ Important note: This application is a [command line tool](https://en.wikipedia.o
 
 2. Install or update with these commands both on Linux, macOS, Windows;
 
-| Install:                                                    | To update newer version:                                   |
-|-------------------------------------------------------------|------------------------------------------------------------|
-| `dotnet tool install photo-cli -g --version 0.0.0-preview5` | `dotnet tool update photo-cli -g --version 0.0.0-preview5` |
+| Install:                           | To update newer version:               |
+|------------------------------------|----------------------------------------|
+| `dotnet tool install photo-cli -g` | `dotnet tool update photo-cli -g`      |
 
 3. Installing the tool globally provides access to the `photo-cli` command in your terminal.
 
@@ -777,7 +777,9 @@ You may change default separator (`-`) via [settings](#settings) command with a 
 
 We can't cover all possible options, because there are so many option combination. Some important [copy](#copy) command examples with comparing of original photos directory structure and output directory of `photo-cli` listed below.
 
-#### Preserve same folder hierarchy, copy photos with sequential number ordering by photo taken date.
+#### Names as Sequential Numbering in Same Folder Hierarchy
+
+Preserve same folder hierarchy, copy photos with sequential number ordering by photo taken date.
 
 ```
 photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --naming-style Numeric --number-style PaddingZeroCharacter --input photos --output organized-albums
@@ -846,7 +848,9 @@ photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --naming-style N
 
 </details>
 
-#### Groups photos by photo taken year, month, day than copy on [year]/[month]/[day] directory with a file name as photo taken date.
+#### Group Into Taken Year/Month/Day Folders, Name as Date & Time
+
+Groups photos by photo taken year, month, day than copy on [year]/[month]/[day] directory with a file name as photo taken date.
 
 ```
 photo-cli copy --process-type FlattenAllSubFolders --group-by YearMonthDay --naming-style DateTimeWithSeconds --number-style OnlySequentialNumbers --input photos --output organized-albums
@@ -929,7 +933,9 @@ photo-cli copy --process-type FlattenAllSubFolders --group-by YearMonthDay --nam
 
 </details>
 
-#### Adding day range as a prefix to existing folder names and photos copied with a file name as address and day.
+#### Folders Prefixed With Date Range, Names as Address & Date
+
+Adding day range as a prefix to existing folder names and photos copied with a file name as address and day.
 
 ```
 photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --folder-append DayRange --folder-append-location Prefix --naming-style AddressDay --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city town suburb  --number-style AllNamesAreSameLength --input photos --output organized-albums
@@ -998,7 +1004,9 @@ photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --folder-append 
 
 </details>
 
-#### Preserve same folder hierarchy, copy photos with a file name as photo taken date, time and address. Possible file name will have number suffix. Photos that don't have any coordinate or photo taken date will be copied in a relative subfolder.
+#### Naming With Address, Date in Same Folder Hierarchy
+
+Preserve same folder hierarchy, copy photos with a file name as photo taken date, time and address. Possible file name will have number suffix. Photos that don't have any coordinate or photo taken date will be copied in a relative subfolder.
 
 ```
 photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --naming-style AddressDateTimeWithSeconds  --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city town suburb --number-style AllNamesAreSameLength --no-taken-date InSubFolder --no-coordinate InSubFolder --input photos --output organized-albums
@@ -1069,7 +1077,9 @@ photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --naming-style A
 
 </details>
 
-### Groups photos by photo taken year, month, day than copy on [year]/[month]/[day] directory with a file name as photo taken date. Photos that don't have any coordinate will be copied in a relative subfolder.
+### Grouped Into Country/City/Town Folders, Names as Taken Date and Address
+
+Groups photos by address hierarchy than copy on [country]/[city]/[town] directory with a file name as photo taken date. Photos that don't have any coordinate will be copied in a relative subfolder.
 
 ```
 photo-cli copy --process-type FlattenAllSubFolders --group-by AddressHierarchy --naming-style DayAddress --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city town suburb --number-style OnlySequentialNumbers --no-taken-date AppendToEndOrderByFileName --no-coordinate InSubFolder --input photos --output organized-albums
@@ -1454,7 +1464,7 @@ photo-cli settings -r
 
 Optional use for `copy`, `info` verb. Must be used on `address` verb. File system path to read & copy photos from. If not given, the current executing folder will be used. There will be no modification on input path.
 
-### Output Path
+### Output Path ( -o, --output )
 
 Must be used on `copy`, `info` verbs. File system path to write output. For `copy`, new folder hierarchy created on that location with new file names. It will create folder if not exists. For `info`, report csv file path to write.
 
@@ -1632,7 +1642,7 @@ User can customize & set these options via `settings` command.
 - `No Photo Taken Date Action` folder name.
 - `No Address Action` folder name.
 - Third-party reverse geocode API keys.
-- Change [maximum concurrent connection limit](https://docs.microsoft.com/en-us/dotnet/api/System.Net.ServicePointManager.DefaultConnectionLimit?view=net-6.0) to connect third-party reverse geocode provider. [Microsoft Docs DefaultConnectionLimit]()
+- Change [maximum concurrent connection limit](https://docs.microsoft.com/en-us/dotnet/api/System.Net.ServicePointManager.DefaultConnectionLimit?view=net-6.0) to connect third-party reverse geocode provider.
 
 ### Listing All Settings
 
