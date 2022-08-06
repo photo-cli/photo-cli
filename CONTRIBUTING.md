@@ -8,7 +8,7 @@ If you like and use our project, you can share it with those around you.
 
 ## Bug Report
 
-If you find any bug, please [create an issue on the this repository](https://github.com/photo-cli/photo-cli/issues/new) to make it better for every user.
+If you find any bug, please [create an issue on this repository](https://github.com/photo-cli/photo-cli/issues/new) to make it better for every user.
 
 ## Discuss
 
