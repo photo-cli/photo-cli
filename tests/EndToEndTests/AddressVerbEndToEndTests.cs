@@ -114,7 +114,7 @@ AdminLevel8: Arezzo"
 ""countryName"": ""Italy"",
 ""countryCode"": ""IT"",
 ""principalSubdivision"": ""Tuscany"",
-""city"": """",
+""city"": ""Arezzo"",
 ""locality"": ""Arezzo"",
 ""postcode"": """"
 }"
