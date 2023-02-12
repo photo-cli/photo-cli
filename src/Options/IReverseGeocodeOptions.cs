@@ -8,7 +8,6 @@ public interface IReverseGeocodeOptions
 	IEnumerable<string> GoogleMapsAddressTypes { get; }
 	string? GoogleMapsApiKey { get; }
 	IEnumerable<string> OpenStreetMapProperties { get; }
-	string? MapQuestApiKey { get; }
 	string? LocationIqApiKey { get; }
 	bool? HasPaidLicense { get; }
 	string? Language { get; }

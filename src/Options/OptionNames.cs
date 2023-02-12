@@ -99,9 +99,6 @@ internal static class OptionNames
 	internal const char OpenStreetMapPropertiesOptionNameShort = 'r';
 	internal const string OpenStreetMapPropertiesOptionNameLong = "openstreetmap-properties";
 
-	internal const char MapQuestApiKeyOptionNameShort = 'u';
-	internal const string MapQuestApiKeyOptionNameLong = "mapquest-key";
-
 	internal const char LocationIqApiKeyOptionNameShort = 'q';
 	internal const string LocationIqApiKeyOptionNameLong = "locationiq-key";
 

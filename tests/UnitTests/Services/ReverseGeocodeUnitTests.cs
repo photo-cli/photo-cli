@@ -8,7 +8,6 @@ public class ReverseGeocodeUnitTests
 	[InlineData(ReverseGeocodeProvider.BigDataCloud)]
 	[InlineData(ReverseGeocodeProvider.OpenStreetMapFoundation)]
 	[InlineData(ReverseGeocodeProvider.GoogleMaps)]
-	[InlineData(ReverseGeocodeProvider.MapQuest)]
 	[InlineData(ReverseGeocodeProvider.LocationIq)]
 	public async Task CopyOptions_Should_Invoke_And_Verify_Related_ReverseGeocode_Provider(ReverseGeocodeProvider reverseGeocodeProvider)
 	{
@@ -19,7 +18,6 @@ public class ReverseGeocodeUnitTests
 	[InlineData(ReverseGeocodeProvider.BigDataCloud)]
 	[InlineData(ReverseGeocodeProvider.OpenStreetMapFoundation)]
 	[InlineData(ReverseGeocodeProvider.GoogleMaps)]
-	[InlineData(ReverseGeocodeProvider.MapQuest)]
 	[InlineData(ReverseGeocodeProvider.LocationIq)]
 	public async Task InfoOptions_Should_Invoke_And_Verify_Related_ReverseGeocode_Provider(ReverseGeocodeProvider reverseGeocodeProvider)
 	{
@@ -30,7 +28,6 @@ public class ReverseGeocodeUnitTests
 	[InlineData(ReverseGeocodeProvider.BigDataCloud)]
 	[InlineData(ReverseGeocodeProvider.OpenStreetMapFoundation)]
 	[InlineData(ReverseGeocodeProvider.GoogleMaps)]
-	[InlineData(ReverseGeocodeProvider.MapQuest)]
 	[InlineData(ReverseGeocodeProvider.LocationIq)]
 	public async Task AddressOptions_Should_Invoke_And_Verify_Related_ReverseGeocode_Provider(ReverseGeocodeProvider reverseGeocodeProvider)
 	{
@@ -60,13 +57,6 @@ public class ReverseGeocodeUnitTests
 				.ReturnsAsync(ReverseGeocodeFakes.Valid);
 		}
 
-		var mapQuestMock = new Mock<IMapQuestReverseGeocodeService>(MockBehavior.Strict);
-		if (reverseGeocodeProvider is ReverseGeocodeProvider.MapQuest)
-		{
-			mapQuestMock.Setup(s => s.Get(It.IsAny<Coordinate>(), It.IsAny<List<PropertyInfo>>()))
-				.ReturnsAsync(ReverseGeocodeFakes.Valid);
-		}
-
 		var locationIqMock = new Mock<ILocationIqReverseGeocodeService>(MockBehavior.Strict);
 		if (reverseGeocodeProvider is ReverseGeocodeProvider.LocationIq)
 		{
@@ -74,20 +64,19 @@ public class ReverseGeocodeUnitTests
 				.ReturnsAsync(ReverseGeocodeFakes.Valid);
 		}
 
-		var sut = new ReverseGeocodeService(options, bigDataCloudMock.Object, openStreetMapFoundationMock.Object, googleMapsMock.Object, mapQuestMock.Object, locationIqMock.Object,
+		var sut = new ReverseGeocodeService(options, bigDataCloudMock.Object, openStreetMapFoundationMock.Object, googleMapsMock.Object, locationIqMock.Object,
 			NullLogger<ReverseGeocodeService>.Instance);
 
 		var reverseGeocodeResult = await sut.Get(CoordinateFakes.Valid());
 		reverseGeocodeResult.Should().BeEquivalentTo(ReverseGeocodeFakes.Valid());
 
-		VerifyAll(bigDataCloudMock, openStreetMapFoundationMock, googleMapsMock, mapQuestMock, locationIqMock);
+		VerifyAll(bigDataCloudMock, openStreetMapFoundationMock, googleMapsMock, locationIqMock);
 	}
 
 	[Theory]
 	[InlineData(ReverseGeocodeProvider.BigDataCloud)]
 	[InlineData(ReverseGeocodeProvider.OpenStreetMapFoundation)]
 	[InlineData(ReverseGeocodeProvider.GoogleMaps)]
-	[InlineData(ReverseGeocodeProvider.MapQuest)]
 	[InlineData(ReverseGeocodeProvider.LocationIq)]
 	public async Task AddressOptions_RawResponse_Should_Invoke_And_Verify_Related_ReverseGeocode_Provider(ReverseGeocodeProvider reverseGeocodeProvider)
 	{
@@ -121,14 +110,6 @@ public class ReverseGeocodeUnitTests
 				.ReturnsAsync((GoogleMapsResponse)response);
 		}
 
-		var mapQuestMock = new Mock<IMapQuestReverseGeocodeService>(MockBehavior.Strict);
-		if (reverseGeocodeProvider is ReverseGeocodeProvider.MapQuest)
-		{
-			response = new OpenStreetMapResponse { DisplayName = "test" };
-			mapQuestMock.Setup(s => s.SerializeFullResponse(It.IsAny<Coordinate>()))
-				.ReturnsAsync((OpenStreetMapResponse)response);
-		}
-
 		var locationIqMock = new Mock<ILocationIqReverseGeocodeService>(MockBehavior.Strict);
 		if (reverseGeocodeProvider is ReverseGeocodeProvider.LocationIq)
 		{
@@ -137,7 +118,7 @@ public class ReverseGeocodeUnitTests
 				.ReturnsAsync((OpenStreetMapResponse)response);
 		}
 
-		var sut = new ReverseGeocodeService(options, bigDataCloudMock.Object, openStreetMapFoundationMock.Object, googleMapsMock.Object, mapQuestMock.Object, locationIqMock.Object,
+		var sut = new ReverseGeocodeService(options, bigDataCloudMock.Object, openStreetMapFoundationMock.Object, googleMapsMock.Object, locationIqMock.Object,
 			NullLogger<ReverseGeocodeService>.Instance);
 
 		var actualSerializedResponse = await sut.RawResponse(CoordinateFakes.Valid());
@@ -145,14 +126,13 @@ public class ReverseGeocodeUnitTests
 
 		actualSerializedResponse.Should().Be(expectedSerializedResponse);
 
-		VerifyAll(bigDataCloudMock, openStreetMapFoundationMock, googleMapsMock, mapQuestMock, locationIqMock);
+		VerifyAll(bigDataCloudMock, openStreetMapFoundationMock, googleMapsMock, locationIqMock);
 	}
 
 	[Theory]
 	[InlineData(ReverseGeocodeProvider.BigDataCloud)]
 	[InlineData(ReverseGeocodeProvider.OpenStreetMapFoundation)]
 	[InlineData(ReverseGeocodeProvider.GoogleMaps)]
-	[InlineData(ReverseGeocodeProvider.MapQuest)]
 	[InlineData(ReverseGeocodeProvider.LocationIq)]
 	public async Task AddressOptions_AllAvailableReverseGeocodes_Should_Invoke_And_Verify_Related_ReverseGeocode_Provider(ReverseGeocodeProvider reverseGeocodeProvider)
 	{
@@ -187,13 +167,6 @@ public class ReverseGeocodeUnitTests
 				.ReturnsAsync(allAvailableReverseGeocodesFake);
 		}
 
-		var mapQuestMock = new Mock<IMapQuestReverseGeocodeService>(MockBehavior.Strict);
-		if (reverseGeocodeProvider is ReverseGeocodeProvider.MapQuest)
-		{
-			mapQuestMock.Setup(s => s.AllAvailableReverseGeocodes(It.IsAny<Coordinate>()))
-				.ReturnsAsync(allAvailableReverseGeocodesFake);
-		}
-
 		var locationIqMock = new Mock<ILocationIqReverseGeocodeService>(MockBehavior.Strict);
 		if (reverseGeocodeProvider is ReverseGeocodeProvider.LocationIq)
 		{
@@ -201,35 +174,33 @@ public class ReverseGeocodeUnitTests
 				.ReturnsAsync(allAvailableReverseGeocodesFake);
 		}
 
-		var sut = new ReverseGeocodeService(options, bigDataCloudMock.Object, openStreetMapFoundationMock.Object, googleMapsMock.Object, mapQuestMock.Object, locationIqMock.Object,
+		var sut = new ReverseGeocodeService(options, bigDataCloudMock.Object, openStreetMapFoundationMock.Object, googleMapsMock.Object, locationIqMock.Object,
 			NullLogger<ReverseGeocodeService>.Instance);
 
 		var actualAllAvailableReverseGeocodes = await sut.AllAvailableReverseGeocodes(CoordinateFakes.Valid());
 		actualAllAvailableReverseGeocodes.Should().BeEquivalentTo(actualAllAvailableReverseGeocodes);
 
-		VerifyAll(bigDataCloudMock, openStreetMapFoundationMock, googleMapsMock, mapQuestMock, locationIqMock);
+		VerifyAll(bigDataCloudMock, openStreetMapFoundationMock, googleMapsMock, locationIqMock);
 	}
 
 	private void VerifyAll(Mock<IBigDataCloudReverseGeocodeService> bigDataCloudMock, Mock<IOpenStreetMapFoundationReverseGeocodeService> openStreetMapFoundationMock,
-		Mock<IGoogleMapsReverseGeocodeService> googleMapsMock, Mock<IMapQuestReverseGeocodeService> mapQuestMock, Mock<ILocationIqReverseGeocodeService> locationIqMock)
+		Mock<IGoogleMapsReverseGeocodeService> googleMapsMock, Mock<ILocationIqReverseGeocodeService> locationIqMock)
 	{
 		bigDataCloudMock.VerifyAll();
 		openStreetMapFoundationMock.VerifyAll();
 		googleMapsMock.VerifyAll();
-		mapQuestMock.VerifyAll();
 		locationIqMock.VerifyAll();
 
 		bigDataCloudMock.VerifyNoOtherCalls();
 		openStreetMapFoundationMock.VerifyNoOtherCalls();
 		googleMapsMock.VerifyNoOtherCalls();
-		mapQuestMock.VerifyNoOtherCalls();
 		locationIqMock.VerifyNoOtherCalls();
 	}
 
 	[Fact]
 	public async Task CommandOptions_With_Disabled_Should_Throw_PhotoOrganizerToolException()
 	{
-		var sut = new ReverseGeocodeService(CopyOptionsFakes.WithReverseGeocodeService(ReverseGeocodeProvider.Disabled), null!, null!, null!, null!, null!, NullLogger<ReverseGeocodeService>.Instance);
+		var sut = new ReverseGeocodeService(CopyOptionsFakes.WithReverseGeocodeService(ReverseGeocodeProvider.Disabled), null!, null!, null!, null!, NullLogger<ReverseGeocodeService>.Instance);
 		await Assert.ThrowsAsync<PhotoCliException>(async () => { await sut.Get(CoordinateFakes.Valid()); });
 	}
 }

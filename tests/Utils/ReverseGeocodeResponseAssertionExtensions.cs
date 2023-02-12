@@ -67,17 +67,14 @@ public static class ReverseGeocodeResponseAssertionExtensions
 			response.Address?.Suburb.Should().NotBeNull();
 			response.Address?.CountryCode.Should().NotBeNull();
 
-			if (reverseGeocodeProvider is not ReverseGeocodeProvider.MapQuest and not ReverseGeocodeProvider.LocationIq)
+			if (reverseGeocodeProvider is not ReverseGeocodeProvider.LocationIq)
 			{
 				response.Address?.Military.Should().NotBeNull();
 			}
 
-			if (reverseGeocodeProvider is not ReverseGeocodeProvider.MapQuest)
-			{
-				response.Address?.Province.Should().NotBeNull();
-				response.Address?.Region.Should().NotBeNull();
-				response.Address?.Road.Should().NotBeNull();
-			}
+			response.Address?.Province.Should().NotBeNull();
+			response.Address?.Region.Should().NotBeNull();
+			response.Address?.Road.Should().NotBeNull();
 		}
 	}
 

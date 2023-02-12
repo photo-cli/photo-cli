@@ -10,7 +10,7 @@ public class AddressOptions : IReverseGeocodeOptions
 		string inputPath, ReverseGeocodeProvider reverseGeoCodeProvider, AddressListType addressListType,
 		// ReverseGeocode - Shared
 		string? bigDataCloudApiKey = null, IEnumerable<int>? bigDataCloudAdminLevels = null, IEnumerable<string>? googleMapsAddressTypes = null, string? googleMapsApiKey = null,
-		IEnumerable<string>? openStreetMapProperties = null, string? mapQuestApiKey = null, string? locationIqApiKey = null, bool? hasPaidLicense = null, string? language = null)
+		IEnumerable<string>? openStreetMapProperties = null, string? locationIqApiKey = null, bool? hasPaidLicense = null, string? language = null)
 	{
 		// Required
 		InputPath = inputPath;
@@ -23,7 +23,6 @@ public class AddressOptions : IReverseGeocodeOptions
 		GoogleMapsAddressTypes = googleMapsAddressTypes ?? new List<string>();
 		GoogleMapsApiKey = googleMapsApiKey;
 		OpenStreetMapProperties = openStreetMapProperties ?? new List<string>();
-		MapQuestApiKey = mapQuestApiKey;
 		LocationIqApiKey = locationIqApiKey;
 		HasPaidLicense = hasPaidLicense;
 		Language = language;
@@ -58,9 +57,6 @@ public class AddressOptions : IReverseGeocodeOptions
 
 	[Option(OptionNames.OpenStreetMapPropertiesOptionNameShort, OptionNames.OpenStreetMapPropertiesOptionNameLong, HelpText = HelpTexts.OpenStreetMapProperties)]
 	public IEnumerable<string> OpenStreetMapProperties { get; }
-
-	[Option(OptionNames.MapQuestApiKeyOptionNameShort, OptionNames.MapQuestApiKeyOptionNameLong, HelpText = HelpTexts.MapQuestApiKey)]
-	public string? MapQuestApiKey { get; }
 
 	[Option(OptionNames.LocationIqApiKeyOptionNameShort, OptionNames.LocationIqApiKeyOptionNameLong, HelpText = HelpTexts.LocationIqApiKey)]
 	public string? LocationIqApiKey { get; }

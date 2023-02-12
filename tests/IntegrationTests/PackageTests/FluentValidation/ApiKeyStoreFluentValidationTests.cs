@@ -21,13 +21,6 @@ public class ApiKeyStoreFluentValidationTests : BaseFluentValidationTests<ApiKey
 	}
 
 	[Fact]
-	public void Valid_ApiKeyStore_With_MapQuest_Should_Have_NoError()
-	{
-		var apiKeyStore = new ApiKeyStore { MapQuest = ValidApiKey, ReverseGeocodeProvider = ReverseGeocodeProvider.MapQuest };
-		ValidationShouldHaveNoError(apiKeyStore);
-	}
-
-	[Fact]
 	public void Valid_ApiKeyStore_With_LocationIq_Should_Have_NoError()
 	{
 		var apiKeyStore = new ApiKeyStore { LocationIq = ValidApiKey, ReverseGeocodeProvider = ReverseGeocodeProvider.LocationIq };
@@ -55,15 +48,7 @@ public class ApiKeyStoreFluentValidationTests : BaseFluentValidationTests<ApiKey
 	}
 
 	[Fact]
-	public void When_Using_MapQuest_Not_Using_MapQuestApiKey_Should_Give_NullValidator_And_Verify_Error_Message()
-	{
-		var apiKeyStore = new ApiKeyStore { ReverseGeocodeProvider = ReverseGeocodeProvider.MapQuest };
-		var errorMessage = CantFindMessage(ReverseGeocodeProvider.MapQuest, "PHOTO_CLI_MAPQUEST_API_KEY", "mapquest-key", 'u');
-		CheckPropertyNotNull(apiKeyStore, nameof(ApiKeyStore.MapQuest), errorMessage);
-	}
-
-	[Fact]
-	public void When_Using_LocationIq_Not_Using_MapQuestApiKey_Should_Give_NullValidator_And_Verify_Error_Message()
+	public void When_Using_LocationIq_Not_Using_LocationIqApiKey_Should_Give_NullValidator_And_Verify_Error_Message()
 	{
 		var apiKeyStore = new ApiKeyStore { ReverseGeocodeProvider = ReverseGeocodeProvider.LocationIq };
 		var errorMessage = CantFindMessage(ReverseGeocodeProvider.LocationIq, "PHOTO_CLI_LOCATIONIQ_API_KEY", "locationiq-key", 'q');

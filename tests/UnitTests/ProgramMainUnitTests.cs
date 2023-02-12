@@ -118,7 +118,6 @@ public class StartupTests
 	[InlineData(typeof(IBigDataCloudReverseGeocodeService))]
 	[InlineData(typeof(IGoogleMapsReverseGeocodeService))]
 	[InlineData(typeof(IOpenStreetMapFoundationReverseGeocodeService))]
-	[InlineData(typeof(IMapQuestReverseGeocodeService))]
 	[InlineData(typeof(ILocationIqReverseGeocodeService))]
 	public void CopyRunner_Dependencies_Resolved_Verify_Not_Null(Type type)
 	{
@@ -148,7 +147,6 @@ public class StartupTests
 	[InlineData(typeof(IBigDataCloudReverseGeocodeService))]
 	[InlineData(typeof(IGoogleMapsReverseGeocodeService))]
 	[InlineData(typeof(IOpenStreetMapFoundationReverseGeocodeService))]
-	[InlineData(typeof(IMapQuestReverseGeocodeService))]
 	[InlineData(typeof(ILocationIqReverseGeocodeService))]
 	public void InfoRunner_Dependencies_Resolved_Verify_Not_Null(Type type)
 	{
@@ -169,7 +167,6 @@ public class StartupTests
 	[InlineData(typeof(IBigDataCloudReverseGeocodeService))]
 	[InlineData(typeof(IGoogleMapsReverseGeocodeService))]
 	[InlineData(typeof(IOpenStreetMapFoundationReverseGeocodeService))]
-	[InlineData(typeof(IMapQuestReverseGeocodeService))]
 	[InlineData(typeof(ILocationIqReverseGeocodeService))]
 	public void AddressRunner_Dependencies_Resolved_Verify_Not_Null(Type type)
 	{

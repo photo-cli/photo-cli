@@ -6,7 +6,6 @@ public class ReverseGeocodeFetcherService : IReverseGeocodeFetcherService
 
 	private static readonly Dictionary<ReverseGeocodeProvider, TimeSpan?> WaitTimeBetweenEachRequestByFreemiumProviders = new()
 	{
-		{ ReverseGeocodeProvider.MapQuest, TimeSpan.FromSeconds(1) },
 		{ ReverseGeocodeProvider.LocationIq, TimeSpan.FromSeconds(1) },
 	};
 

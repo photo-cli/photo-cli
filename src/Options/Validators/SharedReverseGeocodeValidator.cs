@@ -16,7 +16,6 @@ public class SharedReverseGeocodeValidator : BaseValidator<IReverseGeocodeOption
 			});
 
 		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.OpenStreetMapFoundation, () => { RequireOpenStreetMapProperties(ReverseGeocodeProvider.OpenStreetMapFoundation); });
-		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.MapQuest, () => { RequireOpenStreetMapProperties(ReverseGeocodeProvider.MapQuest); });
 		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.LocationIq, () => { RequireOpenStreetMapProperties(ReverseGeocodeProvider.LocationIq); });
 
 		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.GoogleMaps,

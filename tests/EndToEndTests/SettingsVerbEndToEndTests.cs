@@ -32,7 +32,6 @@ public class SettingsVerbEndToEndTests : BaseEndToEndTests
     ""ConnectionLimit"": 4,
     ""BigDataCloudApiKey"": """",
     ""GoogleMapsApiKey"": """",
-    ""MapQuestApiKey"": """",
     ""LocationIqApiKey"": """"
 }";
 
@@ -60,7 +59,6 @@ DryRunCsvReportFileName=photo-cli-dry-run.csv
 ConnectionLimit=4
 BigDataCloudApiKey=
 GoogleMapsApiKey=
-MapQuestApiKey=
 LocationIqApiKey="
 		}
 	};

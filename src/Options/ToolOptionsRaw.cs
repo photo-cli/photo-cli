@@ -27,6 +27,5 @@ public class ToolOptionsRaw
 
 	public string? BigDataCloudApiKey { get; set; }
 	public string? GoogleMapsApiKey { get; set; }
-	public string? MapQuestApiKey { get; set; }
 	public string? LocationIqApiKey { get; set; }
 }

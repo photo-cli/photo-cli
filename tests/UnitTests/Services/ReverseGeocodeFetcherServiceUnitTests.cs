@@ -113,11 +113,6 @@ public class ReverseGeocodeFetcherServiceUnitTests
 			GenerateFakeExifDataByFilePaths(3)
 		},
 		{
-			ReverseGeocodeProvider.MapQuest,
-			TimeSpan.FromSeconds(1),
-			GenerateFakeExifDataByFilePaths(3)
-		},
-		{
 			ReverseGeocodeProvider.LocationIq,
 			TimeSpan.FromSeconds(1),
 			GenerateFakeExifDataByFilePaths(3)
@@ -144,7 +139,6 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	public static TheoryData<ReverseGeocodeProvider, TimeSpan> IfUsingFreemiumRateLimitTimeSpanShouldBeMatchedData = new()
 	{
 		{ ReverseGeocodeProvider.OpenStreetMapFoundation, TimeSpan.FromSeconds(1) },
-		{ ReverseGeocodeProvider.MapQuest, TimeSpan.FromSeconds(1) },
 		{ ReverseGeocodeProvider.LocationIq, TimeSpan.FromSeconds(1) },
 	};
 
@@ -160,7 +154,7 @@ public class ReverseGeocodeFetcherServiceUnitTests
 
 	public static TheoryData<ReverseGeocodeProvider> IfHasPaidLicenseNoRateLimitData = new()
 	{
-		ReverseGeocodeProvider.MapQuest, ReverseGeocodeProvider.LocationIq
+		ReverseGeocodeProvider.LocationIq
 	};
 
 	[Theory]
@@ -186,7 +180,7 @@ public class ReverseGeocodeFetcherServiceUnitTests
 
 	public static TheoryData<ReverseGeocodeProvider> NoRateLimitForGivenReverseGeocodeProvidersData = new()
 	{
-		ReverseGeocodeProvider.BigDataCloud, ReverseGeocodeProvider.GoogleMaps
+		ReverseGeocodeProvider.GoogleMaps
 	};
 
 	[Theory]

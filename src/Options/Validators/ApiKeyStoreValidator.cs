@@ -22,13 +22,6 @@ public class ApiKeyStoreValidator : BaseValidator<ApiKeyStore>
 					OptionNames.GoogleMapsApiKeyOptionNameShort));
 			});
 
-		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.MapQuest,
-			() =>
-			{
-				RuleFor(r => r.MapQuest).NotNull().WithMessage(CantFindMessage(ReverseGeocodeProvider.MapQuest, ApiKeyStore.MapQuestApiKeyEnvironmentKey, OptionNames.MapQuestApiKeyOptionNameLong,
-					OptionNames.MapQuestApiKeyOptionNameShort));
-			});
-
 		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.LocationIq,
 			() =>
 			{
