@@ -35,7 +35,7 @@ public class OpenStreetMapReverseGeocodeServiceUnitTests
 	public async Task LocationIq_Service_Error_Should_Give_Empty_List()
 	{
 		var sut = new LocationIqReverseGeocodeService(MockHttpClient.WithError(), NullLogger<LocationIqReverseGeocodeService>.Instance, ApiKeyStoreFakes.LocationIqValid());
-		var actualReverseGeocode = await sut.Get(CoordinateFakes.Ankara(), OpenStreetMapAddressPropertiesFakes.Valid());
+		var actualReverseGeocode = await sut.Get(CoordinateFakes.Ankara(), OpenStreetMapAddressPropertiesFakes.ValidPropertyInfos());
 		actualReverseGeocode.Should().BeEquivalentTo(ArraySegment<string>.Empty);
 	}
 
