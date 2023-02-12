@@ -2,11 +2,11 @@ on:
   push:
     branches:
     - main
-    - dev
+    - 'r/**'
   pull_request:
     branches:
     - main
-    - dev
+    - 'r/**'
 jobs:
   build:
     runs-on: ubuntu-latest

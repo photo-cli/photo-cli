@@ -13,7 +13,7 @@ public class AddressVerbEndToEndTests : BaseEndToEndTests
 			CommandLineArgumentsFakes.AddressBuildCommandLineOptions(TestImagesPathHelper.HasGpsCoordinate.FilePath, AddressListType.SelectedProperties, ReverseGeocodeProvider.BigDataCloud,
 				new List<int> { 2, 4, 6, 8 }),
 			@"Italy
-Tuscany
+Toscana
 Province of Arezzo
 Arezzo"
 		}
@@ -24,7 +24,7 @@ Arezzo"
 		{
 			CommandLineArgumentsFakes.AddressBuildCommandLineOptions(TestImagesPathHelper.HasGpsCoordinate.FilePath, AddressListType.AllAvailableProperties, ReverseGeocodeProvider.BigDataCloud, new List<int> { 2, 4, 6, 8 }),
 			@"AdminLevel2: Italy
-AdminLevel4: Tuscany
+AdminLevel4: Toscana
 AdminLevel6: Province of Arezzo
 AdminLevel8: Arezzo"
 		}
@@ -39,31 +39,31 @@ AdminLevel8: Arezzo"
 ""administrative"": [
 {
 ""adminLevel"": 2,
-""isoName"": ""Italy"",
+""isoName"": null,
 ""name"": ""Italy"",
 ""isoCode"": ""IT"",
 ""description"": ""republic in Southern Europe"",
-""order"": 3,
+""order"": 2,
 ""wikidataId"": ""Q38"",
 ""geoNameId"": null
 },
 {
 ""adminLevel"": 4,
-""isoName"": ""Toscana"",
-""name"": ""Tuscany"",
+""isoName"": null,
+""name"": ""Toscana"",
 ""isoCode"": ""IT-52"",
-""description"": ""region in central Italy with an area of about 23,000 square kilometres (8,900 square miles). The regional capital is Florence"",
-""order"": 5,
+""description"": ""region in central Italy"",
+""order"": 4,
 ""wikidataId"": ""Q1273"",
 ""geoNameId"": null
 },
 {
 ""adminLevel"": 6,
-""isoName"": ""Arezzo"",
+""isoName"": null,
 ""name"": ""Province of Arezzo"",
 ""isoCode"": ""IT-AR"",
 ""description"": ""province of Italy"",
-""order"": 6,
+""order"": 5,
 ""wikidataId"": ""Q16115"",
 ""geoNameId"": null
 },
@@ -73,7 +73,7 @@ AdminLevel8: Arezzo"
 ""name"": ""Arezzo"",
 ""isoCode"": null,
 ""description"": ""Italian comune"",
-""order"": 7,
+""order"": 6,
 ""wikidataId"": ""Q13378"",
 ""geoNameId"": null
 }
@@ -89,16 +89,8 @@ AdminLevel8: Arezzo"
 },
 {
 ""isoCode"": null,
-""name"": ""Geographical region of Italy"",
-""order"": 2,
-""description"": ""geographical region"",
-""wikidataId"": ""Q3155864"",
-""geonameId"": null
-},
-{
-""isoCode"": null,
 ""name"": ""Italian Peninsula"",
-""order"": 4,
+""order"": 3,
 ""description"": ""peninsula of southern Europe"",
 ""wikidataId"": ""Q145694"",
 ""geonameId"": null
@@ -113,8 +105,8 @@ AdminLevel8: Arezzo"
 ""continentCode"": ""EU"",
 ""countryName"": ""Italy"",
 ""countryCode"": ""IT"",
-""principalSubdivision"": ""Tuscany"",
-""city"": """",
+""principalSubdivision"": ""Toscana"",
+""city"": ""Arezzo"",
 ""locality"": ""Arezzo"",
 ""postcode"": """"
 }"

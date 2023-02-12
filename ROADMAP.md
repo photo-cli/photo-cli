@@ -7,7 +7,7 @@
 | 0.0.0-preview(0-5)  | Testing releases                                |
 | 0.0.0               | August 2022                                     |
 | 0.0.1-preview(N)    | Testing critical bugfixes                       |
-| 0.0.1               | December 2022 - Release after critical bugfixes |
+| 0.0.1               | February 2023 - Release after critical bugfixes |
 | 0.1.0-preview(N)    | Future - Testing new features                   |
 | 0.1.0               | Future - Release after new features             |
 | N.0.0               | Future - new breaking changes                   |
