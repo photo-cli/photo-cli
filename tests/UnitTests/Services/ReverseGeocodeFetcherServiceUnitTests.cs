@@ -9,19 +9,19 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	public static TheoryData<ReverseGeocodeProvider, int, TimeSpan, Dictionary<string, ExifData>> FetchQueueIsSmallerThanConnectionLimit = new()
 	{
 		{
-			ReverseGeocodeProvider.BigDataCloud,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			4,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(1)
 		},
 		{
-			ReverseGeocodeProvider.GoogleMaps,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			4,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(3)
 		},
 		{
-			ReverseGeocodeProvider.BigDataCloud,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			100,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(70)
@@ -31,13 +31,13 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	public static TheoryData<ReverseGeocodeProvider, int, TimeSpan, Dictionary<string, ExifData>> FetchQueueIsSameWithConnectionLimit = new()
 	{
 		{
-			ReverseGeocodeProvider.BigDataCloud,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			4,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(4)
 		},
 		{
-			ReverseGeocodeProvider.GoogleMaps,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			100,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(100)
@@ -47,19 +47,19 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	public static TheoryData<ReverseGeocodeProvider, int, TimeSpan, Dictionary<string, ExifData>> FetchQueueIsBiggerThanConnectionLimit = new()
 	{
 		{
-			ReverseGeocodeProvider.BigDataCloud,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			4,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(5)
 		},
 		{
-			ReverseGeocodeProvider.GoogleMaps,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			4,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(70)
 		},
 		{
-			ReverseGeocodeProvider.BigDataCloud,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			100,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(270)
