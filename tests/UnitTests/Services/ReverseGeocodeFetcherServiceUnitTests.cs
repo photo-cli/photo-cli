@@ -95,7 +95,6 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	{
 		// other computation shouldn't take more 200 millisecond for each photo on average computer
 		var maximumFetchTime = minimumFetchTime.Add(TimeSpan.FromMilliseconds(200) * itemCount);
-		maximumFetchTime += TimeSpan.FromSeconds(2); // first TLS handshake can take long
 		minimumFetchTime = minimumFetchTime.Subtract(TimeSpan.FromMilliseconds(100)); // performance tolerance
 		stopwatch.Elapsed.Should().BeGreaterThan(minimumFetchTime);
 		stopwatch.Elapsed.Should().BeLessThan(maximumFetchTime);
