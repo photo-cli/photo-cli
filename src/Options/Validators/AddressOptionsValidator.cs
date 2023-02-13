@@ -12,8 +12,7 @@ public class AddressOptionsValidator : BaseValidator<AddressOptions>
 		RuleFor(r => r.ReverseGeocodeProvider).Must(m => m != ReverseGeocodeProvider.Disabled)
 			.WithMessage(Required(nameof(ReverseGeocodeProvider), OptionNames.ReverseGeocodeProvidersOptionNameLong, OptionNames.ReverseGeocodeProvidersOptionNameShort));
 
+		RuleFor(r => r.AddressListType).IsInEnum();
 		When(w => w.AddressListType == AddressListType.SelectedProperties, () => { Include(new SharedReverseGeocodeValidator()); });
-
-		Include(new SharedReverseGeocodeValidator());
 	}
 }

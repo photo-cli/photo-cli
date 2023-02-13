@@ -6,7 +6,6 @@ public class ReverseGeocodeFetcherService : IReverseGeocodeFetcherService
 
 	private static readonly Dictionary<ReverseGeocodeProvider, TimeSpan?> WaitTimeBetweenEachRequestByFreemiumProviders = new()
 	{
-		{ ReverseGeocodeProvider.MapQuest, TimeSpan.FromSeconds(1) },
 		{ ReverseGeocodeProvider.LocationIq, TimeSpan.FromSeconds(1) },
 	};
 
@@ -104,7 +103,9 @@ public class ReverseGeocodeFetcherService : IReverseGeocodeFetcherService
 		}
 
 		waitTimeSpanBetweenEachRequest = WaitTimeBetweenEachRequestByFreemiumProviders.GetValueOrDefault(_reverseGeocodeOptions.ReverseGeocodeProvider);
-		_logger.LogTrace("Has paid license, bypassing rate limit");
+
+		if (waitTimeSpanBetweenEachRequest.HasValue)
+			_logger.LogTrace("Freemium provider, rate limit of {RateLimit}", waitTimeSpanBetweenEachRequest);
 
 		return waitTimeSpanBetweenEachRequest;
 	}

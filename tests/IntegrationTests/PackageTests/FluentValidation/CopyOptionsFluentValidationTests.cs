@@ -244,7 +244,6 @@ public class CopyOptionsFluentValidationTests : BaseFluentValidationTests<CopyOp
 
 	[Theory]
 	[InlineData(ReverseGeocodeProvider.OpenStreetMapFoundation)]
-	[InlineData(ReverseGeocodeProvider.MapQuest)]
 	[InlineData(ReverseGeocodeProvider.LocationIq)]
 	public void When_Using_OpenStreetMap_Not_Using_OpenStreetMapProperties_Should_Give_NullValidator_And_Verify_Error_Message(ReverseGeocodeProvider reverseGeocodeProvider)
 	{

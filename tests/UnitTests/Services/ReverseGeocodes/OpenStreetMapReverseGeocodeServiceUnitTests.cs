@@ -24,15 +24,6 @@ public class OpenStreetMapReverseGeocodeServiceUnitTests
 
 	[Theory]
 	[MemberData(nameof(WithGivenOptionsReverseGeocodeResultShouldBeGivenExpectedAddressData))]
-	public async Task MapQuest_With_Given_Options_ReverseGeocode_Result_Should_Be_Given_Expected_Address_Data(List<string> properties, List<string> expectedAddresses)
-	{
-		var sut = new MapQuestReverseGeocodeService(CreateMockHttpClient(), NullLogger<MapQuestReverseGeocodeService>.Instance, ApiKeyStoreFakes.MapQuestValid());
-		var actualReverseGeocode = await sut.Get(CoordinateFakes.Ankara(), PrepareRequestedAddressProperties(properties));
-		actualReverseGeocode.Should().BeEquivalentTo(expectedAddresses);
-	}
-
-	[Theory]
-	[MemberData(nameof(WithGivenOptionsReverseGeocodeResultShouldBeGivenExpectedAddressData))]
 	public async Task LocationIq_With_Given_Options_ReverseGeocode_Result_Should_Be_Expected_Address_Data(List<string> properties, List<string> expectedAddresses)
 	{
 		var sut = new LocationIqReverseGeocodeService(CreateMockHttpClient(), NullLogger<LocationIqReverseGeocodeService>.Instance, ApiKeyStoreFakes.LocationIqValid());
@@ -41,18 +32,10 @@ public class OpenStreetMapReverseGeocodeServiceUnitTests
 	}
 
 	[Fact]
-	public async Task MapQuest_Service_Error_Should_Give_Empty_List()
-	{
-		var sut = new MapQuestReverseGeocodeService(MockHttpClient.WithError(), NullLogger<MapQuestReverseGeocodeService>.Instance, ApiKeyStoreFakes.MapQuestValid());
-		var actualReverseGeocode = await sut.Get(CoordinateFakes.Ankara(), OpenStreetMapAddressPropertiesFakes.Valid());
-		actualReverseGeocode.Should().BeEquivalentTo(ArraySegment<string>.Empty);
-	}
-
-	[Fact]
 	public async Task LocationIq_Service_Error_Should_Give_Empty_List()
 	{
 		var sut = new LocationIqReverseGeocodeService(MockHttpClient.WithError(), NullLogger<LocationIqReverseGeocodeService>.Instance, ApiKeyStoreFakes.LocationIqValid());
-		var actualReverseGeocode = await sut.Get(CoordinateFakes.Ankara(), OpenStreetMapAddressPropertiesFakes.Valid());
+		var actualReverseGeocode = await sut.Get(CoordinateFakes.Ankara(), OpenStreetMapAddressPropertiesFakes.ValidPropertyInfos());
 		actualReverseGeocode.Should().BeEquivalentTo(ArraySegment<string>.Empty);
 	}
 

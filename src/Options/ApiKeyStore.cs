@@ -4,12 +4,10 @@ public class ApiKeyStore
 {
 	internal const string BigDataCloudApiKeyEnvironmentKey = "PHOTO_CLI_BIG_DATA_CLOUD_API_KEY";
 	internal const string GoogleMapsApiKeyEnvironmentKey = "PHOTO_CLI_GOOGLE_MAPS_API_KEY";
-	internal const string MapQuestApiKeyEnvironmentKey = "PHOTO_CLI_MAPQUEST_API_KEY";
 	internal const string LocationIqApiKeyEnvironmentKey = "PHOTO_CLI_LOCATIONIQ_API_KEY";
 	public ReverseGeocodeProvider? ReverseGeocodeProvider { get; init; }
 	public string? BigDataCloud { get; init; }
 	public string? GoogleMaps { get; init; }
-	public string? MapQuest { get; init; }
 	public string? LocationIq { get; init; }
 
 	public static ApiKeyStore Build(IConfiguration configuration, IReverseGeocodeOptions options)
@@ -26,12 +24,6 @@ public class ApiKeyStore
 		if (googleMaps.IsMissing())
 			googleMaps = configuration.GetSection(GoogleMapsApiKeyEnvironmentKey).Value;
 
-		var mapQuest = options.MapQuestApiKey;
-		if (mapQuest.IsMissing())
-			mapQuest = configuration.GetSection(nameof(ToolOptions.MapQuestApiKey)).Value;
-		if (mapQuest.IsMissing())
-			mapQuest = configuration.GetSection(MapQuestApiKeyEnvironmentKey).Value;
-
 		var locationIq = options.LocationIqApiKey;
 		if (locationIq.IsMissing())
 			locationIq = configuration.GetSection(nameof(ToolOptions.LocationIqApiKey)).Value;
@@ -43,7 +35,6 @@ public class ApiKeyStore
 			ReverseGeocodeProvider = options.ReverseGeocodeProvider,
 			BigDataCloud = bigDataCloud,
 			GoogleMaps = googleMaps,
-			MapQuest = mapQuest,
 			LocationIq = locationIq,
 		};
 	}

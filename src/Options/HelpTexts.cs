@@ -63,7 +63,7 @@ public static class HelpTexts
 	public const string OutputPathInfo = "(MUST) File system path to write report file.";
 
 	public const string ReverseGeocodeProvider =
-		"(Optional) Third-party provider to resolve photo taken address by photo's coordinates. ( Disabled: 0 [default], BigDataCloud: 1, OpenStreetMapFoundation: 2, GoogleMaps: 3, MapQuest: 4, LocationIq: 5 )";
+		"(Optional) Third-party provider to resolve photo taken address by photo's coordinates. ( Disabled: 0 [default], BigDataCloud: 1, OpenStreetMapFoundation: 2, GoogleMaps: 3, LocationIq: 5 )";
 
 	public const string BigDataCloudApiKey =
 		"(Optional) API key needed to use BigDataCloud. https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/ (Instead of using this option, environment name: " +
@@ -81,14 +81,10 @@ public static class HelpTexts
 	public const string OpenStreetMapProperties =
 		"(Optional) OpenStreetMap properties separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see the full response returned from OpenStreetMap provider. )";
 
-	public const string MapQuestApiKey =
-		"(Optional) API key needed to use MapQuest. https://developer.mapquest.com/documentation/open/nominatim-search/reverse/ (Instead of using this option, environment name: " +
-		ApiKeyStore.MapQuestApiKeyEnvironmentKey + " can be used or `MapQuestApiKey` key can be set via settings command. )";
-
 	public const string LocationIqApiKey = "(Optional) API key needed to use LocationIq. https://locationiq.com/docs/ (Instead of using this option, environment name: " +
 	                                       ApiKeyStore.LocationIqApiKeyEnvironmentKey + " can be used or `LocationIqApiKey` key can be set via settings command. )";
 
-	public const string HasPaidLicense = "(Optional) Bypass the free rate limit if you have paid license. ( For MapQuest and LocationIq. )";
+	public const string HasPaidLicense = "(Optional) Bypass the free rate limit if you have paid license. ( For LocationIq. )";
 
 	public const string Language =
 		"(Optional) Language/culture value to get localized address result for BigDataCloud ( https://www.bigdatacloud.com/supported-languages/ ) and GoogleMaps (https://developers.google.com/maps/faq#languagesupport ). ";

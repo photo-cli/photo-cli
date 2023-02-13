@@ -81,7 +81,6 @@ public class SettingsRunnerUnitTests
 		toolOptions.BigDataCloudApiKey = "big-data-cloud-api-key";
 		toolOptions.GoogleMapsApiKey = "google-maps-api-key";
 		toolOptions.LocationIqApiKey = "location-iq-api-key";
-		toolOptions.MapQuestApiKey = "map-guest-api-key";
 		toolOptions.NoAddressFolderName = "no-address-folder-name";
 		toolOptions.DateTimeFormatWithMinutes = "date-time-format-with-minutes";
 		toolOptions.DateTimeFormatWithSeconds = "date-time-format-with-seconds";
@@ -112,7 +111,6 @@ public class SettingsRunnerUnitTests
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.BigDataCloudApiKey)}={toolOptions.BigDataCloudApiKey}"));
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.GoogleMapsApiKey)}={toolOptions.GoogleMapsApiKey}"));
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.LocationIqApiKey)}={toolOptions.LocationIqApiKey}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.MapQuestApiKey)}={toolOptions.MapQuestApiKey}"));
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.NoAddressFolderName)}={toolOptions.NoAddressFolderName}"));
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.DateTimeFormatWithMinutes)}={toolOptions.DateTimeFormatWithMinutes}"));
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.DateTimeFormatWithSeconds)}={toolOptions.DateTimeFormatWithSeconds}"));

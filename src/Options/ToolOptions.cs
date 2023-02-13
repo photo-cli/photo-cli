@@ -42,7 +42,6 @@ public class ToolOptions
 		ConnectionLimit = options.ConnectionLimit ?? ConnectionLimitDefault;
 		BigDataCloudApiKey = options.BigDataCloudApiKey;
 		GoogleMapsApiKey = options.GoogleMapsApiKey;
-		MapQuestApiKey = options.MapQuestApiKey;
 		LocationIqApiKey = options.LocationIqApiKey;
 	}
 
@@ -70,7 +69,6 @@ public class ToolOptions
 	public int ConnectionLimit { get; set; }
 	public string? BigDataCloudApiKey { get; set; }
 	public string? GoogleMapsApiKey { get; set; }
-	public string? MapQuestApiKey { get; set; }
 	public string? LocationIqApiKey { get; set; }
 
 	public static ToolOptions Default()

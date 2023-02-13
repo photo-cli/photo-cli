@@ -9,19 +9,19 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	public static TheoryData<ReverseGeocodeProvider, int, TimeSpan, Dictionary<string, ExifData>> FetchQueueIsSmallerThanConnectionLimit = new()
 	{
 		{
-			ReverseGeocodeProvider.BigDataCloud,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			4,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(1)
 		},
 		{
-			ReverseGeocodeProvider.GoogleMaps,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			4,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(3)
 		},
 		{
-			ReverseGeocodeProvider.BigDataCloud,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			100,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(70)
@@ -31,13 +31,13 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	public static TheoryData<ReverseGeocodeProvider, int, TimeSpan, Dictionary<string, ExifData>> FetchQueueIsSameWithConnectionLimit = new()
 	{
 		{
-			ReverseGeocodeProvider.BigDataCloud,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			4,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(4)
 		},
 		{
-			ReverseGeocodeProvider.GoogleMaps,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			100,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(100)
@@ -47,19 +47,19 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	public static TheoryData<ReverseGeocodeProvider, int, TimeSpan, Dictionary<string, ExifData>> FetchQueueIsBiggerThanConnectionLimit = new()
 	{
 		{
-			ReverseGeocodeProvider.BigDataCloud,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			4,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(5)
 		},
 		{
-			ReverseGeocodeProvider.GoogleMaps,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			4,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(70)
 		},
 		{
-			ReverseGeocodeProvider.BigDataCloud,
+			ReverseGeocodeProviderFakes.NoWaitTime,
 			100,
 			TimeSpan.FromMilliseconds(100),
 			GenerateFakeExifDataByFilePaths(270)
@@ -95,7 +95,6 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	{
 		// other computation shouldn't take more 200 millisecond for each photo on average computer
 		var maximumFetchTime = minimumFetchTime.Add(TimeSpan.FromMilliseconds(200) * itemCount);
-		maximumFetchTime += TimeSpan.FromSeconds(2); // first TLS handshake can take long
 		minimumFetchTime = minimumFetchTime.Subtract(TimeSpan.FromMilliseconds(100)); // performance tolerance
 		stopwatch.Elapsed.Should().BeGreaterThan(minimumFetchTime);
 		stopwatch.Elapsed.Should().BeLessThan(maximumFetchTime);
@@ -109,11 +108,6 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	{
 		{
 			ReverseGeocodeProvider.OpenStreetMapFoundation,
-			TimeSpan.FromSeconds(1),
-			GenerateFakeExifDataByFilePaths(3)
-		},
-		{
-			ReverseGeocodeProvider.MapQuest,
 			TimeSpan.FromSeconds(1),
 			GenerateFakeExifDataByFilePaths(3)
 		},
@@ -144,7 +138,6 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	public static TheoryData<ReverseGeocodeProvider, TimeSpan> IfUsingFreemiumRateLimitTimeSpanShouldBeMatchedData = new()
 	{
 		{ ReverseGeocodeProvider.OpenStreetMapFoundation, TimeSpan.FromSeconds(1) },
-		{ ReverseGeocodeProvider.MapQuest, TimeSpan.FromSeconds(1) },
 		{ ReverseGeocodeProvider.LocationIq, TimeSpan.FromSeconds(1) },
 	};
 
@@ -160,7 +153,7 @@ public class ReverseGeocodeFetcherServiceUnitTests
 
 	public static TheoryData<ReverseGeocodeProvider> IfHasPaidLicenseNoRateLimitData = new()
 	{
-		ReverseGeocodeProvider.MapQuest, ReverseGeocodeProvider.LocationIq
+		ReverseGeocodeProvider.LocationIq
 	};
 
 	[Theory]
@@ -186,7 +179,7 @@ public class ReverseGeocodeFetcherServiceUnitTests
 
 	public static TheoryData<ReverseGeocodeProvider> NoRateLimitForGivenReverseGeocodeProvidersData = new()
 	{
-		ReverseGeocodeProvider.BigDataCloud, ReverseGeocodeProvider.GoogleMaps
+		ReverseGeocodeProvider.GoogleMaps
 	};
 
 	[Theory]

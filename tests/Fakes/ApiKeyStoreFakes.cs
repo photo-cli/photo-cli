@@ -11,7 +11,7 @@ public static class ApiKeyStoreFakes
 
 	public static ApiKeyStore Invalid()
 	{
-		return new ApiKeyStore { ReverseGeocodeProvider = ReverseGeocodeProvider.MapQuest };
+		return new ApiKeyStore { ReverseGeocodeProvider = ReverseGeocodeProvider.GoogleMaps };
 	}
 
 	public static ApiKeyStore BigDataCloudValid()
@@ -22,11 +22,6 @@ public static class ApiKeyStoreFakes
 	public static ApiKeyStore GoogleMapsValid()
 	{
 		return new ApiKeyStore { ReverseGeocodeProvider = ReverseGeocodeProvider.GoogleMaps, GoogleMaps = ValidApiKey };
-	}
-
-	public static ApiKeyStore MapQuestValid()
-	{
-		return new ApiKeyStore { ReverseGeocodeProvider = ReverseGeocodeProvider.MapQuest, MapQuest = ValidApiKey };
 	}
 
 	public static ApiKeyStore LocationIqValid()

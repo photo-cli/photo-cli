@@ -6,7 +6,7 @@
   </picture>
 </p>
 
-[![Nuget release](https://img.shields.io/nuget/v/photo-cli)](https://www.nuget.org/packages/photo-cli/) [![.github/workflows/stable.yml](https://github.com/photo-cli/photo-cli/actions/workflows/stable.yml/badge.svg)](https://github.com/photo-cli/photo-cli/actions/workflows/stable.yml) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=coverage)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Nuget pre-release](https://img.shields.io/nuget/vpre/photo-cli)](https://www.nuget.org/packages/photo-cli/) [![.github/workflows/preview.yml](https://github.com/photo-cli/photo-cli/actions/workflows/preview.yml/badge.svg)](https://github.com/photo-cli/photo-cli/actions/workflows/preview.yml) [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://github.com/photo-cli/photo-cli/blob/main/LICENSE)
+[![Nuget release](https://img.shields.io/nuget/v/photo-cli)](https://www.nuget.org/packages/photo-cli/) [![.github/workflows/stable.yml](https://github.com/photo-cli/photo-cli/actions/workflows/stable.yml/badge.svg)](https://github.com/photo-cli/photo-cli/actions/workflows/stable.yml) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=coverage)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Nuget pre-release](https://img.shields.io/nuget/vpre/photo-cli)](https://www.nuget.org/packages/photo-cli/#versions-body-tab) [![.github/workflows/preview.yml](https://github.com/photo-cli/photo-cli/actions/workflows/preview.yml/badge.svg)](https://github.com/photo-cli/photo-cli/actions/workflows/preview.yml) [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://github.com/photo-cli/photo-cli/blob/main/LICENSE)
 
 [![Docs](https://img.shields.io/badge/docs-photocli.com-red)](https://photocli.com) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=bugs)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![.github/workflows/CI.yml](https://github.com/photo-cli/photo-cli/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/photo-cli/photo-cli/actions/workflows/CI.yml)
 
@@ -477,13 +477,12 @@ If you use only photo taken date and not interested in building address from rev
 
 ### 1. Selecting Third-Party Reverse Geocode Provider
 
-To build addresses we need a reserve geocode provider. Currently, there is five reverse geocode provider is supported.
+To build addresses we need a reserve geocode provider. Currently, there is four reverse geocode provider is supported.
 
 1. BigDataCloud
 2. Open Street Map Foundation - Nominatim
 3. Google Maps
-4. MapQuest
-5. LocationIq
+4. LocationIq
 
 #### Comparison of Supported Third-Party Reverse Geocode Providers
 
@@ -492,7 +491,6 @@ To build addresses we need a reserve geocode provider. Currently, there is five 
 | [BigDataCloud](https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/)         | Yes              | Yes -     | 50.000 req/month             |                        | [Big Data Cloud](https://www.bigdatacloud.com/about-us/)                              |
 | [Open Street Map Foundation - Nominatim](https://nominatim.org/release-docs/latest/api/Reverse/) | No               | -         | -                            | 1req/sec               | [Open Street Map Foundation](https://en.wikipedia.org/wiki/OpenStreetMap_Foundation/) |
 | [GoogleMaps](https://developers.google.com/maps/documentation/geocoding/overview/)               | Yes              | No        | -                            | -                      | [Google](https://en.wikipedia.org/wiki/Google_Maps/)                                  |
-| [MapQuest](https://developer.mapquest.com/documentation/open/nominatim-search/reverse/)          | Yes              | Yes       | 50.000 req/month , 5.000/day | -                      | [Open Street Map Foundation](https://en.wikipedia.org/wiki/OpenStreetMap_Foundation/) |
 | [LocationIq](https://locationiq.com/sandbox/geocoding/reverse/)                                  | Yes              | Yes       | 5.000 req/day                | 1req/sec               | [Open Street Map Foundation](https://en.wikipedia.org/wiki/OpenStreetMap_Foundation/) |
 
 ### 2. Setting API Key
@@ -508,7 +506,6 @@ After selecting reverse geocode provider, you need to provide an API key. There 
 | [BigDataCloud](https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/)         | `BigDataCloudApiKey` | `PHOTO_CLI_BIG_DATA_CLOUD_API_KEY` | `-b` or  `--bigdatacloud-key` |
 | [Open Street Map Foundation - Nominatim](https://nominatim.org/release-docs/latest/api/Reverse/) | -                    | -                                  | -                             |
 | [GoogleMaps](https://developers.google.com/maps/documentation/geocoding/overview/)               | `GoogleMapsApiKey`   | `PHOTO_CLI_GOOGLE_MAPS_API_KEY`    | `-k` or `--googlemaps-key`    |
-| [MapQuest](https://developer.mapquest.com/documentation/open/nominatim-search/reverse/)          | `MapQuestApiKey`     | `PHOTO_CLI_MAPQUEST_API_KEY`       | `-u` or `--mapquest-key`      |
 | [LocationIq](https://locationiq.com/sandbox/geocoding/reverse/)                                  | `LocationIqApiKey`   | `PHOTO_CLI_LOCATIONIQ_API_KEY`     | `-q` or `--locationiq-key`    |
 
 ### 3. Understanding Reverse Geocode Response
@@ -632,7 +629,6 @@ You may replace `{{ApiKey}}` in the address with your API key or you can use the
 | [BigDataCloud](https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/)         | [big-data-cloud.http](docs/reverse-geocode/http/big-data-cloud.http)   |
 | [Open Street Map Foundation - Nominatim](https://nominatim.org/release-docs/latest/api/Reverse/) | [open-street-map.http](docs/reverse-geocode/http/open-street-map.http) |
 | [GoogleMaps](https://developers.google.com/maps/documentation/geocoding/overview/)               | [google-maps.http](docs/reverse-geocode/http/google-maps.http)         |
-| [MapQuest](https://developer.mapquest.com/documentation/open/nominatim-search/reverse/)          | [map-quest.http](docs/reverse-geocode/http/map-quest.http)             |
 | [LocationIq](https://locationiq.com/sandbox/geocoding/reverse/)                                  | [location-iq.http](docs/reverse-geocode/http/location-iq.http)         |
 
 ##### Using Postman
@@ -646,7 +642,6 @@ You should prepare the following environment variables on Postman.
 | [BigDataCloud](https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/)         | `BigDataCloud-ApiKey`        |
 | [Open Street Map Foundation - Nominatim](https://nominatim.org/release-docs/latest/api/Reverse/) | -                            |
 | [GoogleMaps](https://developers.google.com/maps/documentation/geocoding/overview/)               | `GoogleMaps-ApiKey`          |
-| [MapQuest](https://developer.mapquest.com/documentation/open/nominatim-search/reverse/)          | `MapQuest-ApiKey`            |
 | [LocationIq](https://locationiq.com/sandbox/geocoding/reverse/)                                  | `LocationIq-ApiKey`          |
 
 ##### Sample Responses
@@ -658,7 +653,6 @@ Sample responses in JSON format are listed below from each reverse geocode for t
 | [BigDataCloud](https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/)         | [big-data-cloud.json](docs/reverse-geocode/sample-responses/big-data-cloud.json)   |
 | [Open Street Map Foundation - Nominatim](https://nominatim.org/release-docs/latest/api/Reverse/) | [open-street-map.json](docs/reverse-geocode/sample-responses/open-street-map.json) |
 | [GoogleMaps](https://developers.google.com/maps/documentation/geocoding/overview/)               | [google-maps.json](docs/reverse-geocode/sample-responses/google-maps.json)         |
-| [MapQuest](https://developer.mapquest.com/documentation/open/nominatim-search/reverse/)          | [map-quest.json](docs/reverse-geocode/sample-responses/map-quest.json)             |
 | [LocationIq](https://locationiq.com/sandbox/geocoding/reverse/)                                  | [location-iq.json](docs/reverse-geocode/sample-responses/location-iq.json)         |
 
 ### 4. Building Your Own Address With Selected Properties
@@ -670,7 +664,6 @@ Every reverse geocode provider has its address building parameters. With `addres
 | [BigDataCloud](https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/)         | [BigDataCloud Properties](#big-data-cloud-parameters) |
 | [Open Street Map Foundation - Nominatim](https://nominatim.org/release-docs/latest/api/Reverse/) | [OpenStreet Properties](#open-street-map-parameters)  |
 | [GoogleMaps](https://developers.google.com/maps/documentation/geocoding/overview/)               | [GoogleMaps Properties](#google-maps-properties)      |
-| [MapQuest](https://developer.mapquest.com/documentation/open/nominatim-search/reverse/)          | [OpenStreet Properties](#open-street-map-parameters)  |
 | [LocationIq](https://locationiq.com/sandbox/geocoding/reverse/)                                  | [OpenStreet Properties](#open-street-map-parameters)  |
 
 #### Big Data Cloud Parameters
@@ -1185,7 +1178,7 @@ photo-cli help info
 
   -c, --no-coordinate               (Optional) Action to do when a photo with a no coordinate. ( Continue: 0, PreventProcess: 1 )
 
-  -e, --reverse-geocode             (Optional) Third-party provider to resolve photo taken address by photo's coordinates. ( Disabled: 0 [default], BigDataCloud: 1, OpenStreetMapFoundation: 2, GoogleMaps: 3, MapQuest: 4, LocationIq: 5 )
+  -e, --reverse-geocode             (Optional) Third-party provider to resolve photo taken address by photo's coordinates. ( Disabled: 0 [default], BigDataCloud: 1, OpenStreetMapFoundation: 2, GoogleMaps: 3, LocationIq: 5 )
 
   -b, --bigdatacloud-key            (Optional) API key needed to use BigDataCloud. https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/ (Instead of using this option, environment name: PHOTO_CLI_BIG_DATA_CLOUD_API_KEY can be used. )
 
@@ -1197,11 +1190,9 @@ photo-cli help info
 
   -r, --openstreetmap-properties    (Optional) OpenStreetMap properties separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from OpenStreetMap provider. )
 
-  -u, --mapquest-key                (Optional) API key needed to use MapQuest. https://developer.mapquest.com/documentation/open/nominatim-search/reverse/ (Instead of using this option, environment name: PHOTO_CLI_MAPQUEST_API_KEY can be used. )
-
   -q, --locationiq-key              (Optional) API key needed to use LocationIq. https://locationiq.com/docs/ (Instead of using this option, environment name: PHOTO_CLI_LOCATIONIQ_API_KEY can be used. )
 
-  -h, --has-paid-license            (Optional) Bypass rate limit if you have paid license. ( For MapQuest and LocationIq. )
+  -h, --has-paid-license            (Optional) Bypass rate limit if you have paid license. ( For LocationIq )
 
   -l, --language                    (Optional) Language/culture value to get localized address result for BigDataCloud ( https://www.bigdatacloud.com/supported-languages/ ) and GoogleMaps (https://developers.google.com/maps/faq#languagesupport ).
 
@@ -1264,7 +1255,7 @@ photo-cli help copy
 
   -p, --folder-append-location      (Optional) Append location for `FolderAppendType`. [Can be use with `FolderProcessType` is `SubFoldersPreserveFolderHierarchy`] ( Prefix: 1, Suffix: 2 )
 
-  -e, --reverse-geocode             (Optional) Third-party provider to resolve photo taken address by photo's coordinates. ( Disabled: 0 [default], BigDataCloud: 1, OpenStreetMapFoundation: 2, GoogleMaps: 3, MapQuest: 4, LocationIq: 5 )
+  -e, --reverse-geocode             (Optional) Third-party provider to resolve photo taken address by photo's coordinates. ( Disabled: 0 [default], BigDataCloud: 1, OpenStreetMapFoundation: 2, GoogleMaps: 3, LocationIq: 5 )
 
   -b, --bigdatacloud-key            (Optional) API key needed to use BigDataCloud. https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/ (Instead of using this option, environment name: PHOTO_CLI_BIG_DATA_CLOUD_API_KEY can be used. )
 
@@ -1276,11 +1267,9 @@ photo-cli help copy
 
   -r, --openstreetmap-properties    (Optional) OpenStreetMap properties separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from OpenStreetMap provider. )
 
-  -u, --mapquest-key                (Optional) API key needed to use MapQuest. https://developer.mapquest.com/documentation/open/nominatim-search/reverse/ (Instead of using this option, environment name: PHOTO_CLI_MAPQUEST_API_KEY can be used. )
-
   -q, --locationiq-key              (Optional) API key needed to use LocationIq. https://locationiq.com/docs/ (Instead of using this option, environment name: PHOTO_CLI_LOCATIONIQ_API_KEY can be used. )
 
-  -h, --has-paid-license            (Optional) Bypass rate limit if you have paid license. ( For MapQuest and LocationIq. )
+  -h, --has-paid-license            (Optional) Bypass rate limit if you have paid license. ( For LocationIq. )
 
   -l, --language                    (Optional) Language/culture value to get localized address result for BigDataCloud ( https://www.bigdatacloud.com/supported-languages/ ) and GoogleMaps (https://developers.google.com/maps/faq#languagesupport ).
 
@@ -1345,7 +1334,7 @@ photo-cli help address
 ```
   -i, --input                       (Default current executing folder) File system path to read & copy photos from. ( there will be no modification on the input path )
 
-  -e, --reverse-geocode             (Optional) Third-party provider to resolve photo taken address by photo's coordinates. ( Disabled: 0 [default], BigDataCloud: 1, OpenStreetMapFoundation: 2, GoogleMaps: 3, MapQuest: 4, LocationIq: 5 )
+  -e, --reverse-geocode             (Optional) Third-party provider to resolve photo taken address by photo's coordinates. ( Disabled: 0 [default], BigDataCloud: 1, OpenStreetMapFoundation: 2, GoogleMaps: 3, LocationIq: 5 )
 
   -t, --type                        (MUST) Response list detail level. ( AllAvailableProperties: 0, SelectedProperties: 1, FullResponse: 2 )
 
@@ -1359,11 +1348,9 @@ photo-cli help address
 
   -r, --openstreetmap-properties    (Optional) OpenStreetMap properties separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from OpenStreetMap provider. )
 
-  -u, --mapquest-key                (Optional) API key needed to use MapQuest. https://developer.mapquest.com/documentation/open/nominatim-search/reverse/ (Instead of using this option, environment name: PHOTO_CLI_MAPQUEST_API_KEY can be used. )
-
   -q, --locationiq-key              (Optional) API key needed to use LocationIq. https://locationiq.com/docs/ (Instead of using this option, environment name: PHOTO_CLI_LOCATIONIQ_API_KEY can be used. )
 
-  -h, --has-paid-license            (Optional) Bypass rate limit if you have paid license. ( For MapQuest and LocationIq. )
+  -h, --has-paid-license            (Optional) Bypass rate limit if you have paid license. ( For LocationIq. )
 
   -l, --language                    (Optional) Language/culture value to get localized address result for BigDataCloud ( https://www.bigdatacloud.com/supported-languages/ ) and GoogleMaps (https://developers.google.com/maps/faq#languagesupport ).
 
@@ -1551,7 +1538,6 @@ Third-party provider to resolve photo taken address by photo's coordinates.
 | BigDataCloud            | 1     |
 | OpenStreetMapFoundation | 2     |
 | GoogleMaps              | 3     |
-| MapQuest                | 4     |
 | LocationIq              | 5     |
 
 ### Big Data Cloud API Key ( -b, --bigdatacloud-key )
@@ -1561,10 +1547,6 @@ Sets [Big Data Cloud reverse geocode](https://www.bigdatacloud.com/geocoding-api
 ### Google Maps API Key ( -k, --googlemaps-key )
 
 Sets [Google Maps reverse geocode](https://developers.google.com/maps/documentation/geocoding/overview/) API key. Alternatively, you may use the environment variable `PHOTO_CLI_GOOGLE_MAPS_API_KEY`.
-
-### Map Quest API Key ( -u, --mapquest-key )
-
-Sets [Map Quest reverse geocode](https://developer.mapquest.com/documentation/open/nominatim-search/reverse/) API key. Alternatively, you may use the environment variable `PHOTO_CLI_MAPQUEST_API_KEY`.
 
 ### Location Iq API Key ( -q, --locationiq-key )
 
@@ -1576,7 +1558,7 @@ Must be used when `BigDataCloud` is selected as reverse geocode provider. Big Da
 
 ### OpenStreetMapProperties ( -r, --openstreetmap-properties )
 
-Must be used when any of `OpenStreetMapFoundation`, `MapQuest`, `LocationIq` is selected as reverse geocode provider. OpenStreetMap properties separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see the full response returned from OpenStreetMap provider. )
+Must be used when any of `OpenStreetMapFoundation`, `LocationIq` is selected as reverse geocode provider. OpenStreetMap properties separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see the full response returned from OpenStreetMap provider. )
 
 ### Google Maps Address Types ( -m, --googlemaps-types )
 
@@ -1584,7 +1566,7 @@ Must be used when `GoogleMaps` selected as reverse geocode provider. Google Maps
 
 ### Has Paid License ( -h, --has-paid-license )
 
-Bypass the free rate limit if you have paid license. (For `MapQuest` and `LocationIq` reverse geocode providers)
+Bypass the free rate limit if you have paid license. (For `LocationIq` reverse geocode providers)
 
 ### No Photograph Taken Date Action [for `copy` command ] ( -t, --no-taken-date )
 
@@ -1671,7 +1653,6 @@ DryRunCsvReportFileName=photo-cli-dry-run.csv
 ConnectionLimit=4
 BigDataCloudApiKey=
 GoogleMapsApiKey=
-MapQuestApiKey=
 LocationIqApiKey=
 ```
 

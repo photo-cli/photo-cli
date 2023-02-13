@@ -36,18 +36,7 @@ public enum ReverseGeocodeProvider : byte
 	/// </summary>
 	GoogleMaps = 3,
 
-	/// <summary>
-	///     MapQuest - https://www.mapquest.com/ - Using OpenStreetMap data.
-	///     Needs api key - has free tier
-	///     Free tier count limit : 50.000req/month , 5.000/day
-	///     Free tier rate limit: 1req/sec
-	///     Api key should be set on:
-	///     - Application argument: -u [api-key] or --mapquest-key [api-key]
-	///     - Environment variable: PHOTO_CLI_MAPQUEST_API_KEY
-	///     - appsettings.json as root property: MapQuestApiKey
-	///     Api docs: https://developer.mapquest.com/documentation/open/nominatim-search/reverse/
-	/// </summary>
-	MapQuest = 4,
+	// MapQuest = 4, MapQuest terminated theirs Nominatim product. We don't want to change the existing enum values, this 4 may used for future integrations
 
 	/// <summary>
 	///     LocationIq - https://locationiq.com/

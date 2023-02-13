@@ -17,7 +17,7 @@
         <ToolCommandName>photo-cli</ToolCommandName>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageIcon>icon.png</PackageIcon>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReadmeFile>nuget-readme.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -38,7 +38,7 @@
         <None Update="appsettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Include="..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\docs\assets\nuget-readme.md" Pack="true" PackagePath="\" />
         <None Include="..\docs\assets\icon.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 

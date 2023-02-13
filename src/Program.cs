@@ -188,12 +188,6 @@ public static class Program
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
 			});
 
-			services.AddHttpClient<IMapQuestReverseGeocodeService, MapQuestReverseGeocodeService>(c =>
-			{
-				c.BaseAddress = new Uri("https://open.mapquestapi.com/nominatim/v1/reverse.php/");
-				c.DefaultRequestHeaders.UserAgent.Add(agent);
-			});
-
 			services.AddHttpClient<ILocationIqReverseGeocodeService, LocationIqReverseGeocodeService>(c =>
 			{
 				c.BaseAddress = new Uri("https://us1.locationiq.com/v1/reverse.php/");

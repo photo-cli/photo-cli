@@ -6,20 +6,18 @@ public class ReverseGeocodeService : IReverseGeocodeService
 	private readonly IGoogleMapsReverseGeocodeService _googleMaps;
 	private readonly ILocationIqReverseGeocodeService _locationIq;
 	private readonly ILogger<ReverseGeocodeService> _logger;
-	private readonly IMapQuestReverseGeocodeService _mapQuest;
 	private readonly IOpenStreetMapFoundationReverseGeocodeService _openStreetMapFoundation;
 	private readonly IReverseGeocodeOptions _options;
 
 	private List<PropertyInfo>? _openStreetMapSelectedPropertyInfosOnAddressObject;
 
 	public ReverseGeocodeService(IReverseGeocodeOptions options, IBigDataCloudReverseGeocodeService bigDataCloud, IOpenStreetMapFoundationReverseGeocodeService openStreetMapFoundation,
-		IGoogleMapsReverseGeocodeService googleMaps, IMapQuestReverseGeocodeService mapQuest, ILocationIqReverseGeocodeService locationIq, ILogger<ReverseGeocodeService> logger)
+		IGoogleMapsReverseGeocodeService googleMaps, ILocationIqReverseGeocodeService locationIq, ILogger<ReverseGeocodeService> logger)
 	{
 		_options = options;
 		_bigDataCloud = bigDataCloud;
 		_openStreetMapFoundation = openStreetMapFoundation;
 		_googleMaps = googleMaps;
-		_mapQuest = mapQuest;
 		_locationIq = locationIq;
 		_logger = logger;
 	}
@@ -32,7 +30,6 @@ public class ReverseGeocodeService : IReverseGeocodeService
 			ReverseGeocodeProvider.BigDataCloud => _bigDataCloud.Get(coordinate, _options.Language, _options.BigDataCloudAdminLevels),
 			ReverseGeocodeProvider.OpenStreetMapFoundation => _openStreetMapFoundation.Get(coordinate, BuildPrepareOpenStreetMapProperties(_options)),
 			ReverseGeocodeProvider.GoogleMaps => _googleMaps.Get(coordinate, _options.Language, _options.GoogleMapsAddressTypes),
-			ReverseGeocodeProvider.MapQuest => _mapQuest.Get(coordinate, BuildPrepareOpenStreetMapProperties(_options)),
 			ReverseGeocodeProvider.LocationIq => _locationIq.Get(coordinate, BuildPrepareOpenStreetMapProperties(_options)),
 			_ => throw new PhotoCliException($"{nameof(_options.ReverseGeocodeProvider)}, should have a valid value")
 		};
@@ -46,7 +43,6 @@ public class ReverseGeocodeService : IReverseGeocodeService
 			ReverseGeocodeProvider.BigDataCloud => await _bigDataCloud.SerializeFullResponse(coordinate, _options.Language),
 			ReverseGeocodeProvider.OpenStreetMapFoundation => await _openStreetMapFoundation.SerializeFullResponse(coordinate),
 			ReverseGeocodeProvider.GoogleMaps => await _googleMaps.SerializeFullResponse(coordinate, _options.Language),
-			ReverseGeocodeProvider.MapQuest => await _mapQuest.SerializeFullResponse(coordinate),
 			ReverseGeocodeProvider.LocationIq => await _locationIq.SerializeFullResponse(coordinate),
 			_ => throw new PhotoCliException($"{nameof(_options.ReverseGeocodeProvider)}, should have a valid value")
 		};
@@ -64,7 +60,6 @@ public class ReverseGeocodeService : IReverseGeocodeService
 			ReverseGeocodeProvider.BigDataCloud => _bigDataCloud.AllAvailableReverseGeocodes(coordinate, _options.Language),
 			ReverseGeocodeProvider.OpenStreetMapFoundation => _openStreetMapFoundation.AllAvailableReverseGeocodes(coordinate),
 			ReverseGeocodeProvider.GoogleMaps => _googleMaps.AllAvailableReverseGeocodes(coordinate, _options.Language),
-			ReverseGeocodeProvider.MapQuest => _mapQuest.AllAvailableReverseGeocodes(coordinate),
 			ReverseGeocodeProvider.LocationIq => _locationIq.AllAvailableReverseGeocodes(coordinate),
 			_ => throw new PhotoCliException($"{nameof(_options.ReverseGeocodeProvider)}, should have a valid value")
 		};
