@@ -239,7 +239,7 @@ public class CopyOptionsFluentValidationTests : BaseFluentValidationTests<CopyOp
 	{
 		var options = CopyOptionsFakes.WithReverseGeocodeService();
 		CheckPropertyNotEmpty(options, nameof(CopyOptions.BigDataCloudAdminLevels), MustUseMessage(nameof(CopyOptions.BigDataCloudAdminLevels), nameof(ReverseGeocodeProvider.BigDataCloud),
-			"bigdatacloud-levels", 'v'));
+			"bigdatacloud-levels", 'u'));
 	}
 
 	[Theory]

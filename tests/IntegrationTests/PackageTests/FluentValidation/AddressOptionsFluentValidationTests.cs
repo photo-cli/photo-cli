@@ -25,7 +25,7 @@ public class AddressOptionsFluentValidationTests : BaseFluentValidationTests<Add
 	{
 		var options = AddressOptionsFakes.WithReverseGeocodeServiceAndAddressListType(ReverseGeocodeProvider.BigDataCloud, AddressListType.SelectedProperties);
 		CheckPropertyNotEmpty(options, nameof(AddressOptions.BigDataCloudAdminLevels), MustUseMessage(nameof(AddressOptions.BigDataCloudAdminLevels), nameof(ReverseGeocodeProvider.BigDataCloud),
-			"bigdatacloud-levels", 'v'));
+			"bigdatacloud-levels", 'u'));
 	}
 
 	[Theory]
