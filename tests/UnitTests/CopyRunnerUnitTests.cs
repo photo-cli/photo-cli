@@ -17,34 +17,39 @@ public class CopyRunnerUnitTests
 
 	#region Expected Code Flow
 
-	public static TheoryData<CopyOptions, bool, bool> WithoutFolderAppendTypeCopyOptionsAndCodeFlowOptions = new()
+	public static TheoryData<CopyOptions, bool, bool, bool> WithoutFolderAppendTypeCopyOptionsAndCodeFlowOptions = new()
 	{
-		{ CopyOptionsFakes.WithoutFolderAppendType(OutputPath, SourceFolderPath), false, false },
+		{ CopyOptionsFakes.WithoutFolderAppendType(OutputPath, SourceFolderPath), false, false, false },
 	};
 
-	public static TheoryData<CopyOptions, bool, bool> WithFolderAppendTypeCopyOptionsAndCodeFlowOptions = new()
+	public static TheoryData<CopyOptions, bool, bool, bool> WithFolderAppendTypeCopyOptionsAndCodeFlowOptions = new()
 	{
-		{ CopyOptionsFakes.WithFolderAppendType(OutputPath, SourceFolderPath), true, false },
+		{ CopyOptionsFakes.WithFolderAppendType(OutputPath, SourceFolderPath), true, false, false },
 	};
 
-	public static TheoryData<CopyOptions, bool, bool> WithReverseGeocodeCopyOptionsAndCodeFlowOptions = new()
+	public static TheoryData<CopyOptions, bool, bool, bool> WithReverseGeocodeCopyOptionsAndCodeFlowOptions = new()
 	{
-		{ CopyOptionsFakes.WithReverseGeocode(OutputPath, SourceFolderPath), false, true },
+		{ CopyOptionsFakes.WithReverseGeocode(OutputPath, SourceFolderPath), false, true, false },
 	};
 
-	public static TheoryData<CopyOptions, bool, bool> WithDryRun = new()
+	public static TheoryData<CopyOptions, bool, bool, bool> WithDryRun = new()
 	{
-		{ CopyOptionsFakes.WithDryRun(OutputPath, SourceFolderPath), false, false },
+		{ CopyOptionsFakes.WithDryRun(OutputPath, SourceFolderPath), false, false, false },
 	};
 
+	public static TheoryData<CopyOptions, bool, bool, bool> WithVerifyFileIntegrity = new()
+	{
+		{ CopyOptionsFakes.WithVerifyFileIntegrity(OutputPath, SourceFolderPath), false, false, true },
+	};
 
 	[Theory]
 	[MemberData(nameof(WithoutFolderAppendTypeCopyOptionsAndCodeFlowOptions))]
 	[MemberData(nameof(WithFolderAppendTypeCopyOptionsAndCodeFlowOptions))]
 	[MemberData(nameof(WithReverseGeocodeCopyOptionsAndCodeFlowOptions))]
 	[MemberData(nameof(WithDryRun))]
+	[MemberData(nameof(WithVerifyFileIntegrity))]
 	public async Task Valid_Full_Workflow_Verify_All_Invocations_With_Specific_Parameters_Should_Exit_With_Success(CopyOptions copyOptions, bool verifyFolderAppendTypeMocks,
-		bool verifyReverseGeocodeMocks)
+		bool verifyReverseGeocodeMocks, bool verifyFileIntegrity)
 	{
 		var photoInfos = new List<Photo> { PhotoFakes.WithYear(2000) };
 		var targetRelativeDirectory = string.Empty;
@@ -61,20 +66,21 @@ public class CopyRunnerUnitTests
 		}
 
 		var groupedPhotoInfosByRelativeDirectory = new Dictionary<string, List<Photo>> { { targetRelativeDirectory, photoInfos } };
-		SetupValid(copyOptions, photoPaths, true, true, photoExifDataByFilePath, photoInfos, targetRelativeDirectory, groupedPhotoInfosByRelativeDirectory,
-			verifyFolderAppendTypeMocks, verifyReverseGeocodeMocks, reverseGeocodedPhotoExifDataByFilePath);
+		Setup(copyOptions, photoPaths, true, true, photoExifDataByFilePath, photoInfos, targetRelativeDirectory, groupedPhotoInfosByRelativeDirectory,
+			verifyFolderAppendTypeMocks, verifyReverseGeocodeMocks, reverseGeocodedPhotoExifDataByFilePath, verifyFileIntegrity, true);
 
 		var sut = Initialize(copyOptions);
 		var exitCode = await sut.Execute();
 		exitCode.Should().Be(ExitCode.Success);
-		VerifyValid(copyOptions, photoPaths, true, true, photoExifDataByFilePath, photoInfos, targetRelativeDirectory, groupedPhotoInfosByRelativeDirectory,
-			verifyFolderAppendTypeMocks, verifyReverseGeocodeMocks, reverseGeocodedPhotoExifDataByFilePath);
+		var verifySaveGnuHashFileTree = verifyFileIntegrity;
+		Verify(copyOptions, photoPaths, true, true, photoExifDataByFilePath, photoInfos, targetRelativeDirectory, groupedPhotoInfosByRelativeDirectory,
+			verifyFolderAppendTypeMocks, verifyReverseGeocodeMocks, reverseGeocodedPhotoExifDataByFilePath, verifyFileIntegrity, verifySaveGnuHashFileTree, true);
 	}
 
-	private void SetupValid(CopyOptions copyOptions, string[] photoPaths, bool allPhotosHasPhotoTakenMockOutValue, bool allPhotosHasCoordinateMockOutValue,
+	private void Setup(CopyOptions copyOptions, string[] photoPaths, bool allPhotosHasPhotoTakenMockOutValue, bool allPhotosHasCoordinateMockOutValue,
 		Dictionary<string, ExifData> photoExifDataByFilePath, IReadOnlyCollection<Photo> photoInfos, string targetRelativeDirectory,
 		Dictionary<string, List<Photo>> groupedPhotoInfosByRelativeDirectory, bool setupOrganizeDirectoriesByFolderProcessType, bool setupReverseGeocodeFetcher,
-		Dictionary<string, ExifData>? reverseGeocodedPhotoExifDataByFilePath)
+		Dictionary<string, ExifData>? reverseGeocodedPhotoExifDataByFilePath, bool setupVerifyFileIntegrity, bool verifyReport, bool verifyFileIntegrityResult = true)
 	{
 		_photoCollectorMock.Setup(s => s.Collect(copyOptions.InputPath!, It.IsAny<bool>())).Returns(() => photoPaths);
 		_exifDataAppenderMock.Setup(s => s.ExifDataByPath(photoPaths, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue)).Returns(() => photoExifDataByFilePath);
@@ -92,7 +98,7 @@ public class CopyRunnerUnitTests
 		}
 		else
 		{
-			_directoryGrouperMock.Setup(s => s.GroupFiles(photoExifDataByFilePath, copyOptions.InputPath!,
+			 _directoryGrouperMock.Setup(s => s.GroupFiles(photoExifDataByFilePath, copyOptions.InputPath!,
 					It.IsAny<FolderProcessType>(), It.IsAny<GroupByFolderType?>(), It.IsAny<bool>(), It.IsAny<bool>()))
 				.Returns(() => groupedPhotoInfosByRelativeDirectory);
 		}
@@ -109,13 +115,21 @@ public class CopyRunnerUnitTests
 		}
 
 		_fileServiceMock.Setup(s => s.Copy(photoInfos, OutputPath, It.IsAny<bool>()));
-		_csvServiceMock.Setup(s => s.Report(It.IsAny<Dictionary<string, IReadOnlyCollection<Photo>>>(), OutputPath, It.IsAny<bool>())).Returns(Task.CompletedTask);
+		if (setupVerifyFileIntegrity)
+		{
+			_fileServiceMock.Setup(s => s.VerifyFileIntegrity(photoInfos, OutputPath)).ReturnsAsync(verifyFileIntegrityResult);
+			_fileServiceMock.Setup(s => s.SaveGnuHashFileTree(photoInfos, OutputPath)).Returns(Task.CompletedTask);
+		}
+
+
+		if (verifyReport)
+			_csvServiceMock.Setup(s => s.Report(It.IsAny<IEnumerable<Photo>>(), OutputPath, It.IsAny<bool>())).Returns(Task.CompletedTask);
 	}
 
-	private void VerifyValid(CopyOptions copyOptions, string[] photoPaths, bool allPhotosHasPhotoTakenMockOutValue, bool allPhotosHasCoordinateMockOutValue,
+	private void Verify(CopyOptions copyOptions, string[] photoPaths, bool allPhotosHasPhotoTakenMockOutValue, bool allPhotosHasCoordinateMockOutValue,
 		Dictionary<string, ExifData> photoExifDataByFilePath, IReadOnlyCollection<Photo> photoInfos, string targetRelativeDirectory,
 		Dictionary<string, List<Photo>> groupedPhotoInfosByRelativeDirectory, bool verifyOrganizeDirectoriesByFolderProcessType, bool verifyReverseGeocodeFetcher,
-		Dictionary<string, ExifData>? reverseGeocodedPhotoExifDataByFilePath)
+		Dictionary<string, ExifData>? reverseGeocodedPhotoExifDataByFilePath, bool verifyVerifyFileIntegrity, bool verifySaveGnuHashFileTree, bool verifyReport)
 	{
 		_photoCollectorMock.Verify(v => v.Collect(SourceFolderPath, It.IsAny<bool>()), Times.Once);
 		_exifDataAppenderMock.Verify(v => v.ExifDataByPath(photoPaths, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue), Times.Once);
@@ -135,17 +149,26 @@ public class CopyRunnerUnitTests
 				It.IsAny<FolderProcessType>(), It.IsAny<GroupByFolderType?>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
 		}
 
-		_organizeByNoPhotoTakenActionMock.Verify(v => v.FilterAndSortByNoActionTypes(photoInfos, It.IsAny<CopyNoPhotoTakenDateAction>(), It.IsAny<CopyNoCoordinateAction>()), Times.Once);
-		_fileNamerMock.Verify(v => v.SetFileName(photoInfos, It.IsAny<NamingStyle>(), It.IsAny<NumberNamingTextStyle>()), Times.Once);
+		var timesGroupPhotoFolderIteration = Times.Exactly(groupedPhotoInfosByRelativeDirectory.Count);
+		_organizeByNoPhotoTakenActionMock.Verify(v => v.FilterAndSortByNoActionTypes(photoInfos, It.IsAny<CopyNoPhotoTakenDateAction>(), It.IsAny<CopyNoCoordinateAction>()), timesGroupPhotoFolderIteration);
+		_fileNamerMock.Verify(v => v.SetFileName(photoInfos, It.IsAny<NamingStyle>(), It.IsAny<NumberNamingTextStyle>()), timesGroupPhotoFolderIteration);
 
 		if (verifyOrganizeDirectoriesByFolderProcessType)
 		{
 			_organizeDirectoriesByFolderProcessTypeMock.Verify(v =>
-				v.RenameByFolderAppendType(photoInfos, It.IsAny<FolderAppendType>(), It.IsAny<FolderAppendLocationType>(), targetRelativeDirectory), Times.Once);
+				v.RenameByFolderAppendType(photoInfos, It.IsAny<FolderAppendType>(), It.IsAny<FolderAppendLocationType>(), targetRelativeDirectory), timesGroupPhotoFolderIteration);
 		}
 
-		_fileServiceMock.Verify(v => v.Copy(photoInfos, OutputPath, It.IsAny<bool>()), Times.Once);
-		_csvServiceMock.Verify(s => s.Report(It.IsAny<Dictionary<string, IReadOnlyCollection<Photo>>>(), OutputPath, It.IsAny<bool>()), Times.Once);
+		_fileServiceMock.Verify(v => v.Copy(photoInfos, OutputPath, It.IsAny<bool>()), timesGroupPhotoFolderIteration);
+		if (verifyVerifyFileIntegrity)
+			_fileServiceMock.Verify(s => s.VerifyFileIntegrity(photoInfos, OutputPath), timesGroupPhotoFolderIteration);
+
+		if(verifySaveGnuHashFileTree)
+			_fileServiceMock.Verify(s => s.SaveGnuHashFileTree(photoInfos, OutputPath), Times.Once);
+
+		if(verifyReport)
+			_csvServiceMock.Verify(s => s.Report(It.IsAny<IEnumerable<Photo>>(), OutputPath, It.IsAny<bool>()), Times.Once);
+
 		VerifyNoOtherCalls();
 	}
 
@@ -197,6 +220,34 @@ public class CopyRunnerUnitTests
 		var sut = Initialize(CopyOptionsFakes.Create(sourcePhotosFolderPathOptional: SourceFolderPath, isDryRunOptional: true));
 		var exitCode = await sut.Execute();
 		exitCode.Should().Be(ExitCode.OutputPathIsExists);
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public async Task When_VerifyFileIntegrity_Fails_Should_Exit_With_FileVerifyErrors()
+	{
+		const bool verifyFileIntegrityResult = false;
+		var copyOptions = CopyOptionsFakes.WithVerifyFileIntegrity(OutputPath, SourceFolderPath);
+		var photoInfos = new List<Photo> { PhotoFakes.WithYear(2000) };
+		var targetRelativeDirectory = string.Empty;
+		const string photoPath = "/photo.jpg";
+		string[] photoPaths = { "/photo.jpg" };
+		var photoExifDataByFilePath = new Dictionary<string, ExifData> { { photoPath, ExifDataFakes.Create(DateTimeFakes.WithYear(2000), CoordinateFakes.Valid()) } };
+
+		Dictionary<string, ExifData>? reverseGeocodedPhotoExifDataByFilePath = null;
+
+		var groupedPhotoInfosByRelativeDirectory = new Dictionary<string, List<Photo>> { { targetRelativeDirectory, photoInfos } };
+
+		Setup(copyOptions, photoPaths, true, true, photoExifDataByFilePath, photoInfos, targetRelativeDirectory, groupedPhotoInfosByRelativeDirectory,
+			false, false, reverseGeocodedPhotoExifDataByFilePath, true, false, verifyFileIntegrityResult);
+
+		var sut = Initialize(copyOptions);
+		var exitCode = await sut.Execute();
+		exitCode.Should().Be(ExitCode.FileVerifyErrors);
+
+		Verify(copyOptions, photoPaths, true, true, photoExifDataByFilePath, photoInfos, targetRelativeDirectory, groupedPhotoInfosByRelativeDirectory,
+			false, false, reverseGeocodedPhotoExifDataByFilePath, true, false, false);
+
 		VerifyNoOtherCalls();
 	}
 

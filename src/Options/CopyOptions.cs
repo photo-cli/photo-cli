@@ -14,7 +14,7 @@ public class CopyOptions : IReverseGeocodeOptions
 		CopyNoCoordinateAction noCoordinateAction,
 		// Optional
 		string? inputPath = null, bool isDryRun = false, GroupByFolderType? groupByFolderType = null, FolderAppendType? folderAppendType = null,
-		FolderAppendLocationType? folderAppendLocationType = null,
+		FolderAppendLocationType? folderAppendLocationType = null, bool verify = false,
 		// ReverseGeocode - Shared
 		ReverseGeocodeProvider reverseGeoCodeProvider = ReverseGeocodeProvider.Disabled, string? bigDataCloudApiKey = null, IEnumerable<int>? bigDataCloudAdminLevels = null,
 		IEnumerable<string>? googleMapsAddressTypes = null, string? googleMapsApiKey = null, IEnumerable<string>? openStreetMapProperties = null,
@@ -34,6 +34,7 @@ public class CopyOptions : IReverseGeocodeOptions
 		GroupByFolderType = groupByFolderType;
 		FolderAppendType = folderAppendType;
 		FolderAppendLocationType = folderAppendLocationType;
+		Verify = verify;
 
 		// ReverseGeocode
 		ReverseGeocodeProvider = reverseGeoCodeProvider;
@@ -85,6 +86,9 @@ public class CopyOptions : IReverseGeocodeOptions
 
 	[Option(OptionNames.FolderAppendLocationTypeOptionNameShort, OptionNames.FolderAppendLocationTypeOptionNameLong, HelpText = HelpTexts.FolderAppendLocationType)]
 	public FolderAppendLocationType? FolderAppendLocationType { get; }
+
+	[Option(OptionNames.VerifyOptionNameShort, OptionNames.VerifyOptionNameLong, HelpText = HelpTexts.Verify)]
+	public bool Verify { get; }
 
 	#endregion
 

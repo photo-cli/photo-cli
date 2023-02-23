@@ -81,6 +81,7 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 		var filteredPhotosByRelativeDirectory = new Dictionary<string, IReadOnlyCollection<Photo>>();
 
 		_consoleWriter.ProgressStart(TargetRelativeFolderProgressName, groupedPhotosByRelativeDirectory.Count);
+		var verifyFileIntegrity = _options is { Verify: true, IsDryRun: false };
 		foreach (var (targetRelativeDirectoryPath, photoInfos) in groupedPhotosByRelativeDirectory)
 		{
 			var (orderedPhotos, notToRenamePhotos) = _exifOrganizerService.FilterAndSortByNoActionTypes(photoInfos, _options.NoPhotoTakenDateAction, _options.NoCoordinateAction);
@@ -91,16 +92,22 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 			var allPhotos = new List<Photo>(orderedPhotos);
 			allPhotos.AddRange(notToRenamePhotos);
 			_fileService.Copy(allPhotos, _options.OutputPath, _options.IsDryRun);
+
 			filteredPhotosByRelativeDirectory.Add(targetRelativeDirectoryPath, allPhotos);
+			if (verifyFileIntegrity)
+			{
+				var allFilesVerified = await _fileService.VerifyFileIntegrity(allPhotos, _options.OutputPath);
+				if (!allFilesVerified)
+					return ExitCode.FileVerifyErrors;
+			}
 			_consoleWriter.InProgressItemComplete(TargetRelativeFolderProgressName);
 		}
-
 		_consoleWriter.ProgressFinish(TargetRelativeFolderProgressName);
-
-		await _csvService.Report(filteredPhotosByRelativeDirectory, _options.OutputPath, _options.IsDryRun);
-
+		var filteredAllPhotos = filteredPhotosByRelativeDirectory.SelectMany(s => s.Value).ToList();
+		if (verifyFileIntegrity)
+			await _fileService.SaveGnuHashFileTree(filteredAllPhotos, _options.OutputPath);
+		await _csvService.Report(filteredAllPhotos, _options.OutputPath, _options.IsDryRun);
 		WriteStatistics();
-
 		return ExitCode.Success;
 	}
 

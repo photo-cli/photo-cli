@@ -138,7 +138,7 @@ public static class PhotoFakes
 		sourcePath ??= "source-path";
 		fileNameWithExtension ??= "dummy.jpg";
 		targetRelativeDirectoryPath ??= string.Empty;
-		var mockFileInfo = new MockFileInfo(MockFileSystemHelper.DummyInstance, Path.Combine(sourcePath, fileNameWithExtension));
+		var mockFileInfo = new MockFileInfo(new MockFileSystem(), Path.Combine(sourcePath, fileNameWithExtension));
 		var exifData = ExifDataFakes.Create(takenDate, coordinate, reverseGeocodes?.ToList());
 		var photo = new Photo(mockFileInfo, exifData, targetRelativeDirectoryPath) { NewName = newName };
 		return photo;

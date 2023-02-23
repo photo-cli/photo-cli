@@ -38,6 +38,9 @@ internal static class OptionNames
 	internal const char IsDryRunOptionNameShort = 'd';
 	internal const string IsDryRunOptionNameLong = "dry-run";
 
+	internal const char VerifyOptionNameShort = 'y';
+	internal const string VerifyOptionNameLong = "verify";
+
 	#endregion
 
 	#region Info
