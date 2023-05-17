@@ -352,4 +352,7 @@ MigrationBackup/
 .ionide/
 
 # Jetbrains Rider
-.idea
+.idea/
+
+# macOS
+.DS_Store

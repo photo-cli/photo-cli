@@ -54,6 +54,11 @@ public static class CopyOptionsFakes
 		return Create(outputFolderPath, sourcePhotosFolderPathOptional: sourceFolderPath, isDryRunOptional: true);
 	}
 
+	public static CopyOptions WithVerifyFileIntegrity(string outputFolderPath, string sourceFolderPath)
+	{
+		return Create(outputFolderPath, sourcePhotosFolderPathOptional: sourceFolderPath, verify: true);
+	}
+
 	public static CopyOptions Valid()
 	{
 		return Create();
@@ -70,7 +75,7 @@ public static class CopyOptionsFakes
 		NumberNamingTextStyle? numberNamingTextStyleRequired = null, CopyNoPhotoTakenDateAction? noPhotoTakenDateActionOptional = null, CopyNoCoordinateAction? noCoordinateActionOptional = null,
 		// optional
 		string? sourcePhotosFolderPathOptional = null, bool isDryRunOptional = false, GroupByFolderType? groupByFolderTypeOptional = null,
-		FolderAppendType? folderAppendTypeOptional = null, FolderAppendLocationType? folderAppendLocationTypeOptional = null,
+		FolderAppendType? folderAppendTypeOptional = null, FolderAppendLocationType? folderAppendLocationTypeOptional = null, bool verify = false,
 		// shared ReverseGeocode
 		ReverseGeocodeProvider reverseGeoCodeProviderOptional = ReverseGeocodeProvider.Disabled,
 		IEnumerable<int>? bigDataCloudAdminLevelsOptional = null)
@@ -78,7 +83,7 @@ public static class CopyOptionsFakes
 		return new CopyOptions(outputPath!, namingStyleRequired ?? NamingStyleFakes.Valid(),
 			folderProcessTypeRequired ?? FolderProcessTypeFakes.Valid(), numberNamingTextStyleRequired ?? NumberNamingTextStyleFakes.Valid(),
 			noPhotoTakenDateActionOptional ?? CopyNoPhotoTakenDateActionFakes.Valid(), noCoordinateActionOptional ?? CopyNoCoordinateActionFakes.Valid(), sourcePhotosFolderPathOptional,
-			isDryRunOptional, groupByFolderTypeOptional, folderAppendTypeOptional, folderAppendLocationTypeOptional, reverseGeoCodeProviderOptional,
+			isDryRunOptional, groupByFolderTypeOptional, folderAppendTypeOptional, folderAppendLocationTypeOptional, verify, reverseGeoCodeProviderOptional,
 			bigDataCloudAdminLevels: bigDataCloudAdminLevelsOptional);
 	}
 

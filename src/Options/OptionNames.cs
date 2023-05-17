@@ -38,6 +38,9 @@ internal static class OptionNames
 	internal const char IsDryRunOptionNameShort = 'd';
 	internal const string IsDryRunOptionNameLong = "dry-run";
 
+	internal const char VerifyOptionNameShort = 'v';
+	internal const string VerifyOptionNameLong = "verify";
+
 	#endregion
 
 	#region Info
@@ -87,7 +90,7 @@ internal static class OptionNames
 	internal const char BigDataCloudApiKeyOptionNameShort = 'b';
 	internal const string BigDataCloudApiKeyOptionNameLong = "bigdatacloud-key";
 
-	internal const char BigDataCloudAdminLevelsOptionNameShort = 'v';
+	internal const char BigDataCloudAdminLevelsOptionNameShort = 'u';
 	internal const string BigDataCloudAdminLevelsOptionNameLong = "bigdatacloud-levels";
 
 	internal const char GoogleMapsAddressTypesOptionNameShort = 'm';
