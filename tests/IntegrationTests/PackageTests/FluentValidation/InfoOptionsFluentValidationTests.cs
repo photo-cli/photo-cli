@@ -23,7 +23,7 @@ public class InfoOptionsFluentValidationTests : BaseFluentValidationTests<InfoOp
 	{
 		var options = InfoOptionsFakes.WithReverseGeocodeService(ReverseGeocodeProvider.BigDataCloud);
 		CheckPropertyNotEmpty(options, nameof(InfoOptions.BigDataCloudAdminLevels), MustUseMessage(nameof(InfoOptions.BigDataCloudAdminLevels), nameof(ReverseGeocodeProvider.BigDataCloud),
-			"bigdatacloud-levels", 'v'));
+			"bigdatacloud-levels", 'u'));
 	}
 
 	[Theory]

@@ -32,7 +32,7 @@ public static class CommandLineArgumentsFakes
 			AddArgumentWithParameter('e', reverseGeocodeProvider.Value.ToString(), args);
 
 		if (bigDataCloudAdminLevels != null)
-			AddArgumentListWithParameter('v', bigDataCloudAdminLevels, args);
+			AddArgumentListWithParameter('u', bigDataCloudAdminLevels, args);
 
 		if (groupByFolderType != null)
 			AddArgumentWithParameter('g', groupByFolderType.Value.ToString(), args);
@@ -84,7 +84,7 @@ public static class CommandLineArgumentsFakes
 			AddArgumentWithParameter('e', reverseGeocodeProvider.Value.ToString(), args);
 
 		if (bigDataCloudAdminLevels != null)
-			AddArgumentListWithParameter('v', bigDataCloudAdminLevels, args);
+			AddArgumentListWithParameter('u', bigDataCloudAdminLevels, args);
 
 		return args.ToArray();
 	}
@@ -100,7 +100,7 @@ public static class CommandLineArgumentsFakes
 
 		if (bigDataCloudAdminLevels != null)
 		{
-			AddArgumentWithoutParameter('v', args);
+			AddArgumentWithoutParameter('u', args);
 			foreach (var bigDataCloudAdminLevel in bigDataCloudAdminLevels)
 				args.Add(bigDataCloudAdminLevel.ToString());
 		}

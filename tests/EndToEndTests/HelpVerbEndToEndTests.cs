@@ -69,7 +69,7 @@ Example with long argument names;
 photo-cli copy --no-coordinate InSubFolder --reverse-geocode BigDataCloud --process-type FlattenAllSubFolders --group-by AddressHierarchy --input [input-folder] --number-style OnlySequentialNumbers --output [output-folder] --naming-style DayAddress --bigdatacloud-levels 2 4 6 8
 
 Example with short argument names;
-photo-cli copy -c InSubFolder -e BigDataCloud -f FlattenAllSubFolders -g AddressHierarchy -i [input-folder] -n OnlySequentialNumbers -o [output-folder] -s DayAddress -v 2 4 6 8
+photo-cli copy -c InSubFolder -e BigDataCloud -f FlattenAllSubFolders -g AddressHierarchy -i [input-folder] -n OnlySequentialNumbers -o [output-folder] -s DayAddress -u 2 4 6 8
 ";
 
 		await RunHelpAndVerifyOutput("copy", copyExampleUsages);
