@@ -4,8 +4,6 @@ namespace PhotoCli.Tests.Utils;
 
 public static class MockFileSystemHelper
 {
-	public static readonly MockFileSystem DummyInstance = new();
-
 	public static string Path(params string[] paths)
 	{
 		return Path(System.IO.Path.Combine(paths));

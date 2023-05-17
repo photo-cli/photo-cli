@@ -8,4 +8,5 @@ public static class Constants
 	public const string AppSettingsFileName = "appsettings.json";
 
 	public const string ApplicationExeName = "po";
+	public const string VerifyFileHashFileName = "sha1.lst";
 }

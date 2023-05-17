@@ -36,8 +36,15 @@ public class Photo
 	public int ReverseGeocodeCount => PhotoExifData.ReverseGeocodes?.Count() ?? 0;
 	private string GetFileNameForOutput => NewName ?? FileNameWithoutExtension;
 
+	public string Sha1Hash { get; set; }
+
 	public string DestinationPath(string outputFolder)
 	{
-		return Path.Combine(outputFolder, TargetRelativeDirectoryPath, $"{GetFileNameForOutput}.{Extension}");
+		return Path.Combine(outputFolder, RelativePath());
+	}
+
+	public string RelativePath()
+	{
+		return Path.Combine(TargetRelativeDirectoryPath, $"{GetFileNameForOutput}.{Extension}");
 	}
 }

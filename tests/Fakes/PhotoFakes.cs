@@ -132,15 +132,22 @@ public static class PhotoFakes
 			reverseGeocodes: photoExifData.ReverseGeocodes);
 	}
 
+	public static Photo WithSha1Hash(string fileNameWithExtension, string sha1Hash, string? targetRelativeDirectoryPath = "")
+	{
+		return Create(fileNameWithExtension, targetRelativeDirectoryPath: targetRelativeDirectoryPath, sha1Hash: sha1Hash);
+	}
+
 	public static Photo Create(string? fileNameWithExtension = null, DateTime? takenDate = null, Coordinate? coordinate = null, string? targetRelativeDirectoryPath = null, string? newName = null,
-		IEnumerable<string>? reverseGeocodes = null, string? sourcePath = null)
+		IEnumerable<string>? reverseGeocodes = null, string? sourcePath = null, string? sha1Hash = null)
 	{
 		sourcePath ??= "source-path";
 		fileNameWithExtension ??= "dummy.jpg";
 		targetRelativeDirectoryPath ??= string.Empty;
-		var mockFileInfo = new MockFileInfo(MockFileSystemHelper.DummyInstance, Path.Combine(sourcePath, fileNameWithExtension));
+		var mockFileInfo = new MockFileInfo(new MockFileSystem(), Path.Combine(sourcePath, fileNameWithExtension));
 		var exifData = ExifDataFakes.Create(takenDate, coordinate, reverseGeocodes?.ToList());
 		var photo = new Photo(mockFileInfo, exifData, targetRelativeDirectoryPath) { NewName = newName };
+		if (sha1Hash != null)
+			photo.Sha1Hash = sha1Hash;
 		return photo;
 	}
 }
