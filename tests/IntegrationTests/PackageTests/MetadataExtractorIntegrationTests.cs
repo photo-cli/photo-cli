@@ -29,7 +29,7 @@ public class PhotoExifParserIntegrationTests
 	public void Photo_Taken_Date_Equals_To_Expected(string filePath, DateTime? dateExpected)
 	{
 		var photoExifData = _sut.Parse(filePath, true, false);
-		photoExifData.TakenDate.Should().Be(dateExpected);
+		photoExifData?.TakenDate.Should().Be(dateExpected);
 	}
 
 	[Theory]
@@ -37,7 +37,7 @@ public class PhotoExifParserIntegrationTests
 	public void Coordinate_Equals_To_Expected(string filePath, Coordinate? coordinateExpected)
 	{
 		var exifData = _sut.Parse(filePath, false, true);
-		exifData.Coordinate.Should().Be(coordinateExpected);
+		exifData?.Coordinate.Should().Be(coordinateExpected);
 	}
 
 	[Theory]

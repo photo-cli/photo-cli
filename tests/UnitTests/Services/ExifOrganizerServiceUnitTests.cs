@@ -1,12 +1,12 @@
 namespace PhotoCli.Tests.UnitTests.Services;
 
-public class PhotoOrganizerUnitTests
+public class ExifOrganizerUnitTests
 {
 	#region NoPhotoDateTimeTakenAction
 
 	#region All Valid Photo
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> AllPhotosThatHasDateEnsureListOrderedData = new()
+	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> PhotoDateTimeTakenActionAllPhotosThatHasDateEnsureListOrderedData = new()
 	{
 		{
 			new List<Photo> { PhotoFakes.WithDay(1) },
@@ -31,8 +31,8 @@ public class PhotoOrganizerUnitTests
 	};
 
 	[Theory]
-	[MemberData(nameof(AllPhotosThatHasDateEnsureListOrderedData))]
-	public void All_Photos_That_Has_Date_Ensure_List_Ordered(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
+	[MemberData(nameof(PhotoDateTimeTakenActionAllPhotosThatHasDateEnsureListOrderedData))]
+	public void PhotoDateTimeTakenAction_All_Photos_That_Has_Date_Ensure_List_Ordered(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
 	{
 		var noPhotoDateTimeTakenActions = new[]
 		{
@@ -40,14 +40,14 @@ public class PhotoOrganizerUnitTests
 			CopyNoPhotoTakenDateAction.Continue, CopyNoPhotoTakenDateAction.InsertToBeginningOrderByFileName
 		};
 		foreach (var noPhotoDateTimeTakenAction in noPhotoDateTimeTakenActions)
-			OrderCheckListEquivalent(sourceList, expectedOrderedList, noPhotoDateTimeTakenAction);
+			OrderCheckListEquivalent(sourceList, expectedOrderedList, noPhotoDateTimeTakenAction: noPhotoDateTimeTakenAction);
 	}
 
 	#endregion
 
 	#region DontCopyToOutput
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> CombinedPhotosWithDateAndNoDateShouldBeFilteredAndEnsureListOrderedData = new()
+	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> PhotoDateTimeTakenActionCombinedPhotosWithDateAndNoDateShouldBeFilteredAndEnsureListOrderedData = new()
 	{
 		{
 			new List<Photo> { PhotoFakes.NoPhotoTakenDate() },
@@ -68,17 +68,17 @@ public class PhotoOrganizerUnitTests
 	};
 
 	[Theory]
-	[MemberData(nameof(CombinedPhotosWithDateAndNoDateShouldBeFilteredAndEnsureListOrderedData))]
-	public void With_DontCopyToOutput_Combined_Photos_With_Date_And_No_Date_Should_Be_Filtered_And_Ensure_List_Ordered(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
+	[MemberData(nameof(PhotoDateTimeTakenActionCombinedPhotosWithDateAndNoDateShouldBeFilteredAndEnsureListOrderedData))]
+	public void PhotoDateTimeTakenAction_With_DontCopyToOutput_Combined_Photos_With_Date_And_No_Date_Should_Be_Filtered_And_Ensure_List_Ordered(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
 	{
-		OrderCheckListEquivalent(sourceList, expectedOrderedList, CopyNoPhotoTakenDateAction.DontCopyToOutput);
+		OrderCheckListEquivalent(sourceList, expectedOrderedList, noPhotoDateTimeTakenAction: CopyNoPhotoTakenDateAction.DontCopyToOutput);
 	}
 
 	#endregion
 
 	#region AppendToEndOrderByFileName
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> AppendToEndOrderByFileNameEnsureListOrderedData = new()
+	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> PhotoDateTimeTakenActionAppendToEndOrderByFileNameEnsureListOrderedData = new()
 	{
 		{
 			new List<Photo> { PhotoFakes.NoPhotoTakenDate() },
@@ -103,17 +103,17 @@ public class PhotoOrganizerUnitTests
 	};
 
 	[Theory]
-	[MemberData(nameof(AppendToEndOrderByFileNameEnsureListOrderedData))]
-	public void AppendToEndOrderByFileName_Ensure_List_Ordered(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
+	[MemberData(nameof(PhotoDateTimeTakenActionAppendToEndOrderByFileNameEnsureListOrderedData))]
+	public void PhotoDateTimeTakenAction_AppendToEndOrderByFileName_Ensure_List_Ordered(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
 	{
-		OrderCheckListEquivalent(sourceList, expectedOrderedList, CopyNoPhotoTakenDateAction.AppendToEndOrderByFileName);
+		OrderCheckListEquivalent(sourceList, expectedOrderedList, noPhotoDateTimeTakenAction: CopyNoPhotoTakenDateAction.AppendToEndOrderByFileName);
 	}
 
 	#endregion
 
 	#region InsertToBeginningOrderByFileName
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> InsertToBeginningOrderByFileNameEnsureListOrderedData = new()
+	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> PhotoDateTimeTakenActionInsertToBeginningOrderByFileNameEnsureListOrderedData = new()
 	{
 		{
 			new List<Photo> { PhotoFakes.NoPhotoTakenDate() },
@@ -138,10 +138,10 @@ public class PhotoOrganizerUnitTests
 	};
 
 	[Theory]
-	[MemberData(nameof(InsertToBeginningOrderByFileNameEnsureListOrderedData))]
-	public void InsertToBeginningOrderByFileName_Ensure_List_Ordered(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
+	[MemberData(nameof(PhotoDateTimeTakenActionInsertToBeginningOrderByFileNameEnsureListOrderedData))]
+	public void PhotoDateTimeTakenAction_InsertToBeginningOrderByFileName_Ensure_List_Ordered(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
 	{
-		OrderCheckListEquivalent(sourceList, expectedOrderedList, CopyNoPhotoTakenDateAction.InsertToBeginningOrderByFileName);
+		OrderCheckListEquivalent(sourceList, expectedOrderedList, noPhotoDateTimeTakenAction: CopyNoPhotoTakenDateAction.InsertToBeginningOrderByFileName);
 	}
 
 	#endregion
@@ -152,7 +152,7 @@ public class PhotoOrganizerUnitTests
 
 	#region All Valid ReverseGeocode
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> AllPhotosThatHasReverseGeocodeEnsureListOrderedData = new()
+	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> NoCoordinateActionAllPhotosThatHasReverseGeocodeEnsureListOrderedData = new()
 	{
 		{
 			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(1, 1) },
@@ -169,8 +169,8 @@ public class PhotoOrganizerUnitTests
 	};
 
 	[Theory]
-	[MemberData(nameof(AllPhotosThatHasReverseGeocodeEnsureListOrderedData))]
-	public void All_Photos_That_Has_ReverseGeocode_Ensure_List_Not_Filtered_And_Ordered_By_Date(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
+	[MemberData(nameof(NoCoordinateActionAllPhotosThatHasReverseGeocodeEnsureListOrderedData))]
+	public void NoCoordinateAction_All_Photos_That_Has_ReverseGeocode_Ensure_List_Not_Filtered_And_Ordered_By_Date(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
 	{
 		var noCoordinateActions = new[]
 		{
@@ -184,7 +184,7 @@ public class PhotoOrganizerUnitTests
 
 	#region DontCopyToOutput
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> CombinedPhotosThatHasReverseGeocodeOrNoReverseGeocodeEnsureListFilteredData = new()
+	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> NoCoordinateActionCombinedPhotosThatHasReverseGeocodeOrNoReverseGeocodeEnsureListFilteredData = new()
 	{
 		{
 			new List<Photo> { PhotoFakes.NoReverseGeocode() },
@@ -201,8 +201,8 @@ public class PhotoOrganizerUnitTests
 	};
 
 	[Theory]
-	[MemberData(nameof(CombinedPhotosThatHasReverseGeocodeOrNoReverseGeocodeEnsureListFilteredData))]
-	public void Combined_Photos_That_Has_ReverseGeocode_Or_NoReverseGeocode_Ensure_List_Filtered(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
+	[MemberData(nameof(NoCoordinateActionCombinedPhotosThatHasReverseGeocodeOrNoReverseGeocodeEnsureListFilteredData))]
+	public void NoCoordinateAction_Combined_Photos_That_Has_ReverseGeocode_Or_NoReverseGeocode_Ensure_List_Filtered(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
 	{
 		OrderCheckListEquivalent(sourceList, expectedOrderedList, noCoordinateAction: CopyNoCoordinateAction.DontCopyToOutput);
 	}
@@ -215,7 +215,7 @@ public class PhotoOrganizerUnitTests
 
 	#region Both DontCopyToOutput
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> UsingDontCopyToOutputOnPhotoTakenDateActionAndNoCoordinateActionEnsureListFilteredAndOrderedData = new()
+	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> NoPhotoDateTimeAndNoCoordinateActionUsingDontCopyToOutputOnPhotoTakenDateActionAndNoCoordinateActionEnsureListFilteredAndOrderedData = new()
 	{
 		{
 			new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.NoReverseGeocode() },
@@ -232,10 +232,10 @@ public class PhotoOrganizerUnitTests
 	};
 
 	[Theory]
-	[MemberData(nameof(UsingDontCopyToOutputOnPhotoTakenDateActionAndNoCoordinateActionEnsureListFilteredAndOrderedData))]
-	public void Using_DontCopyToOutput_On_PhotoTakenDateAction_And_NoCoordinateAction_Ensure_List_Filtered_And_Ordered(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
+	[MemberData(nameof(NoPhotoDateTimeAndNoCoordinateActionUsingDontCopyToOutputOnPhotoTakenDateActionAndNoCoordinateActionEnsureListFilteredAndOrderedData))]
+	public void NoPhotoDateTimeAndNoCoordinateAction_Using_DontCopyToOutput_On_PhotoTakenDateAction_And_NoCoordinateAction_Ensure_List_Filtered_And_Ordered(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
 	{
-		OrderCheckListEquivalent(sourceList, expectedOrderedList, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput);
+		OrderCheckListEquivalent(sourceList, expectedOrderedList, noPhotoDateTimeTakenAction: CopyNoPhotoTakenDateAction.DontCopyToOutput, noCoordinateAction: CopyNoCoordinateAction.DontCopyToOutput);
 	}
 
 	#endregion
@@ -267,8 +267,92 @@ public class PhotoOrganizerUnitTests
 	public void Using_CopyToOutputDontChangeFileName_On_PhotoTakenDateAction_And_NoCoordinateAction_Ensure_List_Filtered_And_Ordered(List<Photo> sourceList,
 		IReadOnlyCollection<Photo> expectedOrderedList, IReadOnlyCollection<Photo> expectedNotToRenamePhotos)
 	{
-		OrderCheckListEquivalentWithNotToRenamePhotos(sourceList, expectedOrderedList, expectedNotToRenamePhotos, CopyNoPhotoTakenDateAction.Continue,
-			CopyNoCoordinateAction.Continue);
+		OrderCheckListEquivalentWithNotToRenamePhotos(sourceList, expectedOrderedList, expectedNotToRenamePhotos, noPhotoDateTimeTakenAction: CopyNoPhotoTakenDateAction.Continue,
+			noCoordinateAction: CopyNoCoordinateAction.Continue);
+	}
+
+	#endregion
+
+	#endregion
+
+	#region InvalidFormatAction
+
+	#region All Valid Photo
+
+	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> InvalidFormatActionAllPhotosThatIsValidEnsureListOrderedByPhotoTakeDateData = new()
+	{
+		{
+			new List<Photo> { PhotoFakes.ValidFileWithDay(1) },
+			new List<Photo> { PhotoFakes.ValidFileWithDay(1) }
+		},
+		{
+			new List<Photo> { PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2) },
+			new List<Photo> { PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2) }
+		},
+		{
+			new List<Photo> { PhotoFakes.ValidFileWithDay(2), PhotoFakes.ValidFileWithDay(1) },
+			new List<Photo> { PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2) }
+		},
+		{
+			new List<Photo> { PhotoFakes.ValidFileWithDay(2), PhotoFakes.ValidFileWithDay(1) },
+			new List<Photo> { PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2) }
+		},
+		{
+			new List<Photo> { PhotoFakes.ValidFileWithDay(2), PhotoFakes.ValidFileWithDay(3), PhotoFakes.ValidFileWithDay(1) },
+			new List<Photo> { PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2), PhotoFakes.ValidFileWithDay(3) }
+		},
+	};
+
+	[Theory]
+	[MemberData(nameof(InvalidFormatActionAllPhotosThatIsValidEnsureListOrderedByPhotoTakeDateData))]
+	public void InvalidFormatAction_All_Photos_That_Is_Valid_Ensure_List_Ordered_By_Photo_Take_Date(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
+	{
+		var invalidFormatActions = new[]
+		{
+			CopyInvalidFormatAction.Continue, CopyInvalidFormatAction.PreventProcess, CopyInvalidFormatAction.InSubFolder, CopyInvalidFormatAction.DontCopyToOutput
+		};
+		foreach (var invalidFormatAction in invalidFormatActions)
+			OrderCheckListEquivalent(sourceList, expectedOrderedList, invalidFormatAction: invalidFormatAction);
+	}
+
+	#endregion
+
+	#region DontCopyToOutput
+
+	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> InvalidFormatActionDontCopyToOutputCombinedPhotosWithValidAndInvalidShouldBeFilteredAndEnsureListOrderedData = new()
+	{
+
+		{
+			new List<Photo> { PhotoFakes.WithInvalidFileFormat() },
+			new List<Photo>()
+		},
+		{
+			new List<Photo> { PhotoFakes.WithInvalidFileFormat(), PhotoFakes.WithDay(2) },
+			new List<Photo> { PhotoFakes.WithDay(2) }
+		},
+		{
+			new List<Photo> { PhotoFakes.WithInvalidFileFormat(), PhotoFakes.WithDay(1) },
+			new List<Photo> { PhotoFakes.WithDay(1) }
+		},
+		{
+			new List<Photo> { PhotoFakes.WithDay(3), PhotoFakes.WithDay(2), PhotoFakes.WithInvalidFileFormat() },
+			new List<Photo> { PhotoFakes.WithDay(2), PhotoFakes.WithDay(3) }
+		},
+		{
+			new List<Photo> { PhotoFakes.WithInvalidFileFormat(), PhotoFakes.NoPhotoTakenDate() },
+			new List<Photo> { PhotoFakes.NoPhotoTakenDate() }
+		},
+		{
+			new List<Photo> { PhotoFakes.NoReverseGeocode(), PhotoFakes.WithInvalidFileFormat()},
+			new List<Photo> { PhotoFakes.NoReverseGeocode() }
+		},
+	};
+
+	[Theory]
+	[MemberData(nameof(InvalidFormatActionDontCopyToOutputCombinedPhotosWithValidAndInvalidShouldBeFilteredAndEnsureListOrderedData))]
+	public void InvalidFormatAction_DontCopyToOutput_Combined_Photos_With_Valid_And_Invalid_Should_Be_Filtered_And_Ensure_List_Ordered(List<Photo> sourceList, IReadOnlyCollection<Photo> expectedOrderedList)
+	{
+		OrderCheckListEquivalent(sourceList, expectedOrderedList, invalidFormatAction: CopyInvalidFormatAction.DontCopyToOutput);
 	}
 
 	#endregion
@@ -276,18 +360,18 @@ public class PhotoOrganizerUnitTests
 	#endregion
 
 	private void OrderCheckListEquivalent(IReadOnlyCollection<Photo> sourceList, IEnumerable<Photo> expectedOrderedList,
-		CopyNoPhotoTakenDateAction noPhotoDateTimeTakenAction = CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction noCoordinateAction = CopyNoCoordinateAction.Continue)
+		CopyInvalidFormatAction invalidFormatAction = CopyInvalidFormatAction.Continue, CopyNoPhotoTakenDateAction noPhotoDateTimeTakenAction = CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction noCoordinateAction = CopyNoCoordinateAction.Continue)
 	{
 		var sut = new ExifOrganizerService(NullLogger<ExifOrganizerService>.Instance);
-		var (orderedPhotos, _) = sut.FilterAndSortByNoActionTypes(sourceList, noPhotoDateTimeTakenAction, noCoordinateAction);
+		var (orderedPhotos, _) = sut.FilterAndSortByNoActionTypes(sourceList, invalidFormatAction, noPhotoDateTimeTakenAction, noCoordinateAction, string.Empty);
 		orderedPhotos.Should().BeEquivalentTo(expectedOrderedList, options => options.WithStrictOrdering());
 	}
 
 	private void OrderCheckListEquivalentWithNotToRenamePhotos(IReadOnlyCollection<Photo> sourceList, IEnumerable<Photo> expectedOrderedList, IEnumerable<Photo> expectedNotToRenamePhotos,
-		CopyNoPhotoTakenDateAction noPhotoDateTimeTakenAction, CopyNoCoordinateAction noCoordinateAction)
+		CopyInvalidFormatAction invalidFormatAction = CopyInvalidFormatAction.Continue, CopyNoPhotoTakenDateAction noPhotoDateTimeTakenAction = CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction noCoordinateAction = CopyNoCoordinateAction.Continue)
 	{
 		var sut = new ExifOrganizerService(NullLogger<ExifOrganizerService>.Instance);
-		var (orderedPhotos, notToRenamePhotos) = sut.FilterAndSortByNoActionTypes(sourceList, noPhotoDateTimeTakenAction, noCoordinateAction);
+		var (orderedPhotos, notToRenamePhotos) = sut.FilterAndSortByNoActionTypes(sourceList, invalidFormatAction, noPhotoDateTimeTakenAction, noCoordinateAction, string.Empty);
 		orderedPhotos.Should().BeEquivalentTo(expectedOrderedList, options => options.WithStrictOrdering());
 		notToRenamePhotos.Should().BeEquivalentTo(expectedNotToRenamePhotos, options => options.WithStrictOrdering());
 	}

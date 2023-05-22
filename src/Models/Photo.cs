@@ -4,7 +4,7 @@ namespace PhotoCli.Models;
 
 public class Photo
 {
-	public Photo(IFileSystemInfo fileInfo, ExifData photoExifData, string targetRelativeDirectoryPath)
+	public Photo(IFileSystemInfo fileInfo, ExifData? photoExifData, string targetRelativeDirectoryPath)
 	{
 		FilePath = fileInfo.FullName;
 		if (!fileInfo.Extension.StartsWith("."))
@@ -20,23 +20,25 @@ public class Photo
 
 	public string FilePath { get; }
 
-	public ExifData PhotoExifData { get; }
-	public DateTime? PhotoTakenDateTime => PhotoExifData.TakenDate;
-	public string? ReverseGeocodeFormatted => PhotoExifData.ReverseGeocodeFormatted;
+	public ExifData? PhotoExifData { get; }
+
+	public bool HasExifData => PhotoExifData != null;
+	public DateTime? PhotoTakenDateTime => PhotoExifData?.TakenDate;
+	public string? ReverseGeocodeFormatted => PhotoExifData?.ReverseGeocodeFormatted;
 
 	public string TargetRelativeDirectoryPath { get; set; }
 
 	public string? NewName { get; set; }
 
 	public bool HasPhotoTakenDateTime => PhotoTakenDateTime.HasValue;
-	public bool HasCoordinate => PhotoExifData.Coordinate != null;
-	public bool HasReverseGeocode => PhotoExifData.ReverseGeocodes != null && PhotoExifData.ReverseGeocodes.Any();
-	public List<string>? ReverseGeocodes => PhotoExifData.ReverseGeocodes?.ToList() ?? null;
+	public bool HasCoordinate => PhotoExifData?.Coordinate != null;
+	public bool HasReverseGeocode => PhotoExifData?.ReverseGeocodes != null && PhotoExifData.ReverseGeocodes.Any();
+	public List<string>? ReverseGeocodes => PhotoExifData?.ReverseGeocodes?.ToList() ?? null;
 
-	public int ReverseGeocodeCount => PhotoExifData.ReverseGeocodes?.Count() ?? 0;
+	public int ReverseGeocodeCount => PhotoExifData?.ReverseGeocodes?.Count() ?? 0;
 	private string GetFileNameForOutput => NewName ?? FileNameWithoutExtension;
 
-	public string Sha1Hash { get; set; }
+	public string? Sha1Hash { get; set; }
 
 	public string DestinationPath(string outputFolder)
 	{

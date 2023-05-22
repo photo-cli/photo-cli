@@ -16,4 +16,7 @@ public record Statistics
 	public int HasCoordinateCount => PhotoThatHasTakenDateAndCoordinate + PhotoThatHasCoordinateButNoTakenDate;
 
 	public List<string> FileIoErrors { get; } = new();
+
+	public int InvalidFormatError { get; set; }
+	public int InternalError { get; set; }
 }

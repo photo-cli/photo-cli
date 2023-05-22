@@ -11,9 +11,9 @@ public static class CommandLineArgumentsFakes
 
 
 	public static string[] CopyBuildCommandLineOptions(string outputPath, string sourcePhotoPath, NamingStyle namingStyle, FolderProcessType folderProcessType,
-		NumberNamingTextStyle numberNamingTextStyle, CopyNoPhotoTakenDateAction noPhotoTakenDateAction, CopyNoCoordinateAction noCoordinateAction, bool isDryRun = false,
-		GroupByFolderType? groupByFolderType = null, FolderAppendType? folderAppendType = null, FolderAppendLocationType? folderAppendLocationType = null,
-		ReverseGeocodeProvider? reverseGeocodeProvider = null, List<string>? bigDataCloudAdminLevels = null)
+		NumberNamingTextStyle numberNamingTextStyle, CopyNoPhotoTakenDateAction noPhotoTakenDateAction, CopyNoCoordinateAction noCoordinateAction,
+		bool isDryRun = false, GroupByFolderType? groupByFolderType = null, FolderAppendType? folderAppendType = null, FolderAppendLocationType? folderAppendLocationType = null,
+		ReverseGeocodeProvider? reverseGeocodeProvider = null, List<string>? bigDataCloudAdminLevels = null, CopyInvalidFormatAction invalidFormatAction = CopyInvalidFormatAction.PreventProcess)
 	{
 		var args = new List<string> { "copy" };
 
@@ -24,8 +24,9 @@ public static class CommandLineArgumentsFakes
 		AddArgumentWithParameter('i', sourcePhotoPath, args);
 		AddArgumentWithParameter('t', noPhotoTakenDateAction.ToString(), args);
 		AddArgumentWithParameter('c', noCoordinateAction.ToString(), args);
+		AddArgumentWithParameter('x', invalidFormatAction.ToString(), args);
 
-		if (isDryRun)
+		if(isDryRun)
 			AddArgumentWithoutParameter('d', args);
 
 		if (reverseGeocodeProvider != null)

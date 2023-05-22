@@ -20,12 +20,30 @@ public class ExifParserService : IExifParserService
 		_statistics = statistics;
 	}
 
-	public ExifData Parse(string filePath, bool parseDateTime, bool parseCoordinate)
+	public ExifData? Parse(string filePath, bool parseDateTime, bool parseCoordinate)
 	{
 		var fileStream = _fileSystem.FileStream.Create(filePath, FileMode.Open);
 		IReadOnlyList<Directory> fileDataDirectories;
 		using (fileStream)
-			fileDataDirectories = ImageMetadataReader.ReadMetadata(fileStream);
+		{
+			try
+			{
+				fileDataDirectories = ImageMetadataReader.ReadMetadata(fileStream);
+			}
+			catch (ImageProcessingException imageProcessingException)
+			{
+				_logger.LogInformation(imageProcessingException, "MetadataExtractor, invalid format: {Path}", filePath);
+				++_statistics.InvalidFormatError;
+				return null;
+			}
+			catch (Exception exception)
+			{
+				_logger.LogInformation(exception, "MetadataExtractor, unexpected exception: {Path}", filePath);
+				++_statistics.InternalError;
+				return null;
+			}
+		}
+
 		DateTime? photoTaken = null;
 		if (parseDateTime)
 			photoTaken = ParseExifSubIfdDirectory(fileDataDirectories, filePath) ?? ParseExifIfd0Directory(fileDataDirectories, filePath);

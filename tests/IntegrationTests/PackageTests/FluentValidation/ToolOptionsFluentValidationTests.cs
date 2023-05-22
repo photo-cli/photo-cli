@@ -86,6 +86,7 @@ public class ToolOptionsFluentValidationTests : BaseFluentValidationTests<ToolOp
 	[InlineData(nameof(ToolOptions.FolderAppendSeparator))]
 	[InlineData(nameof(ToolOptions.DayRangeSeparator))]
 	[InlineData(nameof(ToolOptions.SameNameNumberSeparator))]
+	[InlineData(nameof(ToolOptions.PhotoFormatInvalidFolderName))]
 	[InlineData(nameof(ToolOptions.NoPhotoTakenDateFolderName))]
 	[InlineData(nameof(ToolOptions.NoAddressFolderName))]
 	[InlineData(nameof(ToolOptions.NoAddressAndPhotoTakenDateFolderName))]

@@ -85,7 +85,7 @@ public class CopyServiceFileSystemTests
 	[MemberData(nameof(PhotoDateTakenData))]
 	[MemberData(nameof(CoordinateAndReverseGeocodeData))]
 	[MemberData(nameof(MixedData))]
-	public async Task CsvOutput_Writes_File_And_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(Dictionary<string, ExifData> exifData,
+	public async Task CsvOutput_Writes_File_And_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(Dictionary<string, ExifData?> exifData,
 		List<PhotoCsv> expectedPhotoCsvModels)
 	{
 		var outputCsvPath = MockFileSystemHelper.Path("/output.csv");

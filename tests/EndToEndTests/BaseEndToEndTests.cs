@@ -264,12 +264,12 @@ public abstract class BaseEndToEndTests : IClassFixture<SetEnvironmentVariablesF
 
 	protected ConsoleOutputValues ParseConsoleOutput(string actualOutput)
 	{
-		var photosFound = GetRegexValue(@"(.\d+) photos found.", actualOutput);
-		var photosCopied = GetRegexValue(@"(.\d+) photos copied.", actualOutput);
-		var hasTakenDateAndCoordinate = GetRegexValue(@"(.\d+) photos has taken date and coordinate.", actualOutput);
-		var hasTakenDateButNoCoordinate = GetRegexValue(@"(.\d+) photos has taken date but no coordinate.", actualOutput);
-		var hasNoTakenDateAndCoordinate = GetRegexValue(@"(.\d+) photos has no taken date and coordinate.", actualOutput);
-		var directoriesCreated = GetRegexValue(@"(.\d+) directories created.", actualOutput);
+		var photosFound = GetRegexValue(@"(.\d+) photo\(s\) found.", actualOutput);
+		var photosCopied = GetRegexValue(@"(.\d+) photo\(s\) copied.", actualOutput);
+		var hasTakenDateAndCoordinate = GetRegexValue(@"(.\d+) photo\(s\) has taken date and coordinate.", actualOutput);
+		var hasTakenDateButNoCoordinate = GetRegexValue(@"(.\d+) photo\(s\) has taken date but no coordinate.", actualOutput);
+		var hasNoTakenDateAndCoordinate = GetRegexValue(@"(.\d+) photo\(s\) has no taken date and coordinate.", actualOutput);
+		var directoriesCreated = GetRegexValue(@"(.\d+) directory/directories created.", actualOutput);
 		return new ConsoleOutputValues(photosFound, photosCopied, hasTakenDateAndCoordinate, hasTakenDateButNoCoordinate, hasNoTakenDateAndCoordinate, directoriesCreated);
 	}
 

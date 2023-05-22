@@ -18,8 +18,8 @@ public class DirectoryGrouperService : IDirectoryGrouperService
 		_consoleWriter = consoleWriter;
 	}
 
-	public Dictionary<string, List<Photo>> GroupFiles(Dictionary<string, ExifData> photoExifDataByFilePath, string sourceRootPath, FolderProcessType folderProcessType,
-		GroupByFolderType? groupByFolderType, bool noPhotoDateTimeTakenGroupedInSubFolder, bool noReverseGeocodeGroupedInSubFolder)
+	public Dictionary<string, List<Photo>> GroupFiles(Dictionary<string, ExifData?> photoExifDataByFilePath, string sourceRootPath, FolderProcessType folderProcessType,
+		GroupByFolderType? groupByFolderType, bool invalidFileFormatGroupedInSubFolder, bool noPhotoDateTimeTakenGroupedInSubFolder, bool noReverseGeocodeGroupedInSubFolder)
 	{
 		_consoleWriter.ProgressStart(ProgressName);
 		var groupedPhotoInfosByRelativeDirectory = new Dictionary<string, List<Photo>>();
@@ -30,43 +30,68 @@ public class DirectoryGrouperService : IDirectoryGrouperService
 			var fileInfo = _fileSystem.FileInfo.FromFileName(filePath);
 			var directory = fileInfo.Directory.FullName!.Trim('/');
 			string targetRelativeDirectoryPath;
-			if (groupByFolderType is GroupByFolderType.AddressFlat)
+
+			if (exifData != null && groupByFolderType is GroupByFolderType.AddressFlat)
+			{
 				targetRelativeDirectoryPath = exifData.ReverseGeocodeFormatted ?? string.Empty;
-			else if (exifData.ReverseGeocodes != null && groupByFolderType is GroupByFolderType.AddressHierarchy)
+			}
+			else if (exifData?.ReverseGeocodes != null && groupByFolderType is GroupByFolderType.AddressHierarchy)
+			{
 				targetRelativeDirectoryPath = string.Join(Path.DirectorySeparatorChar, exifData.ReverseGeocodes);
-			else if (exifData.TakenDate.HasValue && groupByFolderType is GroupByFolderType.Year)
+			}
+			else if (exifData?.TakenDate != null && groupByFolderType is GroupByFolderType.Year)
+			{
 				targetRelativeDirectoryPath = exifData.TakenDate.Value.ToString(_options.YearFormat);
-			else if (exifData.TakenDate.HasValue && groupByFolderType is GroupByFolderType.YearMonth)
+			}
+			else if (exifData?.TakenDate != null && groupByFolderType is GroupByFolderType.YearMonth)
+			{
 				targetRelativeDirectoryPath = $"{exifData.TakenDate.Value.ToString(_options.YearFormat)}{Path.DirectorySeparatorChar}{exifData.TakenDate.Value.ToString(_options.MonthFormat)}";
-			else if (exifData.TakenDate.HasValue && groupByFolderType is GroupByFolderType.YearMonthDay)
-				targetRelativeDirectoryPath =
-					$"{exifData.TakenDate.Value.ToString(_options.YearFormat)}{Path.DirectorySeparatorChar}{exifData.TakenDate.Value.ToString(_options.MonthFormat)}{Path.DirectorySeparatorChar}{exifData.TakenDate.Value.ToString(_options.DayFormat)}";
+			}
+			else if (exifData?.TakenDate != null && groupByFolderType is GroupByFolderType.YearMonthDay)
+			{
+				targetRelativeDirectoryPath = $"{exifData.TakenDate.Value.ToString(_options.YearFormat)}{Path.DirectorySeparatorChar}{exifData.TakenDate.Value.ToString(_options.MonthFormat)}{Path.DirectorySeparatorChar}{exifData.TakenDate.Value.ToString(_options.DayFormat)}";
+			}
 			else if (folderProcessType is FolderProcessType.Single)
 			{
 				if (sourcePathTrimmed != directory)
 					throw new PhotoCliException($"All files should be located in source path in {nameof(FolderProcessType.Single)}");
 				targetRelativeDirectoryPath = string.Empty;
 			}
-			else if (folderProcessType is FolderProcessType.FlattenAllSubFolders || sourcePathTrimmed == directory)
+			else if (folderProcessType is FolderProcessType.FlattenAllSubFolders)
+			{
 				targetRelativeDirectoryPath = string.Empty;
+			}
+			else if (sourcePathTrimmed == directory)
+			{
+				targetRelativeDirectoryPath = string.Empty;
+			}
 			else
-				targetRelativeDirectoryPath = PathHelper.TrimFolderSeparators(directory.RemoveFirst(sourcePathTrimmed));
+			{
+				var relativeDirectoryPath = PathHelper.TrimFolderSeparators(directory.RemoveFirst(sourcePathTrimmed));
+				targetRelativeDirectoryPath = relativeDirectoryPath;
+			}
 
-			var noPhotoTakenShouldBeInSubFolder = exifData.TakenDate == null && noPhotoDateTimeTakenGroupedInSubFolder;
-			var noReverseGeocodeShouldBeInSubFolder = exifData.ReverseGeocodes == null && noReverseGeocodeGroupedInSubFolder;
-			if (noPhotoTakenShouldBeInSubFolder && noReverseGeocodeShouldBeInSubFolder)
-				targetRelativeDirectoryPath = Path.Combine(targetRelativeDirectoryPath, _options.NoAddressAndPhotoTakenDateFolderName);
-			else if (noPhotoTakenShouldBeInSubFolder)
-				targetRelativeDirectoryPath = Path.Combine(targetRelativeDirectoryPath, _options.NoPhotoTakenDateFolderName);
-			else if (noReverseGeocodeShouldBeInSubFolder)
-				targetRelativeDirectoryPath = Path.Combine(targetRelativeDirectoryPath, _options.NoAddressFolderName);
+			if (exifData == null && invalidFileFormatGroupedInSubFolder)
+			{
+				targetRelativeDirectoryPath = Path.Combine(targetRelativeDirectoryPath, _options.PhotoFormatInvalidFolderName);
+			}
+			else
+			{
+				var noPhotoTakenShouldBeInSubFolder = exifData?.TakenDate == null && noPhotoDateTimeTakenGroupedInSubFolder;
+				var noReverseGeocodeShouldBeInSubFolder = exifData?.ReverseGeocodes == null && noReverseGeocodeGroupedInSubFolder;
+				if (noPhotoTakenShouldBeInSubFolder && noReverseGeocodeShouldBeInSubFolder)
+					targetRelativeDirectoryPath = Path.Combine(targetRelativeDirectoryPath, _options.NoAddressAndPhotoTakenDateFolderName);
+				else if (noPhotoTakenShouldBeInSubFolder)
+					targetRelativeDirectoryPath = Path.Combine(targetRelativeDirectoryPath, _options.NoPhotoTakenDateFolderName);
+				else if (noReverseGeocodeShouldBeInSubFolder)
+					targetRelativeDirectoryPath = Path.Combine(targetRelativeDirectoryPath, _options.NoAddressFolderName);
+			}
 
 			_logger.LogTrace("File ({FilePath}) target directory: {TargetRelativeDirectoryPath} ", filePath, targetRelativeDirectoryPath);
 
 			var photoInfo = new Photo(fileInfo, exifData, targetRelativeDirectoryPath);
-			if (groupedPhotoInfosByRelativeDirectory.ContainsKey(targetRelativeDirectoryPath))
+			if (groupedPhotoInfosByRelativeDirectory.TryGetValue(targetRelativeDirectoryPath, out var photoInfos))
 			{
-				var photoInfos = groupedPhotoInfosByRelativeDirectory[targetRelativeDirectoryPath];
 				photoInfos.Add(photoInfo);
 			}
 			else

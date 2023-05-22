@@ -10,7 +10,7 @@ public class CommandLineParserIntegrationTests
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions("/home/user/Desktop/path1", "/home/user/Desktop/output1", NamingStyleFakes.Valid(),
 				FolderProcessTypeFakes.Valid(), NumberNamingTextStyleFakes.Valid(), CopyNoPhotoTakenDateAction.PreventProcess, CopyNoCoordinateAction.PreventProcess, true),
 			new CopyOptions("/home/user/Desktop/path1", NamingStyleFakes.Valid(), FolderProcessTypeFakes.Valid(),
-				NumberNamingTextStyleFakes.Valid(), CopyNoPhotoTakenDateAction.PreventProcess, CopyNoCoordinateAction.PreventProcess, "/home/user/Desktop/output1", true)
+				NumberNamingTextStyleFakes.Valid(), CopyInvalidFormatAction.PreventProcess, CopyNoPhotoTakenDateAction.PreventProcess, CopyNoCoordinateAction.PreventProcess, "/home/user/Desktop/output1", true)
 		}
 	};
 

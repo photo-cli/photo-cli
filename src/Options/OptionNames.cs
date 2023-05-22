@@ -2,6 +2,35 @@ namespace PhotoCli.Options;
 
 internal static class OptionNames
 {
+	/* Short Option Name Usages
+		a - copy, info
+		b - copy, info, address
+		c - copy, info
+		d - copy
+		e - copy, info, address
+		f - copy
+		g - copy
+		h - copy, info
+		i - copy, info, address
+		j -
+		k - settings
+		l - copy, info, address
+		m - copy, info, address
+		n - copy
+		o - copy, info
+		p - copy
+		q - copy, info, address
+		r - copy, info, address, settings
+		s - copy
+		t - copy, info, address
+		u - copy, info, address
+		v - copy, settings
+		w -
+		x - copy, info
+		y -
+		z -
+	*/
+
 	internal const string ApplicationAlias = "photo-cli";
 
 	internal const string AddressVerb = "address";
@@ -35,6 +64,9 @@ internal static class OptionNames
 	internal const char CopyNoCoordinateActionOptionNameShort = NoCoordinateActionOptionNameShort;
 	internal const string CopyNoCoordinateActionOptionNameLong = NoCoordinateActionOptionNameLong;
 
+	internal const char CopyInvalidFormatActionOptionNameShort = InvalidFormatActionOptionNameShort;
+	internal const string CopyInvalidFormatActionOptionNameLong = InvalidFormatActionOptionNameLong;
+
 	internal const char IsDryRunOptionNameShort = 'd';
 	internal const string IsDryRunOptionNameLong = "dry-run";
 
@@ -53,6 +85,9 @@ internal static class OptionNames
 
 	internal const char InfoNoCoordinateActionOptionNameShort = NoCoordinateActionOptionNameShort;
 	internal const string InfoNoCoordinateActionOptionNameLong = NoCoordinateActionOptionNameLong;
+
+	internal const char InfoInvalidFormatActionOptionNameShort = InvalidFormatActionOptionNameShort;
+	internal const string InfoInvalidFormatActionOptionNameLong = InvalidFormatActionOptionNameLong;
 
 	#endregion
 
@@ -120,6 +155,9 @@ internal static class OptionNames
 
 	private const char NoCoordinateActionOptionNameShort = 'c';
 	private const string NoCoordinateActionOptionNameLong = "no-coordinate";
+
+	private const char InvalidFormatActionOptionNameShort = 'x';
+	private const string InvalidFormatActionOptionNameLong = "invalid-format";
 
 	#endregion
 }

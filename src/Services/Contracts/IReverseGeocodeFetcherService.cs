@@ -2,6 +2,6 @@
 
 public interface IReverseGeocodeFetcherService
 {
-	Task<Dictionary<string, ExifData>> Fetch(Dictionary<string, ExifData> exifDataByFilePath);
+	Task<Dictionary<string, ExifData?>> Fetch(Dictionary<string, ExifData?> exifDataByFilePath);
 	void RateLimitWarning();
 }

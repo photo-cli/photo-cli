@@ -29,31 +29,31 @@ public class InfoRunnerUnitTests
 	{
 		const string photoPath = "/photo.jpg";
 		string[] photoPaths = { "/photo.jpg" };
-		var photoExifDataByFilePath = new Dictionary<string, ExifData> { { photoPath, ExifDataFakes.Create(DateTimeFakes.WithYear(2000), CoordinateFakes.Valid()) } };
+		var photoExifDataByFilePath = new Dictionary<string, ExifData?> { { photoPath, ExifDataFakes.Create(DateTimeFakes.WithYear(2000), CoordinateFakes.Valid()) } };
 
-		Dictionary<string, ExifData>? reverseGeocodedPhotoExifDataByFilePath = null;
+		Dictionary<string, ExifData?>? reverseGeocodedPhotoExifDataByFilePath = null;
 		if (verifyReverseGeocodeMocks)
 		{
-			reverseGeocodedPhotoExifDataByFilePath = new Dictionary<string, ExifData>();
+			reverseGeocodedPhotoExifDataByFilePath = new Dictionary<string, ExifData?>();
 			foreach (var (filePathKey, exifData) in photoExifDataByFilePath)
-				reverseGeocodedPhotoExifDataByFilePath.Add(filePathKey, ExifDataFakes.Create(exifData.TakenDate, exifData.Coordinate, ReverseGeocodeFakes.Valid()));
+				reverseGeocodedPhotoExifDataByFilePath.Add(filePathKey, ExifDataFakes.Create(exifData?.TakenDate, exifData?.Coordinate, ReverseGeocodeFakes.Valid()));
 		}
 
-		SetupValid(options, photoPaths, true, true, photoExifDataByFilePath, verifyReverseGeocodeMocks, reverseGeocodedPhotoExifDataByFilePath);
+		SetupValid(options, photoPaths, true, true, true, photoExifDataByFilePath, verifyReverseGeocodeMocks, reverseGeocodedPhotoExifDataByFilePath);
 
 		var sut = Initialize(options);
 		var exitCode = await sut.Execute();
 		exitCode.Should().Be(ExitCode.Success);
-		VerifyValid(photoPaths, true, true, photoExifDataByFilePath,
+		VerifyValid(photoPaths, true, true, true, photoExifDataByFilePath,
 			verifyReverseGeocodeMocks, reverseGeocodedPhotoExifDataByFilePath);
 	}
 
-	private void SetupValid(InfoOptions options, string[] photoPaths, bool allPhotosHasPhotoTakenMockOutValue, bool allPhotosHasCoordinateMockOutValue,
-		Dictionary<string, ExifData> photoExifDataByFilePath, bool setupReverseGeocodeFetcher, Dictionary<string, ExifData>? reverseGeocodedPhotoExifDataByFilePath)
+	private void SetupValid(InfoOptions options, string[] photoPaths, bool allPhotosAreValidMockOutValue, bool allPhotosHasPhotoTakenMockOutValue, bool allPhotosHasCoordinateMockOutValue,
+		Dictionary<string, ExifData?> photoExifDataByFilePath, bool setupReverseGeocodeFetcher, Dictionary<string, ExifData?>? reverseGeocodedPhotoExifDataByFilePath)
 	{
 		AddSourceDirectory();
 		_photoCollectorMock.Setup(s => s.Collect(options.InputPath!, It.IsAny<bool>())).Returns(() => photoPaths);
-		_exifDataAppenderMock.Setup(s => s.ExifDataByPath(photoPaths, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue)).Returns(() => photoExifDataByFilePath);
+		_exifDataAppenderMock.Setup(s => s.ExifDataByPath(photoPaths, out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue)).Returns(() => photoExifDataByFilePath);
 
 		if (setupReverseGeocodeFetcher)
 		{
@@ -68,11 +68,11 @@ public class InfoRunnerUnitTests
 		}
 	}
 
-	private void VerifyValid(string[] photoPaths, bool allPhotosHasPhotoTakenMockOutValue, bool allPhotosHasCoordinateMockOutValue, Dictionary<string, ExifData> photoExifDataByFilePath,
-		bool verifyReverseGeocodeFetcher, Dictionary<string, ExifData>? reverseGeocodedPhotoExifDataByFilePath)
+	private void VerifyValid(string[] photoPaths, bool allPhotosAreValidMockOutValue, bool allPhotosHasPhotoTakenMockOutValue, bool allPhotosHasCoordinateMockOutValue, Dictionary<string, ExifData?> photoExifDataByFilePath,
+		bool verifyReverseGeocodeFetcher, Dictionary<string, ExifData?>? reverseGeocodedPhotoExifDataByFilePath)
 	{
 		_photoCollectorMock.Verify(v => v.Collect(SourceFolderPath, It.IsAny<bool>()), Times.Once);
-		_exifDataAppenderMock.Verify(v => v.ExifDataByPath(photoPaths, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue), Times.Once);
+		_exifDataAppenderMock.Verify(v => v.ExifDataByPath(photoPaths, out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue), Times.Once);
 
 		if (verifyReverseGeocodeFetcher)
 		{
@@ -126,46 +126,58 @@ public class InfoRunnerUnitTests
 		VerifyNoOtherCalls();
 	}
 
-	#region NoExifData Prevent Actions
+	#region Prevent Process Actions
 
 	[Theory]
-	[InlineData(false)]
-	[InlineData(true)]
-	public async Task When_NoPhotoDateTimeTakenAction_PreventProcess_Out_Parameter_Of_AllPhotosHasPhotoTaken_As_False_Should_Exit_With_PhotosWithNoDatePreventedProcess(
-		bool allPhotosHasCoordinateOutValue)
+	[InlineData(InfoNoPhotoTakenDateAction.PreventProcess, true, InfoNoCoordinateAction.PreventProcess,true)]
+	[InlineData(InfoNoPhotoTakenDateAction.PreventProcess, true, InfoNoCoordinateAction.PreventProcess,false)]
+	[InlineData(InfoNoPhotoTakenDateAction.PreventProcess, false, InfoNoCoordinateAction.PreventProcess,true)]
+	[InlineData(InfoNoPhotoTakenDateAction.PreventProcess, false, InfoNoCoordinateAction.PreventProcess,false)]
+	public async Task When_InvalidFormatAction_PreventProcess_And_AllPhotosAreValid_Is_False_Runner_Should_Exit_With_PhotosWithInvalidFileFormatPreventedProcess(
+		InfoNoPhotoTakenDateAction noPhotoTakenDateAction, bool allPhotosHasPhotoTaken, InfoNoCoordinateAction noCoordinateAction, bool allPhotosHasCoordinate)
 	{
-		await NoExifDataPreventActions(false, allPhotosHasCoordinateOutValue, InfoOptionsFakes.WithNoExifDataAction(SourceFolderPath, InfoNoPhotoTakenDateAction.PreventProcess),
-			ExitCode.PhotosWithNoDatePreventedProcess);
+		var options = InfoOptionsFakes.WithPreventAction(SourceFolderPath, InfoInvalidFormatAction.PreventProcess, noPhotoTakenDateAction, noCoordinateAction);
+		await CheckPreventActions(false, allPhotosHasPhotoTaken, allPhotosHasCoordinate, options, ExitCode.PhotosWithInvalidFileFormatPreventedProcess);
 	}
 
 	[Theory]
-	[InlineData(false)]
-	[InlineData(true)]
-	public async Task When_NoPhotoCoordinateAction_PreventProcess_Out_Parameter_Of_AllPhotosHasCoordinate_As_False_Should_Exit_With_PhotosWithNoCoordinatePreventedProcess(
-		bool allPhotosHasPhotoTakenOutValue)
+	[InlineData(InfoInvalidFormatAction.PreventProcess, true, InfoNoCoordinateAction.PreventProcess,true)]
+	public async Task When_NoPhotoDateTimeTakenAction_PreventProcess_And_AllPhotosHasPhotoTaken_Is_False_Runner_Should_Exit_With_PhotosWithNoDatePreventedProcess(
+		InfoInvalidFormatAction invalidFormatAction, bool allPhotosAreValid, InfoNoCoordinateAction noCoordinateAction, bool allPhotosHasCoordinate)
 	{
-		await NoExifDataPreventActions(allPhotosHasPhotoTakenOutValue, false, InfoOptionsFakes.WithNoExifDataAction(SourceFolderPath, noCoordinateAction: InfoNoCoordinateAction.PreventProcess),
-			ExitCode.PhotosWithNoCoordinatePreventedProcess);
+		var options = InfoOptionsFakes.WithPreventAction(SourceFolderPath, invalidFormatAction, InfoNoPhotoTakenDateAction.PreventProcess, noCoordinateAction);
+		await CheckPreventActions(allPhotosAreValid, false, allPhotosHasCoordinate, options, ExitCode.PhotosWithNoDatePreventedProcess);
 	}
 
-	[Fact]
-	public async Task When_NoPhotoDateTimeAction_And_NoCoordinateAction_PreventProcess_Out_Parameter_Of_False_Should_Exit_With_PhotosWithNoCoordinateAndNoDatePreventedProcess()
+	[Theory]
+	[InlineData(InfoInvalidFormatAction.PreventProcess, true, InfoNoPhotoTakenDateAction.PreventProcess,true)]
+	public async Task When_NoPhotoCoordinateAction_PreventProcess_And_AllPhotosHasCoordinate_Is_False_Runner_Should_Exit_With_PhotosWithNoCoordinatePreventedProcess(
+		InfoInvalidFormatAction invalidFormatAction, bool allPhotosAreValid, InfoNoPhotoTakenDateAction noPhotoTakenDateAction, bool allPhotosHasPhotoTaken)
 	{
-		await NoExifDataPreventActions(false, false, InfoOptionsFakes.WithNoExifDataAction(SourceFolderPath, InfoNoPhotoTakenDateAction.PreventProcess, InfoNoCoordinateAction.PreventProcess),
-			ExitCode.PhotosWithNoCoordinateAndNoDatePreventedProcess);
+		var options = InfoOptionsFakes.WithPreventAction(SourceFolderPath, invalidFormatAction, noPhotoTakenDateAction, InfoNoCoordinateAction.PreventProcess);
+		await CheckPreventActions(allPhotosAreValid, allPhotosHasPhotoTaken, false, options, ExitCode.PhotosWithNoCoordinatePreventedProcess);
 	}
 
-	private async Task NoExifDataPreventActions(bool allPhotosHasPhotoTakenOutValue, bool allPhotosHasCoordinateOutValue, InfoOptions options, ExitCode expectedExitCode)
+	[Theory]
+	[InlineData(InfoInvalidFormatAction.PreventProcess, true)]
+	public async Task When_NoPhotoDateTimeAction_And_NoCoordinateAction_PreventProcess_And_Both_AllPhotosHasPhotoTaken_AllPhotosHasCoordinate_Are_False_Runner_Should_Exit_With_PhotosWithNoCoordinateAndNoDatePreventedProcess(
+		InfoInvalidFormatAction invalidFormatAction, bool allPhotosAreValid)
+	{
+		var options = InfoOptionsFakes.WithPreventAction(SourceFolderPath, invalidFormatAction, InfoNoPhotoTakenDateAction.PreventProcess, InfoNoCoordinateAction.PreventProcess);
+		await CheckPreventActions(allPhotosAreValid, false, false, options, ExitCode.PhotosWithNoCoordinateAndNoDatePreventedProcess);
+	}
+
+	private async Task CheckPreventActions(bool allPhotosAreValidOutValue, bool allPhotosHasPhotoTakenOutValue, bool allPhotosHasCoordinateOutValue, InfoOptions options, ExitCode expectedExitCode)
 	{
 		AddSourceDirectory();
 		PhotoCollectorSetupNonEmptyList();
-		_exifDataAppenderMock.Setup(s => s.ExifDataByPath(It.IsAny<string[]>(), out allPhotosHasPhotoTakenOutValue, out allPhotosHasCoordinateOutValue))
-			.Returns(() => new Dictionary<string, ExifData> { { "/photo.jpg", ExifDataFakes.NoData() } });
+		_exifDataAppenderMock.Setup(s => s.ExifDataByPath(It.IsAny<string[]>(), out allPhotosAreValidOutValue, out allPhotosHasPhotoTakenOutValue, out allPhotosHasCoordinateOutValue))
+			.Returns(() => new Dictionary<string, ExifData?> { { "/photo.jpg", ExifDataFakes.Valid() } });
 		var sut = Initialize(options);
 		var exitCode = await sut.Execute();
 		exitCode.Should().Be(expectedExitCode);
 		PhotoCollectorVerify();
-		_exifDataAppenderMock.Verify(v => v.ExifDataByPath(It.IsAny<string[]>(), out allPhotosHasPhotoTakenOutValue, out allPhotosHasCoordinateOutValue));
+		_exifDataAppenderMock.Verify(v => v.ExifDataByPath(It.IsAny<string[]>(), out allPhotosAreValidOutValue, out allPhotosHasPhotoTakenOutValue, out allPhotosHasCoordinateOutValue));
 		VerifyNoOtherCalls();
 	}
 

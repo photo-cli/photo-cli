@@ -14,24 +14,29 @@ public class ExifDataAppenderService : IExifDataAppenderService
 		_consoleWriter = consoleWriter;
 	}
 
-	public Dictionary<string, ExifData> ExifDataByPath(IEnumerable<string> photoPaths, out bool allPhotosHasPhotoTaken, out bool allPhotosHasCoordinate)
+	public Dictionary<string, ExifData?> ExifDataByPath(IEnumerable<string> photoPaths, out bool allPhotosAreValid, out bool allPhotosHasPhotoTaken, out bool allPhotosHasCoordinate)
 	{
 		_consoleWriter.ProgressStart(ProgressName, _statistics.PhotosFound);
+		var photosAreValid = true;
 		var photosHasPhotoTaken = true;
 		var photosHasCoordinate = true;
-		var filePathInfo = new Dictionary<string, ExifData>();
+
+		var filePathInfo = new Dictionary<string, ExifData?>();
 		foreach (var photoPath in photoPaths)
 		{
 			var photoExifData = _exifParserService.Parse(photoPath, true, true);
-			if (photosHasPhotoTaken && !photoExifData.TakenDate.HasValue)
+			if (photoExifData == null)
+				photosAreValid = false;
+			if (photosHasPhotoTaken && photoExifData?.TakenDate == null)
 				photosHasPhotoTaken = false;
-			if (photosHasCoordinate && photoExifData.Coordinate == null)
+			if (photosHasCoordinate && photoExifData?.Coordinate == null)
 				photosHasCoordinate = false;
 			filePathInfo.Add(photoPath, photoExifData);
 			_consoleWriter.InProgressItemComplete(ProgressName);
 		}
 
 		_consoleWriter.ProgressFinish(ProgressName);
+		allPhotosAreValid = photosAreValid;
 		allPhotosHasPhotoTaken = photosHasPhotoTaken;
 		allPhotosHasCoordinate = photosHasCoordinate;
 		return filePathInfo;

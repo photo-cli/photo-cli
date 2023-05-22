@@ -14,10 +14,9 @@ public static class InfoOptionsFakes
 		return new InfoOptions(outputFolder, sourceFolderPath);
 	}
 
-	public static InfoOptions WithNoExifDataAction(string sourceFolderPath, InfoNoPhotoTakenDateAction noPhotoDateTimeTakenAction = InfoNoPhotoTakenDateAction.Continue,
-		InfoNoCoordinateAction noCoordinateAction = InfoNoCoordinateAction.Continue)
+	public static InfoOptions WithPreventAction(string sourceFolderPath, InfoInvalidFormatAction invalidFormatAction, InfoNoPhotoTakenDateAction noPhotoDateTimeTakenAction, InfoNoCoordinateAction noCoordinateAction)
 	{
-		return new InfoOptions(OutputFolder, sourceFolderPath, noPhotoTakenDateAction: noPhotoDateTimeTakenAction, noCoordinateAction: noCoordinateAction);
+		return new InfoOptions(OutputFolder, sourceFolderPath, invalidFileFormatAction: invalidFormatAction, noPhotoTakenDateAction: noPhotoDateTimeTakenAction, noCoordinateAction: noCoordinateAction);
 	}
 
 	public static InfoOptions WithValidReverseGeocodeService(string outputFolder, string sourceFolderPath)

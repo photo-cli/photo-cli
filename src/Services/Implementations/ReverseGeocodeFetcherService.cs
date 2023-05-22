@@ -32,7 +32,7 @@ public class ReverseGeocodeFetcherService : IReverseGeocodeFetcherService
 		_logger = logger;
 	}
 
-	public async Task<Dictionary<string, ExifData>> Fetch(Dictionary<string, ExifData> exifDataByFilePath)
+	public async Task<Dictionary<string, ExifData?>> Fetch(Dictionary<string, ExifData?> exifDataByFilePath)
 	{
 		_consoleWriter.ProgressStart(ProgressName, _statistics.HasCoordinateCount);
 
@@ -43,7 +43,7 @@ public class ReverseGeocodeFetcherService : IReverseGeocodeFetcherService
 
 		foreach (var (filePath, exifData) in exifDataByFilePath)
 		{
-			if (exifData.Coordinate == null)
+			if (exifData?.Coordinate == null)
 			{
 				_logger.LogTrace("No coordinate found, skipping {FilePath}", filePath);
 				continue;
@@ -75,7 +75,11 @@ public class ReverseGeocodeFetcherService : IReverseGeocodeFetcherService
 		_logger.LogDebug("All queued reverse geocode requests have been finished");
 
 		foreach (var (photoPath, reverseGeocodeRequest) in fileBasedReverseGeocodeRequests)
-			exifDataByFilePath[photoPath].ReverseGeocodes = reverseGeocodeRequest.Result;
+		{
+			var exifData = exifDataByFilePath[photoPath];
+			if(exifData != null)
+				exifData.ReverseGeocodes = reverseGeocodeRequest.Result;
+		}
 
 		_consoleWriter.ProgressFinish(ProgressName);
 		return exifDataByFilePath;
