@@ -102,7 +102,7 @@ public class SettingsRunner : IConsoleRunner
 
 	private IEnumerable<PropertyInfo> GetProperties()
 	{
-		return typeof(ToolOptions).GetProperties();
+		return typeof(ToolOptions).GetProperties().OrderBy(o => o.Name);
 	}
 
 	private void ConsoleWriteProperty(PropertyInfo property)
