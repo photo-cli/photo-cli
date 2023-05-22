@@ -13,6 +13,7 @@ public class ToolOptions
 	internal const string FolderAppendSeparatorDefault = "-";
 	internal const string DayRangeSeparatorDefault = "-";
 	internal const string SameNameNumberSeparatorDefault = "-";
+	internal const string PhotoFormatInvalidFolderNameDefault = "invalid-photo-format";
 	internal const string NoPhotoTakenDateFolderNameDefault = "no-photo-taken-date";
 	internal const string NoAddressFolderNameDefault = "no-address";
 	internal const string NoAddressAndPhotoTakenDateFolderNameDefault = "no-address-and-no-photo-taken-date";
@@ -34,6 +35,7 @@ public class ToolOptions
 		FolderAppendSeparator = options.FolderAppendSeparator ?? FolderAppendSeparatorDefault;
 		DayRangeSeparator = options.DayRangeSeparator ?? DayRangeSeparatorDefault;
 		SameNameNumberSeparator = options.SameNameNumberSeparator ?? SameNameNumberSeparatorDefault;
+		PhotoFormatInvalidFolderName = options.PhotoFormatInvalidFolderName ?? PhotoFormatInvalidFolderNameDefault;
 		NoPhotoTakenDateFolderName = options.NoPhotoTakenDateFolderName ?? NoPhotoTakenDateFolderNameDefault;
 		NoAddressFolderName = options.NoAddressFolderName ?? NoAddressFolderNameDefault;
 		NoAddressAndPhotoTakenDateFolderName = options.NoAddressAndPhotoTakenDateFolderName ?? NoAddressAndPhotoTakenDateFolderNameDefault;
@@ -58,7 +60,7 @@ public class ToolOptions
 	public string FolderAppendSeparator { get; set; }
 	public string DayRangeSeparator { get; set; }
 	public string SameNameNumberSeparator { get; set; }
-
+	public string PhotoFormatInvalidFolderName { get; set; }
 	public string NoPhotoTakenDateFolderName { get; set; }
 	public string NoAddressFolderName { get; set; }
 	public string NoAddressAndPhotoTakenDateFolderName { get; set; }

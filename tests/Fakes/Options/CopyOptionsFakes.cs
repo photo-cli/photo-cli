@@ -9,9 +9,12 @@ public static class CopyOptionsFakes
 		return Create(outputFolderPath, sourcePhotosFolderPathOptional: sourceFolderPath);
 	}
 
-	public static CopyOptions WithNoExifDataAction(string sourceFolderPath, CopyNoPhotoTakenDateAction noPhotoTakenDateAction, CopyNoCoordinateAction noCoordinateAction)
+	public static CopyOptions WithPreventAction(string sourceFolderPath, CopyInvalidFormatAction invalidFormatAction,
+		CopyNoPhotoTakenDateAction noPhotoTakenDateAction, CopyNoCoordinateAction noCoordinateAction)
 	{
-		return Create(sourcePhotosFolderPathOptional: sourceFolderPath, noPhotoTakenDateActionOptional: noPhotoTakenDateAction,
+		return Create(sourcePhotosFolderPathOptional: sourceFolderPath,
+			invalidFormatActionOptional: invalidFormatAction,
+			noPhotoTakenDateActionOptional: noPhotoTakenDateAction,
 			noCoordinateActionOptional: noCoordinateAction);
 	}
 
@@ -71,31 +74,29 @@ public static class CopyOptionsFakes
 
 	public static CopyOptions Create(
 		// required
-		string? outputPath = ValidOutputPath, NamingStyle? namingStyleRequired = null, FolderProcessType? folderProcessTypeRequired = null,
-		NumberNamingTextStyle? numberNamingTextStyleRequired = null, CopyNoPhotoTakenDateAction? noPhotoTakenDateActionOptional = null, CopyNoCoordinateAction? noCoordinateActionOptional = null,
+		string? outputPath = ValidOutputPath, NamingStyle? namingStyleRequired = null, FolderProcessType? folderProcessTypeRequired = null, NumberNamingTextStyle? numberNamingTextStyleRequired = null,
 		// optional
+		CopyInvalidFormatAction? invalidFormatActionOptional = null , CopyNoPhotoTakenDateAction? noPhotoTakenDateActionOptional = null, CopyNoCoordinateAction? noCoordinateActionOptional = null,
 		string? sourcePhotosFolderPathOptional = null, bool isDryRunOptional = false, GroupByFolderType? groupByFolderTypeOptional = null,
 		FolderAppendType? folderAppendTypeOptional = null, FolderAppendLocationType? folderAppendLocationTypeOptional = null, bool verify = false,
 		// shared ReverseGeocode
 		ReverseGeocodeProvider reverseGeoCodeProviderOptional = ReverseGeocodeProvider.Disabled,
-		IEnumerable<int>? bigDataCloudAdminLevelsOptional = null)
+		IEnumerable<int>? bigDataCloudAdminLevelsOptional = null, bool? hasPaidLicenseOptional = false)
 	{
 		return new CopyOptions(outputPath!, namingStyleRequired ?? NamingStyleFakes.Valid(),
 			folderProcessTypeRequired ?? FolderProcessTypeFakes.Valid(), numberNamingTextStyleRequired ?? NumberNamingTextStyleFakes.Valid(),
-			noPhotoTakenDateActionOptional ?? CopyNoPhotoTakenDateActionFakes.Valid(), noCoordinateActionOptional ?? CopyNoCoordinateActionFakes.Valid(), sourcePhotosFolderPathOptional,
-			isDryRunOptional, groupByFolderTypeOptional, folderAppendTypeOptional, folderAppendLocationTypeOptional, verify, reverseGeoCodeProviderOptional,
-			bigDataCloudAdminLevels: bigDataCloudAdminLevelsOptional);
+			invalidFormatActionOptional ?? CopyInvalidFormatActionFakes.Valid() , noPhotoTakenDateActionOptional ?? CopyNoPhotoTakenDateActionFakes.Valid(), noCoordinateActionOptional ?? CopyNoCoordinateActionFakes.Valid(),
+			sourcePhotosFolderPathOptional, isDryRunOptional, groupByFolderTypeOptional, folderAppendTypeOptional, folderAppendLocationTypeOptional, verify, reverseGeoCodeProviderOptional,
+			bigDataCloudAdminLevels: bigDataCloudAdminLevelsOptional, hasPaidLicense: hasPaidLicenseOptional);
 	}
 
 	public static CopyOptions ValidReverseGeocodeService(ReverseGeocodeProvider reverseGeocodeProvider = ReverseGeocodeProvider.BigDataCloud)
 	{
-		return new CopyOptions(ValidOutputPath, NamingStyleFakes.Valid(), FolderProcessTypeFakes.Valid(), NumberNamingTextStyleFakes.Valid(), CopyNoPhotoTakenDateActionFakes.Valid(),
-			CopyNoCoordinateActionFakes.Valid(), reverseGeoCodeProvider: reverseGeocodeProvider);
+		return Create(reverseGeoCodeProviderOptional: reverseGeocodeProvider);
 	}
 
 	public static CopyOptions ValidReverseGeocodeServiceWithLicense(bool hasPaidLicense, ReverseGeocodeProvider reverseGeocodeProvider = ReverseGeocodeProvider.BigDataCloud)
 	{
-		return new CopyOptions(ValidOutputPath, NamingStyleFakes.Valid(), FolderProcessTypeFakes.Valid(), NumberNamingTextStyleFakes.Valid(), CopyNoPhotoTakenDateActionFakes.Valid(),
-			CopyNoCoordinateActionFakes.Valid(), reverseGeoCodeProvider: reverseGeocodeProvider, hasPaidLicense: hasPaidLicense);
+		return Create(reverseGeoCodeProviderOptional: reverseGeocodeProvider, hasPaidLicenseOptional: hasPaidLicense);
 	}
 }

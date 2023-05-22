@@ -266,7 +266,7 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 	{
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.Address, FolderProcessType.Single,
-				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput, false,
+				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
 			new List<PhotoCsv>
 			{
@@ -852,7 +852,7 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 	{
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.FlattenAllSubFolders,
-				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, false, GroupByFolderType.AddressHierarchy,
+				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, groupByFolderType: GroupByFolderType.AddressHierarchy,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
 			new List<PhotoCsv>
 			{
@@ -1104,7 +1104,7 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 	{
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Address, FolderProcessType.SubFoldersPreserveFolderHierarchy,
-				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput, false,
+				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud,
 				bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
 			new List<PhotoCsv>
@@ -1166,7 +1166,7 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 	{
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.DayAddress, FolderProcessType.SubFoldersPreserveFolderHierarchy,
-				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput, false,
+				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
 			new List<PhotoCsv>
 			{

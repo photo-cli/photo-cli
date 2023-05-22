@@ -23,7 +23,8 @@ public class SettingsVerbEndToEndTests : BaseEndToEndTests
     ""AddressSeparator"": ""-"",
     ""FolderAppendSeparator"": ""-"",
     ""DayRangeSeparator"": ""-"",
-	""SameNameNumberSeparator"": ""-"",
+    ""SameNameNumberSeparator"": ""-"",
+    ""PhotoFormatInvalidFolderName"": ""invalid-photo-format"",
     ""NoPhotoTakenDateFolderName"": ""no-photo-taken-date"",
     ""NoAddressFolderName"": ""no-address"",
     ""NoAddressAndPhotoTakenDateFolderName"": ""no-address-and-no-photo-taken-date"",
@@ -51,6 +52,7 @@ AddressSeparator=-
 FolderAppendSeparator=-
 DayRangeSeparator=-
 SameNameNumberSeparator=-
+PhotoFormatInvalidFolderName=invalid-photo-format
 NoPhotoTakenDateFolderName=no-photo-taken-date
 NoAddressFolderName=no-address
 NoAddressAndPhotoTakenDateFolderName=no-address-and-no-photo-taken-date

@@ -39,7 +39,7 @@ public class CsvService : ICsvService
 		_consoleWriter.ProgressFinish(ProgressName);
 	}
 
-	public async Task WriteExifDataToCsvOutput(Dictionary<string, ExifData> photoExifDataByPath, string outputFile)
+	public async Task WriteExifDataToCsvOutput(Dictionary<string, ExifData?> photoExifDataByPath, string outputFile)
 	{
 		_consoleWriter.ProgressStart(ProgressName);
 		var photoCsvModels = new List<PhotoCsv>();
@@ -63,12 +63,12 @@ public class CsvService : ICsvService
 		await csv.WriteRecordsAsync(photoCsvModels);
 	}
 
-	private PhotoCsv ExifDataToPhotoCsv(ExifData exifData, string photoPath, string? photoNewPath = null, string? sha1Hash = null)
+	private PhotoCsv ExifDataToPhotoCsv(ExifData? exifData, string photoPath, string? photoNewPath = null, string? sha1Hash = null)
 	{
-		var takenDate = exifData.TakenDate;
-		var coordinate = exifData.Coordinate;
-		var reverseGeocodes = exifData.ReverseGeocodes?.ToList();
-		var photoCsv = new PhotoCsv(photoPath, photoNewPath, takenDate, exifData.ReverseGeocodeFormatted, coordinate?.Latitude, coordinate?.Longitude, takenDate?.Year,
+		var takenDate = exifData?.TakenDate;
+		var coordinate = exifData?.Coordinate;
+		var reverseGeocodes = exifData?.ReverseGeocodes?.ToList();
+		var photoCsv = new PhotoCsv(photoPath, photoNewPath, takenDate, exifData?.ReverseGeocodeFormatted, coordinate?.Latitude, coordinate?.Longitude, takenDate?.Year,
 			takenDate?.Month, takenDate?.Day,
 			takenDate?.Hour, takenDate?.Minute, takenDate?.Second, reverseGeocodes?.ElementAtOrDefault(0), reverseGeocodes?.ElementAtOrDefault(1), reverseGeocodes?.ElementAtOrDefault(2),
 			reverseGeocodes?.ElementAtOrDefault(3), reverseGeocodes?.ElementAtOrDefault(4), reverseGeocodes?.ElementAtOrDefault(5), reverseGeocodes?.ElementAtOrDefault(6),

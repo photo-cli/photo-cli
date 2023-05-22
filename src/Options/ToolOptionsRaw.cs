@@ -16,6 +16,7 @@ public class ToolOptionsRaw
 	public string? DayRangeSeparator { get; set; }
 	public string? SameNameNumberSeparator { get; set; }
 
+	public string? PhotoFormatInvalidFolderName { get; set; }
 	public string? NoPhotoTakenDateFolderName { get; set; }
 	public string? NoAddressFolderName { get; set; }
 	public string? NoAddressAndPhotoTakenDateFolderName { get; set; }

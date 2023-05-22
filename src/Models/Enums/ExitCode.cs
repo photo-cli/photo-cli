@@ -30,6 +30,7 @@ public enum ExitCode
 	PhotosWithNoDatePreventedProcess = 30,
 	PhotosWithNoCoordinatePreventedProcess = 31,
 	PhotosWithNoCoordinateAndNoDatePreventedProcess = 32,
+	PhotosWithInvalidFileFormatPreventedProcess = 33,
 
 	// Settings
 	PropertyNotFound = 40,

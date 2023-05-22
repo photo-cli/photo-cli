@@ -19,6 +19,7 @@ public static class ToolOptionFakes
 	public const string DayRangeSeparator = "-";
 	public const string SameNameNumberSeparator = "-";
 
+	public const string PhotoFormatInvalidFolderName = "invalid-photo-format";
 	public const string NoPhotoTakenDateFolderName = "no-photo-taken-date";
 	public const string NoAddressFolderName = "no-address";
 	public const string NoAddressAndPhotoTakenDateFolderName = "no-address-and-no-photo-taken-date";
@@ -43,6 +44,7 @@ public static class ToolOptionFakes
 			DayRangeSeparator = DayRangeSeparator,
 			SameNameNumberSeparator = SameNameNumberSeparator,
 
+			PhotoFormatInvalidFolderName = PhotoFormatInvalidFolderName,
 			NoPhotoTakenDateFolderName = NoPhotoTakenDateFolderName,
 			NoAddressFolderName = NoAddressFolderName,
 			NoAddressAndPhotoTakenDateFolderName = NoAddressAndPhotoTakenDateFolderName,

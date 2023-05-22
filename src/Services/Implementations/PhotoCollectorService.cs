@@ -39,7 +39,7 @@ public class PhotoCollectorService : IPhotoCollectorService
 			_logger.LogCritical(unauthorizedAccessException, message);
 			throw new PhotoCliException($"{message} -> {unauthorizedAccessException.Message}");
 		}
-		_consoleWriter.ProgressFinish(ProgressName, $"{filePaths.Length} photos found.");
+		_consoleWriter.ProgressFinish(ProgressName, $"{filePaths.Length} photo(s) found.");
 		_statistics.PhotosFound = filePaths.Length;
 		return filePaths;
 	}

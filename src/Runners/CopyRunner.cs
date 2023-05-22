@@ -60,11 +60,15 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 			return ExitCode.NoPhotoFoundOnDirectory;
 		}
 
-		var isPreventProcessOptionSelectedNoPhotoTakenDate = _options.NoPhotoTakenDateAction == CopyNoPhotoTakenDateAction.PreventProcess;
-		var isPreventProcessOptionSelectedNoCoordinate = _options.NoCoordinateAction == CopyNoCoordinateAction.PreventProcess;
-		var photoExifDataByPath = _exifDataAppenderService.ExifDataByPath(photoPaths, out var allPhotosHasPhotoTaken, out var allPhotosHasCoordinate);
-		if (!NoExifDataPreventActions(out var exitCodeNoExif, allPhotosHasPhotoTaken, allPhotosHasCoordinate, isPreventProcessOptionSelectedNoPhotoTakenDate,
-			    isPreventProcessOptionSelectedNoCoordinate, photoExifDataByPath))
+		var isInvalidFileFormatPreventProcessOptionSelected = _options.InvalidFileFormatAction == CopyInvalidFormatAction.PreventProcess;
+		var isNoPhotoTakenDatePreventProcessOptionSelected = _options.NoPhotoTakenDateAction == CopyNoPhotoTakenDateAction.PreventProcess;
+		var isNoCoordinatePreventProcessOptionSelected = _options.NoCoordinateAction == CopyNoCoordinateAction.PreventProcess;
+
+		var photoExifDataByPath = _exifDataAppenderService.ExifDataByPath(photoPaths, out var allPhotosAreValid, out var allPhotosHasPhotoTaken, out var allPhotosHasCoordinate);
+
+		if (!NoExifDataPreventActions(out var exitCodeNoExif, allPhotosAreValid, allPhotosHasPhotoTaken, allPhotosHasCoordinate,
+			    isInvalidFileFormatPreventProcessOptionSelected, isNoPhotoTakenDatePreventProcessOptionSelected, isNoCoordinatePreventProcessOptionSelected,
+			    photoExifDataByPath))
 		{
 			return exitCodeNoExif;
 		}
@@ -75,8 +79,12 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 			photoExifDataByPath = await _reverseGeocodeFetcherService.Fetch(photoExifDataByPath);
 		}
 
-		var groupedPhotosByRelativeDirectory = _directoryGrouperService.GroupFiles(photoExifDataByPath, sourceFolderPath, _options.FolderProcessType,
-			_options.GroupByFolderType, _options.NoPhotoTakenDateAction == CopyNoPhotoTakenDateAction.InSubFolder, _options.NoCoordinateAction == CopyNoCoordinateAction.InSubFolder);
+		var invalidFileFormatGroupedInSubFolder = _options.InvalidFileFormatAction == CopyInvalidFormatAction.InSubFolder;
+		var noPhotoDateTimeTakenGroupedInSubFolder = _options.NoPhotoTakenDateAction == CopyNoPhotoTakenDateAction.InSubFolder;
+		var noReverseGeocodeGroupedInSubFolder = _options.NoCoordinateAction == CopyNoCoordinateAction.InSubFolder;
+
+		var groupedPhotosByRelativeDirectory = _directoryGrouperService.GroupFiles(photoExifDataByPath, sourceFolderPath, _options.FolderProcessType, _options.GroupByFolderType,
+			invalidFileFormatGroupedInSubFolder, noPhotoDateTimeTakenGroupedInSubFolder, noReverseGeocodeGroupedInSubFolder);
 
 		var filteredPhotosByRelativeDirectory = new Dictionary<string, IReadOnlyCollection<Photo>>();
 
@@ -84,13 +92,16 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 		var verifyFileIntegrity = _options is { Verify: true, IsDryRun: false };
 		foreach (var (targetRelativeDirectoryPath, photoInfos) in groupedPhotosByRelativeDirectory)
 		{
-			var (orderedPhotos, notToRenamePhotos) = _exifOrganizerService.FilterAndSortByNoActionTypes(photoInfos, _options.NoPhotoTakenDateAction, _options.NoCoordinateAction);
-			_fileNamerService.SetFileName(orderedPhotos, _options.NamingStyle, _options.NumberNamingTextStyle);
-			if (_options.FolderProcessType is FolderProcessType.SubFoldersPreserveFolderHierarchy && _options.FolderAppendType.HasValue && _options.FolderAppendLocationType.HasValue)
-				_folderRenamer.RenameByFolderAppendType(orderedPhotos, _options.FolderAppendType.Value, _options.FolderAppendLocationType.Value, targetRelativeDirectoryPath);
+			var (filteredAndOrderedPhotos, keptPhotosNotInFilter) = _exifOrganizerService.FilterAndSortByNoActionTypes(photoInfos,
+				_options.InvalidFileFormatAction, _options.NoPhotoTakenDateAction, _options.NoCoordinateAction, targetRelativeDirectoryPath);
 
-			var allPhotos = new List<Photo>(orderedPhotos);
-			allPhotos.AddRange(notToRenamePhotos);
+			_fileNamerService.SetFileName(filteredAndOrderedPhotos, _options.NamingStyle, _options.NumberNamingTextStyle);
+
+			if (_options.FolderProcessType is FolderProcessType.SubFoldersPreserveFolderHierarchy && _options.FolderAppendType.HasValue && _options.FolderAppendLocationType.HasValue)
+				_folderRenamer.RenameByFolderAppendType(filteredAndOrderedPhotos, _options.FolderAppendType.Value, _options.FolderAppendLocationType.Value, targetRelativeDirectoryPath);
+
+			var allPhotos = new List<Photo>(filteredAndOrderedPhotos);
+			allPhotos.AddRange(keptPhotosNotInFilter);
 			_fileService.Copy(allPhotos, _options.OutputPath, _options.IsDryRun);
 
 			filteredPhotosByRelativeDirectory.Add(targetRelativeDirectoryPath, allPhotos);
@@ -109,7 +120,7 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 		{
 			await _fileService.SaveGnuHashFileTree(filteredAllPhotos, _options.OutputPath);
 			_consoleWriter.Write("Verified all photo files copied successfully by comparing file hashes from original photo files.");
-			_consoleWriter.Write($"All files SHA1 hashes written into file: {Constants.VerifyFileHashFileName}. You may use verify yourself with `sha1sum --check {Constants.VerifyFileHashFileName}` tool in Linux/macOS.");
+			_consoleWriter.Write($"All files SHA1 hashes written into file: {Constants.VerifyFileHashFileName}. You may verify yourself with `sha1sum --check {Constants.VerifyFileHashFileName}` tool in Linux/macOS.");
 		}
 
 		await _csvService.Report(filteredAllPhotos, _options.OutputPath, _options.IsDryRun);
@@ -142,11 +153,16 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 				return false;
 			}
 		}
-		else if (outputDirectory.GetDirectories().Length > 0 || outputDirectory.GetFiles().Length > 0)
+		else
 		{
-			_logger.LogCritical("Output folder: {Path} is not empty. It has directories or files in it", _options.OutputPath);
-			exitCode = ExitCode.OutputFolderIsNotEmpty;
-			return false;
+			var subDirectoryCount = outputDirectory.GetDirectories().Length;
+			var fileCount = outputDirectory.GetFiles().Length;
+			if (subDirectoryCount > 0 || fileCount > 0)
+			{
+				_logger.LogCritical("Output folder: {Path} is not empty. It has {SubDirectoryCount} directory, {FileCount} files in it", _options.OutputPath, subDirectoryCount, fileCount);
+				exitCode = ExitCode.OutputFolderIsNotEmpty;
+				return false;
+			}
 		}
 
 		exitCode = ExitCode.Unset;

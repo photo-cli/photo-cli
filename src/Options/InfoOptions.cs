@@ -11,8 +11,9 @@ public class InfoOptions : IReverseGeocodeOptions
 		// Required
 		string outputPath,
 		// Optional
-		string? inputPath = null, bool allFolders = false, InfoNoPhotoTakenDateAction noPhotoTakenDateAction = InfoNoPhotoTakenDateAction.Continue,
-		InfoNoCoordinateAction noCoordinateAction = InfoNoCoordinateAction.Continue,
+		string? inputPath = null, bool allFolders = false,
+		InfoInvalidFormatAction invalidFileFormatAction = InfoInvalidFormatAction.Continue,
+		InfoNoPhotoTakenDateAction noPhotoTakenDateAction = InfoNoPhotoTakenDateAction.Continue, InfoNoCoordinateAction noCoordinateAction = InfoNoCoordinateAction.Continue,
 		// ReverseGeocode - Shared
 		ReverseGeocodeProvider reverseGeoCodeProvider = ReverseGeocodeProvider.Disabled, string? bigDataCloudApiKey = null, IEnumerable<int>? bigDataCloudAdminLevels = null,
 		IEnumerable<string>? googleMapsAddressTypes = null,
@@ -25,6 +26,7 @@ public class InfoOptions : IReverseGeocodeOptions
 		// Optional
 		InputPath = inputPath;
 		AllFolders = allFolders;
+		InvalidFileFormatAction = invalidFileFormatAction;
 		NoPhotoTakenDateAction = noPhotoTakenDateAction;
 		NoCoordinateAction = noCoordinateAction;
 
@@ -54,6 +56,9 @@ public class InfoOptions : IReverseGeocodeOptions
 
 	[Option(OptionNames.AllFoldersOptionNameShort, OptionNames.AllFoldersOptionNameLong, HelpText = HelpTexts.AllFolders)]
 	public bool AllFolders { get; }
+
+	[Option(OptionNames.InfoInvalidFormatActionOptionNameShort, OptionNames.InfoInvalidFormatActionOptionNameLong, HelpText = HelpTexts.InfoInvalidFormatAction)]
+	public InfoInvalidFormatAction InvalidFileFormatAction { get; }
 
 	[Option(OptionNames.InfoNoPhotoDateTimeTakenActionOptionNameShort, OptionNames.InfoNoPhotoDateTimeTakenActionOptionNameLong, HelpText = HelpTexts.InfoNoPhotoTakenDateAction)]
 	public InfoNoPhotoTakenDateAction NoPhotoTakenDateAction { get; }

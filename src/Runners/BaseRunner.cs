@@ -27,18 +27,22 @@ public abstract class BaseRunner
 		}
 
 		if (_statistics.PhotosCopied > 0)
-			_consoleWriter.Write($"- {_statistics.PhotosCopied} photos copied.");
+			_consoleWriter.Write($"- {_statistics.PhotosCopied} photo(s) copied.");
 		if (_statistics.DirectoriesCreated > 0)
-			_consoleWriter.Write($"- {_statistics.DirectoriesCreated} directories created.");
+			_consoleWriter.Write($"- {_statistics.DirectoriesCreated} directory/directories created.");
 
 		if (_statistics.PhotoThatHasTakenDateAndCoordinate > 0)
-			_consoleWriter.Write($"- {_statistics.PhotoThatHasTakenDateAndCoordinate} photos has taken date and coordinate.");
+			_consoleWriter.Write($"- {_statistics.PhotoThatHasTakenDateAndCoordinate} photo(s) has taken date and coordinate.");
 		if (_statistics.PhotoThatHasTakenDateButNoCoordinate > 0)
-			_consoleWriter.Write($"- {_statistics.PhotoThatHasTakenDateButNoCoordinate} photos has taken date but no coordinate.");
+			_consoleWriter.Write($"- {_statistics.PhotoThatHasTakenDateButNoCoordinate} photo(s) has taken date but no coordinate.");
 		if (_statistics.PhotoThatHasCoordinateButNoTakenDate > 0)
-			_consoleWriter.Write($"- {_statistics.PhotoThatHasCoordinateButNoTakenDate} photos has coordinate but no taken date.");
+			_consoleWriter.Write($"- {_statistics.PhotoThatHasCoordinateButNoTakenDate} photo(s) has coordinate but no taken date.");
 		if (_statistics.PhotoThatNoCoordinateAndNoTakenDate > 0)
-			_consoleWriter.Write($"- {_statistics.PhotoThatNoCoordinateAndNoTakenDate} photos has no taken date and coordinate.");
+			_consoleWriter.Write($"- {_statistics.PhotoThatNoCoordinateAndNoTakenDate} photo(s) has no taken date and coordinate.");
+		if (_statistics.InvalidFormatError > 0)
+			_consoleWriter.Write($"- {_statistics.InvalidFormatError} photo(s) has unknown/invalid format..");
+		if (_statistics.InternalError > 0)
+			_consoleWriter.Write($"- {_statistics.InternalError} photo(s) caused unexpected error internally.");
 	}
 
 	protected bool ValidatePhotoPaths(out ExitCode exitCode, string[] photoPaths, string path)
@@ -54,12 +58,20 @@ public abstract class BaseRunner
 		return true;
 	}
 
-	protected bool NoExifDataPreventActions(out ExitCode exitCode, bool allPhotosHasPhotoTaken, bool allPhotosHasCoordinate, bool isPreventProcessOptionSelectedNoPhotoTakenDate,
-		bool isPreventProcessOptionSelectedNoCoordinate, Dictionary<string, ExifData> photoTakenDateTimesByPath)
+	protected bool NoExifDataPreventActions(out ExitCode exitCode, bool allPhotosAreValid, bool allPhotosHasPhotoTaken, bool allPhotosHasCoordinate,
+		bool isInvalidFileFormatPreventProcessOptionSelected, bool isNoPhotoTakenDatePreventProcessOptionSelected, bool isNoCoordinatePreventProcessOptionSelected,
+		Dictionary<string, ExifData?> exifDataByPath)
 	{
-		var noPhotoDateTimeTakenActionPreventProcess = NoPhotoTakenDateActionPreventProcess(allPhotosHasPhotoTaken, isPreventProcessOptionSelectedNoPhotoTakenDate,
-			photoTakenDateTimesByPath);
-		var noCoordinateActionPreventProcess = NoCoordinateActionPreventProcess(allPhotosHasCoordinate, isPreventProcessOptionSelectedNoCoordinate, photoTakenDateTimesByPath);
+		var invalidFileFormatPreventProcess = InvalidFileFormatActionPreventProcess(allPhotosAreValid, isInvalidFileFormatPreventProcessOptionSelected, exifDataByPath);
+		if (invalidFileFormatPreventProcess)
+		{
+			exitCode = ExitCode.PhotosWithInvalidFileFormatPreventedProcess;
+			return false;
+		}
+
+		var noPhotoDateTimeTakenActionPreventProcess = NoPhotoTakenDateActionPreventProcess(allPhotosHasPhotoTaken, isNoPhotoTakenDatePreventProcessOptionSelected, exifDataByPath);
+		var noCoordinateActionPreventProcess = NoCoordinateActionPreventProcess(allPhotosHasCoordinate, isNoCoordinatePreventProcessOptionSelected, exifDataByPath);
+
 		if (noPhotoDateTimeTakenActionPreventProcess && noCoordinateActionPreventProcess)
 		{
 			exitCode = ExitCode.PhotosWithNoCoordinateAndNoDatePreventedProcess;
@@ -82,23 +94,34 @@ public abstract class BaseRunner
 		return true;
 	}
 
-	private bool NoPhotoTakenDateActionPreventProcess(bool allPhotosHasPhotoTaken, bool isPreventProcessOptionSelected, Dictionary<string, ExifData> photoTakenDateTimesByPath)
+	private bool InvalidFileFormatActionPreventProcess(bool allPhotosAreValid, bool isPreventProcessOptionSelected, Dictionary<string, ExifData?> photoTakenDateTimesByPath)
+	{
+		if (allPhotosAreValid || !isPreventProcessOptionSelected)
+			return false;
+		_logger.LogDebug("Prevented process because invalid file format action set to prevent process");
+		var photosWithInvalidFileFormat = photoTakenDateTimesByPath.Where(w => w.Value == null);
+		foreach (var (photoPath, _) in photosWithInvalidFileFormat)
+			_logger.LogError("Photo is in invalid file format: {Path}", photoPath);
+		return true;
+	}
+
+	private bool NoPhotoTakenDateActionPreventProcess(bool allPhotosHasPhotoTaken, bool isPreventProcessOptionSelected, Dictionary<string, ExifData?> photoTakenDateTimesByPath)
 	{
 		if (allPhotosHasPhotoTaken || !isPreventProcessOptionSelected)
 			return false;
 		_logger.LogDebug("Prevented process because no photo taken date action set to prevent process");
-		var photosWithNoPhotoTakenDate = photoTakenDateTimesByPath.Where(w => !w.Value.TakenDate.HasValue);
+		var photosWithNoPhotoTakenDate = photoTakenDateTimesByPath.Where(w => w.Value?.TakenDate == null);
 		foreach (var (photoPath, _) in photosWithNoPhotoTakenDate)
 			_logger.LogError("No photo taken date: {Path}", photoPath);
 		return true;
 	}
 
-	private bool NoCoordinateActionPreventProcess(bool allPhotosHasCoordinate, bool isPreventProcessOptionSelected, Dictionary<string, ExifData> photoTakenDateTimesByPath)
+	private bool NoCoordinateActionPreventProcess(bool allPhotosHasCoordinate, bool isPreventProcessOptionSelected, Dictionary<string, ExifData?> photoTakenDateTimesByPath)
 	{
 		if (allPhotosHasCoordinate || !isPreventProcessOptionSelected)
 			return false;
 		_logger.LogDebug("Prevented process because no coordinate action set to prevent process");
-		var photosWithNoCoordinate = photoTakenDateTimesByPath.Where(w => w.Value.Coordinate == null);
+		var photosWithNoCoordinate = photoTakenDateTimesByPath.Where(w => w.Value?.Coordinate == null);
 		foreach (var (photoPath, _) in photosWithNoCoordinate)
 			_logger.LogError("No coordinate: {Path}", photoPath);
 		return true;
