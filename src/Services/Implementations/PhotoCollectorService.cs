@@ -5,7 +5,7 @@ namespace PhotoCli.Services.Implementations;
 public class PhotoCollectorService : IPhotoCollectorService
 {
 	private const string ProgressName = "Searching photos";
-	private static readonly string[] SupportedExtensions = { ".jpg" };
+	private static readonly string[] SupportedExtensions = { ".jpg", ".jpeg", ".heic" };
 	private readonly IConsoleWriter _consoleWriter;
 	private readonly Statistics _statistics;
 	private readonly ILogger<PhotoCollectorService> _logger;
