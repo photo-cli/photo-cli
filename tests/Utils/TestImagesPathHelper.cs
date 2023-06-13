@@ -53,6 +53,7 @@ public static class TestImagesPathHelper
 	{
 		private const string FileName = "HasGpsCoordinate.jpg";
 		public static readonly string FilePath = ExifImage(FileName);
+		public static readonly Coordinate PhotoTakenCoordinate = new Coordinate(43.46744833333334, 11.885126666663888);
 	}
 
 	public static class DontHaveExifSubIdfAndExifIfd0Directory
@@ -64,5 +65,19 @@ public static class TestImagesPathHelper
 	{
 		public static readonly string FilePath = ExifImage("NoGpsCoordinateDirectory.jpg");
 		public static readonly DateTime PhotoTakenDate = new(2008, 7, 16, 11, 33, 20);
+	}
+
+	public static class HasCoordinateAndDateJPEGDirectory
+	{
+		public static readonly string FilePath = ExifImage("Exif-HasCoordinateAndDate.jpeg");
+		public static readonly DateTime PhotoTakenDate = new(2023, 6, 1, 20, 13, 20);
+		public static readonly Coordinate PhotoTakenCoordinate = new(47.502391666666668, 19.034752777777779);
+	}
+
+	public static class HasCoordinateAndDateHeicDirectory
+	{
+		public static readonly string FilePath = ExifImage("Exif-HasCoordinateAndDate.HEIC");
+		public static readonly DateTime PhotoTakenDate = new(2023, 1, 30, 15, 21, 22);
+		public static readonly Coordinate PhotoTakenCoordinate = new(48.199038888888886, 16.371333333333332);
 	}
 }
