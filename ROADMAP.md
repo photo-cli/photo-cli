@@ -18,10 +18,13 @@
 
 Issues will be linked on [GitHub Project of this repository](https://github.com/photo-cli/photo-cli/projects).
 
+### Future
+
+- [v0.2.0](https://github.com/photo-cli/photo-cli/projects/7)
+- [v1.0.0](https://github.com/photo-cli/photo-cli/projects/6)
+- [Future Plans](https://github.com/photo-cli/photo-cli/projects/2)
+
+### Old
 - [v0.0.0](https://github.com/photo-cli/photo-cli/projects/1)
 - [v0.0.1](https://github.com/photo-cli/photo-cli/projects/3)
 - [v0.1.0](https://github.com/photo-cli/photo-cli/projects/5)
-- [v0.2.0](https://github.com/photo-cli/photo-cli/projects/7)
-- [v1.0.0](https://github.com/photo-cli/photo-cli/projects/6)
-
-- [Future Plans](https://github.com/photo-cli/photo-cli/projects/2)
