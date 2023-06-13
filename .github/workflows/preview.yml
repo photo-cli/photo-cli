@@ -27,7 +27,6 @@ jobs:
       env:
         PHOTO_CLI_BIG_DATA_CLOUD_API_KEY: ${{secrets.PHOTO_CLI_BIG_DATA_CLOUD_API_KEY}}
         PHOTO_CLI_GOOGLE_MAPS_API_KEY: ${{secrets.PHOTO_CLI_GOOGLE_MAPS_API_KEY}}
-        PHOTO_CLI_MAPQUEST_API_KEY: ${{secrets.PHOTO_CLI_MAPQUEST_API_KEY}}
         PHOTO_CLI_LOCATIONIQ_API_KEY: ${{secrets.PHOTO_CLI_LOCATIONIQ_API_KEY}}
       run: dotnet test --configuration Release /p:Version=${VERSION} --no-build
     - name: End SonarCloud scan
