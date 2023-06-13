@@ -34,7 +34,7 @@ public static class HelpTexts
 	public const string FolderAppendLocationType = "(Optional) Append location for `FolderAppendType`. " +
 	                                               "[Can be use with `FolderProcessType` is `SubFoldersPreserveFolderHierarchy`] ( Prefix: 1, Suffix: 2 )";
 
-	public const string Verify = "(Optional) Verify that all photo files copied succesfully by comparing file hashes. (no extra parameter needed)";
+	public const string Verify = "(Optional) Verify that all photo files copied successfully by comparing file hashes. (no extra parameter needed)";
 
 	#endregion
 
