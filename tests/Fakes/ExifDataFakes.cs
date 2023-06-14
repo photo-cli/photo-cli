@@ -6,6 +6,11 @@ public static class ExifDataFakes
 	private const int MonthDefault = 1;
 	private const int DayDefault = 1;
 
+	public static ExifData Valid()
+	{
+		return WithDay(1);
+	}
+
 	public static ExifData WithDay(int day)
 	{
 		return Create(new DateTime(YearDefault, MonthDefault, day));
@@ -26,6 +31,11 @@ public static class ExifDataFakes
 		return Create(new DateTime(year, MonthDefault, DayDefault));
 	}
 
+	public static ExifData WithYearAndReverseGeocode(int year)
+	{
+		return Create(new DateTime(year, MonthDefault, DayDefault), reverseGeocodes: ReverseGeocodeFakes.Valid());
+	}
+
 	public static ExifData WithDayAndReverseGeocodeSampleId(int day, int sampleId)
 	{
 		return Create(new DateTime(YearDefault, MonthDefault, day), reverseGeocodes: ReverseGeocodeFakes.Sample(sampleId));
@@ -38,27 +48,27 @@ public static class ExifDataFakes
 
 	public static ExifData WithNoPhotoTakenDate()
 	{
-		return Create();
+		return new ExifData(null, CoordinateFakes.Valid(), ToolOptionFakes.AddressSeparator) { ReverseGeocodes = ReverseGeocodeFakes.Valid()};
 	}
 
 	public static ExifData WithNoCoordinate()
 	{
-		return Create();
-	}
-
-	public static ExifData NoData()
-	{
-		return Create();
+		return new ExifData(DateTimeFakes.Valid(), null, ToolOptionFakes.AddressSeparator);
 	}
 
 	public static ExifData WithNoReverseGeocode()
 	{
-		return Create();
+		return new ExifData(DateTimeFakes.Valid(), null, ToolOptionFakes.AddressSeparator);
 	}
 
 	public static ExifData WithNoReverseGeocodeAndNoTakenDate()
 	{
-		return Create();
+		return new ExifData(null, null, ToolOptionFakes.AddressSeparator);;
+	}
+
+	public static ExifData? WithInvalidFileFormat()
+	{
+		return null;
 	}
 
 	public static ExifData WithCoordinate(Coordinate coordinate)

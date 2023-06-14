@@ -40,11 +40,14 @@ public class InfoRunner : BaseRunner, IConsoleRunner
 		if (!ValidatePhotoPaths(out var exitCodePhotoPaths, photoPaths, sourceFolderPath))
 			return exitCodePhotoPaths;
 
-		var isPreventProcessOptionSelectedNoPhotoTakenDate = _options.NoPhotoTakenDateAction == InfoNoPhotoTakenDateAction.PreventProcess;
-		var isPreventProcessOptionSelectedNoCoordinate = _options.NoCoordinateAction == InfoNoCoordinateAction.PreventProcess;
-		var photoExifDataByPath = _exifDataAppenderService.ExifDataByPath(photoPaths, out var allPhotosHasPhotoTaken, out var allPhotosHasCoordinate);
-		if (!NoExifDataPreventActions(out var exitCodeNoExif, allPhotosHasPhotoTaken, allPhotosHasCoordinate, isPreventProcessOptionSelectedNoPhotoTakenDate,
-			    isPreventProcessOptionSelectedNoCoordinate, photoExifDataByPath))
+		var isNoPhotoTakenDatePreventProcessOptionSelected = _options.NoPhotoTakenDateAction == InfoNoPhotoTakenDateAction.PreventProcess;
+		var isNoCoordinatePreventProcessOptionSelected = _options.NoCoordinateAction == InfoNoCoordinateAction.PreventProcess;
+		var isInvalidFileFormatPreventProcessOptionSelected = _options.InvalidFileFormatAction == InfoInvalidFormatAction.PreventProcess;
+
+		var photoExifDataByPath = _exifDataAppenderService.ExifDataByPath(photoPaths, out var allPhotosAreValid, out var allPhotosHasPhotoTaken, out var allPhotosHasCoordinate);
+		if (!NoExifDataPreventActions(out var exitCodeNoExif, allPhotosAreValid, allPhotosHasPhotoTaken, allPhotosHasCoordinate,
+			    isInvalidFileFormatPreventProcessOptionSelected, isNoPhotoTakenDatePreventProcessOptionSelected, isNoCoordinatePreventProcessOptionSelected,
+			    photoExifDataByPath))
 		{
 			return exitCodeNoExif;
 		}

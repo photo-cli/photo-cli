@@ -43,7 +43,7 @@ AdminLevel8: Arezzo"
 ""name"": ""Italy"",
 ""isoCode"": ""IT"",
 ""description"": ""republic in Southern Europe"",
-""order"": 2,
+""order"": 3,
 ""wikidataId"": ""Q38"",
 ""geoNameId"": null
 },
@@ -53,7 +53,7 @@ AdminLevel8: Arezzo"
 ""name"": ""Toscana"",
 ""isoCode"": ""IT-52"",
 ""description"": ""region in central Italy"",
-""order"": 4,
+""order"": 5,
 ""wikidataId"": ""Q1273"",
 ""geoNameId"": null
 },
@@ -63,7 +63,7 @@ AdminLevel8: Arezzo"
 ""name"": ""Province of Arezzo"",
 ""isoCode"": ""IT-AR"",
 ""description"": ""province of Italy"",
-""order"": 5,
+""order"": 6,
 ""wikidataId"": ""Q16115"",
 ""geoNameId"": null
 },
@@ -73,7 +73,7 @@ AdminLevel8: Arezzo"
 ""name"": ""Arezzo"",
 ""isoCode"": null,
 ""description"": ""Italian comune"",
-""order"": 6,
+""order"": 7,
 ""wikidataId"": ""Q13378"",
 ""geoNameId"": null
 }
@@ -89,8 +89,16 @@ AdminLevel8: Arezzo"
 },
 {
 ""isoCode"": null,
+""name"": ""Europe/Rome"",
+""order"": 2,
+""description"": ""time zone"",
+""wikidataId"": null,
+""geonameId"": null
+},
+{
+""isoCode"": null,
 ""name"": ""Italian Peninsula"",
-""order"": 3,
+""order"": 4,
 ""description"": ""peninsula of southern Europe"",
 ""wikidataId"": ""Q145694"",
 ""geonameId"": null

@@ -24,11 +24,13 @@ public enum ExitCode
 	OutputPathDontHaveWriteFilePermission = 24,
 	OutputPathDontHaveCreateDirectoryPermission = 25,
 	InputFileNotExists = 26,
+	FileVerifyErrors = 27,
 
 	// Photo exif info
 	PhotosWithNoDatePreventedProcess = 30,
 	PhotosWithNoCoordinatePreventedProcess = 31,
 	PhotosWithNoCoordinateAndNoDatePreventedProcess = 32,
+	PhotosWithInvalidFileFormatPreventedProcess = 33,
 
 	// Settings
 	PropertyNotFound = 40,

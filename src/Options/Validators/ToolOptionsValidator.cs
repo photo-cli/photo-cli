@@ -20,6 +20,7 @@ public class ToolOptionsValidator : AbstractValidator<ToolOptions>
 		RuleFor(r => r.FolderAppendSeparator).RequiredString();
 		RuleFor(r => r.DayRangeSeparator).RequiredString();
 		RuleFor(r => r.SameNameNumberSeparator).RequiredString();
+		RuleFor(r => r.PhotoFormatInvalidFolderName).RequiredString();
 		RuleFor(r => r.NoPhotoTakenDateFolderName).RequiredString();
 		RuleFor(r => r.NoAddressFolderName).RequiredString();
 		RuleFor(r => r.NoAddressAndPhotoTakenDateFolderName).RequiredString();

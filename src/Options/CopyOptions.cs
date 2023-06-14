@@ -7,14 +7,13 @@ public class CopyOptions : IReverseGeocodeOptions
 {
 	// Notes: Constructor parameters and properties should be in same order for Immutable Options Type in CommandLineParser.
 	// ref: https://github.com/commandlineparser/commandline/wiki/Immutable-Options-Type
-
 	public CopyOptions(
 		// Required
-		string outputPath, NamingStyle namingStyle, FolderProcessType folderProcessType, NumberNamingTextStyle numberNamingTextStyle, CopyNoPhotoTakenDateAction noPhotoTakenDateAction,
-		CopyNoCoordinateAction noCoordinateAction,
+		string outputPath, NamingStyle namingStyle, FolderProcessType folderProcessType, NumberNamingTextStyle numberNamingTextStyle,
 		// Optional
+		CopyInvalidFormatAction invalidFileFormatAction, CopyNoPhotoTakenDateAction noPhotoTakenDateAction, CopyNoCoordinateAction noCoordinateAction,
 		string? inputPath = null, bool isDryRun = false, GroupByFolderType? groupByFolderType = null, FolderAppendType? folderAppendType = null,
-		FolderAppendLocationType? folderAppendLocationType = null,
+		FolderAppendLocationType? folderAppendLocationType = null, bool verify = false,
 		// ReverseGeocode - Shared
 		ReverseGeocodeProvider reverseGeoCodeProvider = ReverseGeocodeProvider.Disabled, string? bigDataCloudApiKey = null, IEnumerable<int>? bigDataCloudAdminLevels = null,
 		IEnumerable<string>? googleMapsAddressTypes = null, string? googleMapsApiKey = null, IEnumerable<string>? openStreetMapProperties = null,
@@ -25,15 +24,17 @@ public class CopyOptions : IReverseGeocodeOptions
 		NamingStyle = namingStyle;
 		FolderProcessType = folderProcessType;
 		NumberNamingTextStyle = numberNamingTextStyle;
-		NoPhotoTakenDateAction = noPhotoTakenDateAction;
-		NoCoordinateAction = noCoordinateAction;
 
 		// Optional
+		InvalidFileFormatAction = invalidFileFormatAction;
+		NoPhotoTakenDateAction = noPhotoTakenDateAction;
+		NoCoordinateAction = noCoordinateAction;
 		InputPath = inputPath;
 		IsDryRun = isDryRun;
 		GroupByFolderType = groupByFolderType;
 		FolderAppendType = folderAppendType;
 		FolderAppendLocationType = folderAppendLocationType;
+		Verify = verify;
 
 		// ReverseGeocode
 		ReverseGeocodeProvider = reverseGeoCodeProvider;
@@ -61,6 +62,9 @@ public class CopyOptions : IReverseGeocodeOptions
 	[Option(OptionNames.NumberNamingTextStyleOptionNameShort, OptionNames.NumberNamingTextStyleOptionNameLong, HelpText = HelpTexts.NumberNamingTextStyle)]
 	public NumberNamingTextStyle NumberNamingTextStyle { get; }
 
+	[Option(OptionNames.CopyInvalidFormatActionOptionNameShort, OptionNames.CopyInvalidFormatActionOptionNameLong, HelpText = HelpTexts.CopyInvalidFormatAction)]
+	public CopyInvalidFormatAction InvalidFileFormatAction { get; }
+
 	[Option(OptionNames.CopyNoPhotoDateTimeTakenActionOptionNameShort, OptionNames.CopyNoPhotoDateTimeTakenActionOptionNameLong, HelpText = HelpTexts.CopyNoPhotoTakenDateAction)]
 	public CopyNoPhotoTakenDateAction NoPhotoTakenDateAction { get; }
 
@@ -85,6 +89,9 @@ public class CopyOptions : IReverseGeocodeOptions
 
 	[Option(OptionNames.FolderAppendLocationTypeOptionNameShort, OptionNames.FolderAppendLocationTypeOptionNameLong, HelpText = HelpTexts.FolderAppendLocationType)]
 	public FolderAppendLocationType? FolderAppendLocationType { get; }
+
+	[Option(OptionNames.VerifyOptionNameShort, OptionNames.VerifyOptionNameLong, HelpText = HelpTexts.Verify)]
+	public bool Verify { get; }
 
 	#endregion
 

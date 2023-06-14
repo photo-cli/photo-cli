@@ -26,7 +26,7 @@ public class AddressRunner : IConsoleRunner
 			return ExitCode.InputFileNotExists;
 
 		var photoExifData = _exifParserService.Parse(_options.InputPath, false, true);
-		if (photoExifData.Coordinate == null)
+		if (photoExifData?.Coordinate == null)
 			return ExitCode.PhotosWithNoCoordinatePreventedProcess;
 
 		switch (_options.AddressListType)

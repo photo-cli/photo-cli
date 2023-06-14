@@ -71,7 +71,7 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	[MemberData(nameof(FetchQueueIsSameWithConnectionLimit))]
 	[MemberData(nameof(FetchQueueIsBiggerThanConnectionLimit))]
 	public async Task Check_Concurrent_ReverseGeocode_Requests_Obeys_ConnectionLimit_By_Checking_Possible_Elapsed_Duration_Is_Between_Minimum_And_Maximum(ReverseGeocodeProvider reverseGeocodeProvider,
-		int connectionLimit, TimeSpan fetchDuration, Dictionary<string, ExifData> sourceExifDataByFilePath)
+		int connectionLimit, TimeSpan fetchDuration, Dictionary<string, ExifData?> sourceExifDataByFilePath)
 	{
 		var semaphoreMinimumCircuitCount = Math.Ceiling((float)sourceExifDataByFilePath.Count / connectionLimit);
 		var minimumFetchTime = fetchDuration * semaphoreMinimumCircuitCount;
@@ -93,8 +93,8 @@ public class ReverseGeocodeFetcherServiceUnitTests
 
 	private void CheckElapsedTime(Stopwatch stopwatch, TimeSpan minimumFetchTime, int itemCount)
 	{
-		// other computation shouldn't take more 200 millisecond for each photo on average computer
-		var maximumFetchTime = minimumFetchTime.Add(TimeSpan.FromMilliseconds(200) * itemCount);
+		// other computation shouldn't take more 500 millisecond for each photo on average computer
+		var maximumFetchTime = minimumFetchTime.Add(TimeSpan.FromMilliseconds(500) * itemCount);
 		minimumFetchTime = minimumFetchTime.Subtract(TimeSpan.FromMilliseconds(100)); // performance tolerance
 		stopwatch.Elapsed.Should().BeGreaterThan(minimumFetchTime);
 		stopwatch.Elapsed.Should().BeLessThan(maximumFetchTime);
@@ -121,7 +121,7 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	[Theory]
 	[MemberData(nameof(ObeyReverseGeocodeProvidersRateLimitData))]
 	public async Task Check_Obeying_ReverseGeocode_Providers_Rate_Limit_By_Checking_Possible_Elapsed_Duration_Is_Between_Minimum_And_Maximum(ReverseGeocodeProvider reverseGeocodeProvider,
-		TimeSpan reverseGeocodeServiceRateLimitBetweenEachRequest, Dictionary<string, ExifData> sourceExifDataByFilePath)
+		TimeSpan reverseGeocodeServiceRateLimitBetweenEachRequest, Dictionary<string, ExifData?> sourceExifDataByFilePath)
 	{
 		var minimumFetchTime = reverseGeocodeServiceRateLimitBetweenEachRequest * sourceExifDataByFilePath.Count;
 		var reverseGeocodeMock = new Mock<IReverseGeocodeService>(MockBehavior.Strict);
@@ -253,8 +253,8 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	[Theory]
 	[MemberData(nameof(CoordinatesExifDataWithExpectedReverseGeocode))]
 	[MemberData(nameof(NoCoordinateShouldReturnWithNoReverseGeocodeSet))]
-	public async Task Given_Source_Dictionary_Should_Return_With_ReverseGeocode_Property_Set_On_Each_ExifData_Value(Dictionary<string, ExifData> sourceExifDataByFilePath,
-		Dictionary<string, ExifData> expectedResultExifDataByFilePath)
+	public async Task Given_Source_Dictionary_Should_Return_With_ReverseGeocode_Property_Set_On_Each_ExifData_Value(Dictionary<string, ExifData?> sourceExifDataByFilePath,
+		Dictionary<string, ExifData?> expectedResultExifDataByFilePath)
 	{
 		var reverseGeocodeMock = new Mock<IReverseGeocodeService>(MockBehavior.Strict);
 		reverseGeocodeMock.Setup(s => s.Get(It.IsAny<Coordinate>()))

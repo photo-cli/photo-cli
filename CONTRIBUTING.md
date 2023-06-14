@@ -110,6 +110,12 @@ If there is a changed on lower version emerged, these changes should be merged f
 [optional footer(s)]
 ```
 
+If changes is linked to [GitHub issue(s)](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue), reference related issue by appending as the following format in your commit message.
+
+```
+fix #{issue-no}
+```
+
 #### Type to be Used
 
 - build

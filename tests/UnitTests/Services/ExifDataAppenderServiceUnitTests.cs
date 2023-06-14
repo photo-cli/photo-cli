@@ -5,7 +5,7 @@ namespace PhotoCli.Tests.UnitTests.Services;
 public class ExifDataAppenderServiceUnitTests
 {
 	private readonly Mock<IExifParserService> _parsePhotoTakenDateTime;
-	private readonly ISetup<IExifParserService, ExifData> _setupParseExifData;
+	private readonly ISetup<IExifParserService, ExifData?> _setupParseExifData;
 
 	public ExifDataAppenderServiceUnitTests()
 	{
@@ -26,9 +26,9 @@ public class ExifDataAppenderServiceUnitTests
 		}
 	};
 
-	public static TheoryData<Dictionary<string, ExifData>> NoPhotoTakenDateData = new()
+	public static TheoryData<Dictionary<string, ExifData?>> NoPhotoTakenDateData = new()
 	{
-		new Dictionary<string, ExifData>
+		new Dictionary<string, ExifData?>
 		{
 			{ "path", ExifDataFakes.WithNoPhotoTakenDate() }
 		}
@@ -38,11 +38,11 @@ public class ExifDataAppenderServiceUnitTests
 	[Theory]
 	[MemberData(nameof(ValidData))]
 	[MemberData(nameof(NoPhotoTakenDateData))]
-	public void PhotoTakenByPath_Returns_Dictionary_Key_As_Path_And_Value_As_PhotoTaken(Dictionary<string, ExifData> photoExifDataDictionarySample)
+	public void PhotoTakenByPath_Returns_Dictionary_Key_As_Path_And_Value_As_PhotoTaken(Dictionary<string, ExifData?> photoExifDataDictionarySample)
 	{
-		_setupParseExifData.Returns((string path, bool _, bool _) => photoExifDataDictionarySample[path]);
+		_setupParseExifData.Returns((string path, bool _, bool _) => photoExifDataDictionarySample[path]!);
 		var sut = new ExifDataAppenderService(_parsePhotoTakenDateTime.Object, StatisticsFakes.Empty(), ConsoleWriterFakes.Valid());
-		var photoTakenDictionary = sut.ExifDataByPath(photoExifDataDictionarySample.Keys.ToArray(), out _, out _);
+		var photoTakenDictionary = sut.ExifDataByPath(photoExifDataDictionarySample.Keys.ToArray(), out _, out _, out _);
 		photoTakenDictionary.Should().BeEquivalentTo(photoExifDataDictionarySample);
 	}
 }

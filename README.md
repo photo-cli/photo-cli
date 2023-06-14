@@ -112,12 +112,12 @@ There are lots of [transformation options](#usages) and [customization settings]
 
 Command with explicit argument names & values
 ```
-photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --naming-style DateTimeWithSecondsAddress --number-style PaddingZeroCharacter --folder-append DayRange --folder-append-location Prefix --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city town suburb --output photo-cli-test --no-coordinate InSubFolder --no-taken-date InSubFolder
+photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --naming-style DateTimeWithSecondsAddress --number-style PaddingZeroCharacter --folder-append DayRange --folder-append-location Prefix --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city town suburb --output photo-cli-test --no-coordinate InSubFolder --no-taken-date InSubFolder --verify
 ```
 
 Same command with shorter alias of all argument names & values
 ```
-photo-cli copy -f 2 -s 8 -n 2 -a 4 -p 1 -e 2 -r country city town suburb -o photo-cli-test -c 3 -t 3
+photo-cli copy -f 2 -s 8 -n 2 -a 4 -p 1 -e 2 -r country city town suburb -o photo-cli-test -c 3 -t 3 -v
 ```
 
 Console/terminal output (as progress may take time, for each operation completion status shown with progress)
@@ -128,12 +128,14 @@ This OpenStreetMapFoundation provider is using rate limit of 1 seconds between e
 Reverse Geocoding: finished.
 Directory grouping: finished.
 Processing target folder: finished.
+Verified all photo files copied successfully by comparing file hashes from original photo files.
+All files SHA1 hashes written into file: sha1.lst. You may verify yourself with `sha1sum --check sha1.lst` tool in Linux/macOS.
 Writing csv report: finished.
-- 18 photos copied.
+- 17 photos copied.
 - 4 directories created.
 - 15 photos has taken date and coordinate.
 - 1 photos has taken date but no coordinate.
-- 2 photos has no taken date and coordinate.
+- 1 photos has no taken date and coordinate.
 ```
 
 #### Step By Step `photo-cli copy` Process
@@ -145,7 +147,8 @@ Writing csv report: finished.
 5. As [the folder append type](#folder-append-type---a---folder-append-) is selected as `DayRange` and [folder append location](#folder-append-location-type---p---folder-append-location-) is `Prefix`, folder names on output folder will be created with same name prefixed with a earliest and latest photograph taken date. For example: `2005.12.14-2008.10.22-Italy album` (original folder name is `Italy album`)
 6. As [the file name strategy](#naming-style---s---naming-style-) is selected as `DateTimeWithSecondsAddress` each photograph file name would be copied as photo taken date unified with the address which is built from third party reverse geocode provider by photograph's coordinate. For example: `2012.06.22_19.52.31-United Kingdom-Ascot-Sunninghill and Ascot.jpg` (original file name is `GOPR6742.jpg`)
 7. As [no photograph taken date action](#no-photograph-taken-date-action-for-copy-command----t---no-taken-date-) is selected as `InSubFolder` and [no coordinate action](#no-coordinate-action-for-copy-command----c---no-coordinate-) is selected as `InSubFolder`, photographs with no related EXIF data copied into a sub folder by obeying original folder hierarchy. For example: `/Italy album/no-address/IMG_2371.jpg` and `/Spain Journey/no-address-and-no-photo-taken-date/IMG_5397.jpg`
-8. To verify and see all information in one place, `photo-cli-report.csv` report will be created on the output file. Can be examined in [Markdown table](#contents-of-photo-cli-reportcsv-file-in-markdown-table-report-of-copy-command) or [CSV file](#contents-of-photo-cli-reportcsv-file-in-raw-text-format-report-of-copy-command).
+8. As [verify](#verify---v---verify) is added, it is verifying that all photo files copied successfully by comparing file hashes. By adding this, it guarantees that there won't be any corrupted photos that is caused by disk operation failures.
+9. To verify and see all information in one place, `photo-cli-report.csv` report will be created on the output file. Can be examined in [Markdown table](#contents-of-photo-cli-reportcsv-file-in-markdown-table-report-of-copy-command) or [CSV file](#contents-of-photo-cli-reportcsv-file-in-raw-text-format-report-of-copy-command).
 
 ##### Contents of `photo-cli-report.csv` File in Markdown Table (report of `copy` command)
 
@@ -1182,7 +1185,7 @@ photo-cli help info
 
   -b, --bigdatacloud-key            (Optional) API key needed to use BigDataCloud. https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/ (Instead of using this option, environment name: PHOTO_CLI_BIG_DATA_CLOUD_API_KEY can be used. )
 
-  -v, --bigdatacloud-levels         (Optional) Admin levels separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from BigDataCloud. )
+  -u, --bigdatacloud-levels         (Optional) Admin levels separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from BigDataCloud. )
 
   -m, --googlemaps-types            (Optional) GoogleMaps address types separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from GoogleMaps. )
 
@@ -1255,11 +1258,13 @@ photo-cli help copy
 
   -p, --folder-append-location      (Optional) Append location for `FolderAppendType`. [Can be use with `FolderProcessType` is `SubFoldersPreserveFolderHierarchy`] ( Prefix: 1, Suffix: 2 )
 
+  -v, --verify                      (Optional) Verify that all photo files copied successfully by comparing file hashes. (no extra parameter needed)
+
   -e, --reverse-geocode             (Optional) Third-party provider to resolve photo taken address by photo's coordinates. ( Disabled: 0 [default], BigDataCloud: 1, OpenStreetMapFoundation: 2, GoogleMaps: 3, LocationIq: 5 )
 
   -b, --bigdatacloud-key            (Optional) API key needed to use BigDataCloud. https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/ (Instead of using this option, environment name: PHOTO_CLI_BIG_DATA_CLOUD_API_KEY can be used. )
 
-  -v, --bigdatacloud-levels         (Optional) Admin levels separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from BigDataCloud. )
+  -u, --bigdatacloud-levels         (Optional) Admin levels separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from BigDataCloud. )
 
   -m, --googlemaps-types            (Optional) GoogleMaps address types separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from GoogleMaps. )
 
@@ -1312,7 +1317,7 @@ Example with long argument names;
 photo-cli copy --no-coordinate PreventProcess --reverse-geocode BigDataCloud --process-type Single --input [input-folder] --number-style AllNamesAreSameLength --output [output-folder] --naming-style Address --no-taken-date DontCopyToOutput --bigdatacloud-levels 2 4 6 8
 
 Example with short argument names;
-photo-cli copy -c PreventProcess -e BigDataCloud -f Single -i [input-folder] -n AllNamesAreSameLength -o [output-folder] -s Address -t DontCopyToOutput -v 2 4 6 8
+photo-cli copy -c PreventProcess -e BigDataCloud -f Single -i [input-folder] -n AllNamesAreSameLength -o [output-folder] -s Address -t DontCopyToOutput -u 2 4 6 8
 
 - Adding year month day as a prefix to existing folder names and photos copied with a file name as day and address. The address will be built from Google Maps (need API key).
 
@@ -1340,7 +1345,7 @@ photo-cli help address
 
   -b, --bigdatacloud-key            (Optional) API key needed to use BigDataCloud. https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/ (Instead of using this option, environment name: PHOTO_CLI_BIG_DATA_CLOUD_API_KEY can be used. )
 
-  -v, --bigdatacloud-levels         (Optional) Admin levels separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from BigDataCloud. )
+  -u, --bigdatacloud-levels         (Optional) Admin levels separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from BigDataCloud. )
 
   -m, --googlemaps-types            (Optional) GoogleMaps address types separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from GoogleMaps. )
 
@@ -1525,6 +1530,10 @@ Must be used on `copy` verb. Number naming strategy when using [Naming Style](#n
 | PaddingZeroCharacter  | 2     |
 | OnlySequentialNumbers | 3     |
 
+### Verify ( -v, --verify)
+
+Optional use for `copy` verb. Verify that all photo files copied successfully by comparing file hashes. (no extra parameter needed)
+
 ### Is Dry Run ( -d, --dry-run )
 
 Optional use for `copy` verb. Simulate the same process without writing to output folder. No extra parameter needed.
@@ -1552,7 +1561,7 @@ Sets [Google Maps reverse geocode](https://developers.google.com/maps/documentat
 
 Sets [Location Iq reverse geocode](https://locationiq.com/sandbox/geocoding/reverse/) API key. Alternatively, you may use the environment variable `PHOTO_CLI_LOCATIONIQ_API_KEY`.
 
-### BigDataCloud Admin Levels ( -v, --bigdatacloud-levels )
+### BigDataCloud Admin Levels ( -u, --bigdatacloud-levels )
 
 Must be used when `BigDataCloud` is selected as reverse geocode provider. Big Data Cloud admin levels are separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see the full response returned from BigDataCloud. )
 

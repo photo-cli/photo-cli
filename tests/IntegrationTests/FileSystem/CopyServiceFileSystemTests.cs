@@ -85,7 +85,7 @@ public class CopyServiceFileSystemTests
 	[MemberData(nameof(PhotoDateTakenData))]
 	[MemberData(nameof(CoordinateAndReverseGeocodeData))]
 	[MemberData(nameof(MixedData))]
-	public async Task CsvOutput_Writes_File_And_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(Dictionary<string, ExifData> exifData,
+	public async Task CsvOutput_Writes_File_And_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(Dictionary<string, ExifData?> exifData,
 		List<PhotoCsv> expectedPhotoCsvModels)
 	{
 		var outputCsvPath = MockFileSystemHelper.Path("/output.csv");
@@ -101,15 +101,12 @@ public class CopyServiceFileSystemTests
 
 	#region Report
 
-	public static TheoryData<string, Dictionary<string, IReadOnlyCollection<Photo>>, List<PhotoCsv>> ReportWritesToCsvFileAndVerifyPhotoCsvModelMatchedWithReadingOutputFileData =
+	public static TheoryData<string, IEnumerable<Photo>, List<PhotoCsv>> ReportWritesToCsvFileAndVerifyPhotoCsvModelMatchedWithReadingOutputFileData =
 		new()
 		{
 			{
 				OutputPath,
-				new Dictionary<string, IReadOnlyCollection<Photo>>
-				{
-					{ string.Empty, new List<Photo> { PhotoFakes.Create("photo0.jpg", Date2000, sourcePath: SourcePath) } },
-				},
+				new List<Photo> { PhotoFakes.Create("photo0.jpg", Date2000, sourcePath: SourcePath) },
 				new List<PhotoCsv>
 				{
 					PhotoCsvFakes.CreateWithFileName("photo0.jpg", SourcePath, Date2000, outputPath: OutputPath),
@@ -120,12 +117,12 @@ public class CopyServiceFileSystemTests
 	[Theory]
 	[MemberData(nameof(ReportWritesToCsvFileAndVerifyPhotoCsvModelMatchedWithReadingOutputFileData))]
 	public async Task CopyWithReport_Report_Writes_To_Csv_File_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(string output,
-		Dictionary<string, IReadOnlyCollection<Photo>> groupedPhotoInfosByRelativeDirectory, List<PhotoCsv> expectedPhotoCsvModels)
+		IEnumerable<Photo> photos, List<PhotoCsv> expectedPhotoCsvModels)
 	{
 		var outputFolder = MockFileSystemHelper.Path(output);
 		var mockFileSystem = new MockFileSystem();
 		var sut = new CsvService(mockFileSystem, NullLogger<CsvService>.Instance, ToolOptionFakes.Create(), ConsoleWriterFakes.Valid());
-		await sut.Report(groupedPhotoInfosByRelativeDirectory, outputFolder);
+		await sut.Report(photos, outputFolder);
 		var csvFile = mockFileSystem.FileInfo.FromFileName(Path.Combine(outputFolder, ToolOptionFakes.CsvReportFileName));
 		csvFile.Exists.Should().BeTrue();
 		var actualPhotoCsvModels = CsvFileHelper.ReadRecords(csvFile);
@@ -135,12 +132,12 @@ public class CopyServiceFileSystemTests
 	[Theory]
 	[MemberData(nameof(ReportWritesToCsvFileAndVerifyPhotoCsvModelMatchedWithReadingOutputFileData))]
 	public async Task DryRun_Report_Writes_To_Csv_File_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(string output,
-		Dictionary<string, IReadOnlyCollection<Photo>> groupedPhotoInfosByRelativeDirectory, List<PhotoCsv> expectedPhotoCsvModels)
+		IEnumerable<Photo> photos, List<PhotoCsv> expectedPhotoCsvModels)
 	{
 		var outputFolder = MockFileSystemHelper.Path(output);
 		var mockFileSystem = new MockFileSystem();
 		var sut = new CsvService(mockFileSystem, NullLogger<CsvService>.Instance, ToolOptionFakes.Create(), ConsoleWriterFakes.Valid());
-		await sut.Report(groupedPhotoInfosByRelativeDirectory, outputFolder);
+		await sut.Report(photos, outputFolder);
 		var csvFile = mockFileSystem.FileInfo.FromFileName(Path.Combine(outputFolder, "photo-cli-report.csv"));
 		csvFile.Exists.Should().BeTrue();
 		var actualPhotoCsvModels = CsvFileHelper.ReadRecords(csvFile);

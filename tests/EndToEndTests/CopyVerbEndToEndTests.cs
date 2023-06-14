@@ -266,7 +266,7 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 	{
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.Address, FolderProcessType.Single,
-				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput, false,
+				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
 			new List<PhotoCsv>
 			{
@@ -282,9 +282,9 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				SingleItalyArezzo8("Toscana-Province of Arezzo-8", true, "Toscana", "Province of Arezzo"),
 				SingleItalyArezzo9("Toscana-Province of Arezzo-9", true, "Toscana", "Province of Arezzo"),
 				SingleItalyArezzo9Duplicate("Toscana-Province of Arezzo-10", true, "Toscana", "Province of Arezzo"),
-				SingleUnitedKingdom("England-South East England-Windsor and Maidenhead", true, "England", "South East England", "Windsor and Maidenhead"),
-				SingleSpain1("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-1", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
-				SingleSpain2("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-2", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
+				SingleUnitedKingdom("England-Windsor and Maidenhead", true, "England", "Windsor and Maidenhead"),
+				SingleSpain1("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-1", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SingleSpain2("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-2", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
 			},
 			new ConsoleOutputValues(18, 15, 15, 1, 2)
 		}
@@ -311,9 +311,9 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				SingleItalyArezzo8("Toscana-Province of Arezzo-08", true, "Toscana", "Province of Arezzo"),
 				SingleItalyArezzo9("Toscana-Province of Arezzo-09", true, "Toscana", "Province of Arezzo"),
 				SingleItalyArezzo9Duplicate("Toscana-Province of Arezzo-10", true, "Toscana", "Province of Arezzo"),
-				SingleUnitedKingdom("England-South East England-Windsor and Maidenhead", true, "England", "South East England", "Windsor and Maidenhead"),
-				SingleSpain1("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-1", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
-				SingleSpain2("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-2", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
+				SingleUnitedKingdom("England-Windsor and Maidenhead", true, "England", "Windsor and Maidenhead"),
+				SingleSpain1("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-1", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SingleSpain2("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-2", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
 			},
 			new ConsoleOutputValues(18, 15, 15, 1, 2)
 		}
@@ -340,9 +340,9 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				SingleItalyArezzo8("Toscana-Province of Arezzo-17", true, "Toscana", "Province of Arezzo"),
 				SingleItalyArezzo9("Toscana-Province of Arezzo-18", true, "Toscana", "Province of Arezzo"),
 				SingleItalyArezzo9Duplicate("Toscana-Province of Arezzo-19", true, "Toscana", "Province of Arezzo"),
-				SingleUnitedKingdom("England-South East England-Windsor and Maidenhead", true, "England", "South East England", "Windsor and Maidenhead"),
-				SingleSpain1("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-1", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
-				SingleSpain2("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-2", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
+				SingleUnitedKingdom("England-Windsor and Maidenhead", true, "England", "Windsor and Maidenhead"),
+				SingleSpain1("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-1", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SingleSpain2("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-2", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
 			},
 			new ConsoleOutputValues(18, 15, 15, 1, 2)
 		}
@@ -373,9 +373,9 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				SingleItalyArezzo8("2008.10.22-Toscana-Province of Arezzo-8", true, "Toscana", "Province of Arezzo"),
 				SingleItalyArezzo9("2008.10.22-Toscana-Province of Arezzo-9", true, "Toscana", "Province of Arezzo"),
 				SingleItalyArezzo9Duplicate("2008.10.22-Toscana-Province of Arezzo-10", true, "Toscana", "Province of Arezzo"),
-				SingleUnitedKingdom("2012.06.22-England-South East England-Windsor and Maidenhead", true, "England", "South East England", "Windsor and Maidenhead"),
-				SingleSpain1("2015.04.10-Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-1", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
-				SingleSpain2("2015.04.10-Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-2", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
+				SingleUnitedKingdom("2012.06.22-England-Windsor and Maidenhead", true, "England", "Windsor and Maidenhead"),
+				SingleSpain1("2015.04.10-Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-1", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SingleSpain2("2015.04.10-Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-2", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
 			},
 			new ConsoleOutputValues(18, 15, 15, 1, 2)
 		}
@@ -654,9 +654,9 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				SubFoldersItalyArezzo8("Toscana-Province of Arezzo-8", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9("Toscana-Province of Arezzo-9", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9Duplicate("Toscana-Province of Arezzo-10", true, "Toscana", "Province of Arezzo"),
-				SubFoldersUnitedKingdom("England-South East England-Windsor and Maidenhead", true, "England", "South East England", "Windsor and Maidenhead"),
-				SubFoldersSpain1("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-1", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
-				SubFoldersSpain2("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-2", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
+				SubFoldersUnitedKingdom("England-Windsor and Maidenhead", true, "England", "Windsor and Maidenhead"),
+				SubFoldersSpain1("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-1", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SubFoldersSpain2("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-2", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
 			},
 			new ConsoleOutputValues(18, 15, 15, 1, 2)
 		}
@@ -683,9 +683,9 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				SubFoldersItalyArezzo8("Toscana-Province of Arezzo-08", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9("Toscana-Province of Arezzo-09", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9Duplicate("Toscana-Province of Arezzo-10", true, "Toscana", "Province of Arezzo"),
-				SubFoldersUnitedKingdom("England-South East England-Windsor and Maidenhead", true, "England", "South East England", "Windsor and Maidenhead"),
-				SubFoldersSpain1("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-1", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
-				SubFoldersSpain2("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-2", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
+				SubFoldersUnitedKingdom("England-Windsor and Maidenhead", true, "England", "Windsor and Maidenhead"),
+				SubFoldersSpain1("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-1", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SubFoldersSpain2("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-2", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
 			},
 			new ConsoleOutputValues(18, 15, 15, 1, 2)
 		}
@@ -712,9 +712,9 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				SubFoldersItalyArezzo8("Toscana-Province of Arezzo-17", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9("Toscana-Province of Arezzo-18", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9Duplicate("Toscana-Province of Arezzo-19", true, "Toscana", "Province of Arezzo"),
-				SubFoldersUnitedKingdom("England-South East England-Windsor and Maidenhead", true, "England", "South East England", "Windsor and Maidenhead"),
-				SubFoldersSpain1("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-1", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
-				SubFoldersSpain2("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-2", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
+				SubFoldersUnitedKingdom("England-Windsor and Maidenhead", true, "England", "Windsor and Maidenhead"),
+				SubFoldersSpain1("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-1", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SubFoldersSpain2("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-2", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
 			},
 			new ConsoleOutputValues(18, 15, 15, 1, 2)
 		}
@@ -745,9 +745,9 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				SubFoldersItalyArezzo8("2008.10.22-Toscana-Province of Arezzo-8", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9("2008.10.22-Toscana-Province of Arezzo-9", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9Duplicate("2008.10.22-Toscana-Province of Arezzo-10", true, "Toscana", "Province of Arezzo"),
-				SubFoldersUnitedKingdom("2012.06.22-England-South East England-Windsor and Maidenhead", true, "England", "South East England", "Windsor and Maidenhead"),
-				SubFoldersSpain1("2015.04.10-Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-1", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
-				SubFoldersSpain2("2015.04.10-Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-2", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
+				SubFoldersUnitedKingdom("2012.06.22-England-Windsor and Maidenhead", true, "England", "Windsor and Maidenhead"),
+				SubFoldersSpain1("2015.04.10-Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-1", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SubFoldersSpain2("2015.04.10-Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-2", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
 			},
 			new ConsoleOutputValues(18, 15, 15, 1, 2)
 		}
@@ -825,10 +825,10 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
 			new List<PhotoCsv>
 			{
-				SubFoldersUnitedKingdom("England-South East England-Windsor and Maidenhead/2012.06.22", true, "England", "South East England", "Windsor and Maidenhead"),
+				SubFoldersUnitedKingdom("England-Windsor and Maidenhead/2012.06.22", true, "England", "Windsor and Maidenhead"),
 				SubFoldersKenya("Nakuru/2005.08.13", true, "Nakuru"),
-				SubFoldersSpain1("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area/2015.04.10-1", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
-				SubFoldersSpain2("Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area/2015.04.10-2", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
+				SubFoldersSpain1("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares/2015.04.10-1", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SubFoldersSpain2("Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares/2015.04.10-2", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
 				SubFoldersItalyFlorence("Toscana-Province of Florence/2005.12.14", true, "Toscana", "Province of Florence"),
 				SubFoldersItalyArezzo1("Toscana-Province of Arezzo/2008.10.22-10", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo2("Toscana-Province of Arezzo/2008.10.22-11", true, "Toscana", "Province of Arezzo"),
@@ -852,14 +852,14 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 	{
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.FlattenAllSubFolders,
-				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, false, GroupByFolderType.AddressHierarchy,
+				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, groupByFolderType: GroupByFolderType.AddressHierarchy,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
 			new List<PhotoCsv>
 			{
-				SubFoldersUnitedKingdom("England/South East England/Windsor and Maidenhead/2012.06.22", true, "England", "South East England", "Windsor and Maidenhead"),
+				SubFoldersUnitedKingdom("England/Windsor and Maidenhead/2012.06.22", true, "England", "Windsor and Maidenhead"),
 				SubFoldersKenya("Nakuru/2005.08.13", true, "Nakuru"),
-				SubFoldersSpain1("Community of Madrid/Comunidad de Madrid/Madrid Metropolitan Area/2015.04.10-1", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
-				SubFoldersSpain2("Community of Madrid/Comunidad de Madrid/Madrid Metropolitan Area/2015.04.10-2", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
+				SubFoldersSpain1("Comunidad de Madrid/Area metropolitana de Madrid y Corredor del Henares/2015.04.10-1", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SubFoldersSpain2("Comunidad de Madrid/Area metropolitana de Madrid y Corredor del Henares/2015.04.10-2", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
 				SubFoldersItalyFlorence("Toscana/Province of Florence/2005.12.14", true, "Toscana", "Province of Florence"),
 				SubFoldersItalyArezzo1("Toscana/Province of Arezzo/2008.10.22-10", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo2("Toscana/Province of Arezzo/2008.10.22-11", true, "Toscana", "Province of Arezzo"),
@@ -1081,7 +1081,7 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 			new List<PhotoCsv>
 			{
 				SubFoldersKenya("Nakuru", true, "Nakuru"),
-				SubFoldersUnitedKingdom("England-South East England-Windsor and Maidenhead", true, "England", "South East England", "Windsor and Maidenhead"),
+				SubFoldersUnitedKingdom("England-Windsor and Maidenhead", true, "England", "Windsor and Maidenhead"),
 				SubFoldersItalyFlorence("ItalyFolder/Florence/Toscana-Province of Florence", true, "Toscana", "Province of Florence"),
 				SubFoldersItalyArezzo1("ItalyFolder/Arezzo/Toscana-Province of Arezzo-1", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo2("ItalyFolder/Arezzo/Toscana-Province of Arezzo-2", true, "Toscana", "Province of Arezzo"),
@@ -1093,8 +1093,8 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				SubFoldersItalyArezzo8("ItalyFolder/Arezzo/Toscana-Province of Arezzo-8", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9("ItalyFolder/Arezzo/Toscana-Province of Arezzo-9", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9Duplicate("ItalyFolder/Arezzo/Toscana-Province of Arezzo-10", true, "Toscana", "Province of Arezzo"),
-				SubFoldersSpain1("SpainFolder/Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-1", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
-				SubFoldersSpain2("SpainFolder/Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-2", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
+				SubFoldersSpain1("SpainFolder/Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-1", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SubFoldersSpain2("SpainFolder/Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-2", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
 			},
 			new ConsoleOutputValues(18, 15, 15, 1, 2, 3)
 		}
@@ -1104,13 +1104,13 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 	{
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Address, FolderProcessType.SubFoldersPreserveFolderHierarchy,
-				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput, false,
+				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud,
 				bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
 			new List<PhotoCsv>
 			{
 				SubFoldersKenya("Nakuru", true, "Nakuru"),
-				SubFoldersUnitedKingdom("England-South East England-Windsor and Maidenhead", true, "England", "South East England", "Windsor and Maidenhead"),
+				SubFoldersUnitedKingdom("England-Windsor and Maidenhead", true, "England", "Windsor and Maidenhead"),
 				SubFoldersItalyFlorence("ItalyFolder/Florence/Toscana-Province of Florence", true, "Toscana", "Province of Florence"),
 				SubFoldersItalyArezzo1("ItalyFolder/Arezzo/Toscana-Province of Arezzo-01", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo2("ItalyFolder/Arezzo/Toscana-Province of Arezzo-02", true, "Toscana", "Province of Arezzo"),
@@ -1122,8 +1122,8 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				SubFoldersItalyArezzo8("ItalyFolder/Arezzo/Toscana-Province of Arezzo-08", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9("ItalyFolder/Arezzo/Toscana-Province of Arezzo-09", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9Duplicate("ItalyFolder/Arezzo/Toscana-Province of Arezzo-10", true, "Toscana", "Province of Arezzo"),
-				SubFoldersSpain1("SpainFolder/Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-1", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
-				SubFoldersSpain2("SpainFolder/Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-2", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
+				SubFoldersSpain1("SpainFolder/Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-1", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SubFoldersSpain2("SpainFolder/Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-2", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
 			},
 			new ConsoleOutputValues(18, 15, 15, 1, 2, 3)
 		}
@@ -1139,7 +1139,7 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 			new List<PhotoCsv>
 			{
 				SubFoldersKenya("Nakuru", true, "Nakuru"),
-				SubFoldersUnitedKingdom("England-South East England-Windsor and Maidenhead", true, "England", "South East England", "Windsor and Maidenhead"),
+				SubFoldersUnitedKingdom("England-Windsor and Maidenhead", true, "England", "Windsor and Maidenhead"),
 				SubFoldersItalyFlorence("ItalyFolder/Florence/Toscana-Province of Florence", true, "Toscana", "Province of Florence"),
 				SubFoldersItalyArezzo1("ItalyFolder/Arezzo/Toscana-Province of Arezzo-10", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo2("ItalyFolder/Arezzo/Toscana-Province of Arezzo-11", true, "Toscana", "Province of Arezzo"),
@@ -1151,8 +1151,8 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				SubFoldersItalyArezzo8("ItalyFolder/Arezzo/Toscana-Province of Arezzo-17", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9("ItalyFolder/Arezzo/Toscana-Province of Arezzo-18", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9Duplicate("ItalyFolder/Arezzo/Toscana-Province of Arezzo-19", true, "Toscana", "Province of Arezzo"),
-				SubFoldersSpain1("SpainFolder/Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-1", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
-				SubFoldersSpain2("SpainFolder/Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-2", true, "Community of Madrid", "Comunidad de Madrid", "Madrid Metropolitan Area"),
+				SubFoldersSpain1("SpainFolder/Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-1", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SubFoldersSpain2("SpainFolder/Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-2", true, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
 			},
 			new ConsoleOutputValues(18, 15, 15, 1, 2, 3)
 		}
@@ -1166,12 +1166,12 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 	{
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.DayAddress, FolderProcessType.SubFoldersPreserveFolderHierarchy,
-				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput, false,
+				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
 			new List<PhotoCsv>
 			{
 				SubFoldersKenya("2005.08.13-Nakuru", true, "Nakuru"),
-				SubFoldersUnitedKingdom("2012.06.22-England-South East England-Windsor and Maidenhead", true, "England", "South East England", "Windsor and Maidenhead"),
+				SubFoldersUnitedKingdom("2012.06.22-England-Windsor and Maidenhead", true, "England", "Windsor and Maidenhead"),
 				SubFoldersItalyFlorence("ItalyFolder/Florence/2005.12.14-Toscana-Province of Florence", true, "Toscana", "Province of Florence"),
 				SubFoldersItalyArezzo1("ItalyFolder/Arezzo/2008.10.22-Toscana-Province of Arezzo-1", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo2("ItalyFolder/Arezzo/2008.10.22-Toscana-Province of Arezzo-2", true, "Toscana", "Province of Arezzo"),
@@ -1183,10 +1183,10 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				SubFoldersItalyArezzo8("ItalyFolder/Arezzo/2008.10.22-Toscana-Province of Arezzo-8", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9("ItalyFolder/Arezzo/2008.10.22-Toscana-Province of Arezzo-9", true, "Toscana", "Province of Arezzo"),
 				SubFoldersItalyArezzo9Duplicate("ItalyFolder/Arezzo/2008.10.22-Toscana-Province of Arezzo-10", true, "Toscana", "Province of Arezzo"),
-				SubFoldersSpain1("SpainFolder/2015.04.10-Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-1", true, "Community of Madrid", "Comunidad de Madrid",
-					"Madrid Metropolitan Area"),
-				SubFoldersSpain2("SpainFolder/2015.04.10-Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area-2", true, "Community of Madrid", "Comunidad de Madrid",
-					"Madrid Metropolitan Area"),
+				SubFoldersSpain1("SpainFolder/2015.04.10-Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-1", true, "Comunidad de Madrid",
+					"Area metropolitana de Madrid y Corredor del Henares"),
+				SubFoldersSpain2("SpainFolder/2015.04.10-Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares-2", true, "Comunidad de Madrid",
+					"Area metropolitana de Madrid y Corredor del Henares"),
 			},
 			new ConsoleOutputValues(18, 15, 15, 1, 2, 3)
 		}
@@ -1271,13 +1271,13 @@ public class CopyVerbEndToEndTests : BaseEndToEndTests
 				new List<PhotoCsv>
 				{
 					SubFoldersKenya("2005.08.13", true, "Nakuru"),
-					SubFoldersUnitedKingdom("2012.06.22", true, "England", "South East England", "Windsor and Maidenhead"),
+					SubFoldersUnitedKingdom("2012.06.22", true, "England", "Windsor and Maidenhead"),
 					SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
-					SubFoldersSpain1("SpainFolder-Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area/2015.04.10-1", true, "Community of Madrid", "Comunidad de Madrid",
-						"Madrid Metropolitan Area"),
-					SubFoldersSpain2("SpainFolder-Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area/2015.04.10-2", true, "Community of Madrid", "Comunidad de Madrid",
-						"Madrid Metropolitan Area"),
-					SubFoldersNoPhotoTakenDate("SpainFolder-Community of Madrid-Comunidad de Madrid-Madrid Metropolitan Area/NoPhotoTakenDate"),
+					SubFoldersSpain1("SpainFolder-Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares/2015.04.10-1", true, "Comunidad de Madrid",
+						"Area metropolitana de Madrid y Corredor del Henares"),
+					SubFoldersSpain2("SpainFolder-Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares/2015.04.10-2", true, "Comunidad de Madrid",
+						"Area metropolitana de Madrid y Corredor del Henares"),
+					SubFoldersNoPhotoTakenDate("SpainFolder-Comunidad de Madrid-Area metropolitana de Madrid y Corredor del Henares/NoPhotoTakenDate"),
 					SubFoldersItalyFlorence("ItalyFolder/Florence-Toscana-Province of Florence/2005.12.14", true, "Toscana", "Province of Florence"),
 					SubFoldersNoGpsCoordinate("ItalyFolder/Florence-Toscana-Province of Florence/2008.07.16"),
 					SubFoldersItalyArezzo1("ItalyFolder/Arezzo-Toscana-Province of Arezzo/2008.10.22-1", true, "Toscana", "Province of Arezzo"),

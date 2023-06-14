@@ -50,26 +50,26 @@ photo-cli copy -f FlattenAllSubFolders -g YearMonthDay -i [input-folder] -n Only
 - Adding day range as a prefix to existing folder names and photos copied with a file name as address and day.
 
 Example with long argument names;
-photo-cli copy --folder-append DayRange --no-coordinate InSubFolder --reverse-geocode GoogleMaps --process-type SubFoldersPreserveFolderHierarchy --input [input-folder] --googlemaps-key google-api-key --googlemaps-types administrative_area_level_1 administrative_area_level_2 administrative_area_level_3 --number-style AllNamesAreSameLength --output [output-folder] --folder-append-location Prefix --naming-style AddressDay --no-taken-date InSubFolder
+photo-cli copy --folder-append DayRange --no-coordinate InSubFolder --reverse-geocode GoogleMaps --process-type SubFoldersPreserveFolderHierarchy --input [input-folder] --googlemaps-key google-api-key --googlemaps-types administrative_area_level_1 administrative_area_level_2 administrative_area_level_3 --number-style AllNamesAreSameLength --output [output-folder] --folder-append-location Prefix --naming-style AddressDay --no-taken-date InSubFolder --invalid-format PreventProcess
 
 Example with short argument names;
-photo-cli copy -a DayRange -c InSubFolder -e GoogleMaps -f SubFoldersPreserveFolderHierarchy -i [input-folder] -k google-api-key -m administrative_area_level_1 administrative_area_level_2 administrative_area_level_3 -n AllNamesAreSameLength -o [output-folder] -p Prefix -s AddressDay -t InSubFolder
+photo-cli copy -a DayRange -c InSubFolder -e GoogleMaps -f SubFoldersPreserveFolderHierarchy -i [input-folder] -k google-api-key -m administrative_area_level_1 administrative_area_level_2 administrative_area_level_3 -n AllNamesAreSameLength -o [output-folder] -p Prefix -s AddressDay -t InSubFolder -x PreventProcess
 
 - Preserve same folder hierarchy, copy photos with a file name as photo taken date, time and address. Possible file name will have number suffix. Photos that don't have any coordinate or photo taken date will be copied in a relative subfolder.
 
 Example with long argument names;
-photo-cli copy --no-coordinate InSubFolder --reverse-geocode OpenStreetMapFoundation --process-type SubFoldersPreserveFolderHierarchy --input [input-folder] --number-style AllNamesAreSameLength --output [output-folder] --openstreetmap-properties country city town suburb --naming-style AddressDateTimeWithSeconds --no-taken-date InSubFolder
+photo-cli copy --no-coordinate InSubFolder --reverse-geocode OpenStreetMapFoundation --process-type SubFoldersPreserveFolderHierarchy --input [input-folder] --number-style AllNamesAreSameLength --output [output-folder] --openstreetmap-properties country city town suburb --naming-style AddressDateTimeWithSeconds --no-taken-date InSubFolder --invalid-format PreventProcess
 
 Example with short argument names;
-photo-cli copy -c InSubFolder -e OpenStreetMapFoundation -f SubFoldersPreserveFolderHierarchy -i [input-folder] -n AllNamesAreSameLength -o [output-folder] -r country city town suburb -s AddressDateTimeWithSeconds -t InSubFolder
+photo-cli copy -c InSubFolder -e OpenStreetMapFoundation -f SubFoldersPreserveFolderHierarchy -i [input-folder] -n AllNamesAreSameLength -o [output-folder] -r country city town suburb -s AddressDateTimeWithSeconds -t InSubFolder -x PreventProcess
 
 - Groups photos by photo taken year, month, day than copy on [year]/[month]/[day] directory with a file name as photo taken date. Photos that don't have any coordinate will be copied in a relative subfolder.
 
 Example with long argument names;
-photo-cli copy --no-coordinate InSubFolder --reverse-geocode BigDataCloud --process-type FlattenAllSubFolders --group-by AddressHierarchy --input [input-folder] --number-style OnlySequentialNumbers --output [output-folder] --naming-style DayAddress --bigdatacloud-levels 2 4 6 8
+photo-cli copy --no-coordinate InSubFolder --reverse-geocode BigDataCloud --process-type FlattenAllSubFolders --group-by AddressHierarchy --input [input-folder] --number-style OnlySequentialNumbers --output [output-folder] --naming-style DayAddress --bigdatacloud-levels 2 4 6 8 --invalid-format PreventProcess
 
 Example with short argument names;
-photo-cli copy -c InSubFolder -e BigDataCloud -f FlattenAllSubFolders -g AddressHierarchy -i [input-folder] -n OnlySequentialNumbers -o [output-folder] -s DayAddress -v 2 4 6 8
+photo-cli copy -c InSubFolder -e BigDataCloud -f FlattenAllSubFolders -g AddressHierarchy -i [input-folder] -n OnlySequentialNumbers -o [output-folder] -s DayAddress -u 2 4 6 8 -x PreventProcess
 ";
 
 		await RunHelpAndVerifyOutput("copy", copyExampleUsages);

@@ -80,6 +80,11 @@ public static class DateTimeFakes
 		return new DateTime(YearDefault, MonthDefault, DayDefault, HourDefault, MinuteDefault, second);
 	}
 
+	public static DateTime Valid()
+	{
+		return DateTime.MinValue;
+	}
+
 	public static string FormatSecond(int second)
 	{
 		var dateTime = WithSecond(second);

@@ -58,6 +58,11 @@ public static class PhotoFakes
 		return Create();
 	}
 
+	public static Photo ValidFileWithDay(int day)
+	{
+		return Create(takenDate: DateTimeFakes.WithDay(day));
+	}
+
 	public static Photo NoDateWithTargetRelativeDirectoryPath(string targetRelativeDirectoryPath)
 	{
 		return Create(targetRelativeDirectoryPath: targetRelativeDirectoryPath);
@@ -126,21 +131,48 @@ public static class PhotoFakes
 		return Create(fileNameWithExtension, targetRelativeDirectoryPath: targetRelativeDirectoryPath, newName: newName);
 	}
 
-	public static Photo WithValidFilePath(string sourcePath, string fileNameWithExtension, ExifData photoExifData, string targetRelativeDirectoryPath)
+	public static Photo WithInvalidFileFormat()
 	{
-		return Create(fileNameWithExtension, photoExifData.TakenDate, photoExifData.Coordinate, targetRelativeDirectoryPath, sourcePath: sourcePath,
-			reverseGeocodes: photoExifData.ReverseGeocodes);
+		return InvalidFileFormat();
+	}
+
+	public static Photo WithValidFilePathInvalidFileFormat(string sourcePath, string fileNameWithExtension, string targetRelativeDirectoryPath)
+	{
+		return InvalidFileFormat(fileNameWithExtension, targetRelativeDirectoryPath: targetRelativeDirectoryPath, sourcePath: sourcePath);
+	}
+
+	public static Photo WithValidFilePathAndExifData(string sourcePath, string fileNameWithExtension, ExifData? photoExifData, string targetRelativeDirectoryPath)
+	{
+		return Create(fileNameWithExtension, photoExifData?.TakenDate, photoExifData?.Coordinate, targetRelativeDirectoryPath, sourcePath: sourcePath,
+			reverseGeocodes: photoExifData?.ReverseGeocodes);
+	}
+
+	public static Photo WithSha1Hash(string fileNameWithExtension, string sha1Hash, string? targetRelativeDirectoryPath = "")
+	{
+		return Create(fileNameWithExtension, targetRelativeDirectoryPath: targetRelativeDirectoryPath, sha1Hash: sha1Hash);
 	}
 
 	public static Photo Create(string? fileNameWithExtension = null, DateTime? takenDate = null, Coordinate? coordinate = null, string? targetRelativeDirectoryPath = null, string? newName = null,
-		IEnumerable<string>? reverseGeocodes = null, string? sourcePath = null)
+		IEnumerable<string>? reverseGeocodes = null, string? sourcePath = null, string? sha1Hash = null)
+	{
+		var exifData = ExifDataFakes.Create(takenDate, coordinate, reverseGeocodes?.ToList());
+		return CreateWithExifData(exifData, fileNameWithExtension, targetRelativeDirectoryPath, newName, sourcePath, sha1Hash);
+	}
+
+	private static Photo InvalidFileFormat(string? fileNameWithExtension = null, string? targetRelativeDirectoryPath = null, string? newName = null, string? sourcePath = null, string? sha1Hash = null)
+	{
+		return CreateWithExifData(null, fileNameWithExtension, targetRelativeDirectoryPath, newName, sourcePath, sha1Hash);
+	}
+
+	private static Photo CreateWithExifData(ExifData? exifData, string? fileNameWithExtension = null, string? targetRelativeDirectoryPath = null, string? newName = null, string? sourcePath = null, string? sha1Hash = null)
 	{
 		sourcePath ??= "source-path";
 		fileNameWithExtension ??= "dummy.jpg";
 		targetRelativeDirectoryPath ??= string.Empty;
-		var mockFileInfo = new MockFileInfo(MockFileSystemHelper.DummyInstance, Path.Combine(sourcePath, fileNameWithExtension));
-		var exifData = ExifDataFakes.Create(takenDate, coordinate, reverseGeocodes?.ToList());
+		var mockFileInfo = new MockFileInfo(new MockFileSystem(), Path.Combine(sourcePath, fileNameWithExtension));
 		var photo = new Photo(mockFileInfo, exifData, targetRelativeDirectoryPath) { NewName = newName };
+		if (sha1Hash != null)
+			photo.Sha1Hash = sha1Hash;
 		return photo;
 	}
 }

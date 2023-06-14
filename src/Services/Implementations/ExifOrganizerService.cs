@@ -3,54 +3,70 @@ namespace PhotoCli.Services.Implementations;
 public class ExifOrganizerService : IExifOrganizerService
 {
 	private readonly ILogger<ExifOrganizerService> _logger;
+	private readonly CopyInvalidFormatAction[] _invalidFormatActionsToFilter = { CopyInvalidFormatAction.DontCopyToOutput, CopyInvalidFormatAction.InSubFolder };
+	private readonly CopyNoCoordinateAction[] _noCoordinateActionsToFilter = { CopyNoCoordinateAction.DontCopyToOutput, CopyNoCoordinateAction.InSubFolder };
+	private readonly CopyNoPhotoTakenDateAction[] _noPhotoTakenActionsToFilter = {
+		CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoPhotoTakenDateAction.InSubFolder,
+		CopyNoPhotoTakenDateAction.AppendToEndOrderByFileName, CopyNoPhotoTakenDateAction.InsertToBeginningOrderByFileName
+	};
 
 	public ExifOrganizerService(ILogger<ExifOrganizerService> logger)
 	{
 		_logger = logger;
 	}
 
-	public (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterAndSortByNoActionTypes(IReadOnlyCollection<Photo> photoInfos, CopyNoPhotoTakenDateAction noPhotoDateTimeTakenAction,
-		CopyNoCoordinateAction noCoordinateAction)
+	public (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterAndSortByNoActionTypes(IReadOnlyCollection<Photo> photoInfos, CopyInvalidFormatAction invalidFormatAction,
+		CopyNoPhotoTakenDateAction noPhotoDateTimeTakenAction, CopyNoCoordinateAction noCoordinateAction, string targetRelativeDirectoryPath)
 	{
-		IReadOnlyCollection<Photo> notToRenamePhotos = new List<Photo>();
-		if (noCoordinateAction != CopyNoCoordinateAction.Continue)
+		IReadOnlyCollection<Photo> filteredAndSorted = photoInfos;
+		var keptFilesNotInFilter = new List<Photo>();
+
+		_logger.LogDebug("Start filtering and sorting on {TargetFolder} with {PhotoCount} photos by invalid format action: {InvalidFormatAction}, no coordinate action: {NoCoordinateAction}, no coordinate action: {NoCoordinateAction}",
+			targetRelativeDirectoryPath, photoInfos.Count, invalidFormatAction, noCoordinateAction, noCoordinateAction);
+
+		if (_invalidFormatActionsToFilter.Contains(invalidFormatAction))
 		{
-			var (coordinateOrderedPhotos, coordinateNotToRenamePhotos) = FilterByNoCoordinateAction(photoInfos, noCoordinateAction);
-			_logger.LogTrace("Filtered by no coordinate action; To rename count {ToRenameCount}, to not rename count {ToNotRenameCount}", coordinateOrderedPhotos.Count,
-				coordinateNotToRenamePhotos.Count);
-			photoInfos = coordinateOrderedPhotos;
-			notToRenamePhotos = coordinateNotToRenamePhotos;
+			var (filteredByValidFiles, keptInvalidFiles) = FilterByInvalidFormatAction(filteredAndSorted, invalidFormatAction);
+			_logger.LogDebug("Filtered by no invalid format action: Filtered to {FilterToCount}, kept not in filter {KeptNotInFilterCount}", filteredByValidFiles.Count, keptInvalidFiles.Count);
+			filteredAndSorted = filteredByValidFiles;
+			keptFilesNotInFilter.AddRange(keptInvalidFiles);
 		}
 
-		if (noPhotoDateTimeTakenAction != CopyNoPhotoTakenDateAction.Continue)
+		if (_noCoordinateActionsToFilter.Contains(noCoordinateAction))
 		{
-			var (photoTakenOrderedPhotos, photoTakenNotToRenamePhotos) = FilterAndSortByNoPhotoDateTimeTakenAction(photoInfos, notToRenamePhotos, noPhotoDateTimeTakenAction);
-			_logger.LogTrace("Filtered by no taken date action; To rename count {ToRenameCount}, to not rename count {ToNotRenameCount}", photoTakenOrderedPhotos.Count, photoTakenOrderedPhotos.Count);
-			photoInfos = photoTakenOrderedPhotos;
-			notToRenamePhotos = photoTakenNotToRenamePhotos;
+			var (filteredByCoordinates, keptDontHaveCoordinates) = FilterByNoCoordinateAction(filteredAndSorted, noCoordinateAction);
+			_logger.LogDebug("Filtered by no coordinate action: Filtered to {FilterToCount}, kept not in filter {KeptNotInFilterCount}", filteredByCoordinates.Count, keptDontHaveCoordinates.Count);
+			filteredAndSorted = filteredByCoordinates;
+			keptFilesNotInFilter.AddRange(keptDontHaveCoordinates);
+		}
+
+		if (_noPhotoTakenActionsToFilter.Contains(noPhotoDateTimeTakenAction))
+		{
+			var (photoTakenFilteredAndOrderedPhotos, keptDontHavePhotoTakenDate) = FilterAndSortByNoPhotoDateTimeTakenAction(filteredAndSorted, noPhotoDateTimeTakenAction);
+			_logger.LogDebug("Filtered by no taken date action: Filtered to {FilterToCount}, kept not in filter {KeptNotInFilterCount}", photoTakenFilteredAndOrderedPhotos.Count, keptDontHavePhotoTakenDate.Count);
+			filteredAndSorted = photoTakenFilteredAndOrderedPhotos;
+			keptFilesNotInFilter.AddRange(keptDontHavePhotoTakenDate);
 		}
 		else
 		{
-			_logger.LogTrace("No taken date action as continue, just sort by photo date");
-			photoInfos = SortByPhotoDateTime(photoInfos);
+			_logger.LogDebug("No taken date action as continue, just sort by photo date");
+			filteredAndSorted = SortByPhotoDateTime(filteredAndSorted);
 		}
 
-		return (photoInfos, notToRenamePhotos);
+		return (filteredAndSorted, keptFilesNotInFilter);
 	}
 
-	private (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterAndSortByNoPhotoDateTimeTakenAction(IReadOnlyCollection<Photo> photoInfos, IReadOnlyCollection<Photo> notToRenamePhotos,
-		CopyNoPhotoTakenDateAction? noPhotoDateTimeTakenAction)
+	private (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterAndSortByNoPhotoDateTimeTakenAction(IReadOnlyCollection<Photo> photoInfos, CopyNoPhotoTakenDateAction noPhotoDateTimeTakenAction)
 	{
 		var withDateOrdered = FilterAndOrderPhotosWithTakenDateTime(photoInfos);
 		var noDateOrderedByFileName = FilterAndOrderPhotosWithoutTakenDateTime(photoInfos);
 		List<Photo> photosOrdered;
-		List<Photo> photosNotToRename = new(notToRenamePhotos);
+		List<Photo> photosNotToRename = new List<Photo>();
 
 		switch (noPhotoDateTimeTakenAction)
 		{
 			case CopyNoPhotoTakenDateAction.DontCopyToOutput:
 				photosOrdered = withDateOrdered.ToList();
-				photosNotToRename = photosNotToRename.Where(w => w.HasPhotoTakenDateTime).ToList();
 				break;
 			case CopyNoPhotoTakenDateAction.AppendToEndOrderByFileName or CopyNoPhotoTakenDateAction.InSubFolder:
 				photosOrdered = withDateOrdered.ToList();
@@ -67,13 +83,29 @@ public class ExifOrganizerService : IExifOrganizerService
 		return (photosOrdered, photosNotToRename);
 	}
 
-	private (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterByNoCoordinateAction(IReadOnlyCollection<Photo> photoInfos, CopyNoCoordinateAction? noCoordinateAction)
+	private (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterByInvalidFormatAction(IReadOnlyCollection<Photo> photoInfos, CopyInvalidFormatAction invalidFormatAction)
+	{
+		var validFiles = photoInfos.Where(w => w.HasExifData).ToList();
+		var keptInvalidFiles = photoInfos.Where(w => !w.HasExifData).ToList();
+		switch (invalidFormatAction)
+		{
+			case CopyInvalidFormatAction.InSubFolder:
+				return (validFiles, keptInvalidFiles);
+			case CopyInvalidFormatAction.DontCopyToOutput:
+				return (validFiles, new List<Photo>());
+			default:
+				throw new PhotoCliException($"Not implemented {nameof(CopyInvalidFormatAction)}: {invalidFormatAction}");
+		}
+	}
+
+
+	private (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterByNoCoordinateAction(IReadOnlyCollection<Photo> photoInfos, CopyNoCoordinateAction noCoordinateAction)
 	{
 		var withCoordinates = photoInfos.Where(w => w.HasCoordinate).ToList();
 		var withoutCoordinates = photoInfos.Where(w => !w.HasCoordinate).ToList();
 		switch (noCoordinateAction)
 		{
-			case CopyNoCoordinateAction.InSubFolder or null:
+			case CopyNoCoordinateAction.InSubFolder:
 				return (withCoordinates, withoutCoordinates);
 			case CopyNoCoordinateAction.DontCopyToOutput:
 				return (withCoordinates, new List<Photo>());

@@ -5,7 +5,7 @@ namespace PhotoCli.Services.Implementations;
 public class PhotoCollectorService : IPhotoCollectorService
 {
 	private const string ProgressName = "Searching photos";
-	private static readonly string[] SupportedExtensions = { ".jpg" };
+	private static readonly string[] SupportedExtensions = { ".jpg", ".jpeg", ".heic" };
 	private readonly IConsoleWriter _consoleWriter;
 	private readonly Statistics _statistics;
 	private readonly ILogger<PhotoCollectorService> _logger;
@@ -39,7 +39,7 @@ public class PhotoCollectorService : IPhotoCollectorService
 			_logger.LogCritical(unauthorizedAccessException, message);
 			throw new PhotoCliException($"{message} -> {unauthorizedAccessException.Message}");
 		}
-		_consoleWriter.ProgressFinish(ProgressName, $"{filePaths.Length} photos found.");
+		_consoleWriter.ProgressFinish(ProgressName, $"{filePaths.Length} photo(s) found.");
 		_statistics.PhotosFound = filePaths.Length;
 		return filePaths;
 	}
