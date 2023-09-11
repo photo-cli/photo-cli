@@ -5,8 +5,10 @@ public class OpenStreetMapReverseGeocodeServiceHttpClientTests
 	[Fact]
 	public async Task Service_Response_Valid()
 	{
-		var sut = new OpenStreetMapFoundationReverseGeocodeService(OpenStreetMapRealHttpClient(), NullLogger<OpenStreetMapFoundationReverseGeocodeService>.Instance);
-		var openStreetMapResponse = await sut.SerializeFullResponse(CoordinateFakes.Ankara());
+		var coordinateCacheMock = new Mock<CoordinateCache<OpenStreetMapResponse>>();
+		var sut = new OpenStreetMapFoundationReverseGeocodeService(OpenStreetMapRealHttpClient(), NullLogger<OpenStreetMapFoundationReverseGeocodeService>.Instance, coordinateCacheMock.Object);
+		var openStreetMapRequest = new ReverseGeocodeRequest(CoordinateFakes.Ankara());
+		var openStreetMapResponse = await sut.SerializeFullResponse(openStreetMapRequest);
 		openStreetMapResponse.Verify(ReverseGeocodeProvider.OpenStreetMapFoundation);
 	}
 

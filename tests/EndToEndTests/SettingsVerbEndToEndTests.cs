@@ -44,6 +44,7 @@ public class SettingsVerbEndToEndTests : BaseEndToEndTests
 ArchivePhotoTakenDateHashSeparator=-
 BigDataCloudApiKey=
 ConnectionLimit=4
+CoordinatePrecision=4
 CsvReportFileName=photo-cli-report.csv
 DateFormatWithDay=yyyy.MM.dd
 DateFormatWithMonth=yyyy.MM

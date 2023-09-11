@@ -9,17 +9,20 @@ public class GoogleMapsReverseGeocodeService : IGoogleMapsReverseGeocodeService
 	private readonly ApiKeyStore _apiKeyStore;
 	private readonly HttpClient _httpClient;
 	private readonly ILogger<GoogleMapsReverseGeocodeService> _logger;
+	private readonly ICoordinateCache<GoogleMapsResponse> _coordinateCache;
 
-	public GoogleMapsReverseGeocodeService(HttpClient httpClient, ApiKeyStore apiKeyStore, ILogger<GoogleMapsReverseGeocodeService> logger)
+	public GoogleMapsReverseGeocodeService(HttpClient httpClient, ApiKeyStore apiKeyStore, ILogger<GoogleMapsReverseGeocodeService> logger, ICoordinateCache<GoogleMapsResponse> coordinateCache)
 	{
 		_httpClient = httpClient;
 		_apiKeyStore = apiKeyStore;
 		_logger = logger;
+		_coordinateCache = coordinateCache;
 	}
 
 	public async Task<IEnumerable<string>> Get(Coordinate coordinate, string? language, IEnumerable<string> requestedAddressTypes)
 	{
-		var googleMapsResponse = await SerializeFullResponse(coordinate, language);
+		var googleMapsRequest = new ReverseGeocodeRequest(coordinate, language);
+		var googleMapsResponse = await SerializeFullResponse(googleMapsRequest);
 		if (googleMapsResponse?.Results == null)
 			return ArraySegment<string>.Empty;
 
@@ -28,13 +31,18 @@ public class GoogleMapsReverseGeocodeService : IGoogleMapsReverseGeocodeService
 		return addressPropertyValueList;
 	}
 
-	public async Task<GoogleMapsResponse?> SerializeFullResponse(Coordinate coordinate, string? language)
+	public async Task<GoogleMapsResponse?> SerializeFullResponse(ReverseGeocodeRequest request)
 	{
 		try
 		{
-			var queryString = $"?latlng={coordinate.Latitude},{coordinate.Longitude}&key={_apiKeyStore.GoogleMaps}";
-			if (language != null)
-				queryString += $"&language={language}";
+			var queryString = $"?latlng={request.Coordinate.Latitude},{request.Coordinate.Longitude}&key={_apiKeyStore.GoogleMaps}";
+
+			if (request.Language != null)
+				queryString += $"&language={request.Language}";
+
+			if (_coordinateCache.TryGet(request, out var cachedData))
+				return cachedData;
+
 			var googleMapsResponse = await _httpClient.GetFromJsonAsync<GoogleMapsResponse>(queryString, StaticOptions.JsonSerializerOptions);
 			if (googleMapsResponse == null)
 			{
@@ -54,6 +62,8 @@ public class GoogleMapsReverseGeocodeService : IGoogleMapsReverseGeocodeService
 				return null;
 			}
 
+			_coordinateCache.SetResponse(request, googleMapsResponse);
+
 			return googleMapsResponse;
 		}
 		catch (Exception e)
@@ -65,7 +75,8 @@ public class GoogleMapsReverseGeocodeService : IGoogleMapsReverseGeocodeService
 
 	public async Task<Dictionary<string, object>> AllAvailableReverseGeocodes(Coordinate coordinate, string? language)
 	{
-		var googleMapsResponse = await SerializeFullResponse(coordinate, language);
+		var googleMapsRequest = new ReverseGeocodeRequest(coordinate, language);
+		var googleMapsResponse = await SerializeFullResponse(googleMapsRequest);
 		if (googleMapsResponse?.Results == null)
 			throw new PhotoCliException($"Can't get {nameof(GoogleMapsResult)} list");
 		var namesByType = BuildNamesByType(googleMapsResponse.Results);

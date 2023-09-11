@@ -38,12 +38,13 @@ public class ReverseGeocodeService : IReverseGeocodeService
 	public async Task<string> RawResponse(Coordinate coordinate)
 	{
 		_logger.LogTrace("Getting raw serialized response of coordinate {Coordinate} from provider: {ReverseGeocodeProvider}", coordinate, _options.ReverseGeocodeProvider);
+		var reverseGeocodeServiceRequest = new ReverseGeocodeRequest(coordinate, _options.Language);
 		object? response = _options.ReverseGeocodeProvider switch
 		{
-			ReverseGeocodeProvider.BigDataCloud => await _bigDataCloud.SerializeFullResponse(coordinate, _options.Language),
-			ReverseGeocodeProvider.OpenStreetMapFoundation => await _openStreetMapFoundation.SerializeFullResponse(coordinate),
-			ReverseGeocodeProvider.GoogleMaps => await _googleMaps.SerializeFullResponse(coordinate, _options.Language),
-			ReverseGeocodeProvider.LocationIq => await _locationIq.SerializeFullResponse(coordinate),
+			ReverseGeocodeProvider.BigDataCloud => await _bigDataCloud.SerializeFullResponse(reverseGeocodeServiceRequest),
+			ReverseGeocodeProvider.OpenStreetMapFoundation => await _openStreetMapFoundation.SerializeFullResponse(reverseGeocodeServiceRequest),
+			ReverseGeocodeProvider.GoogleMaps => await _googleMaps.SerializeFullResponse(reverseGeocodeServiceRequest),
+			ReverseGeocodeProvider.LocationIq => await _locationIq.SerializeFullResponse(reverseGeocodeServiceRequest),
 			_ => throw new PhotoCliException($"{nameof(_options.ReverseGeocodeProvider)}, should have a valid value")
 		};
 		if (response == null)

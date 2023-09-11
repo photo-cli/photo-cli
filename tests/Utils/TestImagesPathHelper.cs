@@ -3,6 +3,7 @@ namespace PhotoCli.Tests.Utils;
 public static class TestImagesPathHelper
 {
 	private const string RootTestImagesDirectory = "TestImages";
+	private static readonly int CoordinatePrecision = ToolOptions.Default().CoordinatePrecision;
 
 	private static string ExifImage(string fileName)
 	{
@@ -53,7 +54,7 @@ public static class TestImagesPathHelper
 	{
 		private const string FileName = "HasGpsCoordinate.jpg";
 		public static readonly string FilePath = ExifImage(FileName);
-		public static readonly Coordinate PhotoTakenCoordinate = new Coordinate(43.46744833333334, 11.885126666663888);
+		public static readonly Coordinate PhotoTakenCoordinate = new(Math.Round(43.46744833333334, CoordinatePrecision), Math.Round(11.885126666663888, CoordinatePrecision));
 	}
 
 	public static class DontHaveExifSubIdfAndExifIfd0Directory
@@ -71,13 +72,13 @@ public static class TestImagesPathHelper
 	{
 		public static readonly string FilePath = ExifImage("Exif-HasCoordinateAndDate.jpeg");
 		public static readonly DateTime PhotoTakenDate = new(2023, 6, 1, 20, 13, 20);
-		public static readonly Coordinate PhotoTakenCoordinate = new(47.502391666666668, 19.034752777777779);
+		public static readonly Coordinate PhotoTakenCoordinate = new(Math.Round(47.502391666666668, CoordinatePrecision), Math.Round(19.034752777777779, CoordinatePrecision));
 	}
 
 	public static class HasCoordinateAndDateHeicDirectory
 	{
 		public static readonly string FilePath = ExifImage("Exif-HasCoordinateAndDate.HEIC");
 		public static readonly DateTime PhotoTakenDate = new(2023, 1, 30, 15, 21, 22);
-		public static readonly Coordinate PhotoTakenCoordinate = new(48.199038888888886, 16.371333333333332);
+		public static readonly Coordinate PhotoTakenCoordinate = new(Math.Round(48.199038888888886, CoordinatePrecision), Math.Round(16.371333333333332, CoordinatePrecision));
 	}
 }

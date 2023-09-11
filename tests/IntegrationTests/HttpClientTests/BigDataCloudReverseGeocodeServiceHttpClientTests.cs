@@ -9,8 +9,10 @@ public class BigDataCloudReverseGeocodeServiceHttpClientTests : IClassFixture<Se
 		var apiKey = Environment.GetEnvironmentVariable(apiKeyEnvironmentVariableName);
 		apiKey.Should().NotBeNull("{0} environment variable not set", apiKeyEnvironmentVariableName);
 		var apiKeyStore = new ApiKeyStore { BigDataCloud = apiKey };
-		var sut = new BigDataCloudReverseGeocodeService(BigDataCloudRealHttpClient(), NullLogger<BigDataCloudReverseGeocodeService>.Instance, apiKeyStore);
-		var bigDataCloudResponse = await sut.SerializeFullResponse(CoordinateFakes.Ankara(), "tr");
+		var coordinateCacheMock = new Mock<CoordinateCache<BigDataCloudResponse>>();
+		var sut = new BigDataCloudReverseGeocodeService(BigDataCloudRealHttpClient(), NullLogger<BigDataCloudReverseGeocodeService>.Instance, apiKeyStore, coordinateCacheMock.Object);
+		var bigDataCloudRequest = new ReverseGeocodeRequest(CoordinateFakes.Ankara(), "tr");
+		var bigDataCloudResponse = await sut.SerializeFullResponse(bigDataCloudRequest);
 		bigDataCloudResponse.Verify();
 	}
 
