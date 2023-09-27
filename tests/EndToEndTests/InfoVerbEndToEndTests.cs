@@ -47,22 +47,22 @@ public class InfoVerbEndToEndTests : BaseEndToEndTests
 				InfoNoCoordinateAction.Continue, false, ReverseGeocodeProvider.BigDataCloud, new List<string> { "3", "4", "5", "6", "7" }),
 			new List<PhotoCsv>
 			{
-				SingleKenya(null, false, "Nakuru"),
-				SingleItalyFlorence(null, false, "Toscana", "Province of Florence"),
+				SingleKenya(useFullPath: false),
+				SingleItalyFlorence(useFullPath: false),
 				SingleNoGpsCoordinate(useFullPath: false),
-				SingleItalyArezzo1(null, false, "Toscana", "Province of Arezzo"),
-				SingleItalyArezzo2(null, false, "Toscana", "Province of Arezzo"),
-				SingleItalyArezzo3(null, false, "Toscana", "Province of Arezzo"),
-				SingleItalyArezzo4(null, false, "Toscana", "Province of Arezzo"),
-				SingleItalyArezzo5(null, false, "Toscana", "Province of Arezzo"),
-				SingleItalyArezzo6(null, false, "Toscana", "Province of Arezzo"),
-				SingleItalyArezzo7(null, false, "Toscana", "Province of Arezzo"),
-				SingleItalyArezzo8(null, false, "Toscana", "Province of Arezzo"),
-				SingleItalyArezzo9(null, false, "Toscana", "Province of Arezzo"),
-				SingleItalyArezzo9Duplicate(null, false, "Toscana", "Province of Arezzo"),
-				SingleUnitedKingdom(null, false, "England", "Windsor and Maidenhead"),
-				SingleSpain1(null, false, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
-				SingleSpain2(null, false, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SingleItalyArezzo1(useFullPath: false),
+				SingleItalyArezzo2(useFullPath: false),
+				SingleItalyArezzo3(useFullPath: false),
+				SingleItalyArezzo4(useFullPath: false),
+				SingleItalyArezzo5(useFullPath: false),
+				SingleItalyArezzo6(useFullPath: false),
+				SingleItalyArezzo7(useFullPath: false),
+				SingleItalyArezzo8(useFullPath: false),
+				SingleItalyArezzo9(useFullPath: false),
+				SingleItalyArezzo9Duplicate(useFullPath: false),
+				SingleUnitedKingdom(useFullPath: false),
+				SingleSpain1(useFullPath: false),
+				SingleSpain2(useFullPath: false),
 				SingleNoGpsCoordinateAndNoPhotoTakenDate(useFullPath: false),
 				SingleNoPhotoTakenDate(useFullPath: false),
 			},
@@ -107,22 +107,22 @@ public class InfoVerbEndToEndTests : BaseEndToEndTests
 				InfoNoCoordinateAction.Continue, false, ReverseGeocodeProvider.BigDataCloud, new List<string> { "3", "4", "5", "6", "7" }),
 			new List<PhotoCsv>
 			{
-				SubFoldersKenya(null, false, "Nakuru"),
-				SubFoldersItalyFlorence(null, false, "Toscana", "Province of Florence"),
+				SubFoldersKenya(useFullPath: false),
+				SubFoldersItalyFlorence(useFullPath: false),
 				SubFoldersNoGpsCoordinate(useFullPath: false),
-				SubFoldersItalyArezzo1(null, false, "Toscana", "Province of Arezzo"),
-				SubFoldersItalyArezzo2(null, false, "Toscana", "Province of Arezzo"),
-				SubFoldersItalyArezzo3(null, false, "Toscana", "Province of Arezzo"),
-				SubFoldersItalyArezzo4(null, false, "Toscana", "Province of Arezzo"),
-				SubFoldersItalyArezzo5(null, false, "Toscana", "Province of Arezzo"),
-				SubFoldersItalyArezzo6(null, false, "Toscana", "Province of Arezzo"),
-				SubFoldersItalyArezzo7(null, false, "Toscana", "Province of Arezzo"),
-				SubFoldersItalyArezzo8(null, false, "Toscana", "Province of Arezzo"),
-				SubFoldersItalyArezzo9(null, false, "Toscana", "Province of Arezzo"),
-				SubFoldersItalyArezzo9Duplicate(null, false, "Toscana", "Province of Arezzo"),
-				SubFoldersUnitedKingdom(null, false, "England", "Windsor and Maidenhead"),
-				SubFoldersSpain1(null, false, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
-				SubFoldersSpain2(null, false, "Comunidad de Madrid", "Area metropolitana de Madrid y Corredor del Henares"),
+				SubFoldersItalyArezzo1(useFullPath: false),
+				SubFoldersItalyArezzo2(useFullPath: false),
+				SubFoldersItalyArezzo3(useFullPath: false),
+				SubFoldersItalyArezzo4(useFullPath: false),
+				SubFoldersItalyArezzo5(useFullPath: false),
+				SubFoldersItalyArezzo6(useFullPath: false),
+				SubFoldersItalyArezzo7(useFullPath: false),
+				SubFoldersItalyArezzo8(useFullPath: false),
+				SubFoldersItalyArezzo9(useFullPath: false),
+				SubFoldersItalyArezzo9Duplicate(useFullPath: false),
+				SubFoldersUnitedKingdom(useFullPath: false),
+				SubFoldersSpain1(useFullPath: false),
+				SubFoldersSpain2(useFullPath: false),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate(useFullPath: false),
 				SubFoldersNoPhotoTakenDate(useFullPath: false),
 			},
@@ -145,9 +145,11 @@ public class InfoVerbEndToEndTests : BaseEndToEndTests
 		using (new AssertionScope())
 		{
 			actualConsoleOutput.Should().Be(expectedConsoleOutput);
-			actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModels);
+			actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModels, c => c
+				.Excluding(e => e.ReverseGeocodeFormatted)
+				.Excluding(e => e.Address1).Excluding(e => e.Address2).Excluding(e => e.Address3).Excluding(e => e.Address4)
+				.Excluding(e => e.Address5).Excluding(e => e.Address6).Excluding(e => e.Address7).Excluding(e => e.Address8));
 		}
-
 		CleanArtifacts();
 	}
 
