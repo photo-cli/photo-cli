@@ -116,8 +116,7 @@ public static class Program
 		var toolOptionsValidationResult = toolOptionsValidator.Validate(toolOptions);
 		if (!toolOptionsValidationResult.IsValid)
 		{
-			Console.Error.WriteLine(
-				$"{Constants.AppSettingsFileName} has some invalid settings. Undo or reset all settings via `{Constants.ApplicationExeName} {OptionNames.SettingsVerb} --{OptionNames.ResetOptionNameLong}`");
+			Console.Error.WriteLine($"{Constants.AppSettingsFileName} has some invalid settings. Undo or reset all settings via `{OptionNames.ApplicationAlias} {OptionNames.SettingsVerb} --{OptionNames.ResetOptionNameLong}`");
 			foreach (var validationResultError in toolOptionsValidationResult.Errors)
 				Console.Error.WriteLine(validationResultError);
 			return (int)ExitCode.AppSettingsInvalidFile;
