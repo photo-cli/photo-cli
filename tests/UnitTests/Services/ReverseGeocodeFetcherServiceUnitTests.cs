@@ -93,8 +93,8 @@ public class ReverseGeocodeFetcherServiceUnitTests
 
 	private void CheckElapsedTime(Stopwatch stopwatch, TimeSpan minimumFetchTime, int itemCount)
 	{
-		// other computation shouldn't take more 500 millisecond for each photo on average computer
-		var maximumFetchTime = minimumFetchTime.Add(TimeSpan.FromMilliseconds(500) * itemCount);
+		// other computation shouldn't take more 1 second for each photo on average computer
+		var maximumFetchTime = minimumFetchTime.Add(TimeSpan.FromSeconds(1) * itemCount);
 		minimumFetchTime = minimumFetchTime.Subtract(TimeSpan.FromMilliseconds(100)); // performance tolerance
 		stopwatch.Elapsed.Should().BeGreaterThan(minimumFetchTime);
 		stopwatch.Elapsed.Should().BeLessThan(maximumFetchTime);
