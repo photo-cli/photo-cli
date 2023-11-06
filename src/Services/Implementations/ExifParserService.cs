@@ -80,7 +80,7 @@ public class ExifParserService : IExifParserService
 		var exifSubIfdDirectory = fileDataDirectories.OfType<ExifSubIfdDirectory>().SingleOrDefault();
 		if (exifSubIfdDirectory == null)
 		{
-			_logger.LogWarning("No `ExifSubIfd` directory found on {FilePath}", filePath);
+			_logger.LogDebug("No `ExifSubIfd` directory found on {FilePath}", filePath);
 			return null;
 		}
 
@@ -89,7 +89,7 @@ public class ExifParserService : IExifParserService
 		if (exifSubIfdDirectory.TryGetDateTime(ExifDirectoryBase.TagDateTimeDigitized, out parsedDateTime))
 			return parsedDateTime;
 
-		_logger.LogWarning("No datetime found on tags `TagDateTimeOriginal`, `TagDateTimeDigitized` in {FilePath}", filePath);
+		_logger.LogDebug("No datetime found on tags `TagDateTimeOriginal`, `TagDateTimeDigitized` in {FilePath}", filePath);
 		return null;
 	}
 
@@ -99,14 +99,14 @@ public class ExifParserService : IExifParserService
 		var exifSubIfdDirectory = fileDataDirectories.OfType<ExifIfd0Directory>().SingleOrDefault();
 		if (exifSubIfdDirectory == null)
 		{
-			_logger.LogWarning("No `ExifIfd0` directory found on {FilePath}", filePath);
+			_logger.LogDebug("No `ExifIfd0` directory found on {FilePath}", filePath);
 			return null;
 		}
 
 		if (exifSubIfdDirectory.TryGetDateTime(ExifDirectoryBase.TagDateTime, out var parsedDateTime))
 			return parsedDateTime;
 
-		_logger.LogWarning("No datetime found on tag `TagDateTime` in {FilePath}", filePath);
+		_logger.LogDebug("No datetime found on tag `TagDateTime` in {FilePath}", filePath);
 		return null;
 	}
 }
