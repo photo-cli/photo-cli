@@ -1,6 +1,5 @@
 namespace PhotoCli.Tests.EndToEndTests;
 
-[Collection(XunitSharedCollectionsToDisableParallelExecution.AppSettingsJson)]
 public class AddressVerbEndToEndTests : BaseEndToEndTests
 {
 	public AddressVerbEndToEndTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
