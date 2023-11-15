@@ -23,7 +23,7 @@ public class ToolOptions
 
 	public ToolOptions(ToolOptionsRaw options)
 	{
-		LogLevel = options.LogLevel ?? new LogLevel { Default = Microsoft.Extensions.Logging.LogLevel.Error.ToString() };
+		LogLevel = options.LogLevel ?? new LogLevel { Default = Microsoft.Extensions.Logging.LogLevel.Warning.ToString() };
 		YearFormat = options.YearFormat ?? YearFormatDefault;
 		MonthFormat = options.MonthFormat ?? MonthFormatDefault;
 		DayFormat = options.DayFormat ?? DayFormatDefault;
