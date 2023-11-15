@@ -171,7 +171,7 @@ public static class Program
 			var agent = UserAgent.Instance();
 			services.AddHttpClient<IBigDataCloudReverseGeocodeService, BigDataCloudReverseGeocodeService>(c =>
 			{
-				c.BaseAddress = new Uri("https://api.bigdatacloud.net/data/reverse-geocode/");
+				c.BaseAddress = new Uri("https://api.bigdatacloud.net/data/reverse-geocode");
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
 			});
 
@@ -183,13 +183,13 @@ public static class Program
 
 			services.AddHttpClient<IGoogleMapsReverseGeocodeService, GoogleMapsReverseGeocodeService>(c =>
 			{
-				c.BaseAddress = new Uri("https://maps.googleapis.com/maps/api/geocode/");
+				c.BaseAddress = new Uri("https://maps.googleapis.com/maps/api/geocode/json");
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
 			});
 
 			services.AddHttpClient<ILocationIqReverseGeocodeService, LocationIqReverseGeocodeService>(c =>
 			{
-				c.BaseAddress = new Uri("https://us1.locationiq.com/v1/reverse.php/");
+				c.BaseAddress = new Uri("https://us1.locationiq.com/v1/reverse.php");
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
 			});
 
