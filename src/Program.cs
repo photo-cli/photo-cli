@@ -177,7 +177,7 @@ public static class Program
 
 			services.AddHttpClient<IOpenStreetMapFoundationReverseGeocodeService, OpenStreetMapFoundationReverseGeocodeService>(c =>
 			{
-				c.BaseAddress = new Uri("https://nominatim.openstreetmap.org/reverse/");
+				c.BaseAddress = new Uri("https://nominatim.openstreetmap.org/reverse");
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
 			});
 
