@@ -92,6 +92,8 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 		var verifyFileIntegrity = _options is { Verify: true, IsDryRun: false };
 		foreach (var (targetRelativeDirectoryPath, photoInfos) in groupedPhotosByRelativeDirectory)
 		{
+			_logger.LogTrace("Processing {TargetRelativeDirectory}", targetRelativeDirectoryPath);
+
 			var (filteredAndOrderedPhotos, keptPhotosNotInFilter) = _exifOrganizerService.FilterAndSortByNoActionTypes(photoInfos,
 				_options.InvalidFileFormatAction, _options.NoPhotoTakenDateAction, _options.NoCoordinateAction, targetRelativeDirectoryPath);
 
@@ -112,6 +114,7 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 					return ExitCode.FileVerifyErrors;
 			}
 			_consoleWriter.InProgressItemComplete(TargetRelativeFolderProgressName);
+			_logger.LogTrace("Processed {TargetRelativeDirectory}", targetRelativeDirectoryPath);
 		}
 		_consoleWriter.ProgressFinish(TargetRelativeFolderProgressName);
 		var filteredAllPhotos = filteredPhotosByRelativeDirectory.SelectMany(s => s.Value).ToList();
