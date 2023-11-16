@@ -82,6 +82,18 @@ public static class Program
 				host = BuildHostWithReverseGeocode<CopyRunner, CopyOptions>(copyOptions, textWriter);
 				break;
 			}
+			case ArchiveOptions archiveOptions:
+			{
+				var validationResultCopy = new ArchiveOptionsValidator().Validate(archiveOptions);
+				if (!validationResultCopy.IsValid)
+				{
+					WriteErrorOutputValidationErrors(validationResultCopy, textWriter);
+					return ReturnExitCode(ExitCode.ArchiveOptionsValidationFailed);
+				}
+
+				host = BuildHostWithReverseGeocode<ArchiveRunner, ArchiveOptions>(archiveOptions, textWriter);
+				break;
+			}
 			case SettingsOptions settingsOptions:
 			{
 				var validationResultSettings = new SettingsOptionsValidator().Validate(settingsOptions);
@@ -237,6 +249,11 @@ public static class Program
 			services.AddTransient<IReverseGeocodeService, ReverseGeocodeService>();
 			services.AddTransient<IReverseGeocodeFetcherService, ReverseGeocodeFetcherService>();
 			services.AddTransient<IValidator<ToolOptions>, ToolOptionsValidator>();
+			services.AddTransient<IDuplicatePhotoRemoveService, DuplicatePhotoRemoveService>();
+			services.AddTransient<IDbService, DbService>();
+			services.AddSingleton<IArchiveDbContextProvider, ArchiveDbContextProvider>();
+			services.AddSingleton<ISQLiteConnectionStringProvider, ArchiveIsqLiteConnectionStringProvider>();
+
 			services.AddSingleton(textWriter);
 			services.AddSingleton<IConsoleWriter, ConsoleWriter>();
 			services.AddSingleton<Statistics>();
@@ -248,7 +265,7 @@ public static class Program
 
 	private static bool ParseArgs(IReadOnlyList<string> args, TextWriter textWriter, out object parsedObject, out ExitCode exitCode)
 	{
-		var commandLineArgsParsed = Parser.Default.ParseArguments<CopyOptions, InfoOptions, AddressOptions, SettingsOptions>(args);
+		var commandLineArgsParsed = Parser.Default.ParseArguments<CopyOptions, InfoOptions, ArchiveOptions, AddressOptions, SettingsOptions>(args);
 		if (commandLineArgsParsed.Tag == ParserResultType.NotParsed)
 		{
 			var notParsedResult = (NotParsed<object>)commandLineArgsParsed;

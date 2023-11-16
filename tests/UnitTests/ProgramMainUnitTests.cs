@@ -190,5 +190,33 @@ public class StartupTests
 		service.Should().NotBeNull();
 	}
 
+	[Theory]
+	[InlineData(typeof(ArchiveOptions))]
+	[InlineData(typeof(IConsoleRunner))]
+	[InlineData(typeof(IFileSystem))]
+	[InlineData(typeof(IExifParserService))]
+	[InlineData(typeof(IExifDataAppenderService))]
+	[InlineData(typeof(IPhotoCollectorService))]
+	[InlineData(typeof(IDirectoryGrouperService))]
+	[InlineData(typeof(IFileNamerService))]
+	[InlineData(typeof(IFileService))]
+	[InlineData(typeof(IExifDataGrouperService))]
+	[InlineData(typeof(IFolderRenamerService))]
+	[InlineData(typeof(IReverseGeocodeFetcherService))]
+	[InlineData(typeof(IValidator<ToolOptions>))]
+	[InlineData(typeof(IConsoleWriter))]
+	[InlineData(typeof(IBigDataCloudReverseGeocodeService))]
+	[InlineData(typeof(IGoogleMapsReverseGeocodeService))]
+	[InlineData(typeof(IOpenStreetMapFoundationReverseGeocodeService))]
+	[InlineData(typeof(ILocationIqReverseGeocodeService))]
+	[InlineData(typeof(IDuplicatePhotoRemoveService))]
+	public void GetService_BuildingArchiveRunner_ShouldResolveService(Type type)
+	{
+		var host = Program.BuildHostWithReverseGeocode<ArchiveRunner, ArchiveOptions>(ArchiveOptionsFakes.Valid(), TextWriterFakes.Valid());
+		var sut = host.Services.CreateScope().ServiceProvider;
+		var service = sut.GetService(type);
+		service.Should().NotBeNull();
+	}
+
 	#endregion
 }

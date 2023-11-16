@@ -131,6 +131,12 @@ public static class PhotoFakes
 		return Create(fileNameWithExtension, targetRelativeDirectoryPath: targetRelativeDirectoryPath, newName: newName);
 	}
 
+	public static Photo WithArchiveFileName(int second, string sha1Hash)
+	{
+		var newName = DateTimeFakes.FormatSecond(second) + ToolOptionFakes.ArchivePhotoTakenDateHashSeparator + sha1Hash;
+		return Create(newName: newName, takenDate: DateTimeFakes.WithSecond(second), sha1Hash: sha1Hash);
+	}
+
 	public static Photo WithInvalidFileFormat()
 	{
 		return InvalidFileFormat();
@@ -150,6 +156,16 @@ public static class PhotoFakes
 	public static Photo WithSha1Hash(string fileNameWithExtension, string sha1Hash, string? targetRelativeDirectoryPath = "")
 	{
 		return Create(fileNameWithExtension, targetRelativeDirectoryPath: targetRelativeDirectoryPath, sha1Hash: sha1Hash);
+	}
+
+	public static Photo WithSecondAndSha1Hash(int second, string sha1Hash)
+	{
+		return Create(takenDate: DateTimeFakes.WithSecond(second), sha1Hash: sha1Hash);
+	}
+
+	public static Photo WithTargetPathsExifDataAndSha1Hash(string targetRelativeDirectoryPath, string fileNameWithExtension, ExifData exifData, string sha1Hash)
+	{
+		return CreateWithExifData(exifData, fileNameWithExtension, targetRelativeDirectoryPath, sha1Hash: sha1Hash);
 	}
 
 	public static Photo Create(string? fileNameWithExtension = null, DateTime? takenDate = null, Coordinate? coordinate = null, string? targetRelativeDirectoryPath = null, string? newName = null,

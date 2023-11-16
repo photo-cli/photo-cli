@@ -15,6 +15,7 @@ public enum ExitCode
 	InfoOptionsValidationFailed = 12,
 	CopyOptionsValidationFailed = 13,
 	SettingsOptionsValidationFailed = 14,
+	ArchiveOptionsValidationFailed = 15,
 
 	// File system
 	InputFolderNotExists = 20,

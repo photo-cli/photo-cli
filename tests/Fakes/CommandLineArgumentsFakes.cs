@@ -164,4 +164,31 @@ public static class CommandLineArgumentsFakes
 		var args = new[] { "--invalid-option value" };
 		return args;
 	}
+
+	public static ICollection<string> ArchiveBuildCommandLineOptionsWithoutOutputPath(string sourcePhotoPath, bool isDryRun = false,
+		ArchiveInvalidFormatAction invalidFormatAction = ArchiveInvalidFormatAction.Continue, ReverseGeocodeProvider? reverseGeocodeProvider = null, List<string>? bigDataCloudAdminLevels = null,
+		ArchiveNoPhotoTakenDateAction noPhotoTakenDateAction = ArchiveNoPhotoTakenDateAction.Continue, ArchiveNoCoordinateAction noCoordinateAction = ArchiveNoCoordinateAction.Continue)
+	{
+		var args = new List<string> { "archive" };
+
+		AddArgumentWithParameter(InputPathOptionNameShort, sourcePhotoPath, args);
+		if(isDryRun)
+			AddArgumentWithoutParameter(IsDryRunOptionNameShort, args);
+		AddArgumentWithParameter(InvalidFormatActionOptionNameShort, invalidFormatAction.ToString(), args);
+		AddArgumentWithParameter(NoPhotoDateTimeTakenActionOptionNameShort, noPhotoTakenDateAction.ToString(), args);
+		AddArgumentWithParameter(NoCoordinateActionOptionNameShort, noCoordinateAction.ToString(), args);
+
+		if (reverseGeocodeProvider != null)
+			AddArgumentWithParameter(ReverseGeocodeProvidersOptionNameShort, reverseGeocodeProvider.Value.ToString(), args);
+
+		if (bigDataCloudAdminLevels != null)
+			AddArgumentListWithParameter(BigDataCloudAdminLevelsOptionNameShort, bigDataCloudAdminLevels, args);
+
+		return args;
+	}
+
+	public static void AddOutputPathOptions(string outputPath, ICollection<string> args)
+	{
+		AddArgumentWithParameter(OutputPathOptionNameShort, outputPath, args);
+	}
 }

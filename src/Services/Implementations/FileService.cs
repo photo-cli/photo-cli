@@ -20,6 +20,17 @@ public class FileService : IFileService
 
 	public void Copy(IReadOnlyCollection<Photo> photos, string outputFolder, bool isDryRun)
 	{
+		CopyInternal(photos, outputFolder, isDryRun, true);
+	}
+
+	public IReadOnlyCollection<Photo> CopyIfNotExists(IReadOnlyCollection<Photo> photos, string outputFolder, bool isDryRun)
+	{
+		return CopyInternal(photos, outputFolder, isDryRun, false);
+	}
+
+	private IReadOnlyCollection<Photo> CopyInternal(IReadOnlyCollection<Photo> photos, string outputFolder, bool isDryRun, bool breakOnDestinationExist)
+	{
+		var photosCopied = new List<Photo>();
 		foreach (var photo in photos)
 		{
 			var fileInfo = _fileSystem.FileInfo.FromFileName(photo.FilePath);
@@ -42,25 +53,31 @@ public class FileService : IFileService
 				++_statistics.DirectoriesCreated;
 				_logger.LogInformation("Directory created: {Path} ", newFileInfo.Directory.FullName);
 			}
-
 			_logger.LogTrace("Photo is copying to: {To} from: {From}", destinationPath, fileInfo.FullName);
-			if (!isDryRun)
+			try
 			{
-				try
+				if (newFileInfo.Exists)
 				{
-					fileInfo.CopyTo(destinationPath);
+					if (breakOnDestinationExist)
+						throw new FileExistsOnDestinationPathException(destinationPath);
+					++_statistics.PhotosExisted;
+					_logger.LogInformation("Photo is existed on to: {Path}, skipping", destinationPath);
+					continue;
 				}
-				catch (IOException ioException)
-				{
-					_statistics.FileIoErrors.Add(ioException.Message);
-					_logger.LogCritical(ioException, "Can't copy file");
-				}
+				if (!isDryRun)
+					fileInfo.CopyTo(destinationPath, false);
+				++_statistics.PhotosCopied;
+				photosCopied.Add(photo);
 			}
-
+			catch (IOException ioException)
+			{
+				_statistics.FileIoErrors.Add(ioException.Message);
+				_logger.LogCritical(ioException, "Can't copy file");
+			}
 			_logger.LogInformation("Photo is copied to: {To} from: {From}", destinationPath, fileInfo.FullName);
 		}
 
-		_statistics.PhotosCopied += photos.Count;
+		return photosCopied;
 	}
 
 	public async Task<bool> VerifyFileIntegrity(IEnumerable<Photo> photos, string outputFolder)
@@ -72,34 +89,24 @@ public class FileService : IFileService
 			var sourceFileInfo = _fileSystem.FileInfo.FromFileName(photo.FilePath);
 			var destinationPath = photo.DestinationPath(outputFolder);
 			var destinationFileInfo = _fileSystem.FileInfo.FromFileName(destinationPath);
-
 			if (!destinationFileInfo.Exists)
 			{
 				_logger.LogCritical("Target photo didn't exists at path : {DestinationPath} for a source photo path: {PhotoFilePath}", destinationPath, photo.FilePath);
 				return false;
 			}
-
-			await using var sourceStream = sourceFileInfo.OpenRead();
-			await using var destinationStream = destinationFileInfo.OpenRead();
-
-			var sourceHashTask = shaSource.ComputeHashAsync(sourceStream);
-			var destinationHashTask = shaDestination.ComputeHashAsync(destinationStream);
-
-			await Task.WhenAll(sourceHashTask, destinationHashTask);
-
-			var sourceHash = sourceHashTask.Result;
-			var destinationHash = destinationHashTask.Result;
-
-			var fileIntegrityIsSuccessful = sourceHash.SequenceEqual(destinationHash);
+			string sourceHashFormatted;
+			if (photo.Sha1Hash == null)
+				sourceHashFormatted = await GetFileHashFormatted(sourceFileInfo, shaDestination);
+			else
+				sourceHashFormatted = photo.Sha1Hash;
+			var destinationHashFormatted = await GetFileHashFormatted(destinationFileInfo, shaDestination);
+			var fileIntegrityIsSuccessful = sourceHashFormatted == destinationHashFormatted;
 			if (!fileIntegrityIsSuccessful)
 			{
 				_logger.LogCritical("Source photo file content path: {SourcePath} doesn't match with target photo aTarget photo\'s content hash doesn\'t exists at path : {DestinationPath} for a source photo path: {SourceFileInfo}", photo.FilePath, destinationPath, sourceFileInfo);
 				return false;
 			}
-
-			var hex = Convert.ToHexString(sourceHash);
-			var hexLowered = hex.ToLower();
-			photo.Sha1Hash = hexLowered;
+			photo.Sha1Hash ??= destinationHashFormatted;
 		}
 		return true;
 	}
@@ -111,11 +118,30 @@ public class FileService : IFileService
 		await _fileSystem.File.WriteAllTextAsync(path, gnuFormat);
 	}
 
+	public async Task CalculateFileHash(IEnumerable<Photo> photos)
+	{
+		using var sha = SHA1.Create();
+		foreach (var photo in photos)
+		{
+			var fileInfo = _fileSystem.FileInfo.FromFileName(photo.FilePath);
+			photo.Sha1Hash = await GetFileHashFormatted(fileInfo, sha);
+		}
+	}
+
 	private string GnuHashFileTreeFormat(IEnumerable<Photo> photos)
 	{
 		var content = new StringBuilder();
 		foreach (var photo in photos)
 			content.Append($"{photo.Sha1Hash}  {photo.RelativePath()}{Environment.NewLine}");
 		return content.ToString();
+	}
+
+	private async Task<string> GetFileHashFormatted(IFileInfo fileInfo, HashAlgorithm hashAlgorithm)
+	{
+		await using var stream = fileInfo.OpenRead();
+		var hashByte = await hashAlgorithm.ComputeHashAsync(stream);
+		var hex = Convert.ToHexString(hashByte);
+		var hexLowered = hex.ToLower();
+		return hexLowered;
 	}
 }

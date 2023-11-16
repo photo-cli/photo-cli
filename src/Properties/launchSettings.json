@@ -13,6 +13,10 @@
       "commandLineArgs": "address",
       "commandName": "Project"
     },
+    "archive": {
+      "commandLineArgs": "archive",
+      "commandName": "Project"
+    },
     "settings": {
       "commandLineArgs": "settings",
       "commandName": "Project"

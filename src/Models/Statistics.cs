@@ -19,4 +19,6 @@ public record Statistics
 
 	public int InvalidFormatError { get; set; }
 	public int InternalError { get; set; }
+	public int PhotosExisted { get; set; }
+	public int PhotosSame { get; set; }
 }

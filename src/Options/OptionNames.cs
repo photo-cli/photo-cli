@@ -4,29 +4,29 @@ internal static class OptionNames
 {
 	/* Short Option Name Usages
 		a - copy, info
-		b - copy, info, address
-		c - copy, info
-		d - copy
-		e - copy, info, address
+		b - copy, info, address, archive
+		c - copy, info, archive
+		d - copy, archive
+		e - copy, info, address, archive
 		f - copy
 		g - copy
-		h - copy, info
-		i - copy, info, address
+		h - copy, info, archive
+		i - copy, info, address, archive
 		j -
-		k - settings
-		l - copy, info, address
-		m - copy, info, address
+		k - copy, info, address, settings, archive
+		l - copy, info, address, archive
+		m - copy, info, address, archive
 		n - copy
-		o - copy, info
+		o - copy, info, archive
 		p - copy
-		q - copy, info, address
-		r - copy, info, address, settings
+		q - copy, info, address, archive
+		r - copy, info, address, settings, archive
 		s - copy
-		t - copy, info, address
-		u - copy, info, address
+		t - copy, info, address, archive
+		u - copy, info, address, archive
 		v - copy, settings
 		w -
-		x - copy, info
+		x - copy, info, archive
 		y -
 		z -
 	*/
@@ -37,6 +37,7 @@ internal static class OptionNames
 	internal const string CopyVerb = "copy";
 	internal const string InfoVerb = "info";
 	internal const string SettingsVerb = "settings";
+	internal const string ArchiveVerb = "archive";
 
 	#region Copy
 
@@ -67,9 +68,6 @@ internal static class OptionNames
 	internal const char CopyInvalidFormatActionOptionNameShort = InvalidFormatActionOptionNameShort;
 	internal const string CopyInvalidFormatActionOptionNameLong = InvalidFormatActionOptionNameLong;
 
-	internal const char IsDryRunOptionNameShort = 'd';
-	internal const string IsDryRunOptionNameLong = "dry-run";
-
 	internal const char VerifyOptionNameShort = 'v';
 	internal const string VerifyOptionNameLong = "verify";
 
@@ -88,6 +86,19 @@ internal static class OptionNames
 
 	internal const char InfoInvalidFormatActionOptionNameShort = InvalidFormatActionOptionNameShort;
 	internal const string InfoInvalidFormatActionOptionNameLong = InvalidFormatActionOptionNameLong;
+
+	#endregion
+
+	#region Archive
+
+	internal const char ArchiveNoPhotoDateTimeTakenActionOptionNameShort = NoPhotoDateTimeTakenActionOptionNameShort;
+	internal const string ArchiveNoPhotoDateTimeTakenActionOptionNameLong = NoPhotoDateTimeTakenActionOptionNameLong;
+
+	internal const char ArchiveNoCoordinateActionOptionNameShort = NoCoordinateActionOptionNameShort;
+	internal const string ArchiveNoCoordinateActionOptionNameLong = NoCoordinateActionOptionNameLong;
+
+	internal const char ArchiveInvalidFormatActionOptionNameShort = InvalidFormatActionOptionNameShort;
+	internal const string ArchiveInvalidFormatActionOptionNameLong = InvalidFormatActionOptionNameLong;
 
 	#endregion
 
@@ -118,6 +129,9 @@ internal static class OptionNames
 
 	internal const char InputPathOptionNameShort = 'i';
 	internal const string InputPathOptionNameLong = "input";
+
+	internal const char IsDryRunOptionNameShort = 'd';
+	internal const string IsDryRunOptionNameLong = "dry-run";
 
 	internal const char ReverseGeocodeProvidersOptionNameShort = 'e';
 	internal const string ReverseGeocodeProvidersOptionNameLong = "reverse-geocode";

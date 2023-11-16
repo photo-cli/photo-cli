@@ -41,6 +41,7 @@ public class SettingsVerbEndToEndTests : BaseEndToEndTests
 		{
 			CommandLineArgumentsFakes.SettingsBuildCommandLineOptions(),
 			@"AddressSeparator=-
+ArchivePhotoTakenDateHashSeparator=-
 BigDataCloudApiKey=
 ConnectionLimit=4
 CsvReportFileName=photo-cli-report.csv

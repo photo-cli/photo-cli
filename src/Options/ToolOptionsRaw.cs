@@ -29,4 +29,5 @@ public class ToolOptionsRaw
 	public string? BigDataCloudApiKey { get; set; }
 	public string? GoogleMapsApiKey { get; set; }
 	public string? LocationIqApiKey { get; set; }
+	public string? ArchivePhotoTakenDateHashSeparator { get; set; }
 }
