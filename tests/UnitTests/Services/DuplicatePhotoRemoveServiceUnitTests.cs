@@ -19,7 +19,7 @@ public class DuplicatePhotoRemoveServiceUnitTests
 			1,
 			new []
 			{
-				"Photo is skipped due to same photo has already been archived. Same photo paths: /source-path/file1.jpg, /source-path/file1-duplicate.jpg",
+				PhotoSkippedLog("file1.jpg", "file1-duplicate.jpg"),
 			}
 		}
 	};
@@ -41,7 +41,7 @@ public class DuplicatePhotoRemoveServiceUnitTests
 			1,
 			new []
 			{
-				"Photo is skipped due to same photo has already been archived. Same photo paths: /source-path/file2.jpg, /source-path/file2-duplicate.jpg",
+				PhotoSkippedLog("file2.jpg", "file2-duplicate.jpg"),
 			}
 		}
 	};
@@ -67,9 +67,9 @@ public class DuplicatePhotoRemoveServiceUnitTests
 			3,
 			new []
 			{
-				"Photo is skipped due to same photo has already been archived. Same photo paths: /source-path/file2.jpg, /source-path/file2-duplicate.jpg",
-				"Photo is skipped due to same photo has already been archived. Same photo paths: /source-path/file3.jpg, /source-path/file3-duplicate1.jpg",
-				"Photo is skipped due to same photo has already been archived. Same photo paths: /source-path/file3.jpg, /source-path/file3-duplicate2.jpg",
+				PhotoSkippedLog("file2.jpg", "file2-duplicate.jpg"),
+				PhotoSkippedLog("file3.jpg", "file3-duplicate1.jpg"),
+				PhotoSkippedLog("file3.jpg", "file3-duplicate2.jpg"),
 			}
 		},
 	};
@@ -131,5 +131,10 @@ public class DuplicatePhotoRemoveServiceUnitTests
 		actualPhotos.Should().BeEquivalentTo(expectedPhotos);
 		statistic.PhotosSame.Should().Be(0);
 		loggerMock.VerifyNoOtherCalls();
+	}
+
+	private static string PhotoSkippedLog(string path1, string path2)
+	{
+		return $"Photo is skipped due to same photo has already been archived. Same photo paths: {MockFileSystemHelper.Path("/", PhotoFakes.DefaultSourcePath, path1)}, {MockFileSystemHelper.Path("/", PhotoFakes.DefaultSourcePath, path2)}";
 	}
 }

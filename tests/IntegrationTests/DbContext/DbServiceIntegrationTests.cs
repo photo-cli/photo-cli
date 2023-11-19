@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PhotoCli.Tests.IntegrationTests.DbContext;
 
+[Collection(XunitSharedCollectionsToDisableParallelExecution.EndToEndTests)]
 public class DbServiceUnitTests
 {
 	private const string OutputPath = "output-folder";
@@ -140,7 +141,7 @@ public class DbServiceUnitTests
 
 	private static string OutputFilePathWithJpg(string fileName)
 	{
-		return $"{OutputPath}/{fileName}.jpg";
+		return MockFileSystemHelper.Path(true, OutputPath, $"{fileName}.jpg");
 	}
 
 	private static string FilePathWithJpg(string fileName)

@@ -1,5 +1,8 @@
+using System.Runtime.InteropServices;
+
 namespace PhotoCli.Tests.EndToEndTests;
 
+[Collection(XunitSharedCollectionsToDisableParallelExecution.EndToEndTests)]
 public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 {
 	public CopyVerbAddressEndToEndTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
@@ -567,7 +570,10 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				regex = @"\d{4}\.\d{2}\.\d{2}-(.*)+";
 				break;
 			case PathCheckRegexType.GroupByAddressFolderNamingByDay:
-				regex = @"([\w\s\/\-]*)\/\d{4}\.\d{2}\.\d{2}(-\d+)?";
+				if(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+					regex = @"([\w\s\/\-]*)\/\d{4}\.\d{2}\.\d{2}(-\d+)?";
+				else
+					regex = @"([\w\s\\\-]*)\\\d{4}\.\d{2}\.\d{2}(-\d+)?";
 				break;
 			case PathCheckRegexType.SubFolderAddressWithNumberNaming:
 				regex = @"([\w\s\/\-]*)(-\d+)?";
@@ -588,7 +594,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 			conditions.AddRange(otherPossibleRegexToMatch);
 			regex = $"({string.Join("|", conditions)})";
 		}
-		return @"\/" + regex + @"\.jpg$";
+		return regex + @"\.jpg$";
 	}
 
 	#endregion

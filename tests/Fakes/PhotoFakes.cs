@@ -182,7 +182,7 @@ public static class PhotoFakes
 
 	private static Photo CreateWithExifData(ExifData? exifData, string? fileNameWithExtension = null, string? targetRelativeDirectoryPath = null, string? newName = null, string? sourcePath = null, string? sha1Hash = null)
 	{
-		sourcePath ??= "source-path";
+		sourcePath ??= DefaultSourcePath;
 		fileNameWithExtension ??= "dummy.jpg";
 		targetRelativeDirectoryPath ??= string.Empty;
 		var mockFileInfo = new MockFileInfo(new MockFileSystem(), Path.Combine(sourcePath, fileNameWithExtension));
@@ -191,4 +191,6 @@ public static class PhotoFakes
 			photo.Sha1Hash = sha1Hash;
 		return photo;
 	}
+
+	public const string DefaultSourcePath = "source-path";
 }

@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace PhotoCli.Tests.UnitTests;
 
-[Collection(XunitSharedCollectionsToDisableParallelExecution.AppSettingsJson)]
+[Collection(XunitSharedCollectionsToDisableParallelExecution.EndToEndTests)]
 public class StartupTests
 {
 	[Fact]

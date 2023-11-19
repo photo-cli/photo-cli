@@ -1,7 +1,9 @@
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace PhotoCli.Tests.EndToEndTests;
 
+[Collection(XunitSharedCollectionsToDisableParallelExecution.EndToEndTests)]
 public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 {
 	public ArchiveVerbEndToEndTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
@@ -292,8 +294,12 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 		var optionsBuilder = new DbContextOptionsBuilder<ArchiveDbContext>();
 		var sqliteFilePath = Path.Combine(outputPath, Constants.ArchiveSQLiteDatabaseFileName);
 		optionsBuilder.UseSqlite($"Filename={sqliteFilePath}");
-		var dbContext = new ArchiveDbContext(optionsBuilder.Options);
-		var photoEntities = await dbContext.Photos.ToListAsync();
+		List<PhotoEntity> photoEntities;
+		await using (var dbContext = new ArchiveDbContext(optionsBuilder.Options))
+		{
+			photoEntities = await dbContext.Photos.ToListAsync();
+		}
+		SqliteConnection.ClearAllPools();
 		return photoEntities;
 	}
 
@@ -381,7 +387,7 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 
 	private static PhotoEntity CreatePhotoEntity(string path, string sha1Hash, ExifData? exifData = null)
 	{
-		return PhotoEntityFakes.CreateWithExifData(path, exifData, sha1Hash);
+		return PhotoEntityFakes.CreateWithExifData(MockFileSystemHelper.Path(path, true), exifData, sha1Hash);
 	}
 
 	#endregion

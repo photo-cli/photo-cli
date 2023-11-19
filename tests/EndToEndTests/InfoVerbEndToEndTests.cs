@@ -1,5 +1,6 @@
 namespace PhotoCli.Tests.EndToEndTests;
 
+[Collection(XunitSharedCollectionsToDisableParallelExecution.EndToEndTests)]
 public class InfoVerbEndToEndTests : BaseEndToEndTests
 {
 	public InfoVerbEndToEndTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)

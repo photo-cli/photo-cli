@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace PhotoCli.Tests.UnitTests.Services;
 
 public class FileServiceUnitTests
@@ -283,17 +285,17 @@ public class FileServiceUnitTests
 		{
 			new List<Photo>
 			{
-				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1)),
+				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1), TargetRelativeFolderRootForMockFileSystem()),
 			},
-			$"{Sha1HashFakes.Sample(1)}  file1.jpg{Environment.NewLine}"
+			GnuHashFileOutput(new GnuHashFormat(1, "file1.jpg"))
 		},
 		{
 			new List<Photo>
 			{
-				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1)),
-				PhotoFakes.WithSha1Hash("file2.jpg", Sha1HashFakes.Sample(2)),
+				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1), TargetRelativeFolderRootForMockFileSystem()),
+				PhotoFakes.WithSha1Hash("file2.jpg", Sha1HashFakes.Sample(2), TargetRelativeFolderRootForMockFileSystem()),
 			},
-			$"{Sha1HashFakes.Sample(1)}  file1.jpg{Environment.NewLine}{Sha1HashFakes.Sample(2)}  file2.jpg{Environment.NewLine}"
+			GnuHashFileOutput(new GnuHashFormat(1, "file1.jpg"), new GnuHashFormat(2, "file2.jpg"))
 		},
 	};
 
@@ -302,17 +304,20 @@ public class FileServiceUnitTests
 		{
 			new List<Photo>
 			{
-				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(3), "sub1/"),
+				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(3), MockFileSystemHelper.Path("sub1")),
 			},
-			$"{Sha1HashFakes.Sample(3)}  sub1/file1.jpg{Environment.NewLine}"
+			GnuHashFileOutput(new GnuHashFormat(3, "sub1/file1.jpg"))
 		},
 		{
 			new List<Photo>
 			{
-				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(3), "sub1/"),
-				PhotoFakes.WithSha1Hash("file2.jpg", Sha1HashFakes.Sample(4), "sub1/sub2"),
+				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(3), MockFileSystemHelper.Path("sub1")),
+				PhotoFakes.WithSha1Hash("file2.jpg", Sha1HashFakes.Sample(4), MockFileSystemHelper.Path("sub1/sub2")),
 			},
-			$"{Sha1HashFakes.Sample(3)}  sub1/file1.jpg{Environment.NewLine}{Sha1HashFakes.Sample(4)}  sub1/sub2/file2.jpg{Environment.NewLine}"
+			GnuHashFileOutput(
+				new GnuHashFormat(3, "sub1/file1.jpg"),
+				new GnuHashFormat(4, "sub1/sub2/file2.jpg")
+			)
 		}
 	};
 
@@ -393,5 +398,17 @@ public class FileServiceUnitTests
 	{
 		foreach (var filePath in filePaths)
 			mockFileSystem.FileExists(filePath).Should().Be(true);
+	}
+
+	private record GnuHashFormat(int Sha1SampleId, string Path);
+
+	private static string GnuHashFileOutput(params GnuHashFormat[] gnuHashFormats)
+	{
+		return gnuHashFormats.Aggregate(string.Empty, (current, gnuHashFormat) => current + $"{Sha1HashFakes.Sample(gnuHashFormat.Sha1SampleId)}  {MockFileSystemHelper.Path(gnuHashFormat.Path)}{Environment.NewLine}");
+	}
+
+	private static string TargetRelativeFolderRootForMockFileSystem()
+	{
+		return RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? @"C:\" : "";
 	}
 }
