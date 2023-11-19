@@ -48,7 +48,9 @@ There is three main feature that can be explain better with examples.
 <table>
 <tr>
     <th>Original Folder Hierarchy</th>
-    <th>After <b><i>photo-cli</i></b></th></tr><tr>
+    <th>After <b><i>photo-cli</i></b></th>
+</tr>
+<tr>
 <td>
 <pre>
 ├── DSC_5727.jpg
@@ -213,7 +215,9 @@ PhotoPath,PhotoNewPath,PhotoDateTaken,ReverseGeocodeFormatted,Latitude,Longitude
 <table>
 <tr>
     <th>Original Folder Hierarchy</th>
-    <th>After <b><i>photo-cli</i></b></th></tr><tr>
+    <th>After <b><i>photo-cli</i></b></th>
+</tr>
+<tr>
 <td>
 <pre>
 ├── DSC_5727.jpg
@@ -934,7 +938,9 @@ photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --naming-style N
 <table>
 <tr>
     <th>Original Folder Hierarchy</th>
-    <th>After <b><i>photo-cli</i></b></th></tr><tr>
+    <th>After <b><i>photo-cli</i></b></th>
+</tr>
+<tr>
 <td>
 <pre>
 ├── DSC_5727.jpg
@@ -1005,7 +1011,9 @@ photo-cli copy --process-type FlattenAllSubFolders --group-by YearMonthDay --nam
 <table>
 <tr>
     <th>Original Folder Hierarchy</th>
-    <th>After <b><i>photo-cli</i></b></th></tr><tr>
+    <th>After <b><i>photo-cli</i></b></th>
+</tr>
+<tr>
 <td>
 <pre>
 ├── DSC_5727.jpg
@@ -1090,7 +1098,9 @@ photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --folder-append 
 <table>
 <tr>
     <th>Original Folder Hierarchy</th>
-    <th>After <b><i>photo-cli</i></b></th></tr><tr>
+    <th>After <b><i>photo-cli</i></b></th>
+</tr>
+<tr>
 <td>
 <pre>
 ├── DSC_5727.jpg
@@ -1161,7 +1171,9 @@ photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --naming-style A
 <table>
 <tr>
     <th>Original Folder Hierarchy</th>
-    <th>After <b><i>photo-cli</i></b></th></tr><tr>
+    <th>After <b><i>photo-cli</i></b></th>
+</tr>
+<tr>
 <td>
 <pre>
 ├── DSC_5727.jpg
@@ -1234,7 +1246,9 @@ photo-cli copy --process-type FlattenAllSubFolders --group-by AddressHierarchy -
 <table>
 <tr>
     <th>Original Folder Hierarchy</th>
-    <th>After <b><i>photo-cli</i></b></th></tr><tr>
+    <th>After <b><i>photo-cli</i></b></th>
+</tr>
+<tr>
 <td>
 <pre>
 ├── DSC_5727.jpg
@@ -1882,27 +1896,29 @@ photo-cli settings
 ```
 
 ```
-LogLevel=Error
-YearFormat=yyyy
-MonthFormat=MM
-DayFormat=dd
-DateFormatWithMonth=yyyy.MM
+AddressSeparator=-
+ArchivePhotoTakenDateHashSeparator=-
+BigDataCloudApiKey=
+ConnectionLimit=4
+CsvReportFileName=photo-cli-report.csv
 DateFormatWithDay=yyyy.MM.dd
+DateFormatWithMonth=yyyy.MM
 DateTimeFormatWithMinutes=yyyy.MM.dd_HH.mm
 DateTimeFormatWithSeconds=yyyy.MM.dd_HH.mm.ss
-AddressSeparator=-
-FolderAppendSeparator=-
+DayFormat=dd
 DayRangeSeparator=-
-SameNameNumberSeparator=-
-NoPhotoTakenDateFolderName=no-photo-taken-date
-NoAddressFolderName=no-address
-NoAddressAndPhotoTakenDateFolderName=no-address-and-no-photo-taken-date
-CsvReportFileName=photo-cli-report.csv
 DryRunCsvReportFileName=photo-cli-dry-run.csv
-ConnectionLimit=4
-BigDataCloudApiKey=
+FolderAppendSeparator=-
 GoogleMapsApiKey=
 LocationIqApiKey=
+LogLevel=Warning
+MonthFormat=MM
+NoAddressAndPhotoTakenDateFolderName=no-address-and-no-photo-taken-date
+NoAddressFolderName=no-address
+NoPhotoTakenDateFolderName=no-photo-taken-date
+PhotoFormatInvalidFolderName=invalid-photo-format
+SameNameNumberSeparator=-
+YearFormat=yyyy
 ```
 
 ### Getting a Single Value
