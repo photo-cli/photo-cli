@@ -1,21 +1,18 @@
 namespace PhotoCli.Tests.EndToEndTests;
 
-[Collection(XunitSharedCollectionsToDisableParallelExecution.AppSettingsJson)]
+[Collection(XunitSharedCollectionsToDisableParallelExecution.EndToEndTests)]
 public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 {
-	private readonly FileInfo _csvReportFile = new(Path.Combine(OutputPath, ToolOptionFakes.CsvReportFileName));
-	private readonly FileInfo _dryRunCsvReportFile = new(ToolOptionFakes.DryRunCsvReportFileName);
-
 	public CopyVerbPhotoTakenEndToEndTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
 	{
 	}
 
 	#region Single FolderFlattenAllSubFoldersWithDayNamingUsingPaddingZeroCharacterAllNamesAreSameLength
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithNumericNamingUsingOnlySequentialNumbers = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithNumericNamingUsingOnlySequentialNumbers = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -42,10 +39,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithNumericNamingUsingPaddingZeroCharacter = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithNumericNamingUsingPaddingZeroCharacter = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -72,10 +69,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithNumericNamingUsingAllNamesAreSameLength = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithNumericNamingUsingAllNamesAreSameLength = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -102,10 +99,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithDayNamingAndDuplicateNewNamesUsingOnlySequentialNumbers = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithDayNamingAndDuplicateNewNamesUsingOnlySequentialNumbers = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.Day, FolderProcessType.Single,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Day, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -132,10 +129,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithDayNamingAndDuplicateNewNamesUsingPaddingZeroCharacter = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithDayNamingAndDuplicateNewNamesUsingPaddingZeroCharacter = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.Day, FolderProcessType.Single,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Day, FolderProcessType.Single,
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -162,10 +159,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithDayNamingAndDuplicateNewNamesUsingAllNamesAreSameLength = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithDayNamingAndDuplicateNewNamesUsingAllNamesAreSameLength = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.Day, FolderProcessType.Single,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Day, FolderProcessType.Single,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -192,10 +189,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithDateTimeWithMinutesNaming = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithDateTimeWithMinutesNaming = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.DateTimeWithMinutes, FolderProcessType.Single,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.DateTimeWithMinutes, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -222,10 +219,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithDateTimeWithSecondsNaming = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SingleFolderWithDateTimeWithSecondsNaming = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.DateTimeWithSeconds, FolderProcessType.Single,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.DateTimeWithSeconds, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -258,10 +255,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 
 	#region Only Photo Taken Date
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithNumericNamingUsingOnlySequentialNumbers = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithNumericNamingUsingOnlySequentialNumbers = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -288,10 +285,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithNumericNamingUsingPaddingZeroCharacter = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithNumericNamingUsingPaddingZeroCharacter = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -318,10 +315,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithNumericNamingUsingAllNamesAreSameLength = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithNumericNamingUsingAllNamesAreSameLength = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -348,10 +345,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithDayNamingUsingOnlySequentialNumbers = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithDayNamingUsingOnlySequentialNumbers = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.FlattenAllSubFolders,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -378,10 +375,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithDayNamingUsingPaddingZeroCharacter = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithDayNamingUsingPaddingZeroCharacter = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.FlattenAllSubFolders,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -408,10 +405,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithDayNamingUsingPaddingZeroCharacterAllNamesAreSameLength = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithDayNamingUsingPaddingZeroCharacterAllNamesAreSameLength = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.FlattenAllSubFolders,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -438,10 +435,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithDateTimeWithMinutesNaming = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithDateTimeWithMinutesNaming = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.DateTimeWithMinutes, FolderProcessType.FlattenAllSubFolders,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.DateTimeWithMinutes, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -468,10 +465,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithDateTimeWithSecondsNaming = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersWithDateTimeWithSecondsNaming = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.DateTimeWithSeconds, FolderProcessType.FlattenAllSubFolders,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.DateTimeWithSeconds, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -502,11 +499,11 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 
 	#region Group By Folder
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersAndGroupByYearMonthDayWithNumericNamingUsingOnlySequentialNumbers = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersAndGroupByYearMonthDayWithNumericNamingUsingOnlySequentialNumbers = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
-				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, false, GroupByFolderType.YearMonthDay),
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
+				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, isDryRun: false, groupByFolderType: GroupByFolderType.YearMonthDay),
 			new List<PhotoCsv>
 			{
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate("1"),
@@ -532,11 +529,11 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersAndGroupByYearMonthWithDateTimeWithMinutesNamingUsingPaddingZeroCharacter = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> FlattenAllSubFoldersAndGroupByYearMonthWithDateTimeWithMinutesNamingUsingPaddingZeroCharacter = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.DateTimeWithMinutes, FolderProcessType.FlattenAllSubFolders,
-				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, false, GroupByFolderType.YearMonth),
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.DateTimeWithMinutes, FolderProcessType.FlattenAllSubFolders,
+				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, isDryRun: false, groupByFolderType: GroupByFolderType.YearMonth),
 			new List<PhotoCsv>
 			{
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
@@ -570,10 +567,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 
 	#region Only Photo Taken Date
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyWithNumericNamingUsingOnlySequentialNumbers = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyWithNumericNamingUsingOnlySequentialNumbers = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -600,10 +597,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyWithNumericNamingUsingPaddingZeroCharacter = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyWithNumericNamingUsingPaddingZeroCharacter = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -630,10 +627,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyWithNumericNamingUsingAllNamesAreSameLength = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyWithNumericNamingUsingAllNamesAreSameLength = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -660,10 +657,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyWithDayNamingAndDuplicateNewNamesUsingOnlySequentialNumbers = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyWithDayNamingAndDuplicateNewNamesUsingOnlySequentialNumbers = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -690,10 +687,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyWithDayNamingAndDuplicateNewNamesUsingPaddingZeroCharacter = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyWithDayNamingAndDuplicateNewNamesUsingPaddingZeroCharacter = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -720,10 +717,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyWithDayNamingAndDuplicateNewNamesUsingAllNamesAreSameLength = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyWithDayNamingAndDuplicateNewNamesUsingAllNamesAreSameLength = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -754,69 +751,67 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 
 	#region Append Folder Name
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues>
-		SubFoldersPreserveFolderHierarchyByAppendingFirstYearMonthAsPrefixToFolderNameWithNumericNamingUsingOnlySequentialNumbers = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyByAppendingFirstYearMonthAsPrefixToFolderNameWithNumericNamingUsingOnlySequentialNumbers = new()
+	{
 		{
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
+				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, folderAppendType: FolderAppendType.FirstYearMonth,
+				folderAppendLocationType: FolderAppendLocationType.Prefix),
+			new List<PhotoCsv>
 			{
-				CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
-					NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, folderAppendType: FolderAppendType.FirstYearMonth,
-					folderAppendLocationType: FolderAppendLocationType.Prefix),
-				new List<PhotoCsv>
-				{
-					SubFoldersKenya("1"),
-					SubFoldersUnitedKingdom("2"),
-					SubFoldersNoGpsCoordinateAndNoPhotoTakenDate("3"),
-					SubFoldersSpain1("2015.04-SpainFolder/1"),
-					SubFoldersSpain2("2015.04-SpainFolder/2"),
-					SubFoldersNoPhotoTakenDate("2015.04-SpainFolder/3"),
-					SubFoldersItalyFlorence("ItalyFolder/2005.12-Florence/1"),
-					SubFoldersNoGpsCoordinate("ItalyFolder/2005.12-Florence/2"),
-					SubFoldersItalyArezzo1("ItalyFolder/2008.10-Arezzo/1"),
-					SubFoldersItalyArezzo2("ItalyFolder/2008.10-Arezzo/2"),
-					SubFoldersItalyArezzo3("ItalyFolder/2008.10-Arezzo/3"),
-					SubFoldersItalyArezzo4("ItalyFolder/2008.10-Arezzo/4"),
-					SubFoldersItalyArezzo5("ItalyFolder/2008.10-Arezzo/5"),
-					SubFoldersItalyArezzo6("ItalyFolder/2008.10-Arezzo/6"),
-					SubFoldersItalyArezzo7("ItalyFolder/2008.10-Arezzo/7"),
-					SubFoldersItalyArezzo8("ItalyFolder/2008.10-Arezzo/8"),
-					SubFoldersItalyArezzo9("ItalyFolder/2008.10-Arezzo/9"),
-					SubFoldersItalyArezzo9Duplicate("ItalyFolder/2008.10-Arezzo/10"),
-				},
-				new ConsoleOutputValues(18, 18, 15, 1, 2, 3)
-			}
-		};
+				SubFoldersKenya("1"),
+				SubFoldersUnitedKingdom("2"),
+				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate("3"),
+				SubFoldersSpain1("2015.04-SpainFolder/1"),
+				SubFoldersSpain2("2015.04-SpainFolder/2"),
+				SubFoldersNoPhotoTakenDate("2015.04-SpainFolder/3"),
+				SubFoldersItalyFlorence("ItalyFolder/2005.12-Florence/1"),
+				SubFoldersNoGpsCoordinate("ItalyFolder/2005.12-Florence/2"),
+				SubFoldersItalyArezzo1("ItalyFolder/2008.10-Arezzo/1"),
+				SubFoldersItalyArezzo2("ItalyFolder/2008.10-Arezzo/2"),
+				SubFoldersItalyArezzo3("ItalyFolder/2008.10-Arezzo/3"),
+				SubFoldersItalyArezzo4("ItalyFolder/2008.10-Arezzo/4"),
+				SubFoldersItalyArezzo5("ItalyFolder/2008.10-Arezzo/5"),
+				SubFoldersItalyArezzo6("ItalyFolder/2008.10-Arezzo/6"),
+				SubFoldersItalyArezzo7("ItalyFolder/2008.10-Arezzo/7"),
+				SubFoldersItalyArezzo8("ItalyFolder/2008.10-Arezzo/8"),
+				SubFoldersItalyArezzo9("ItalyFolder/2008.10-Arezzo/9"),
+				SubFoldersItalyArezzo9Duplicate("ItalyFolder/2008.10-Arezzo/10"),
+			},
+			new ConsoleOutputValues(18, 18, 15, 1, 2, 3)
+		}
+	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyByAppendingDayRangeAsPrefixToFolderNameWithNumericNamingUsingOnlySequentialNumbers =
-		new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> SubFoldersPreserveFolderHierarchyByAppendingDayRangeAsPrefixToFolderNameWithNumericNamingUsingOnlySequentialNumbers = new()
+	{
 		{
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
+				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, folderAppendType: FolderAppendType.DayRange,
+				folderAppendLocationType: FolderAppendLocationType.Prefix),
+			new List<PhotoCsv>
 			{
-				CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
-					NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, folderAppendType: FolderAppendType.DayRange,
-					folderAppendLocationType: FolderAppendLocationType.Prefix),
-				new List<PhotoCsv>
-				{
-					SubFoldersKenya("2005.08.13"),
-					SubFoldersUnitedKingdom("2012.06.22"),
-					SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
-					SubFoldersSpain1("2015.04.10-2015.04.10-SpainFolder/2015.04.10-1"),
-					SubFoldersSpain2("2015.04.10-2015.04.10-SpainFolder/2015.04.10-2"),
-					SubFoldersNoPhotoTakenDate("2015.04.10-2015.04.10-SpainFolder/NoPhotoTakenDate"),
-					SubFoldersItalyFlorence("ItalyFolder/2005.12.14-2008.07.16-Florence/2005.12.14"),
-					SubFoldersNoGpsCoordinate("ItalyFolder/2005.12.14-2008.07.16-Florence/2008.07.16"),
-					SubFoldersItalyArezzo1("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-1"),
-					SubFoldersItalyArezzo2("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-2"),
-					SubFoldersItalyArezzo3("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-3"),
-					SubFoldersItalyArezzo4("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-4"),
-					SubFoldersItalyArezzo5("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-5"),
-					SubFoldersItalyArezzo6("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-6"),
-					SubFoldersItalyArezzo7("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-7"),
-					SubFoldersItalyArezzo8("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-8"),
-					SubFoldersItalyArezzo9("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-9"),
-					SubFoldersItalyArezzo9Duplicate("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-10"),
-				},
-				new ConsoleOutputValues(18, 18, 15, 1, 2, 3)
-			}
-		};
+				SubFoldersKenya("2005.08.13"),
+				SubFoldersUnitedKingdom("2012.06.22"),
+				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
+				SubFoldersSpain1("2015.04.10-2015.04.10-SpainFolder/2015.04.10-1"),
+				SubFoldersSpain2("2015.04.10-2015.04.10-SpainFolder/2015.04.10-2"),
+				SubFoldersNoPhotoTakenDate("2015.04.10-2015.04.10-SpainFolder/NoPhotoTakenDate"),
+				SubFoldersItalyFlorence("ItalyFolder/2005.12.14-2008.07.16-Florence/2005.12.14"),
+				SubFoldersNoGpsCoordinate("ItalyFolder/2005.12.14-2008.07.16-Florence/2008.07.16"),
+				SubFoldersItalyArezzo1("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-1"),
+				SubFoldersItalyArezzo2("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-2"),
+				SubFoldersItalyArezzo3("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-3"),
+				SubFoldersItalyArezzo4("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-4"),
+				SubFoldersItalyArezzo5("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-5"),
+				SubFoldersItalyArezzo6("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-6"),
+				SubFoldersItalyArezzo7("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-7"),
+				SubFoldersItalyArezzo8("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-8"),
+				SubFoldersItalyArezzo9("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-9"),
+				SubFoldersItalyArezzo9Duplicate("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-10"),
+			},
+			new ConsoleOutputValues(18, 18, 15, 1, 2, 3)
+		}
+	};
 
 	#endregion
 
@@ -824,10 +819,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 
 	#region No Photo Taken Date Actions & No Coordinate Action
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> NoPhotoTakenDateActionDontCopyToOutputAndNoCoordinateActionContinue = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> NoPhotoTakenDateActionDontCopyToOutputAndNoCoordinateActionContinue = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.Continue),
 			new List<PhotoCsv>
 			{
@@ -852,10 +847,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> NoPhotoTakenDateActionDontCopyToOutputAndNoCoordinateActionNotCopyingToOutput = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> NoPhotoTakenDateActionDontCopyToOutputAndNoCoordinateActionNotCopyingToOutput = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput),
 			new List<PhotoCsv>
 			{
@@ -879,10 +874,10 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> NoPhotoTakenDateActionContinueAndNoCoordinateActionDontCopyToOutput = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> NoPhotoTakenDateActionContinueAndNoCoordinateActionDontCopyToOutput = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.DontCopyToOutput),
 			new List<PhotoCsv>
 			{
@@ -938,28 +933,41 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 	[MemberData(nameof(NoPhotoTakenDateActionDontCopyToOutputAndNoCoordinateActionContinue))]
 	[MemberData(nameof(NoPhotoTakenDateActionDontCopyToOutputAndNoCoordinateActionNotCopyingToOutput))]
 	[MemberData(nameof(NoPhotoTakenDateActionContinueAndNoCoordinateActionDontCopyToOutput))]
-	public async Task Running_With_Copy_Verb_Arguments_Should_Create_And_Verify_Photos_And_Report_Csv_On_File_System(string[] args, List<PhotoCsv> expectedPhotoCsvModels,
+	public async Task Running_With_Copy_Verb_Arguments_Should_Create_And_Verify_Photos_And_Report_Csv_On_File_System(ICollection<string> args, List<PhotoCsv> expectedPhotoCsvModelsWithOnlyFileNames,
 		ConsoleOutputValues expectedConsoleOutput)
 	{
-		DeleteOutputFolderIfExists();
-		var (actualConsoleOutput, actualPhotoCsvModels) = await ExecuteCopy(args, _csvReportFile);
+		var outputFolder = OutputFolderForE2ETestPrivateToEachTest();
+		CommandLineArgumentsFakes.AddOutputPathOptions(outputFolder, args);
+		var expectedPhotoCsvModelsWithOutputPaths = new List<PhotoCsv>();
+		foreach (var photoCsvModel in expectedPhotoCsvModelsWithOnlyFileNames)
+		{
+			var photoCsvModelsWithOutputPath = photoCsvModel with
+			{
+				PhotoNewPath = Path.Combine(outputFolder, photoCsvModel.PhotoNewPath!)
+			};
+			expectedPhotoCsvModelsWithOutputPaths.Add(photoCsvModelsWithOutputPath);
+		}
+
+		var csvReportFile = new FileInfo(Path.Combine(outputFolder, ToolOptionFakes.CsvReportFileName));
+		var (actualConsoleOutput, actualPhotoCsvModels) = await ExecuteCopy(args.ToArray(), csvReportFile);
 		using (new AssertionScope())
 		{
-			actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModels);
+			actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModelsWithOutputPaths);
 			actualConsoleOutput.Should().Be(expectedConsoleOutput);
 			foreach (var newPhoto in actualPhotoCsvModels.Select(actualPhotoCsvModel => new FileInfo(actualPhotoCsvModel.PhotoNewPath!)))
 				newPhoto.Exists.Should().Be(true);
 		}
-		DeleteOutputFolderIfExists();
+
+		DeleteOutput(outputFolder);
 	}
 
 	#region Dry Run
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> DryRunSingleFolder = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> DryRunSingleFolder = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
-				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, true),
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
+				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, isDryRun: true),
 			new List<PhotoCsv>
 			{
 				SingleKenya("1"),
@@ -985,11 +993,11 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> DryRunFlattenAllSubFolders = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> DryRunFlattenAllSubFolders = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
-				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, true),
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
+				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, isDryRun: true),
 			new List<PhotoCsv>
 			{
 				SubFoldersKenya("1"),
@@ -1015,11 +1023,11 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> DryRunSubFoldersPreserveFolderHierarchy = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues> DryRunSubFoldersPreserveFolderHierarchy = new()
 	{
 		{
-			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(OutputPath, TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
-				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, true),
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
+				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, isDryRun: true),
 			new List<PhotoCsv>
 			{
 				SubFoldersKenya("1"),
@@ -1051,21 +1059,31 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 	[MemberData(nameof(DryRunSingleFolder))]
 	[MemberData(nameof(DryRunFlattenAllSubFolders))]
 	[MemberData(nameof(DryRunSubFoldersPreserveFolderHierarchy))]
-	public async Task Running_With_Dry_Run_Should_Report_Csv_On_File_System(string[] args, List<PhotoCsv> expectedPhotoCsvModels, ConsoleOutputValues expectedConsoleOutput)
+	public async Task Running_With_Dry_Run_Should_Report_Csv_On_File_System(ICollection<string> args, List<PhotoCsv> expectedPhotoCsvModelsWithOnlyFileNames, ConsoleOutputValues expectedConsoleOutput)
 	{
-		DeleteDryRunFileIfExists();
-		var (actualConsoleOutput, actualPhotoCsvModels) = await ExecuteCopy(args, _dryRunCsvReportFile);
+		var csvReportFile = new FileInfo(ToolOptionFakes.DryRunCsvReportFileName);
+		if(csvReportFile.Exists)
+			csvReportFile.Delete();
+
+		var outputFolder = OutputFolderForE2ETestPrivateToEachTest();
+		CommandLineArgumentsFakes.AddOutputPathOptions(outputFolder, args);
+
+		var expectedPhotoCsvModelsWithOutputPaths = new List<PhotoCsv>();
+		foreach (var photoCsvModel in expectedPhotoCsvModelsWithOnlyFileNames)
+		{
+			var photoCsvModelsWithOutputPath = photoCsvModel with
+			{
+				PhotoNewPath = Path.Combine(outputFolder, photoCsvModel.PhotoNewPath!)
+			};
+			expectedPhotoCsvModelsWithOutputPaths.Add(photoCsvModelsWithOutputPath);
+		}
+
+		var (actualConsoleOutput, actualPhotoCsvModels) = await ExecuteCopy(args, csvReportFile);
 		using (new AssertionScope())
 		{
-			actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModels);
+			actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModelsWithOutputPaths);
 			actualConsoleOutput.Should().Be(expectedConsoleOutput);
 		}
-		DeleteDryRunFileIfExists();
-	}
-
-	private void DeleteDryRunFileIfExists()
-	{
-		if (_dryRunCsvReportFile.Exists)
-			_dryRunCsvReportFile.Delete();
+		csvReportFile.Delete();
 	}
 }

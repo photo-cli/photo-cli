@@ -65,7 +65,15 @@ public class BigDataCloudReverseGeocodeService : IBigDataCloudReverseGeocodeServ
 		{
 			if (administratorLevel.AdminLevel == null || administratorLevel.Name == null)
 				continue;
-			addressPropertyValueDict.Add($"AdminLevel{administratorLevel.AdminLevel.ToString()}", administratorLevel.Name!);
+			var key = $"AdminLevel{administratorLevel.AdminLevel.ToString()}";
+			if (addressPropertyValueDict.TryGetValue(key, out var existingValue))
+			{
+				_logger.LogWarning("BigDataCloud returned inconsistent/duplicate data. Multiple admin level on {Level} found. Used value: {Existing}, duplicate value: {Duplicate}",
+					administratorLevel.AdminLevel, existingValue, administratorLevel.Name);
+
+				continue;
+			}
+			addressPropertyValueDict.Add(key, administratorLevel.Name);
 		}
 
 		return addressPropertyValueDict;

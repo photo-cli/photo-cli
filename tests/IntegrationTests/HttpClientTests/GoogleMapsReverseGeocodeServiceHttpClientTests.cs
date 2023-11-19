@@ -19,7 +19,7 @@ public class GoogleMapsReverseGeocodeServiceHttpClientTests : IClassFixture<SetE
 		Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
 		return new HttpClient
 		{
-			BaseAddress = new Uri("https://maps.googleapis.com/maps/api/geocode/"),
+			BaseAddress = new Uri("https://maps.googleapis.com/maps/api/geocode/json"),
 			DefaultRequestHeaders =
 			{
 				UserAgent = { UserAgent.Instance() },

@@ -1,6 +1,6 @@
 namespace PhotoCli.Tests.EndToEndTests;
 
-[Collection(XunitSharedCollectionsToDisableParallelExecution.AppSettingsJson)]
+[Collection(XunitSharedCollectionsToDisableParallelExecution.EndToEndTests)]
 public class SettingsVerbEndToEndTests : BaseEndToEndTests
 {
 	public SettingsVerbEndToEndTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
@@ -41,6 +41,7 @@ public class SettingsVerbEndToEndTests : BaseEndToEndTests
 		{
 			CommandLineArgumentsFakes.SettingsBuildCommandLineOptions(),
 			@"AddressSeparator=-
+ArchivePhotoTakenDateHashSeparator=-
 BigDataCloudApiKey=
 ConnectionLimit=4
 CsvReportFileName=photo-cli-report.csv

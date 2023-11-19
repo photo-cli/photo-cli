@@ -82,6 +82,18 @@ public static class Program
 				host = BuildHostWithReverseGeocode<CopyRunner, CopyOptions>(copyOptions, textWriter);
 				break;
 			}
+			case ArchiveOptions archiveOptions:
+			{
+				var validationResultCopy = new ArchiveOptionsValidator().Validate(archiveOptions);
+				if (!validationResultCopy.IsValid)
+				{
+					WriteErrorOutputValidationErrors(validationResultCopy, textWriter);
+					return ReturnExitCode(ExitCode.ArchiveOptionsValidationFailed);
+				}
+
+				host = BuildHostWithReverseGeocode<ArchiveRunner, ArchiveOptions>(archiveOptions, textWriter);
+				break;
+			}
 			case SettingsOptions settingsOptions:
 			{
 				var validationResultSettings = new SettingsOptionsValidator().Validate(settingsOptions);
@@ -116,8 +128,7 @@ public static class Program
 		var toolOptionsValidationResult = toolOptionsValidator.Validate(toolOptions);
 		if (!toolOptionsValidationResult.IsValid)
 		{
-			Console.Error.WriteLine(
-				$"{Constants.AppSettingsFileName} has some invalid settings. Undo or reset all settings via `{Constants.ApplicationExeName} {OptionNames.SettingsVerb} --{OptionNames.ResetOptionNameLong}`");
+			Console.Error.WriteLine($"{Constants.AppSettingsFileName} has some invalid settings. Undo or reset all settings via `{OptionNames.ApplicationAlias} {OptionNames.SettingsVerb} --{OptionNames.ResetOptionNameLong}`");
 			foreach (var validationResultError in toolOptionsValidationResult.Errors)
 				Console.Error.WriteLine(validationResultError);
 			return (int)ExitCode.AppSettingsInvalidFile;
@@ -172,25 +183,25 @@ public static class Program
 			var agent = UserAgent.Instance();
 			services.AddHttpClient<IBigDataCloudReverseGeocodeService, BigDataCloudReverseGeocodeService>(c =>
 			{
-				c.BaseAddress = new Uri("https://api.bigdatacloud.net/data/reverse-geocode/");
+				c.BaseAddress = new Uri("https://api.bigdatacloud.net/data/reverse-geocode");
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
 			});
 
 			services.AddHttpClient<IOpenStreetMapFoundationReverseGeocodeService, OpenStreetMapFoundationReverseGeocodeService>(c =>
 			{
-				c.BaseAddress = new Uri("https://nominatim.openstreetmap.org/reverse/");
+				c.BaseAddress = new Uri("https://nominatim.openstreetmap.org/reverse");
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
 			});
 
 			services.AddHttpClient<IGoogleMapsReverseGeocodeService, GoogleMapsReverseGeocodeService>(c =>
 			{
-				c.BaseAddress = new Uri("https://maps.googleapis.com/maps/api/geocode/");
+				c.BaseAddress = new Uri("https://maps.googleapis.com/maps/api/geocode/json");
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
 			});
 
 			services.AddHttpClient<ILocationIqReverseGeocodeService, LocationIqReverseGeocodeService>(c =>
 			{
-				c.BaseAddress = new Uri("https://us1.locationiq.com/v1/reverse.php/");
+				c.BaseAddress = new Uri("https://us1.locationiq.com/v1/reverse.php");
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
 			});
 
@@ -238,6 +249,11 @@ public static class Program
 			services.AddTransient<IReverseGeocodeService, ReverseGeocodeService>();
 			services.AddTransient<IReverseGeocodeFetcherService, ReverseGeocodeFetcherService>();
 			services.AddTransient<IValidator<ToolOptions>, ToolOptionsValidator>();
+			services.AddTransient<IDuplicatePhotoRemoveService, DuplicatePhotoRemoveService>();
+			services.AddTransient<IDbService, DbService>();
+			services.AddSingleton<IArchiveDbContextProvider, ArchiveDbContextProvider>();
+			services.AddSingleton<ISQLiteConnectionStringProvider, ArchiveIsqLiteConnectionStringProvider>();
+
 			services.AddSingleton(textWriter);
 			services.AddSingleton<IConsoleWriter, ConsoleWriter>();
 			services.AddSingleton<Statistics>();
@@ -249,7 +265,7 @@ public static class Program
 
 	private static bool ParseArgs(IReadOnlyList<string> args, TextWriter textWriter, out object parsedObject, out ExitCode exitCode)
 	{
-		var commandLineArgsParsed = Parser.Default.ParseArguments<CopyOptions, InfoOptions, AddressOptions, SettingsOptions>(args);
+		var commandLineArgsParsed = Parser.Default.ParseArguments<CopyOptions, InfoOptions, ArchiveOptions, AddressOptions, SettingsOptions>(args);
 		if (commandLineArgsParsed.Tag == ParserResultType.NotParsed)
 		{
 			var notParsedResult = (NotParsed<object>)commandLineArgsParsed;

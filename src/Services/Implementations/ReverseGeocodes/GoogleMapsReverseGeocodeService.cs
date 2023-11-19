@@ -32,7 +32,7 @@ public class GoogleMapsReverseGeocodeService : IGoogleMapsReverseGeocodeService
 	{
 		try
 		{
-			var queryString = $"json?latlng={coordinate.Latitude},{coordinate.Longitude}&key={_apiKeyStore.GoogleMaps}";
+			var queryString = $"?latlng={coordinate.Latitude},{coordinate.Longitude}&key={_apiKeyStore.GoogleMaps}";
 			if (language != null)
 				queryString += $"&language={language}";
 			var googleMapsResponse = await _httpClient.GetFromJsonAsync<GoogleMapsResponse>(queryString, StaticOptions.JsonSerializerOptions);

@@ -52,4 +52,15 @@ public class FileNamerService : IFileNamerService
 			}
 		}
 	}
+
+	public void SetArchiveFileName(IReadOnlyCollection<Photo> orderedPhotoInfos)
+	{
+		foreach (var photo in orderedPhotoInfos)
+		{
+			if (photo.PhotoTakenDateTime.HasValue)
+				photo.NewName = photo.PhotoTakenDateTime.Value.ToString(_options.DateTimeFormatWithSeconds) + _options.ArchivePhotoTakenDateHashSeparator + photo.Sha1Hash;
+			else
+				photo.NewName = photo.Sha1Hash;
+		}
+	}
 }

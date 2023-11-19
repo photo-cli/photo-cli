@@ -56,6 +56,16 @@ public static class HelpTexts
 
 	#endregion
 
+	#region Archive
+
+	public const string ArchiveNoPhotoTakenDateAction = "(Optional) Action to do when a photo with a no taken date. ( Continue: 0 [default], PreventProcess: 1 )";
+
+	public const string ArchiveNoCoordinateAction = "(Optional) Action to do when a photo with a no coordinate. ( Continue: 0 [default], PreventProcess: 1 )";
+
+	public const string ArchiveInvalidFormatAction = "(Optional) Action to do when a photo format is invalid. ( Continue: 0 [default], PreventProcess: 1 )";
+
+	#endregion
+
 	#region Settings
 
 	public const string Key = "(Optional) Setting property name to change.";
