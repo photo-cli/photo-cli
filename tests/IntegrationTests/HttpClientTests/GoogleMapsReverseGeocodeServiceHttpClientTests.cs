@@ -9,8 +9,10 @@ public class GoogleMapsReverseGeocodeServiceHttpClientTests : IClassFixture<SetE
 		var apiKey = Environment.GetEnvironmentVariable(apiKeyEnvironmentVariableName);
 		apiKey.Should().NotBeNull("{0} environment variable not set", apiKeyEnvironmentVariableName);
 		var apiKeyStore = new ApiKeyStore { GoogleMaps = apiKey };
-		var sut = new GoogleMapsReverseGeocodeService(CreateHttpClient(), apiKeyStore, NullLogger<GoogleMapsReverseGeocodeService>.Instance);
-		var googleMapsResponse = await sut.SerializeFullResponse(CoordinateFakes.Ankara(), "en");
+		var coordinateCacheMock = new Mock<CoordinateCache<GoogleMapsResponse>>();
+		var sut = new GoogleMapsReverseGeocodeService(CreateHttpClient(), apiKeyStore, NullLogger<GoogleMapsReverseGeocodeService>.Instance, coordinateCacheMock.Object);
+		var googleMapsRequest = new ReverseGeocodeRequest(CoordinateFakes.Ankara(), "tr");
+		var googleMapsResponse = await sut.SerializeFullResponse(googleMapsRequest);
 		googleMapsResponse.Verify();
 	}
 

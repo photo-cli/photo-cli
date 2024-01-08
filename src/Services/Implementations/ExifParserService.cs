@@ -11,6 +11,7 @@ public class ExifParserService : IExifParserService
 	private readonly ILogger<ExifParserService> _logger;
 	private readonly ToolOptions _options;
 	private readonly Statistics _statistics;
+	private readonly int _coordinatePrecision;
 
 	public ExifParserService(ILogger<ExifParserService> logger, IFileSystem fileSystem, ToolOptions options, Statistics statistics)
 	{
@@ -18,6 +19,7 @@ public class ExifParserService : IExifParserService
 		_fileSystem = fileSystem;
 		_options = options;
 		_statistics = statistics;
+		_coordinatePrecision = options.CoordinatePrecision;
 	}
 
 	public ExifData? Parse(string filePath, bool parseDateTime, bool parseCoordinate)
@@ -69,7 +71,7 @@ public class ExifParserService : IExifParserService
 		var gpsDirectory = fileDataDirectories.OfType<GpsDirectory>().SingleOrDefault();
 		var geoLocation = gpsDirectory?.GetGeoLocation();
 		if (geoLocation != null)
-			return new Coordinate(geoLocation.Latitude, geoLocation.Longitude);
+			return new Coordinate(Math.Round(geoLocation.Latitude, _coordinatePrecision), Math.Round(geoLocation.Longitude, _coordinatePrecision));
 		_logger.LogWarning("No coordinate found on `Gps` directory for {FilePath}", filePath);
 		return null;
 	}

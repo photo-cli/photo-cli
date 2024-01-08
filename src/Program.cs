@@ -24,6 +24,7 @@ global using PhotoCli.Models.ReverseGeocode.OpenStreetMap;
 global using PhotoCli.Utils;
 global using PhotoCli.Utils.Extensions;
 global using PhotoCli.Utils.Validators;
+global using PhotoCli.Models.ReverseGeocode;
 using System.IO.Abstractions;
 using CommandLine;
 using FluentValidation;
@@ -179,6 +180,10 @@ public static class Program
 
 			var apiKeyStore = ApiKeyStore.Build(configuration, options);
 			services.AddSingleton(apiKeyStore);
+
+			services.AddSingleton<ICoordinateCache<BigDataCloudResponse>, CoordinateCache<BigDataCloudResponse>>();
+			services.AddSingleton<ICoordinateCache<GoogleMapsResponse>, CoordinateCache<GoogleMapsResponse>>();
+			services.AddSingleton<ICoordinateCache<OpenStreetMapResponse>, CoordinateCache<OpenStreetMapResponse>>();
 
 			var agent = UserAgent.Instance();
 			services.AddHttpClient<IBigDataCloudReverseGeocodeService, BigDataCloudReverseGeocodeService>(c =>

@@ -21,6 +21,7 @@ public class ToolOptions
 	internal const string DryRunCsvReportFileNameDefault = "photo-cli-dry-run.csv";
 	internal const string ArchivePhotoTakenDateHashSeparatorDefault = "-";
 	internal const int ConnectionLimitDefault = 4;
+	internal const int CoordinatePrecisionDefault = 4;
 
 	public ToolOptions(ToolOptionsRaw options)
 	{
@@ -47,6 +48,7 @@ public class ToolOptions
 		GoogleMapsApiKey = options.GoogleMapsApiKey;
 		LocationIqApiKey = options.LocationIqApiKey;
 		ArchivePhotoTakenDateHashSeparator = options.ArchivePhotoTakenDateHashSeparator ?? ArchivePhotoTakenDateHashSeparatorDefault;
+		CoordinatePrecision = options.CoordinatePrecision ?? CoordinatePrecisionDefault;
 	}
 
 	public LogLevel LogLevel { get; set; }
@@ -74,6 +76,7 @@ public class ToolOptions
 	public string? BigDataCloudApiKey { get; set; }
 	public string? GoogleMapsApiKey { get; set; }
 	public string? LocationIqApiKey { get; set; }
+	public int CoordinatePrecision { get; }
 
 	public string ArchivePhotoTakenDateHashSeparator { get; set; }
 

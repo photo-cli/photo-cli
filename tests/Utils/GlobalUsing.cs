@@ -15,6 +15,7 @@ global using PhotoCli.Services.Contracts;
 global using PhotoCli.Services.Contracts.ReverseGeocodes;
 global using PhotoCli.Services.Implementations.ReverseGeocodes;
 global using PhotoCli.Models;
+global using PhotoCli.Models.ReverseGeocode;
 global using PhotoCli.Models.ReverseGeocode.BigDataCloud;
 global using PhotoCli.Models.ReverseGeocode.OpenStreetMap;
 global using PhotoCli.Models.ReverseGeocode.GoogleMaps;

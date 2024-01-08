@@ -89,32 +89,36 @@ public class ReverseGeocodeUnitTests
 		var bigDataCloudMock = new Mock<IBigDataCloudReverseGeocodeService>(MockBehavior.Strict);
 		if (reverseGeocodeProvider is ReverseGeocodeProvider.BigDataCloud)
 		{
+			var request = new ReverseGeocodeRequest(CoordinateFakes.Valid(), It.IsAny<string>());
 			response = new BigDataCloudResponse { City = "test" };
-			bigDataCloudMock.Setup(s => s.SerializeFullResponse(It.IsAny<Coordinate>(), It.IsAny<string>()))
+			bigDataCloudMock.Setup(s => s.SerializeFullResponse(request))
 				.ReturnsAsync((BigDataCloudResponse)response);
 		}
 
 		var openStreetMapFoundationMock = new Mock<IOpenStreetMapFoundationReverseGeocodeService>(MockBehavior.Strict);
 		if (reverseGeocodeProvider is ReverseGeocodeProvider.OpenStreetMapFoundation)
 		{
+			var request = new ReverseGeocodeRequest(CoordinateFakes.Valid());
 			response = new OpenStreetMapResponse { DisplayName = "test" };
-			openStreetMapFoundationMock.Setup(s => s.SerializeFullResponse(It.IsAny<Coordinate>()))
+			openStreetMapFoundationMock.Setup(s => s.SerializeFullResponse(request))
 				.ReturnsAsync((OpenStreetMapResponse)response);
 		}
 
 		var googleMapsMock = new Mock<IGoogleMapsReverseGeocodeService>(MockBehavior.Strict);
 		if (reverseGeocodeProvider is ReverseGeocodeProvider.GoogleMaps)
 		{
+			var request = new ReverseGeocodeRequest(CoordinateFakes.Valid(), It.IsAny<string>());
 			response = new GoogleMapsResponse { Status = "test" };
-			googleMapsMock.Setup(s => s.SerializeFullResponse(It.IsAny<Coordinate>(), It.IsAny<string>()))
+			googleMapsMock.Setup(s => s.SerializeFullResponse(request))
 				.ReturnsAsync((GoogleMapsResponse)response);
 		}
 
 		var locationIqMock = new Mock<ILocationIqReverseGeocodeService>(MockBehavior.Strict);
 		if (reverseGeocodeProvider is ReverseGeocodeProvider.LocationIq)
 		{
+			var request = new ReverseGeocodeRequest(CoordinateFakes.Valid());
 			response = new OpenStreetMapResponse { DisplayName = "test" };
-			locationIqMock.Setup(s => s.SerializeFullResponse(It.IsAny<Coordinate>()))
+			locationIqMock.Setup(s => s.SerializeFullResponse(request))
 				.ReturnsAsync((OpenStreetMapResponse)response);
 		}
 

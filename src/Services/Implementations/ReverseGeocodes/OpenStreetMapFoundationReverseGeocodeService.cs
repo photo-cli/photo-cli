@@ -2,12 +2,13 @@ namespace PhotoCli.Services.Implementations.ReverseGeocodes;
 
 public class OpenStreetMapFoundationReverseGeocodeService : OpenStreetMapReverseGeocodeServiceBase, IOpenStreetMapFoundationReverseGeocodeService
 {
-	public OpenStreetMapFoundationReverseGeocodeService(HttpClient httpClient, ILogger<OpenStreetMapFoundationReverseGeocodeService> logger) : base(httpClient, logger)
+	public OpenStreetMapFoundationReverseGeocodeService(HttpClient httpClient, ILogger<OpenStreetMapFoundationReverseGeocodeService> logger, ICoordinateCache<OpenStreetMapResponse> coordinateCache)
+		: base(httpClient, logger, coordinateCache)
 	{
 	}
 
-	protected override string RequestUri(Coordinate coordinate)
+	protected override string RequestUri(ReverseGeocodeRequest request)
 	{
-		return $"?format=json&lat={coordinate.Latitude}&lon={coordinate.Longitude}";
+		return $"?format=json&lat={request.Coordinate.Latitude}&lon={request.Coordinate.Longitude}";
 	}
 }
