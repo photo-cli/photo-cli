@@ -19,7 +19,7 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Install SonarCloud global tool
-      run: dotnet tool install --global dotnet-sonarscanner
+      run: dotnet tool install --global dotnet-sonarscanner --version 5.15.0
     - name: Begin SonarCloud scan
       run: dotnet sonarscanner begin /o:"photo-cli" /k:"photo-cli_photo-cli" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"  /d:sonar.login=${{secrets.SONAR_TOKEN}} /d:sonar.host.url="https://sonarcloud.io"
       env:
