@@ -920,6 +920,14 @@ Example merged address may used in file/folder names: `Turkey-Ankara-Çankaya-Me
 
 You may change default separator (`-`) via [settings](#settings) command with a setting key `AddressSeparator`
 
+### 6. Caching Reverse Geocode Responses
+
+Since the responses in close coordinate's requests in pretty close results, we implemented a caching mechanism for optimization. This is done by rounding the fractional digits of coordinates from the end. We are currently only use 4 fraction digits.
+
+For example the original coordinate for 39.92501234567890, 32.83471234567890 will interpreted as 39.9250, 32.8347 internally before sending the request.
+
+If you need more precise results in your reverse geocode responses, you can increase this value on [settings](#settings) with a key of `CoordinatePrecision`.
+
 ## Usages
 
 We can't cover all possible options, because there are so many option combination. Some important [copy](#copy) command examples with comparing of original photos directory structure and output directory of `photo-cli` listed below.
@@ -1900,6 +1908,7 @@ AddressSeparator=-
 ArchivePhotoTakenDateHashSeparator=-
 BigDataCloudApiKey=
 ConnectionLimit=4
+CoordinatePrecision=4
 CsvReportFileName=photo-cli-report.csv
 DateFormatWithDay=yyyy.MM.dd
 DateFormatWithMonth=yyyy.MM
