@@ -1,8 +1,10 @@
-﻿namespace PhotoCli.Models.ReverseGeocode;
+﻿using System.Collections.Concurrent;
+
+namespace PhotoCli.Models.ReverseGeocode;
 
 public class CoordinateCache<TResponse> : ICoordinateCache<TResponse>
 {
-	private readonly Dictionary<ReverseGeocodeRequest, TResponse?> _cache = new();
+	private readonly ConcurrentDictionary<ReverseGeocodeRequest, TResponse?> _cache = new();
 
 	public bool TryGet(ReverseGeocodeRequest key, out TResponse? value)
 	{
