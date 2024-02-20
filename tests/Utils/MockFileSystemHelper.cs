@@ -9,6 +9,11 @@ public static class MockFileSystemHelper
 		return Path(System.IO.Path.Combine(paths));
 	}
 
+	public static string Path(bool useRelativePath = false, params string[] paths)
+	{
+		return Path(System.IO.Path.Combine(paths), useRelativePath);
+	}
+
 	public static string Path(string path, bool useRelativePath = false)
 	{
 		if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -17,7 +22,7 @@ public static class MockFileSystemHelper
 		if (useRelativePath || path.StartsWith("C:"))
 			return path;
 		if (!path.StartsWith('\\'))
-			path = '/' + path;
+			path = '\\' + path;
 		path = "C:" + path;
 		return path;
 	}

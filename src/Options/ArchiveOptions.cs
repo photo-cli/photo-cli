@@ -1,0 +1,100 @@
+using CommandLine;
+
+namespace PhotoCli.Options;
+
+[Verb(OptionNames.ArchiveVerb, HelpText = "Archives photos into same specific folder and indexing photo taken date, address (reverse geocode) information into SQLite database.")]
+public class ArchiveOptions : IReverseGeocodeOptions
+{
+	// Notes: Constructor parameters and properties should be in same order for Immutable Options Type in CommandLineParser.
+	// ref: https://github.com/commandlineparser/commandline/wiki/Immutable-Options-Type
+	public ArchiveOptions(
+		// Required
+		string outputPath,
+		// Optional
+		string? inputPath = null,
+		bool isDryRun = false, ArchiveInvalidFormatAction invalidFileFormatAction = ArchiveInvalidFormatAction.Continue,
+		ArchiveNoPhotoTakenDateAction noPhotoTakenDateAction = ArchiveNoPhotoTakenDateAction.Continue, ArchiveNoCoordinateAction noCoordinateAction = ArchiveNoCoordinateAction.Continue,
+		// ReverseGeocode - Shared
+		ReverseGeocodeProvider reverseGeoCodeProvider = ReverseGeocodeProvider.Disabled, string? bigDataCloudApiKey = null, IEnumerable<int>? bigDataCloudAdminLevels = null,
+		IEnumerable<string>? googleMapsAddressTypes = null, string? googleMapsApiKey = null, IEnumerable<string>? openStreetMapProperties = null,
+		string? locationIqApiKey = null, bool? hasPaidLicense = null, string? language = null)
+	{
+		// Required
+		OutputPath = outputPath;
+
+		// Optional
+		InputPath = inputPath;
+		IsDryRun = isDryRun;
+		InvalidFileFormatAction = invalidFileFormatAction;
+		NoPhotoTakenDateAction = noPhotoTakenDateAction;
+		NoCoordinateAction = noCoordinateAction;
+
+		// ReverseGeocode
+		ReverseGeocodeProvider = reverseGeoCodeProvider;
+		BigDataCloudApiKey = bigDataCloudApiKey;
+		BigDataCloudAdminLevels = bigDataCloudAdminLevels ?? new List<int>();
+		GoogleMapsAddressTypes = googleMapsAddressTypes ?? new List<string>();
+		GoogleMapsApiKey = googleMapsApiKey;
+		OpenStreetMapProperties = openStreetMapProperties ?? new List<string>();
+		LocationIqApiKey = locationIqApiKey;
+		HasPaidLicense = hasPaidLicense;
+		Language = language;
+	}
+
+	#region Required
+
+	[Option(OptionNames.OutputPathOptionNameShort, OptionNames.OutputPathOptionNameLong, HelpText = HelpTexts.OutputPathCopy)]
+	public string OutputPath { get; }
+
+	#endregion
+
+	#region Optional
+
+	[Option(OptionNames.InputPathOptionNameShort, OptionNames.InputPathOptionNameLong, HelpText = HelpTexts.InputPath)]
+	public string? InputPath { get; }
+
+	[Option(OptionNames.IsDryRunOptionNameShort, OptionNames.IsDryRunOptionNameLong, HelpText = HelpTexts.IsDryRun)]
+	public bool IsDryRun { get; }
+
+	[Option(OptionNames.ArchiveInvalidFormatActionOptionNameShort, OptionNames.ArchiveInvalidFormatActionOptionNameLong, HelpText = HelpTexts.ArchiveInvalidFormatAction)]
+	public ArchiveInvalidFormatAction InvalidFileFormatAction { get; }
+
+	[Option(OptionNames.ArchiveNoPhotoDateTimeTakenActionOptionNameShort, OptionNames.ArchiveNoPhotoDateTimeTakenActionOptionNameLong, HelpText = HelpTexts.ArchiveNoPhotoTakenDateAction)]
+	public ArchiveNoPhotoTakenDateAction NoPhotoTakenDateAction { get; }
+
+	[Option(OptionNames.ArchiveNoCoordinateActionOptionNameShort, OptionNames.ArchiveNoCoordinateActionOptionNameLong, HelpText = HelpTexts.ArchiveNoCoordinateAction)]
+	public ArchiveNoCoordinateAction NoCoordinateAction { get; }
+
+	#endregion
+
+	#region Reverse Geocode
+
+	[Option(OptionNames.ReverseGeocodeProvidersOptionNameShort, OptionNames.ReverseGeocodeProvidersOptionNameLong, HelpText = HelpTexts.ReverseGeocodeProvider)]
+	public ReverseGeocodeProvider ReverseGeocodeProvider { get; }
+
+	[Option(OptionNames.BigDataCloudApiKeyOptionNameShort, OptionNames.BigDataCloudApiKeyOptionNameLong, HelpText = HelpTexts.BigDataCloudApiKey)]
+	public string? BigDataCloudApiKey { get; }
+
+	[Option(OptionNames.BigDataCloudAdminLevelsOptionNameShort, OptionNames.BigDataCloudAdminLevelsOptionNameLong, HelpText = HelpTexts.BigDataCloudAdminLevels)]
+	public IEnumerable<int> BigDataCloudAdminLevels { get; }
+
+	[Option(OptionNames.GoogleMapsAddressTypesOptionNameShort, OptionNames.GoogleMapsAddressTypesOptionNameLong, HelpText = HelpTexts.GoogleMapsAddressTypes)]
+	public IEnumerable<string> GoogleMapsAddressTypes { get; }
+
+	[Option(OptionNames.GoogleMapsApiKeyOptionNameShort, OptionNames.GoogleMapsApiKeyOptionNameLong, HelpText = HelpTexts.GoogleMapsApiKey)]
+	public string? GoogleMapsApiKey { get; }
+
+	[Option(OptionNames.OpenStreetMapPropertiesOptionNameShort, OptionNames.OpenStreetMapPropertiesOptionNameLong, HelpText = HelpTexts.OpenStreetMapProperties)]
+	public IEnumerable<string> OpenStreetMapProperties { get; }
+
+	[Option(OptionNames.LocationIqApiKeyOptionNameShort, OptionNames.LocationIqApiKeyOptionNameLong, HelpText = HelpTexts.LocationIqApiKey)]
+	public string? LocationIqApiKey { get; }
+
+	[Option(OptionNames.HasPaidLicenseOptionNameShort, OptionNames.HasPaidLicenseOptionNameLong, HelpText = HelpTexts.HasPaidLicense)]
+	public bool? HasPaidLicense { get; }
+
+	[Option(OptionNames.LanguageOptionNameShort, OptionNames.LanguageOptionNameLong, HelpText = HelpTexts.Language)]
+	public string? Language { get; }
+
+	#endregion
+}

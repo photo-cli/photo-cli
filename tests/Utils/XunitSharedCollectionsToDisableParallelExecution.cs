@@ -2,5 +2,5 @@ namespace PhotoCli.Tests.Utils;
 
 public static class XunitSharedCollectionsToDisableParallelExecution
 {
-	public const string AppSettingsJson = nameof(AppSettingsJson);
+	public const string EndToEndTests = nameof(EndToEndTests);
 }

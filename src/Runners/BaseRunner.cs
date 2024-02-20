@@ -28,6 +28,10 @@ public abstract class BaseRunner
 
 		if (_statistics.PhotosCopied > 0)
 			_consoleWriter.Write($"- {_statistics.PhotosCopied} photo(s) copied.");
+		if (_statistics.PhotosExisted > 0)
+			_consoleWriter.Write($"- {_statistics.PhotosExisted} photo(s) existed on the output.");
+		if (_statistics.PhotosSame > 0)
+			_consoleWriter.Write($"- {_statistics.PhotosSame} photo(s) are skipped, they have the same photo.");
 		if (_statistics.DirectoriesCreated > 0)
 			_consoleWriter.Write($"- {_statistics.DirectoriesCreated} directory/directories created.");
 

@@ -6,16 +6,22 @@ public abstract class OpenStreetMapReverseGeocodeServiceBase : IOpenStreetMapRev
 {
 	private readonly HttpClient _httpClient;
 	private readonly ILogger<OpenStreetMapReverseGeocodeServiceBase> _logger;
+	private readonly ICoordinateCache<OpenStreetMapResponse> _coordinateCache;
 
-	protected OpenStreetMapReverseGeocodeServiceBase(HttpClient httpClient, ILogger<OpenStreetMapReverseGeocodeServiceBase> logger)
+	protected OpenStreetMapReverseGeocodeServiceBase(
+		HttpClient httpClient,
+		ILogger<OpenStreetMapReverseGeocodeServiceBase> logger,
+		ICoordinateCache<OpenStreetMapResponse> coordinateCache)
 	{
 		_httpClient = httpClient;
 		_logger = logger;
+		_coordinateCache = coordinateCache;
 	}
 
 	public async Task<IEnumerable<string>> Get(Coordinate coordinate, List<PropertyInfo> requestedAddressPropertyInfos)
 	{
-		var openStreetMapResponse = await SerializeFullResponse(coordinate);
+		var openStreetMapRequest = new ReverseGeocodeRequest(coordinate);
+		var openStreetMapResponse = await SerializeFullResponse(openStreetMapRequest);
 		if (openStreetMapResponse?.Address == null)
 		{
 			_logger.LogCritical("Can't get {Type}", nameof(OpenStreetMapAddress));
@@ -33,12 +39,18 @@ public abstract class OpenStreetMapReverseGeocodeServiceBase : IOpenStreetMapRev
 		return addressPropertyValueList;
 	}
 
-	public async Task<OpenStreetMapResponse?> SerializeFullResponse(Coordinate coordinate)
+	public async Task<OpenStreetMapResponse?> SerializeFullResponse(ReverseGeocodeRequest request)
 	{
 		try
 		{
-			var requestUri = RequestUri(coordinate);
+			var requestUri = RequestUri(request);
+
+			if (_coordinateCache.TryGet(request, out var cachedData))
+				return cachedData;
+
 			var openStreetMapResponse = await _httpClient.GetFromJsonAsync<OpenStreetMapResponse>(requestUri, StaticOptions.JsonSerializerOptions);
+			_coordinateCache.SetResponse(request, openStreetMapResponse);
+
 			return openStreetMapResponse;
 		}
 		catch (Exception e)
@@ -50,7 +62,8 @@ public abstract class OpenStreetMapReverseGeocodeServiceBase : IOpenStreetMapRev
 
 	public async Task<Dictionary<string, object>> AllAvailableReverseGeocodes(Coordinate coordinate)
 	{
-		var openStreetMapResponse = await SerializeFullResponse(coordinate);
+		var openStreetMapRequest = new ReverseGeocodeRequest(coordinate);
+		var openStreetMapResponse = await SerializeFullResponse(openStreetMapRequest);
 		if (openStreetMapResponse?.Address == null)
 			throw new PhotoCliException($"Can't get {nameof(OpenStreetMapAddress)}");
 
@@ -65,8 +78,8 @@ public abstract class OpenStreetMapReverseGeocodeServiceBase : IOpenStreetMapRev
 		return addressPropertyValueDict;
 	}
 
-	protected virtual string RequestUri(Coordinate coordinate)
+	protected virtual string RequestUri(ReverseGeocodeRequest request)
 	{
-		return $"?format=json&lat={coordinate.Latitude}&lon={coordinate.Longitude}";
+		return $"?format=json&lat={request.Coordinate.Latitude}&lon={request.Coordinate.Longitude}";
 	}
 }

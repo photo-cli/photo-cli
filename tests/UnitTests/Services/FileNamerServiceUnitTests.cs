@@ -372,6 +372,45 @@ public class FileNamerServiceUnitTests
 		VerifyNotOtherCalls();
 	}
 
+
+	public static TheoryData<List<Photo>, List<Photo>> SetArchiveFileNameData = new()
+	{
+		{
+			new List<Photo>
+			{
+				PhotoFakes.WithSecondAndSha1Hash(1, Sha1HashFakes.Sample(1)),
+			},
+			new List<Photo>
+			{
+				PhotoFakes.WithArchiveFileName(1, Sha1HashFakes.Sample(1)),
+			}
+		},
+		{
+			new List<Photo>
+			{
+				PhotoFakes.WithSecondAndSha1Hash(2, Sha1HashFakes.Sample(2)),
+				PhotoFakes.WithSecondAndSha1Hash(3, Sha1HashFakes.Sample(3)),
+			},
+			new List<Photo>
+			{
+				PhotoFakes.WithArchiveFileName(2, Sha1HashFakes.Sample(2)),
+				PhotoFakes.WithArchiveFileName(3, Sha1HashFakes.Sample(3)),
+			}
+		},
+		{
+			new List<Photo>(),
+			new List<Photo>()
+		}
+	};
+
+	[Theory]
+	[MemberData(nameof(SetArchiveFileNameData))]
+	public void SetArchiveFileName_GivenPhotoInput_ShouldRenameAndMatch(List<Photo> inputPhotos, List<Photo> expectedPhotos)
+	{
+		_sut.SetArchiveFileName(inputPhotos);
+		inputPhotos.Should().BeEquivalentTo(expectedPhotos);
+	}
+
 	private void VerifyNotOtherCalls()
 	{
 		_sequentialNumberEnumerator.VerifyNoOtherCalls();

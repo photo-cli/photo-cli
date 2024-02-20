@@ -87,6 +87,8 @@ public class SettingsRunnerUnitTests
 		toolOptions.DryRunCsvReportFileName = "dry-run-csv-report-file-name";
 		toolOptions.NoPhotoTakenDateFolderName = "no-photo-taken-date-folder-name";
 		toolOptions.NoAddressAndPhotoTakenDateFolderName = "no-address-and-photo-taken-date-folder-name";
+		toolOptions.ArchivePhotoTakenDateHashSeparator = "archive-photo-taken-date-hash-separator";
+
 		var mockValidator = new Mock<IValidator<ToolOptions>>();
 		mockValidator.Setup(s => s.Validate(toolOptions)).Returns(ValidationResultFakes.NoError);
 		var consoleWriterMock = new Mock<IConsoleWriter>();
@@ -117,6 +119,7 @@ public class SettingsRunnerUnitTests
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.DryRunCsvReportFileName)}={toolOptions.DryRunCsvReportFileName}"));
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.NoPhotoTakenDateFolderName)}={toolOptions.NoPhotoTakenDateFolderName}"));
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.NoAddressAndPhotoTakenDateFolderName)}={toolOptions.NoAddressAndPhotoTakenDateFolderName}"));
+		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.ArchivePhotoTakenDateHashSeparator)}={toolOptions.ArchivePhotoTakenDateHashSeparator}"));
 	}
 
 	[Fact]

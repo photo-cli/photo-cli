@@ -70,7 +70,7 @@ After agreement about these changes and CI is not broken, we will merge your cha
 
 ### 4. Publishing Preview Version
 
-Tool deployment to Nuget, done via GitHub actions on tag push on release branch `r/{major}{minor}{patch}`.
+Tool deployment to Nuget, done via GitHub actions on tag push on release branch `r/{major}.{minor}.{patch}`.
 
 After completing development on release branch, first we push preview version with this git tag. `v[0-9]+.[0-9]+.[0-9]+-preview[0-9]`
 
@@ -80,7 +80,7 @@ This preview version is for contributors and early adapters(who installs and lov
 
 If preview version is stable and passes our tests, we will push stable version via this tag. `v[0-9]+.[0-9]+.[0-9]+`
 
-After pushing stable version on release branch `r/{major}{minor}{patch}` , we will merge this changes to `main` branch.
+After pushing stable version on release branch `r/{major}.{minor}.{patch}` , we will merge this changes to `main` branch.
 
 The `main` branch should matches with the current stable release on nuget.org.
 

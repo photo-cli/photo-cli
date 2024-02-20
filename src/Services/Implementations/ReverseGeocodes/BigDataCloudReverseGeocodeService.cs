@@ -7,17 +7,24 @@ public class BigDataCloudReverseGeocodeService : IBigDataCloudReverseGeocodeServ
 	private readonly ApiKeyStore _apiKeyStore;
 	private readonly HttpClient _httpClient;
 	private readonly ILogger<BigDataCloudReverseGeocodeService> _logger;
+	private readonly ICoordinateCache<BigDataCloudResponse> _coordinateCache;
 
-	public BigDataCloudReverseGeocodeService(HttpClient httpClient, ILogger<BigDataCloudReverseGeocodeService> logger, ApiKeyStore apiKeyStore)
+	public BigDataCloudReverseGeocodeService(
+		HttpClient httpClient,
+		ILogger<BigDataCloudReverseGeocodeService> logger,
+		ApiKeyStore apiKeyStore,
+		ICoordinateCache<BigDataCloudResponse> coordinateCache)
 	{
 		_httpClient = httpClient;
 		_logger = logger;
 		_apiKeyStore = apiKeyStore;
+		_coordinateCache = coordinateCache;
 	}
 
 	public async Task<IEnumerable<string>> Get(Coordinate coordinate, string? language, IEnumerable<int> adminLevels)
 	{
-		var bigDataCloudResponse = await SerializeFullResponse(coordinate, language);
+		var bigDataCloudRequest = new ReverseGeocodeRequest(coordinate, language);
+		var bigDataCloudResponse = await SerializeFullResponse(bigDataCloudRequest);
 		var administratorLevels = bigDataCloudResponse?.LocalityInfo?.Administrative;
 		if (administratorLevels == null)
 		{
@@ -36,14 +43,21 @@ public class BigDataCloudReverseGeocodeService : IBigDataCloudReverseGeocodeServ
 		return levelNames;
 	}
 
-	public async Task<BigDataCloudResponse?> SerializeFullResponse(Coordinate coordinate, string? language)
+	public async Task<BigDataCloudResponse?> SerializeFullResponse(ReverseGeocodeRequest request)
 	{
 		try
 		{
-			var queryString = $"?latitude={coordinate.Latitude}&longitude={coordinate.Longitude}&key={_apiKeyStore.BigDataCloud}";
-			if (language != null)
-				queryString += $"&localityLanguage={language}";
+			var queryString = $"?latitude={request.Coordinate.Latitude}&longitude={request.Coordinate.Longitude}&key={_apiKeyStore.BigDataCloud}";
+
+			if (request.Language != null)
+				queryString += $"&localityLanguage={request.Language}";
+
+			if (_coordinateCache.TryGet(request, out var cachedData))
+				return cachedData;
+
 			var bigDataCloudResponse = await _httpClient.GetFromJsonAsync<BigDataCloudResponse>(queryString, StaticOptions.JsonSerializerOptions);
+			_coordinateCache.SetResponse(request, bigDataCloudResponse);
+
 			return bigDataCloudResponse;
 		}
 		catch (Exception e)
@@ -55,7 +69,8 @@ public class BigDataCloudReverseGeocodeService : IBigDataCloudReverseGeocodeServ
 
 	public async Task<Dictionary<string, object>> AllAvailableReverseGeocodes(Coordinate coordinate, string? language)
 	{
-		var bigDataCloudResponse = await SerializeFullResponse(coordinate, language);
+		var bigDataCloudRequest = new ReverseGeocodeRequest(coordinate, language);
+		var bigDataCloudResponse = await SerializeFullResponse(bigDataCloudRequest);
 		var administratorLevels = bigDataCloudResponse?.LocalityInfo?.Administrative;
 		if (administratorLevels == null)
 			throw new PhotoCliException($"Can't get {nameof(BigDataCloudAdministrative)}");
@@ -65,7 +80,15 @@ public class BigDataCloudReverseGeocodeService : IBigDataCloudReverseGeocodeServ
 		{
 			if (administratorLevel.AdminLevel == null || administratorLevel.Name == null)
 				continue;
-			addressPropertyValueDict.Add($"AdminLevel{administratorLevel.AdminLevel.ToString()}", administratorLevel.Name!);
+			var key = $"AdminLevel{administratorLevel.AdminLevel.ToString()}";
+			if (addressPropertyValueDict.TryGetValue(key, out var existingValue))
+			{
+				_logger.LogWarning("BigDataCloud returned inconsistent/duplicate data. Multiple admin level on {Level} found. Used value: {Existing}, duplicate value: {Duplicate}",
+					administratorLevel.AdminLevel, existingValue, administratorLevel.Name);
+
+				continue;
+			}
+			addressPropertyValueDict.Add(key, administratorLevel.Name);
 		}
 
 		return addressPropertyValueDict;

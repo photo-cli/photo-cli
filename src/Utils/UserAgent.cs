@@ -8,7 +8,7 @@ public static class UserAgent
 	{
 		var agentName = Assembly.GetCallingAssembly().GetName().Name!;
 		var version = Assembly.GetCallingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-		if (version is null or "1.0.0")
+		if (version is null || version.StartsWith("1.0.0"))
 			version = "dev";
 		var agent = new ProductInfoHeaderValue(new ProductHeaderValue(agentName, version));
 		return agent;

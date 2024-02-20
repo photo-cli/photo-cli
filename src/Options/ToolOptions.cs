@@ -19,11 +19,13 @@ public class ToolOptions
 	internal const string NoAddressAndPhotoTakenDateFolderNameDefault = "no-address-and-no-photo-taken-date";
 	internal const string PhotoOrganizerReportCsvDefault = "photo-cli-report.csv";
 	internal const string DryRunCsvReportFileNameDefault = "photo-cli-dry-run.csv";
+	internal const string ArchivePhotoTakenDateHashSeparatorDefault = "-";
 	internal const int ConnectionLimitDefault = 4;
+	internal const int CoordinatePrecisionDefault = 4;
 
 	public ToolOptions(ToolOptionsRaw options)
 	{
-		LogLevel = options.LogLevel ?? new LogLevel { Default = Microsoft.Extensions.Logging.LogLevel.Error.ToString() };
+		LogLevel = options.LogLevel ?? new LogLevel { Default = Microsoft.Extensions.Logging.LogLevel.Warning.ToString() };
 		YearFormat = options.YearFormat ?? YearFormatDefault;
 		MonthFormat = options.MonthFormat ?? MonthFormatDefault;
 		DayFormat = options.DayFormat ?? DayFormatDefault;
@@ -45,6 +47,8 @@ public class ToolOptions
 		BigDataCloudApiKey = options.BigDataCloudApiKey;
 		GoogleMapsApiKey = options.GoogleMapsApiKey;
 		LocationIqApiKey = options.LocationIqApiKey;
+		ArchivePhotoTakenDateHashSeparator = options.ArchivePhotoTakenDateHashSeparator ?? ArchivePhotoTakenDateHashSeparatorDefault;
+		CoordinatePrecision = options.CoordinatePrecision ?? CoordinatePrecisionDefault;
 	}
 
 	public LogLevel LogLevel { get; set; }
@@ -72,6 +76,9 @@ public class ToolOptions
 	public string? BigDataCloudApiKey { get; set; }
 	public string? GoogleMapsApiKey { get; set; }
 	public string? LocationIqApiKey { get; set; }
+	public int CoordinatePrecision { get; }
+
+	public string ArchivePhotoTakenDateHashSeparator { get; set; }
 
 	public static ToolOptions Default()
 	{

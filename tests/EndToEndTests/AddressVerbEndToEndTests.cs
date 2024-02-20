@@ -1,135 +1,62 @@
 namespace PhotoCli.Tests.EndToEndTests;
 
-[Collection(XunitSharedCollectionsToDisableParallelExecution.AppSettingsJson)]
 public class AddressVerbEndToEndTests : BaseEndToEndTests
 {
 	public AddressVerbEndToEndTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
 	{
 	}
 
-	public static TheoryData<string[], string> SelectedProperties = new()
+	public static TheoryData<string[]> FullResponse = new()
 	{
-		{
-			CommandLineArgumentsFakes.AddressBuildCommandLineOptions(TestImagesPathHelper.HasGpsCoordinate.FilePath, AddressListType.SelectedProperties, ReverseGeocodeProvider.BigDataCloud,
-				new List<int> { 2, 4, 6, 8 }),
-			@"Italy
-Toscana
-Province of Arezzo
-Arezzo"
-		}
-	};
-
-	public static TheoryData<string[], string> AllProperties = new()
-	{
-		{
-			CommandLineArgumentsFakes.AddressBuildCommandLineOptions(TestImagesPathHelper.HasGpsCoordinate.FilePath, AddressListType.AllAvailableProperties, ReverseGeocodeProvider.BigDataCloud, new List<int> { 2, 4, 6, 8 }),
-			@"AdminLevel2: Italy
-AdminLevel4: Toscana
-AdminLevel6: Province of Arezzo
-AdminLevel8: Arezzo"
-		}
-	};
-
-	public static TheoryData<string[], string> FullResponse = new()
-	{
-		{
-			CommandLineArgumentsFakes.AddressBuildCommandLineOptions(TestImagesPathHelper.HasGpsCoordinate.FilePath, AddressListType.FullResponse, ReverseGeocodeProvider.BigDataCloud, BigDataCloudAdminLevelsFakes.Valid()),
-			@"{
-""localityInfo"": {
-""administrative"": [
-{
-""adminLevel"": 2,
-""isoName"": null,
-""name"": ""Italy"",
-""isoCode"": ""IT"",
-""description"": ""republic in Southern Europe"",
-""order"": 3,
-""wikidataId"": ""Q38"",
-""geoNameId"": null
-},
-{
-""adminLevel"": 4,
-""isoName"": null,
-""name"": ""Toscana"",
-""isoCode"": ""IT-52"",
-""description"": ""region in central Italy"",
-""order"": 5,
-""wikidataId"": ""Q1273"",
-""geoNameId"": null
-},
-{
-""adminLevel"": 6,
-""isoName"": null,
-""name"": ""Province of Arezzo"",
-""isoCode"": ""IT-AR"",
-""description"": ""province of Italy"",
-""order"": 6,
-""wikidataId"": ""Q16115"",
-""geoNameId"": null
-},
-{
-""adminLevel"": 8,
-""isoName"": null,
-""name"": ""Arezzo"",
-""isoCode"": null,
-""description"": ""Italian comune"",
-""order"": 7,
-""wikidataId"": ""Q13378"",
-""geoNameId"": null
-}
-],
-""informative"": [
-{
-""isoCode"": ""EU"",
-""name"": ""Europe"",
-""order"": 1,
-""description"": ""continent"",
-""wikidataId"": ""Q46"",
-""geonameId"": 6255148
-},
-{
-""isoCode"": null,
-""name"": ""Europe/Rome"",
-""order"": 2,
-""description"": ""time zone"",
-""wikidataId"": null,
-""geonameId"": null
-},
-{
-""isoCode"": null,
-""name"": ""Italian Peninsula"",
-""order"": 4,
-""description"": ""peninsula of southern Europe"",
-""wikidataId"": ""Q145694"",
-""geonameId"": null
-}
-]
-},
-""latitude"": 43.46744833333334,
-""longitude"": 11.885126666663888,
-""plusCode"": ""8FMHFV8P\u002BX3"",
-""localityLanguageRequested"": ""en"",
-""continent"": ""Europe"",
-""continentCode"": ""EU"",
-""countryName"": ""Italy"",
-""countryCode"": ""IT"",
-""principalSubdivision"": ""Toscana"",
-""city"": ""Arezzo"",
-""locality"": ""Arezzo"",
-""postcode"": """"
-}"
-		}
+		CommandLineArgumentsFakes.AddressBuildCommandLineOptions(TestImagesPathHelper.HasGpsCoordinate.FilePath, AddressListType.FullResponse, ReverseGeocodeProvider.BigDataCloud, BigDataCloudAdminLevelsFakes.Valid())
 	};
 
 	[Theory]
 	[MemberData(nameof(FullResponse))]
-	[MemberData(nameof(SelectedProperties))]
-	[MemberData(nameof(AllProperties))]
-	public async Task Running_With_Address_Verb_Arguments_Should_Be_Match_With_Expected_Output(string[] args, string expectedOutput)
+	public async Task Full_Response_Should_Be_Valid_BigDataCloud_Response(string[] args)
 	{
 		var actualOutput = await RunMain(args);
-		StringsShouldMatchDiscardingLineEndings(actualOutput, expectedOutput);
+		var bigDataCloudResponse = JsonSerializer.Deserialize<BigDataCloudResponse>(actualOutput);
+		bigDataCloudResponse.Verify();
 	}
+
+
+	public static TheoryData<string[]> SelectedProperties = new()
+	{
+		CommandLineArgumentsFakes.AddressBuildCommandLineOptions(TestImagesPathHelper.HasGpsCoordinate.FilePath, AddressListType.SelectedProperties, ReverseGeocodeProvider.BigDataCloud, new List<int> { 2, 4, 6, 8 })
+	};
+
+	[Theory]
+	[MemberData(nameof(SelectedProperties))]
+	public async Task Listing_Selected_Properties_Each_Line_Should_Be_Valid_Word(string[] args)
+	{
+		var actualOutput = await RunMain(args);
+		OutputEachLineShouldMatchWithRegex(actualOutput, @"^[\w0-9- ]*$");
+	}
+
+	public static TheoryData<string[]> AllProperties = new()
+	{
+		CommandLineArgumentsFakes.AddressBuildCommandLineOptions(TestImagesPathHelper.HasGpsCoordinate.FilePath, AddressListType.AllAvailableProperties, ReverseGeocodeProvider.BigDataCloud, new List<int> { 2, 4, 6, 8 })
+	};
+
+	[Theory]
+	[MemberData(nameof(AllProperties))]
+	public async Task Listing_All_Properties_Each_Line_Should_Match_With_AdminLevel_And_Its_Value(string[] args)
+	{
+		var actualOutput = await RunMain(args);
+		OutputEachLineShouldMatchWithRegex(actualOutput, @"^AdminLevel\d: [\w0-9- ]*$");
+	}
+
+	private static void OutputEachLineShouldMatchWithRegex(string actualOutput, string regex)
+	{
+		var lines = actualOutput.Split(Environment.NewLine);
+		using (new AssertionScope())
+		{
+			foreach (var line in lines)
+				line.Should().MatchRegex(regex);
+		}
+	}
+
 
 	public static TheoryData<string[], string> NotExistingImage = new()
 	{

@@ -1,6 +1,5 @@
 namespace PhotoCli.Tests.EndToEndTests;
 
-[Collection(XunitSharedCollectionsToDisableParallelExecution.AppSettingsJson)]
 public class HelpVerbEndToEndTests : BaseEndToEndTests
 {
 	private const string DefaultHelpText = "Type `photo-cli help [copy|info|address|settings]` for detailed option list and example usages";
