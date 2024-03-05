@@ -76,7 +76,7 @@ public class ToolOptions
 	public string? BigDataCloudApiKey { get; set; }
 	public string? GoogleMapsApiKey { get; set; }
 	public string? LocationIqApiKey { get; set; }
-	public int CoordinatePrecision { get; }
+	public int CoordinatePrecision { get; set; }
 
 	public string ArchivePhotoTakenDateHashSeparator { get; set; }
 
