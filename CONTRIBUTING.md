@@ -41,11 +41,11 @@ Target version should be:
 
 ### 2. Is Version Still Developing?
 
-Check whether your related change version still accepts issues on [our boards.](https://github.com/photo-cli/photo-cli/projects?type=classic)
+Check whether your related change version still accepts issues on [our boards.](https://github.com/photo-cli/photo-cli/projects)
 
 Boards:
-- [Active Versions](https://github.com/photo-cli/photo-cli/projects?type=classic&query=is%3Aopen)
-- [Closed, Published Stable Version on Nuget](https://github.com/photo-cli/photo-cli/projects?type=classic&query=is%3Aclosed)
+- [Active Versions](https://github.com/photo-cli/photo-cli/projects?query=is:open)
+- [Closed, Published Stable Version on Nuget](https://github.com/photo-cli/photo-cli/projects?query=is:closed)
 
 ### 3. Fork & Develop on Release Branch
 
