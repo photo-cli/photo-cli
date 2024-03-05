@@ -1,6 +1,16 @@
+# 0.2.1 (2024-03-06)
+
+- Fixing unable to set non-string setting values [@RecepCil](https://github.com/RecepCil)
+
+# 0.2.0 (2024-02-21)
+
+- Archive verb & small fixes & test improvements
+- Cache reverse geocode results by [@RecepCil](https://github.com/RecepCil)
+- Verifying address responses with regex
+
 # 0.1.0 (2023-06-13)
 
-- HEIC & JPEG file support ( https://github.com/RecepCil )
+- HEIC & JPEG file support [@RecepCil](https://github.com/RecepCil)
 - Verify file hash
 - Invalid photo format prevention, error handling
 
