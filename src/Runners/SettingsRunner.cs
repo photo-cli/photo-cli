@@ -37,7 +37,8 @@ public class SettingsRunner : IConsoleRunner
 				var property = GetPropertyByKey();
 				if (property == null)
 					return ExitCode.PropertyNotFound;
-				property.SetValue(_toolOptions, _cliOptions.Value);
+				var propertyValue = Convert.ChangeType(_cliOptions.Value, property.PropertyType);
+				property.SetValue(_toolOptions, propertyValue);
 			}
 
 			if (!Validate(_toolOptions))

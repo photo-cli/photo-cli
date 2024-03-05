@@ -21,6 +21,18 @@ public class SettingsRunnerUnitTests
 	}
 
 	[Fact]
+	public async Task Setting_A_New_Int_Value_Should_Persist_In_AppSettings_Json()
+	{
+		const int expectedSettingsValue = 7;
+		var settingsOptions = new SettingsOptions(nameof(ToolOptionsRaw.CoordinatePrecision), expectedSettingsValue.ToString());
+
+		var newSavedToolOptionsRawDeserialized = await SetAndGetNewDeserializedAppSettingsJson(settingsOptions);
+
+		var actualSettingsValueSavedOnJson = newSavedToolOptionsRawDeserialized?.CoordinatePrecision;
+		actualSettingsValueSavedOnJson.Should().Be(expectedSettingsValue);
+	}
+
+	[Fact]
 	public async Task Setting_A_New_LogLevel_Should_Persist_In_AppSettings_Json()
 	{
 		var expectedSettingsValue = LogLevel.Critical.ToString();
@@ -68,6 +80,7 @@ public class SettingsRunnerUnitTests
 		var toolOptions = ToolOptions.Default();
 		toolOptions.AddressSeparator = "address-separator";
 		toolOptions.ConnectionLimit = 100;
+		toolOptions.CoordinatePrecision = 7;
 		toolOptions.DayFormat = "day-format";
 		toolOptions.LogLevel = new Options.LogLevel { Default = "Critical" };
 		toolOptions.MonthFormat = "month-format";
@@ -100,6 +113,7 @@ public class SettingsRunnerUnitTests
 		actualExitCode.Should().Be(ExitCode.Success);
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.AddressSeparator)}={toolOptions.AddressSeparator}"));
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.ConnectionLimit)}={toolOptions.ConnectionLimit.ToString()}"));
+		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.CoordinatePrecision)}={toolOptions.CoordinatePrecision.ToString()}"));
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.DayFormat)}={toolOptions.DayFormat}"));
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.LogLevel)}={toolOptions.LogLevel.Default}"));
 		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.MonthFormat)}={toolOptions.MonthFormat}"));
