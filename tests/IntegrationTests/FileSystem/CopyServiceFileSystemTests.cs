@@ -85,13 +85,13 @@ public class CopyServiceFileSystemTests
 	[MemberData(nameof(PhotoDateTakenData))]
 	[MemberData(nameof(CoordinateAndReverseGeocodeData))]
 	[MemberData(nameof(MixedData))]
-	public async Task CsvOutput_Writes_File_And_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(Dictionary<string, ExifData?> exifData,
+	public async Task CsvOutput_Writes_File_And_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(Dictionary<string, ExifData> exifData,
 		List<PhotoCsv> expectedPhotoCsvModels)
 	{
 		var outputCsvPath = MockFileSystemHelper.Path("/output.csv");
 		var mockFileSystem = new MockFileSystem();
 		var sut = new CsvService(mockFileSystem, NullLogger<CsvService>.Instance, ToolOptionFakes.Create(), ConsoleWriterFakes.Valid());
-		await sut.WriteExifDataToCsvOutput(exifData, outputCsvPath);
+		await sut.WriteExifDataToCsvOutput(exifData!, outputCsvPath);
 		var csvFile = mockFileSystem.FileInfo.FromFileName(outputCsvPath);
 		var actualPhotoCsvModels = CsvFileHelper.ReadRecords(csvFile);
 		actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModels);
