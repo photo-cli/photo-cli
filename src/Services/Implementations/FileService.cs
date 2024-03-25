@@ -33,20 +33,20 @@ public class FileService : IFileService
 		var photosCopied = new List<Photo>();
 		foreach (var photo in photos)
 		{
-			var fileInfo = _fileSystem.FileInfo.FromFileName(photo.FilePath);
+			var fileInfo = _fileSystem.FileInfo.New(photo.FilePath);
 			var destinationPath = photo.DestinationPath(outputFolder);
-			var newFileInfo = _fileSystem.FileInfo.FromFileName(destinationPath);
+			var newFileInfo = _fileSystem.FileInfo.New(destinationPath);
 
 			if (isDryRun)
 			{
-				_directoriesCreatedHistoryForDryRun ??= new List<string> { _fileSystem.DirectoryInfo.FromDirectoryName(outputFolder).FullName };
-				if (!_directoriesCreatedHistoryForDryRun.Contains(newFileInfo.Directory.FullName))
+				_directoriesCreatedHistoryForDryRun ??= new List<string> { _fileSystem.DirectoryInfo.New(outputFolder).FullName };
+				if (!_directoriesCreatedHistoryForDryRun.Contains(newFileInfo.Directory!.FullName))
 				{
 					_directoriesCreatedHistoryForDryRun.Add(newFileInfo.Directory.FullName);
 					++_statistics.DirectoriesCreated;
 				}
 			}
-			else if (!newFileInfo.Directory.Exists)
+			else if (!newFileInfo.Directory!.Exists)
 			{
 				_logger.LogTrace("Directory is creating: {Path}", newFileInfo.Directory.FullName);
 				newFileInfo.Directory.Create();
@@ -86,9 +86,9 @@ public class FileService : IFileService
 		using var shaDestination = SHA1.Create();
 		foreach (var photo in photos)
 		{
-			var sourceFileInfo = _fileSystem.FileInfo.FromFileName(photo.FilePath);
+			var sourceFileInfo = _fileSystem.FileInfo.New(photo.FilePath);
 			var destinationPath = photo.DestinationPath(outputFolder);
-			var destinationFileInfo = _fileSystem.FileInfo.FromFileName(destinationPath);
+			var destinationFileInfo = _fileSystem.FileInfo.New(destinationPath);
 			if (!destinationFileInfo.Exists)
 			{
 				_logger.LogCritical("Target photo didn't exists at path : {DestinationPath} for a source photo path: {PhotoFilePath}", destinationPath, photo.FilePath);
@@ -123,7 +123,7 @@ public class FileService : IFileService
 		using var sha = SHA1.Create();
 		foreach (var photo in photos)
 		{
-			var fileInfo = _fileSystem.FileInfo.FromFileName(photo.FilePath);
+			var fileInfo = _fileSystem.FileInfo.New(photo.FilePath);
 			photo.Sha1Hash = await GetFileHashFormatted(fileInfo, sha);
 		}
 	}

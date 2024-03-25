@@ -24,7 +24,7 @@ public class ExifParserService : IExifParserService
 
 	public ExifData? Parse(string filePath, bool parseDateTime, bool parseCoordinate)
 	{
-		var fileStream = _fileSystem.FileStream.Create(filePath, FileMode.Open);
+		var fileStream = _fileSystem.FileStream.New(filePath, FileMode.Open);
 		IReadOnlyList<Directory> fileDataDirectories;
 		using (fileStream)
 		{

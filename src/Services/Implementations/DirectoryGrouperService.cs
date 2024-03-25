@@ -23,12 +23,12 @@ public class DirectoryGrouperService : IDirectoryGrouperService
 	{
 		_consoleWriter.ProgressStart(ProgressName);
 		var groupedPhotoInfosByRelativeDirectory = new Dictionary<string, List<Photo>>();
-		var sourceRootDirectoryPath = _fileSystem.DirectoryInfo.FromDirectoryName(sourceRootPath).FullName;
+		var sourceRootDirectoryPath = _fileSystem.DirectoryInfo.New(sourceRootPath).FullName;
 		var sourcePathTrimmed = PathHelper.TrimFolderSeparators(sourceRootDirectoryPath);
 		foreach (var (filePath, exifData) in photoExifDataByFilePath)
 		{
-			var fileInfo = _fileSystem.FileInfo.FromFileName(filePath);
-			var directory = fileInfo.Directory.FullName!.Trim('/');
+			var fileInfo = _fileSystem.FileInfo.New(filePath);
+			var directory = fileInfo.Directory!.FullName.Trim('/');
 			string targetRelativeDirectoryPath;
 
 			if (exifData != null && groupByFolderType is GroupByFolderType.AddressFlat)

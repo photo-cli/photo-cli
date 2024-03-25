@@ -84,15 +84,15 @@ public class SettingsRunner : IConsoleRunner
 		string appSettingsFilePath;
 		if (Environment.CommandLine.Contains(".store"))
 		{
-			var runningDll = _fileSystem.FileInfo.FromFileName(Environment.CommandLine);
-			appSettingsFilePath = Path.Combine(runningDll.Directory.FullName, Constants.AppSettingsFileName);
+			var runningDll = _fileSystem.FileInfo.New(Environment.CommandLine);
+			appSettingsFilePath = Path.Combine(runningDll.Directory!.FullName, Constants.AppSettingsFileName);
 		}
 		else
 		{
 			appSettingsFilePath = Constants.AppSettingsFileName;
 		}
 
-		await using var stream = _fileSystem.FileStream.Create(appSettingsFilePath, FileMode.Create);
+		await using var stream = _fileSystem.FileStream.New(appSettingsFilePath, FileMode.Create);
 		await JsonSerializer.SerializeAsync(stream, options, new JsonSerializerOptions { WriteIndented = true });
 	}
 

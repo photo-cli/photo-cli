@@ -135,7 +135,7 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 	{
 		if (isDryRun)
 		{
-			var outputFile = _fileSystem.FileInfo.FromFileName(_toolOptions.DryRunCsvReportFileName);
+			var outputFile = _fileSystem.FileInfo.New(_toolOptions.DryRunCsvReportFileName);
 			if (outputFile.Exists)
 			{
 				_logger.LogCritical("Output file: {Path} is exists", _toolOptions.DryRunCsvReportFileName);
@@ -147,7 +147,7 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 			return true;
 		}
 
-		var outputDirectory = _fileSystem.DirectoryInfo.FromDirectoryName(_options.OutputPath);
+		var outputDirectory = _fileSystem.DirectoryInfo.New(_options.OutputPath);
 		if (!outputDirectory.Exists)
 		{
 			if (!HasCreatedDirectory(outputDirectory))

@@ -330,7 +330,7 @@ public class FileServiceUnitTests
 		var sut = new FileService(mockFileSystem, NullLogger<FileService>.Instance, StatisticsFakes.Empty());
 		await sut.SaveGnuHashFileTree(photos, "");
 
-		await using var fileStream = mockFileSystem.FileStream.Create("sha1.lst", FileMode.Open);
+		await using var fileStream = mockFileSystem.FileStream.New("sha1.lst", FileMode.Open);
 		var streamReader = new StreamReader(fileStream);
 		var text = await streamReader.ReadToEndAsync();
 		text.Should().Be(expectedHashFileTreeContent);
