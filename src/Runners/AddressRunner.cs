@@ -21,7 +21,7 @@ public class AddressRunner : IConsoleRunner
 
 	public async Task<ExitCode> Execute()
 	{
-		var outputFile = _fileSystem.FileInfo.FromFileName(_options.InputPath);
+		var outputFile = _fileSystem.FileInfo.New(_options.InputPath);
 		if (!outputFile.Exists)
 			return ExitCode.InputFileNotExists;
 

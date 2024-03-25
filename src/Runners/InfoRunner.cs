@@ -64,7 +64,7 @@ public class InfoRunner : BaseRunner, IConsoleRunner
 
 	private bool CheckOutputPath(out ExitCode exitCode)
 	{
-		var outputFile = _fileSystem.FileInfo.FromFileName(_options.OutputPath);
+		var outputFile = _fileSystem.FileInfo.New(_options.OutputPath);
 		if (outputFile.Exists)
 		{
 			_logger.LogCritical("Output file: {Path} is exists", _options.OutputPath);
@@ -72,7 +72,7 @@ public class InfoRunner : BaseRunner, IConsoleRunner
 			return false;
 		}
 
-		if (!outputFile.Directory.Exists && !HasCreatedDirectory(outputFile.Directory))
+		if (outputFile.Directory == null || !outputFile.Directory.Exists && !HasCreatedDirectory(outputFile.Directory))
 		{
 			exitCode = ExitCode.OutputPathDontHaveCreateDirectoryPermission;
 			return false;

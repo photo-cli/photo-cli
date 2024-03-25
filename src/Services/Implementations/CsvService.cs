@@ -29,7 +29,7 @@ public class CsvService : ICsvService
 		}
 		else
 		{
-			var directory = _fileSystem.DirectoryInfo.FromDirectoryName(outputPath);
+			var directory = _fileSystem.DirectoryInfo.New(outputPath);
 			if (!directory.Exists)
 				directory.Create();
 			reportFile = Path.Combine(outputPath, _options.CsvReportFileName);

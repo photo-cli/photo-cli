@@ -35,8 +35,8 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.3" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
-        <PackageReference Include="System.IO.Abstractions" Version="14.0.3" />
-        <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="14.0.3" />
+        <PackageReference Include="System.IO.Abstractions" Version="21.0.2" />
+        <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="21.0.2" />
     </ItemGroup>
 
     <ItemGroup>

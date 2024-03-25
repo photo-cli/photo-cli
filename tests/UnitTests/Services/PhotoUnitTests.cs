@@ -5,7 +5,7 @@ public class PhotoUnitTests
 	[Fact]
 	public void Using_FileInfo_Constructor_Object_Properties_Set()
 	{
-		var fileInfo = new MockFileSystem().FileInfo.FromFileName("/folder/photo.jpg");
+		var fileInfo = new MockFileSystem().FileInfo.New("/folder/photo.jpg");
 		var reverseGeocodes = ReverseGeocodeFakes.Valid();
 		var exifData = ExifDataFakes.Create(DateTimeFakes.WithYear(2000), CoordinateFakes.Valid(), reverseGeocodes);
 		const string targetRelativeDirectoryPath = "folder";
@@ -24,7 +24,7 @@ public class PhotoUnitTests
 	[Fact]
 	public void Using_File_Without_Extension_Throws_PhotoOrganizerToolException()
 	{
-		var fileInfo = new MockFileSystem().FileInfo.FromFileName("/folder/photo");
+		var fileInfo = new MockFileSystem().FileInfo.New("/folder/photo");
 		Assert.Throws<PhotoCliException>(() => { _ = new Photo(fileInfo, ExifDataFakes.Create(DateTimeFakes.WithYear(2000), CoordinateFakes.Valid()), "folder"); });
 	}
 }

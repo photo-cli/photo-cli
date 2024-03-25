@@ -92,7 +92,7 @@ public class CopyServiceFileSystemTests
 		var mockFileSystem = new MockFileSystem();
 		var sut = new CsvService(mockFileSystem, NullLogger<CsvService>.Instance, ToolOptionFakes.Create(), ConsoleWriterFakes.Valid());
 		await sut.WriteExifDataToCsvOutput(exifData!, outputCsvPath);
-		var csvFile = mockFileSystem.FileInfo.FromFileName(outputCsvPath);
+		var csvFile = mockFileSystem.FileInfo.New(outputCsvPath);
 		var actualPhotoCsvModels = CsvFileHelper.ReadRecords(csvFile);
 		actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModels);
 	}
@@ -123,7 +123,7 @@ public class CopyServiceFileSystemTests
 		var mockFileSystem = new MockFileSystem();
 		var sut = new CsvService(mockFileSystem, NullLogger<CsvService>.Instance, ToolOptionFakes.Create(), ConsoleWriterFakes.Valid());
 		await sut.Report(photos, outputFolder);
-		var csvFile = mockFileSystem.FileInfo.FromFileName(Path.Combine(outputFolder, ToolOptionFakes.CsvReportFileName));
+		var csvFile = mockFileSystem.FileInfo.New(Path.Combine(outputFolder, ToolOptionFakes.CsvReportFileName));
 		csvFile.Exists.Should().BeTrue();
 		var actualPhotoCsvModels = CsvFileHelper.ReadRecords(csvFile);
 		actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModels);
@@ -138,7 +138,7 @@ public class CopyServiceFileSystemTests
 		var mockFileSystem = new MockFileSystem();
 		var sut = new CsvService(mockFileSystem, NullLogger<CsvService>.Instance, ToolOptionFakes.Create(), ConsoleWriterFakes.Valid());
 		await sut.Report(photos, outputFolder);
-		var csvFile = mockFileSystem.FileInfo.FromFileName(Path.Combine(outputFolder, "photo-cli-report.csv"));
+		var csvFile = mockFileSystem.FileInfo.New(Path.Combine(outputFolder, "photo-cli-report.csv"));
 		csvFile.Exists.Should().BeTrue();
 		var actualPhotoCsvModels = CsvFileHelper.ReadRecords(csvFile);
 		actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModels);

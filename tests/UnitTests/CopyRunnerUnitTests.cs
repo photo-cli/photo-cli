@@ -328,12 +328,12 @@ public class CopyRunnerUnitTests
 	[Fact]
 	public async Task Not_Existed_Folder_Should_Be_Created()
 	{
-		var directoryBefore = _fileSystemMock.DirectoryInfo.FromDirectoryName(OutputPath);
+		var directoryBefore = _fileSystemMock.DirectoryInfo.New(OutputPath);
 		directoryBefore.Exists.Should().Be(false);
 		PhotoCollectorSetupEmptyList();
 		var sut = Initialize(CopyOptionsFakes.WithPaths(OutputPath, SourceFolderPath));
 		await sut.Execute();
-		var directoryAfter = _fileSystemMock.DirectoryInfo.FromDirectoryName(OutputPath);
+		var directoryAfter = _fileSystemMock.DirectoryInfo.New(OutputPath);
 		directoryAfter.Exists.Should().Be(true);
 	}
 
