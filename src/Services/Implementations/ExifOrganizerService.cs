@@ -21,8 +21,8 @@ public class ExifOrganizerService : IExifOrganizerService
 		IReadOnlyCollection<Photo> filteredAndSorted = photoInfos;
 		var keptFilesNotInFilter = new List<Photo>();
 
-		_logger.LogDebug("Start filtering and sorting on {TargetFolder} with {PhotoCount} photos by invalid format action: {InvalidFormatAction}, no coordinate action: {NoCoordinateAction}, no coordinate action: {NoCoordinateAction}",
-			targetRelativeDirectoryPath, photoInfos.Count, invalidFormatAction, noCoordinateAction, noCoordinateAction);
+		_logger.LogDebug("Start filtering and sorting on {TargetFolder} with {PhotoCount} photos by invalid format action: {InvalidFormatAction}, no coordinate action: {NoCoordinateAction}",
+			targetRelativeDirectoryPath, photoInfos.Count, invalidFormatAction, noCoordinateAction);
 
 		if (_invalidFormatActionsToFilter.Contains(invalidFormatAction))
 		{
