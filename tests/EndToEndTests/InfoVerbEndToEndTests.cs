@@ -15,27 +15,26 @@ public class InfoVerbEndToEndTests : BaseEndToEndTests
 		{
 			CommandLineArgumentsFakes.InfoBuildCommandLineOptions(ReportFileName, TestImagesPathHelper.SingleFolder(), true, InfoNoPhotoTakenDateAction.Continue,
 				InfoNoCoordinateAction.Continue, false),
-			new List<PhotoCsv>
-			{
-				SingleKenya(useFullPath: false),
-				SingleItalyFlorence(useFullPath: false),
-				SingleNoGpsCoordinate(useFullPath: false),
-				SingleItalyArezzo1(useFullPath: false),
-				SingleItalyArezzo2(useFullPath: false),
-				SingleItalyArezzo3(useFullPath: false),
-				SingleItalyArezzo4(useFullPath: false),
-				SingleItalyArezzo5(useFullPath: false),
-				SingleItalyArezzo6(useFullPath: false),
-				SingleItalyArezzo7(useFullPath: false),
-				SingleItalyArezzo8(useFullPath: false),
-				SingleItalyArezzo9(useFullPath: false),
-				SingleItalyArezzo9Duplicate(useFullPath: false),
-				SingleUnitedKingdom(useFullPath: false),
-				SingleSpain1(useFullPath: false),
-				SingleSpain2(useFullPath: false),
-				SingleNoGpsCoordinateAndNoPhotoTakenDate(useFullPath: false),
-				SingleNoPhotoTakenDate(useFullPath: false),
-			},
+			[
+				SingleKenya(),
+				SingleItalyFlorence(),
+				SingleNoGpsCoordinate(),
+				SingleItalyArezzo1(),
+				SingleItalyArezzo2(),
+				SingleItalyArezzo3(),
+				SingleItalyArezzo4(),
+				SingleItalyArezzo5(),
+				SingleItalyArezzo6(),
+				SingleItalyArezzo7(),
+				SingleItalyArezzo8(),
+				SingleItalyArezzo9(),
+				SingleItalyArezzo9Duplicate(),
+				SingleUnitedKingdom(),
+				SingleSpain1(),
+				SingleSpain2(),
+				SingleNoGpsCoordinateAndNoPhotoTakenDate(),
+				SingleNoPhotoTakenDate()
+			],
 			new ConsoleOutputValues(18, HasTakenDateAndCoordinate: 15, HasNoTakenDateAndCoordinate: 2, HasTakenDateButNoCoordinate: 1)
 		}
 	};
@@ -45,27 +44,26 @@ public class InfoVerbEndToEndTests : BaseEndToEndTests
 		{
 			CommandLineArgumentsFakes.InfoBuildCommandLineOptions(ReportFileName, TestImagesPathHelper.SingleFolder(), true, InfoNoPhotoTakenDateAction.Continue,
 				InfoNoCoordinateAction.Continue, false, ReverseGeocodeProvider.BigDataCloud, new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
-				SingleKenya(useFullPath: false),
-				SingleItalyFlorence(useFullPath: false),
-				SingleNoGpsCoordinate(useFullPath: false),
-				SingleItalyArezzo1(useFullPath: false),
-				SingleItalyArezzo2(useFullPath: false),
-				SingleItalyArezzo3(useFullPath: false),
-				SingleItalyArezzo4(useFullPath: false),
-				SingleItalyArezzo5(useFullPath: false),
-				SingleItalyArezzo6(useFullPath: false),
-				SingleItalyArezzo7(useFullPath: false),
-				SingleItalyArezzo8(useFullPath: false),
-				SingleItalyArezzo9(useFullPath: false),
-				SingleItalyArezzo9Duplicate(useFullPath: false),
-				SingleUnitedKingdom(useFullPath: false),
-				SingleSpain1(useFullPath: false),
-				SingleSpain2(useFullPath: false),
-				SingleNoGpsCoordinateAndNoPhotoTakenDate(useFullPath: false),
-				SingleNoPhotoTakenDate(useFullPath: false),
-			},
+			[
+				SingleKenya(),
+				SingleItalyFlorence(),
+				SingleNoGpsCoordinate(),
+				SingleItalyArezzo1(),
+				SingleItalyArezzo2(),
+				SingleItalyArezzo3(),
+				SingleItalyArezzo4(),
+				SingleItalyArezzo5(),
+				SingleItalyArezzo6(),
+				SingleItalyArezzo7(),
+				SingleItalyArezzo8(),
+				SingleItalyArezzo9(),
+				SingleItalyArezzo9Duplicate(),
+				SingleUnitedKingdom(),
+				SingleSpain1(),
+				SingleSpain2(),
+				SingleNoGpsCoordinateAndNoPhotoTakenDate(),
+				SingleNoPhotoTakenDate()
+			],
 			new ConsoleOutputValues(18, HasTakenDateAndCoordinate: 15, HasNoTakenDateAndCoordinate: 2, HasTakenDateButNoCoordinate: 1)
 		}
 	};
@@ -75,27 +73,26 @@ public class InfoVerbEndToEndTests : BaseEndToEndTests
 		{
 			CommandLineArgumentsFakes.InfoBuildCommandLineOptions(ReportFileName, TestImagesPathHelper.SubFolders(), true, InfoNoPhotoTakenDateAction.Continue,
 				InfoNoCoordinateAction.Continue, false),
-			new List<PhotoCsv>
-			{
-				SubFoldersKenya(useFullPath: false),
-				SubFoldersItalyFlorence(useFullPath: false),
-				SubFoldersNoGpsCoordinate(useFullPath: false),
-				SubFoldersItalyArezzo1(useFullPath: false),
-				SubFoldersItalyArezzo2(useFullPath: false),
-				SubFoldersItalyArezzo3(useFullPath: false),
-				SubFoldersItalyArezzo4(useFullPath: false),
-				SubFoldersItalyArezzo5(useFullPath: false),
-				SubFoldersItalyArezzo6(useFullPath: false),
-				SubFoldersItalyArezzo7(useFullPath: false),
-				SubFoldersItalyArezzo8(useFullPath: false),
-				SubFoldersItalyArezzo9(useFullPath: false),
-				SubFoldersItalyArezzo9Duplicate(useFullPath: false),
-				SubFoldersUnitedKingdom(useFullPath: false),
-				SubFoldersSpain1(useFullPath: false),
-				SubFoldersSpain2(useFullPath: false),
-				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate(useFullPath: false),
-				SubFoldersNoPhotoTakenDate(useFullPath: false),
-			},
+			[
+				SubFoldersKenya(),
+				SubFoldersItalyFlorence(),
+				SubFoldersNoGpsCoordinate(),
+				SubFoldersItalyArezzo1(),
+				SubFoldersItalyArezzo2(),
+				SubFoldersItalyArezzo3(),
+				SubFoldersItalyArezzo4(),
+				SubFoldersItalyArezzo5(),
+				SubFoldersItalyArezzo6(),
+				SubFoldersItalyArezzo7(),
+				SubFoldersItalyArezzo8(),
+				SubFoldersItalyArezzo9(),
+				SubFoldersItalyArezzo9Duplicate(),
+				SubFoldersUnitedKingdom(),
+				SubFoldersSpain1(),
+				SubFoldersSpain2(),
+				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate(),
+				SubFoldersNoPhotoTakenDate()
+			],
 			new ConsoleOutputValues(18, HasTakenDateAndCoordinate: 15, HasNoTakenDateAndCoordinate: 2, HasTakenDateButNoCoordinate: 1)
 		}
 	};
@@ -105,27 +102,26 @@ public class InfoVerbEndToEndTests : BaseEndToEndTests
 		{
 			CommandLineArgumentsFakes.InfoBuildCommandLineOptions(ReportFileName, TestImagesPathHelper.SubFolders(), true, InfoNoPhotoTakenDateAction.Continue,
 				InfoNoCoordinateAction.Continue, false, ReverseGeocodeProvider.BigDataCloud, new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
-				SubFoldersKenya(useFullPath: false),
-				SubFoldersItalyFlorence(useFullPath: false),
-				SubFoldersNoGpsCoordinate(useFullPath: false),
-				SubFoldersItalyArezzo1(useFullPath: false),
-				SubFoldersItalyArezzo2(useFullPath: false),
-				SubFoldersItalyArezzo3(useFullPath: false),
-				SubFoldersItalyArezzo4(useFullPath: false),
-				SubFoldersItalyArezzo5(useFullPath: false),
-				SubFoldersItalyArezzo6(useFullPath: false),
-				SubFoldersItalyArezzo7(useFullPath: false),
-				SubFoldersItalyArezzo8(useFullPath: false),
-				SubFoldersItalyArezzo9(useFullPath: false),
-				SubFoldersItalyArezzo9Duplicate(useFullPath: false),
-				SubFoldersUnitedKingdom(useFullPath: false),
-				SubFoldersSpain1(useFullPath: false),
-				SubFoldersSpain2(useFullPath: false),
-				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate(useFullPath: false),
-				SubFoldersNoPhotoTakenDate(useFullPath: false),
-			},
+			[
+				SubFoldersKenya(),
+				SubFoldersItalyFlorence(),
+				SubFoldersNoGpsCoordinate(),
+				SubFoldersItalyArezzo1(),
+				SubFoldersItalyArezzo2(),
+				SubFoldersItalyArezzo3(),
+				SubFoldersItalyArezzo4(),
+				SubFoldersItalyArezzo5(),
+				SubFoldersItalyArezzo6(),
+				SubFoldersItalyArezzo7(),
+				SubFoldersItalyArezzo8(),
+				SubFoldersItalyArezzo9(),
+				SubFoldersItalyArezzo9Duplicate(),
+				SubFoldersUnitedKingdom(),
+				SubFoldersSpain1(),
+				SubFoldersSpain2(),
+				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate(),
+				SubFoldersNoPhotoTakenDate()
+			],
 			new ConsoleOutputValues(18, HasTakenDateAndCoordinate: 15, HasNoTakenDateAndCoordinate: 2, HasTakenDateButNoCoordinate: 1)
 		}
 	};
@@ -135,7 +131,7 @@ public class InfoVerbEndToEndTests : BaseEndToEndTests
 	[MemberData(nameof(SingleFolderPhotoTakenDateAndAddress))]
 	[MemberData(nameof(SubFoldersOnlyPhotoTakenDate))]
 	[MemberData(nameof(SubFoldersPhotoTakenDateAndAddress))]
-	public async Task Running_With_Info_Verb_Arguments_Should_Create_And_Verify_Photos_And_Report_Csv_On_File_System(string[] args, List<PhotoCsv> expectedPhotoCsvModels,
+	public async Task Running_InfoVerbArguments_ShouldCreateAndVerifyPhotosAndReportCsvOnFileSystem(string[] args, List<PhotoCsv> expectedPhotoCsvModels,
 		ConsoleOutputValues expectedConsoleOutput)
 	{
 		CleanArtifacts();

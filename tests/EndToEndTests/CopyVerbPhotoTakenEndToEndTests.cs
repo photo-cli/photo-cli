@@ -14,8 +14,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya("1"),
 				SingleItalyFlorence("2"),
 				SingleNoGpsCoordinate("3"),
@@ -33,8 +32,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleSpain1("15"),
 				SingleSpain2("16"),
 				SingleNoGpsCoordinateAndNoPhotoTakenDate("17"),
-				SingleNoPhotoTakenDate("18"),
-			},
+				SingleNoPhotoTakenDate("18")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -44,8 +43,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya("01"),
 				SingleItalyFlorence("02"),
 				SingleNoGpsCoordinate("03"),
@@ -63,8 +61,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleSpain1("15"),
 				SingleSpain2("16"),
 				SingleNoGpsCoordinateAndNoPhotoTakenDate("17"),
-				SingleNoPhotoTakenDate("18"),
-			},
+				SingleNoPhotoTakenDate("18")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -74,8 +72,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya("10"),
 				SingleItalyFlorence("11"),
 				SingleNoGpsCoordinate("12"),
@@ -93,8 +90,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleSpain1("24"),
 				SingleSpain2("25"),
 				SingleNoGpsCoordinateAndNoPhotoTakenDate("26"),
-				SingleNoPhotoTakenDate("27"),
-			},
+				SingleNoPhotoTakenDate("27")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -104,8 +101,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Day, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya("2005.08.13"),
 				SingleItalyFlorence("2005.12.14"),
 				SingleNoGpsCoordinate("2008.07.16"),
@@ -123,8 +119,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleSpain1("2015.04.10-1"),
 				SingleSpain2("2015.04.10-2"),
 				SingleNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
-				SingleNoPhotoTakenDateWithDefaultName(),
-			},
+				SingleNoPhotoTakenDateWithDefaultName()
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -134,8 +130,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Day, FolderProcessType.Single,
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya("2005.08.13"),
 				SingleItalyFlorence("2005.12.14"),
 				SingleNoGpsCoordinate("2008.07.16"),
@@ -153,8 +148,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleSpain1("2015.04.10-1"),
 				SingleSpain2("2015.04.10-2"),
 				SingleNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
-				SingleNoPhotoTakenDateWithDefaultName(),
-			},
+				SingleNoPhotoTakenDateWithDefaultName()
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -164,8 +159,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Day, FolderProcessType.Single,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya("2005.08.13"),
 				SingleItalyFlorence("2005.12.14"),
 				SingleNoGpsCoordinate("2008.07.16"),
@@ -183,8 +177,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleSpain1("2015.04.10-1"),
 				SingleSpain2("2015.04.10-2"),
 				SingleNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
-				SingleNoPhotoTakenDateWithDefaultName(),
-			},
+				SingleNoPhotoTakenDateWithDefaultName()
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -194,8 +188,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.DateTimeWithMinutes, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya("2005.08.13_09.47"),
 				SingleItalyFlorence("2005.12.14_14.39"),
 				SingleNoGpsCoordinate("2008.07.16_11.33"),
@@ -213,8 +206,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleSpain1("2015.04.10_20.12-1"),
 				SingleSpain2("2015.04.10_20.12-2"),
 				SingleNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
-				SingleNoPhotoTakenDateWithDefaultName(),
-			},
+				SingleNoPhotoTakenDateWithDefaultName()
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -224,8 +217,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.DateTimeWithSeconds, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya("2005.08.13_09.47.23"),
 				SingleItalyFlorence("2005.12.14_14.39.47"),
 				SingleNoGpsCoordinate("2008.07.16_11.33.20"),
@@ -243,8 +235,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleSpain1("2015.04.10_20.12.23-1"),
 				SingleSpain2("2015.04.10_20.12.23-2"),
 				SingleNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
-				SingleNoPhotoTakenDateWithDefaultName(),
-			},
+				SingleNoPhotoTakenDateWithDefaultName()
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -260,8 +252,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("1"),
 				SubFoldersItalyFlorence("2"),
 				SubFoldersNoGpsCoordinate("3"),
@@ -279,8 +270,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersSpain1("15"),
 				SubFoldersSpain2("16"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate("17"),
-				SubFoldersNoPhotoTakenDate("18"),
-			},
+				SubFoldersNoPhotoTakenDate("18")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -290,8 +281,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("01"),
 				SubFoldersItalyFlorence("02"),
 				SubFoldersNoGpsCoordinate("03"),
@@ -309,8 +299,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersSpain1("15"),
 				SubFoldersSpain2("16"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate("17"),
-				SubFoldersNoPhotoTakenDate("18"),
-			},
+				SubFoldersNoPhotoTakenDate("18")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -320,8 +310,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("10"),
 				SubFoldersItalyFlorence("11"),
 				SubFoldersNoGpsCoordinate("12"),
@@ -339,8 +328,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersSpain1("24"),
 				SubFoldersSpain2("25"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate("26"),
-				SubFoldersNoPhotoTakenDate("27"),
-			},
+				SubFoldersNoPhotoTakenDate("27")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -350,8 +339,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("2005.08.13"),
 				SubFoldersItalyFlorence("2005.12.14"),
 				SubFoldersNoGpsCoordinate("2008.07.16"),
@@ -369,8 +357,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersSpain1("2015.04.10-1"),
 				SubFoldersSpain2("2015.04.10-2"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
-				SubFoldersNoPhotoTakenDateWithDefaultName(),
-			},
+				SubFoldersNoPhotoTakenDateWithDefaultName()
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -380,8 +368,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("2005.08.13"),
 				SubFoldersItalyFlorence("2005.12.14"),
 				SubFoldersNoGpsCoordinate("2008.07.16"),
@@ -399,8 +386,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersSpain1("2015.04.10-1"),
 				SubFoldersSpain2("2015.04.10-2"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
-				SubFoldersNoPhotoTakenDateWithDefaultName(),
-			},
+				SubFoldersNoPhotoTakenDateWithDefaultName()
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -410,8 +397,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("2005.08.13"),
 				SubFoldersItalyFlorence("2005.12.14"),
 				SubFoldersNoGpsCoordinate("2008.07.16"),
@@ -429,8 +415,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersSpain1("2015.04.10-1"),
 				SubFoldersSpain2("2015.04.10-2"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
-				SubFoldersNoPhotoTakenDateWithDefaultName(),
-			},
+				SubFoldersNoPhotoTakenDateWithDefaultName()
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -440,8 +426,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.DateTimeWithMinutes, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("2005.08.13_09.47"),
 				SubFoldersItalyFlorence("2005.12.14_14.39"),
 				SubFoldersNoGpsCoordinate("2008.07.16_11.33"),
@@ -459,8 +444,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersSpain1("2015.04.10_20.12-1"),
 				SubFoldersSpain2("2015.04.10_20.12-2"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
-				SubFoldersNoPhotoTakenDateWithDefaultName(),
-			},
+				SubFoldersNoPhotoTakenDateWithDefaultName()
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -470,8 +455,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.DateTimeWithSeconds, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("2005.08.13_09.47.23"),
 				SubFoldersItalyFlorence("2005.12.14_14.39.47"),
 				SubFoldersNoGpsCoordinate("2008.07.16_11.33.20"),
@@ -489,8 +473,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersSpain1("2015.04.10_20.12.23-1"),
 				SubFoldersSpain2("2015.04.10_20.12.23-2"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
-				SubFoldersNoPhotoTakenDateWithDefaultName(),
-			},
+				SubFoldersNoPhotoTakenDateWithDefaultName()
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -504,8 +488,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, isDryRun: false, groupByFolderType: GroupByFolderType.YearMonthDay),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate("1"),
 				SubFoldersNoPhotoTakenDate("2"),
 				SubFoldersUnitedKingdom("2012/06/22/1"),
@@ -523,8 +506,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo7("2008/10/22/7"),
 				SubFoldersItalyArezzo8("2008/10/22/8"),
 				SubFoldersItalyArezzo9("2008/10/22/9"),
-				SubFoldersItalyArezzo9Duplicate("2008/10/22/10"),
-			},
+				SubFoldersItalyArezzo9Duplicate("2008/10/22/10")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2, 6)
 		}
 	};
@@ -534,8 +517,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.DateTimeWithMinutes, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, isDryRun: false, groupByFolderType: GroupByFolderType.YearMonth),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
 				SubFoldersNoPhotoTakenDateWithDefaultName(),
 				SubFoldersUnitedKingdom("2012/06/2012.06.22_19.52"),
@@ -553,8 +535,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo7("2008/10/2008.10.22_16.52"),
 				SubFoldersItalyArezzo8("2008/10/2008.10.22_16.55"),
 				SubFoldersItalyArezzo9("2008/10/2008.10.22_17.00-1"),
-				SubFoldersItalyArezzo9Duplicate("2008/10/2008.10.22_17.00-2"),
-			},
+				SubFoldersItalyArezzo9Duplicate("2008/10/2008.10.22_17.00-2")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2, 6)
 		}
 	};
@@ -572,8 +554,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("1"),
 				SubFoldersUnitedKingdom("2"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate("3"),
@@ -591,8 +572,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9Duplicate("ItalyFolder/Arezzo/10"),
 				SubFoldersSpain1("SpainFolder/1"),
 				SubFoldersSpain2("SpainFolder/2"),
-				SubFoldersNoPhotoTakenDate("SpainFolder/3"),
-			},
+				SubFoldersNoPhotoTakenDate("SpainFolder/3")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2, 3)
 		}
 	};
@@ -602,8 +583,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("1"),
 				SubFoldersUnitedKingdom("2"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate("3"),
@@ -621,8 +601,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9Duplicate("ItalyFolder/Arezzo/10"),
 				SubFoldersSpain1("SpainFolder/1"),
 				SubFoldersSpain2("SpainFolder/2"),
-				SubFoldersNoPhotoTakenDate("SpainFolder/3"),
-			},
+				SubFoldersNoPhotoTakenDate("SpainFolder/3")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2, 3)
 		}
 	};
@@ -632,8 +612,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("1"),
 				SubFoldersUnitedKingdom("2"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate("3"),
@@ -651,8 +630,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9Duplicate("ItalyFolder/Arezzo/19"),
 				SubFoldersSpain1("SpainFolder/1"),
 				SubFoldersSpain2("SpainFolder/2"),
-				SubFoldersNoPhotoTakenDate("SpainFolder/3"),
-			},
+				SubFoldersNoPhotoTakenDate("SpainFolder/3")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2, 3)
 		}
 	};
@@ -662,8 +641,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("2005.08.13"),
 				SubFoldersUnitedKingdom("2012.06.22"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
@@ -681,8 +659,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9Duplicate("ItalyFolder/Arezzo/2008.10.22-10"),
 				SubFoldersSpain1("SpainFolder/2015.04.10-1"),
 				SubFoldersSpain2("SpainFolder/2015.04.10-2"),
-				SubFoldersNoPhotoTakenDate("SpainFolder/NoPhotoTakenDate"),
-			},
+				SubFoldersNoPhotoTakenDate("SpainFolder/NoPhotoTakenDate")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2, 3)
 		}
 	};
@@ -692,8 +670,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("2005.08.13"),
 				SubFoldersUnitedKingdom("2012.06.22"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
@@ -711,8 +688,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9Duplicate("ItalyFolder/Arezzo/2008.10.22-10"),
 				SubFoldersSpain1("SpainFolder/2015.04.10-1"),
 				SubFoldersSpain2("SpainFolder/2015.04.10-2"),
-				SubFoldersNoPhotoTakenDate("SpainFolder/NoPhotoTakenDate"),
-			},
+				SubFoldersNoPhotoTakenDate("SpainFolder/NoPhotoTakenDate")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2, 3)
 		}
 	};
@@ -722,8 +699,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("2005.08.13"),
 				SubFoldersUnitedKingdom("2012.06.22"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
@@ -741,8 +717,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9Duplicate("ItalyFolder/Arezzo/2008.10.22-19"),
 				SubFoldersSpain1("SpainFolder/2015.04.10-1"),
 				SubFoldersSpain2("SpainFolder/2015.04.10-2"),
-				SubFoldersNoPhotoTakenDate("SpainFolder/NoPhotoTakenDate"),
-			},
+				SubFoldersNoPhotoTakenDate("SpainFolder/NoPhotoTakenDate")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2, 3)
 		}
 	};
@@ -757,8 +733,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, folderAppendType: FolderAppendType.FirstYearMonth,
 				folderAppendLocationType: FolderAppendLocationType.Prefix),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("1"),
 				SubFoldersUnitedKingdom("2"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate("3"),
@@ -776,8 +751,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo7("ItalyFolder/2008.10-Arezzo/7"),
 				SubFoldersItalyArezzo8("ItalyFolder/2008.10-Arezzo/8"),
 				SubFoldersItalyArezzo9("ItalyFolder/2008.10-Arezzo/9"),
-				SubFoldersItalyArezzo9Duplicate("ItalyFolder/2008.10-Arezzo/10"),
-			},
+				SubFoldersItalyArezzo9Duplicate("ItalyFolder/2008.10-Arezzo/10")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2, 3)
 		}
 	};
@@ -788,8 +763,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, folderAppendType: FolderAppendType.DayRange,
 				folderAppendLocationType: FolderAppendLocationType.Prefix),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("2005.08.13"),
 				SubFoldersUnitedKingdom("2012.06.22"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
@@ -807,8 +781,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo7("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-7"),
 				SubFoldersItalyArezzo8("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-8"),
 				SubFoldersItalyArezzo9("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-9"),
-				SubFoldersItalyArezzo9Duplicate("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-10"),
-			},
+				SubFoldersItalyArezzo9Duplicate("ItalyFolder/2008.10.22-2008.10.22-Arezzo/2008.10.22-10")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2, 3)
 		}
 	};
@@ -824,8 +798,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.Continue),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya("1"),
 				SingleItalyFlorence("2"),
 				SingleNoGpsCoordinate("3"),
@@ -841,8 +814,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleItalyArezzo9Duplicate("13"),
 				SingleUnitedKingdom("14"),
 				SingleSpain1("15"),
-				SingleSpain2("16"),
-			},
+				SingleSpain2("16")
+			],
 			new ConsoleOutputValues(18, 16, 15, 1, 2)
 		}
 	};
@@ -852,8 +825,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya("1"),
 				SingleItalyFlorence("2"),
 				SingleItalyArezzo1("3"),
@@ -868,8 +840,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleItalyArezzo9Duplicate("12"),
 				SingleUnitedKingdom("13"),
 				SingleSpain1("14"),
-				SingleSpain2("15"),
-			},
+				SingleSpain2("15")
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2)
 		}
 	};
@@ -879,8 +851,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.DontCopyToOutput),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya("1"),
 				SingleItalyFlorence("2"),
 				SingleItalyArezzo1("3"),
@@ -895,8 +866,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleItalyArezzo9Duplicate("12"),
 				SingleUnitedKingdom("13"),
 				SingleSpain1("14"),
-				SingleSpain2("15"),
-			},
+				SingleSpain2("15")
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2)
 		}
 	};
@@ -933,29 +904,18 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 	[MemberData(nameof(NoPhotoTakenDateActionDontCopyToOutputAndNoCoordinateActionContinue))]
 	[MemberData(nameof(NoPhotoTakenDateActionDontCopyToOutputAndNoCoordinateActionNotCopyingToOutput))]
 	[MemberData(nameof(NoPhotoTakenDateActionContinueAndNoCoordinateActionDontCopyToOutput))]
-	public async Task Running_With_Copy_Verb_Arguments_Should_Create_And_Verify_Photos_And_Report_Csv_On_File_System(ICollection<string> args, List<PhotoCsv> expectedPhotoCsvModelsWithOnlyFileNames,
+	public async Task Running_With_Copy_Verb_Arguments_Should_Create_And_Verify_Photos_And_Report_Csv_On_File_System(ICollection<string> args, List<PhotoCsv> expectedPhotoCsvModels,
 		ConsoleOutputValues expectedConsoleOutput)
 	{
 		var outputFolder = OutputFolderForE2ETestPrivateToEachTest();
 		CommandLineArgumentsFakes.AddOutputPathOptions(outputFolder, args);
-		var expectedPhotoCsvModelsWithOutputPaths = new List<PhotoCsv>();
-		foreach (var photoCsvModel in expectedPhotoCsvModelsWithOnlyFileNames)
-		{
-			var photoCsvModelsWithOutputPath = photoCsvModel with
-			{
-				PhotoNewPath = Path.Combine(outputFolder, photoCsvModel.PhotoNewPath!)
-			};
-			expectedPhotoCsvModelsWithOutputPaths.Add(photoCsvModelsWithOutputPath);
-		}
-
 		var csvReportFile = new FileInfo(Path.Combine(outputFolder, ToolOptionFakes.CsvReportFileName));
 		var (actualConsoleOutput, actualPhotoCsvModels) = await ExecuteCopy(args.ToArray(), csvReportFile);
 		using (new AssertionScope())
 		{
-			actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModelsWithOutputPaths);
+			actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModels);
 			actualConsoleOutput.Should().Be(expectedConsoleOutput);
-			foreach (var newPhoto in actualPhotoCsvModels.Select(actualPhotoCsvModel => new FileInfo(actualPhotoCsvModel.PhotoNewPath!)))
-				newPhoto.Exists.Should().Be(true);
+			VerifyCsvModelsNewPathExists(actualPhotoCsvModels, outputFolder);
 		}
 
 		DeleteOutput(outputFolder);
@@ -968,8 +928,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Numeric, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, isDryRun: true),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya("1"),
 				SingleItalyFlorence("2"),
 				SingleNoGpsCoordinate("3"),
@@ -987,8 +946,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleSpain1("15"),
 				SingleSpain2("16"),
 				SingleNoGpsCoordinateAndNoPhotoTakenDate("17"),
-				SingleNoPhotoTakenDate("18"),
-			},
+				SingleNoPhotoTakenDate("18")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -998,8 +957,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, isDryRun: true),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("1"),
 				SubFoldersItalyFlorence("2"),
 				SubFoldersNoGpsCoordinate("3"),
@@ -1017,8 +975,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersSpain1("15"),
 				SubFoldersSpain2("16"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate("17"),
-				SubFoldersNoPhotoTakenDate("18"),
-			},
+				SubFoldersNoPhotoTakenDate("18")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2)
 		}
 	};
@@ -1028,8 +986,7 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, isDryRun: true),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya("1"),
 				SubFoldersUnitedKingdom("2"),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate("3"),
@@ -1047,8 +1004,8 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9Duplicate("ItalyFolder/Arezzo/10"),
 				SubFoldersSpain1("SpainFolder/1"),
 				SubFoldersSpain2("SpainFolder/2"),
-				SubFoldersNoPhotoTakenDate("SpainFolder/3"),
-			},
+				SubFoldersNoPhotoTakenDate("SpainFolder/3")
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2, 3)
 		}
 	};
@@ -1064,24 +1021,12 @@ public class CopyVerbPhotoTakenEndToEndTests : BaseCopyVerbEndToEndTests
 		var csvReportFile = new FileInfo(ToolOptionFakes.DryRunCsvReportFileName);
 		if(csvReportFile.Exists)
 			csvReportFile.Delete();
-
 		var outputFolder = OutputFolderForE2ETestPrivateToEachTest();
 		CommandLineArgumentsFakes.AddOutputPathOptions(outputFolder, args);
-
-		var expectedPhotoCsvModelsWithOutputPaths = new List<PhotoCsv>();
-		foreach (var photoCsvModel in expectedPhotoCsvModelsWithOnlyFileNames)
-		{
-			var photoCsvModelsWithOutputPath = photoCsvModel with
-			{
-				PhotoNewPath = Path.Combine(outputFolder, photoCsvModel.PhotoNewPath!)
-			};
-			expectedPhotoCsvModelsWithOutputPaths.Add(photoCsvModelsWithOutputPath);
-		}
-
 		var (actualConsoleOutput, actualPhotoCsvModels) = await ExecuteCopy(args, csvReportFile);
 		using (new AssertionScope())
 		{
-			actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModelsWithOutputPaths);
+			actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModelsWithOnlyFileNames);
 			actualConsoleOutput.Should().Be(expectedConsoleOutput);
 		}
 		csvReportFile.Delete();

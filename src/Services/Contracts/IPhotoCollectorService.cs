@@ -2,5 +2,5 @@ namespace PhotoCli.Services.Contracts;
 
 public interface IPhotoCollectorService
 {
-	string[] Collect(string folderPath, bool allDirectories);
+	IReadOnlyCollection<Photo> Collect(string folderPath, bool allDirectories, bool searchCompanionFiles);
 }

@@ -1,3 +1,10 @@
+# 0.3.0
+
+- Companion file support
+- Resilience in reserve geocoding requests
+- Upgraded to .NET 8
+- Configurable supported photos
+
 # 0.2.1 (2024-03-06)
 
 - Fixing unable to set non-string setting values [@RecepCil](https://github.com/RecepCil)

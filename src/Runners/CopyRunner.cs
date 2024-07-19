@@ -53,8 +53,8 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 			return exitCodeOutputPath;
 
 		var processAllSubFolders = _options.FolderProcessType != FolderProcessType.Single;
-		var photoPaths = _photoCollectorService.Collect(sourceFolderPath, processAllSubFolders);
-		if (photoPaths.Length == 0)
+		var photosFound = _photoCollectorService.Collect(sourceFolderPath, processAllSubFolders, true);
+		if (photosFound.Count == 0)
 		{
 			Console.WriteLine($"No photo found on folder: {sourceFolderPath}");
 			return ExitCode.NoPhotoFoundOnDirectory;
@@ -64,11 +64,10 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 		var isNoPhotoTakenDatePreventProcessOptionSelected = _options.NoPhotoTakenDateAction == CopyNoPhotoTakenDateAction.PreventProcess;
 		var isNoCoordinatePreventProcessOptionSelected = _options.NoCoordinateAction == CopyNoCoordinateAction.PreventProcess;
 
-		var photoExifDataByPath = _exifDataAppenderService.ExifDataByPath(photoPaths, out var allPhotosAreValid, out var allPhotosHasPhotoTaken, out var allPhotosHasCoordinate);
+		var photosWithExif = _exifDataAppenderService.ExtractExifData(photosFound, out var allPhotosAreValid, out var allPhotosHasPhotoTaken, out var allPhotosHasCoordinate);
 
 		if (!NoExifDataPreventActions(out var exitCodeNoExif, allPhotosAreValid, allPhotosHasPhotoTaken, allPhotosHasCoordinate,
-			    isInvalidFileFormatPreventProcessOptionSelected, isNoPhotoTakenDatePreventProcessOptionSelected, isNoCoordinatePreventProcessOptionSelected,
-			    photoExifDataByPath))
+			    isInvalidFileFormatPreventProcessOptionSelected, isNoPhotoTakenDatePreventProcessOptionSelected, isNoCoordinatePreventProcessOptionSelected, photosWithExif))
 		{
 			return exitCodeNoExif;
 		}
@@ -76,40 +75,41 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 		if (_options.ReverseGeocodeProvider != ReverseGeocodeProvider.Disabled)
 		{
 			_reverseGeocodeFetcherService.RateLimitWarning();
-			photoExifDataByPath = await _reverseGeocodeFetcherService.Fetch(photoExifDataByPath);
+			photosWithExif = await _reverseGeocodeFetcherService.Fetch(photosWithExif);
 		}
 
 		var invalidFileFormatGroupedInSubFolder = _options.InvalidFileFormatAction == CopyInvalidFormatAction.InSubFolder;
 		var noPhotoDateTimeTakenGroupedInSubFolder = _options.NoPhotoTakenDateAction == CopyNoPhotoTakenDateAction.InSubFolder;
 		var noReverseGeocodeGroupedInSubFolder = _options.NoCoordinateAction == CopyNoCoordinateAction.InSubFolder;
 
-		var groupedPhotosByRelativeDirectory = _directoryGrouperService.GroupFiles(photoExifDataByPath, sourceFolderPath, _options.FolderProcessType, _options.GroupByFolderType,
+		var groupedPhotosByRelativeDirectory = _directoryGrouperService.GroupFiles(photosWithExif, sourceFolderPath, _options.FolderProcessType, _options.GroupByFolderType,
 			invalidFileFormatGroupedInSubFolder, noPhotoDateTimeTakenGroupedInSubFolder, noReverseGeocodeGroupedInSubFolder);
 
 		var filteredPhotosByRelativeDirectory = new Dictionary<string, IReadOnlyCollection<Photo>>();
 
 		_consoleWriter.ProgressStart(TargetRelativeFolderProgressName, groupedPhotosByRelativeDirectory.Count);
 		var verifyFileIntegrity = _options is { Verify: true, IsDryRun: false };
-		foreach (var (targetRelativeDirectoryPath, photoInfos) in groupedPhotosByRelativeDirectory)
+		foreach (var (targetRelativeDirectoryPath, photos) in groupedPhotosByRelativeDirectory)
 		{
 			_logger.LogTrace("Processing {TargetRelativeDirectory}", targetRelativeDirectoryPath);
 
-			var (filteredAndOrderedPhotos, keptPhotosNotInFilter) = _exifOrganizerService.FilterAndSortByNoActionTypes(photoInfos,
+			var (filteredAndOrderedPhotos, keptPhotosNotInFilter) = _exifOrganizerService.FilterAndSortByNoActionTypes(photos,
 				_options.InvalidFileFormatAction, _options.NoPhotoTakenDateAction, _options.NoCoordinateAction, targetRelativeDirectoryPath);
 
-			_fileNamerService.SetFileName(filteredAndOrderedPhotos, _options.NamingStyle, _options.NumberNamingTextStyle);
+			var renamedPhotos = _fileNamerService.SetFileName(filteredAndOrderedPhotos, _options.NamingStyle, _options.NumberNamingTextStyle);
 
-			if (_options.FolderProcessType is FolderProcessType.SubFoldersPreserveFolderHierarchy && _options.FolderAppendType.HasValue && _options.FolderAppendLocationType.HasValue)
-				_folderRenamer.RenameByFolderAppendType(filteredAndOrderedPhotos, _options.FolderAppendType.Value, _options.FolderAppendLocationType.Value, targetRelativeDirectoryPath);
+			if (_options.FolderProcessType is FolderProcessType.SubFoldersPreserveFolderHierarchy && _options is { FolderAppendType: not null, FolderAppendLocationType: not null })
+				renamedPhotos = _folderRenamer.RenameByFolderAppendType(renamedPhotos, _options.FolderAppendType.Value, _options.FolderAppendLocationType.Value, targetRelativeDirectoryPath);
 
-			var allPhotos = new List<Photo>(filteredAndOrderedPhotos);
+			var allPhotos = new List<Photo>(renamedPhotos);
 			allPhotos.AddRange(keptPhotosNotInFilter);
-			_fileService.Copy(allPhotos, _options.OutputPath, _options.IsDryRun);
 
-			filteredPhotosByRelativeDirectory.Add(targetRelativeDirectoryPath, allPhotos);
+			var copiedPhotos = _fileService.Copy(allPhotos, _options.OutputPath, _options.IsDryRun);
+
+			filteredPhotosByRelativeDirectory.Add(targetRelativeDirectoryPath, copiedPhotos);
 			if (verifyFileIntegrity)
 			{
-				var allFilesVerified = await _fileService.VerifyFileIntegrity(allPhotos, _options.OutputPath);
+				var allFilesVerified = await _fileService.VerifyFileIntegrity(copiedPhotos);
 				if (!allFilesVerified)
 					return ExitCode.FileVerifyErrors;
 			}
@@ -126,7 +126,7 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 			_consoleWriter.Write($"All files SHA1 hashes written into file: {Constants.VerifyFileHashFileName}. You may verify yourself with `sha1sum --check {Constants.VerifyFileHashFileName}` tool in Linux/macOS.");
 		}
 
-		await _csvService.Report(filteredAllPhotos, _options.OutputPath, _options.IsDryRun);
+		await _csvService.CreateCopyReport(filteredAllPhotos, _options.OutputPath, _options.IsDryRun);
 		WriteStatistics();
 		return ExitCode.Success;
 	}

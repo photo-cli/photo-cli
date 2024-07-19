@@ -43,8 +43,8 @@ public class ArchiveRunner : BaseRunner, IConsoleRunner
 		if (!CheckInputFolderExists(sourceFolderPath, out var exitCodeInputFolder))
 			return exitCodeInputFolder;
 
-		var photoPaths = _photoCollectorService.Collect(sourceFolderPath, true);
-		if (photoPaths.Length == 0)
+		var photosFound = _photoCollectorService.Collect(sourceFolderPath, true, true);
+		if (photosFound.Count == 0)
 		{
 			Console.WriteLine($"No photo found on folder: {sourceFolderPath}");
 			return ExitCode.NoPhotoFoundOnDirectory;
@@ -54,39 +54,40 @@ public class ArchiveRunner : BaseRunner, IConsoleRunner
 		var isNoPhotoTakenDatePreventProcessOptionSelected = _options.NoPhotoTakenDateAction == ArchiveNoPhotoTakenDateAction.PreventProcess;
 		var isNoCoordinatePreventProcessOptionSelected = _options.NoCoordinateAction == ArchiveNoCoordinateAction.PreventProcess;
 
-		var photoExifDataByPath = _exifDataAppenderService.ExifDataByPath(photoPaths, out var allPhotosAreValid, out var allPhotosHasPhotoTaken, out var allPhotosHasCoordinate);
+		var photosWithExif = _exifDataAppenderService.ExtractExifData(photosFound, out var allPhotosAreValid, out var allPhotosHasPhotoTaken, out var allPhotosHasCoordinate);
 
-		if (!NoExifDataPreventActions(out var exitCodeNoExif, allPhotosAreValid, allPhotosHasPhotoTaken, allPhotosHasCoordinate,
-			    isInvalidFileFormatPreventProcessOptionSelected, isNoPhotoTakenDatePreventProcessOptionSelected, isNoCoordinatePreventProcessOptionSelected,
-			    photoExifDataByPath))
+		if (!NoExifDataPreventActions(out var exitCodeNoExif, allPhotosAreValid, allPhotosHasPhotoTaken, allPhotosHasCoordinate, isInvalidFileFormatPreventProcessOptionSelected,
+			    isNoPhotoTakenDatePreventProcessOptionSelected, isNoCoordinatePreventProcessOptionSelected, photosWithExif))
 		{
 			return exitCodeNoExif;
 		}
 
+		var photosHashed =  await _fileService.CalculateFileHash(photosWithExif);
+
 		if (_options.ReverseGeocodeProvider != ReverseGeocodeProvider.Disabled)
 		{
 			_reverseGeocodeFetcherService.RateLimitWarning();
-			photoExifDataByPath = await _reverseGeocodeFetcherService.Fetch(photoExifDataByPath);
+			photosHashed = await _reverseGeocodeFetcherService.Fetch(photosHashed);
 		}
 
-		var groupedPhotosByRelativeDirectory = _directoryGrouperService.GroupFiles(photoExifDataByPath, sourceFolderPath, FolderProcessType.FlattenAllSubFolders,
+		var groupedPhotosByRelativeDirectory = _directoryGrouperService.GroupFiles(photosHashed, sourceFolderPath, FolderProcessType.FlattenAllSubFolders,
 			GroupByFolderType.YearMonthDay, true, true, false);
 
 		_consoleWriter.ProgressStart(TargetRelativeFolderProgressName, groupedPhotosByRelativeDirectory.Count);
 		var isNotDryRun = !_options.IsDryRun;
 
 		var newCopiedPhotosByRelativeDirectory = new Dictionary<string, IReadOnlyCollection<Photo>>();
-		foreach (var (targetRelativeDirectoryPath, photos) in groupedPhotosByRelativeDirectory)
+		foreach (var (targetRelativeDirectoryPath, photosInRelativeDirectory) in groupedPhotosByRelativeDirectory)
 		{
 			_logger.LogTrace("Processing {TargetRelativeDirectory}", targetRelativeDirectoryPath);
-			await _fileService.CalculateFileHash(photos);
-			var uniquePhotos = _duplicatePhotoRemoveService.GroupAndFilterByPhotoHash(photos);
-			_fileNamerService.SetArchiveFileName(uniquePhotos);
-			var newCopiedFiles = _fileService.CopyIfNotExists(uniquePhotos, _options.OutputPath, _options.IsDryRun);
+
+			var uniquePhotos = _duplicatePhotoRemoveService.GroupAndFilterByPhotoHash(photosInRelativeDirectory);
+			var renamedPhotos = _fileNamerService.SetArchiveFileName(uniquePhotos);
+			var newCopiedFiles = _fileService.CopyIfNotExists(renamedPhotos, _options.OutputPath, _options.IsDryRun);
 			newCopiedPhotosByRelativeDirectory.Add(targetRelativeDirectoryPath, newCopiedFiles);
 			if (isNotDryRun)
 			{
-				var allFilesVerified = await _fileService.VerifyFileIntegrity(uniquePhotos, _options.OutputPath);
+				var allFilesVerified = await _fileService.VerifyFileIntegrity(uniquePhotos);
 				if (!allFilesVerified)
 					return ExitCode.FileVerifyErrors;
 			}

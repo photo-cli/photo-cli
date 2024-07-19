@@ -39,14 +39,13 @@ public class ArchiveRunnerUnitTests
 
 	[Theory]
 	[MemberData(nameof(WithoutReverseGeocodeOptions))]
-	// [MemberData(nameof(WithReverseGeocodeOptions))]
-	// [MemberData(nameof(WithDryRun))]
+	[MemberData(nameof(WithReverseGeocodeOptions))]
+	[MemberData(nameof(WithDryRun))]
 	public async Task Execute_ValidWorkflow_ShouldExitWithSuccessWithVerifyingAllMockedServices(ArchiveOptions options, bool verifyReverseGeocodeMocks)
 	{
 		var photos = new List<Photo> { PhotoFakes.WithYear(2000) };
 		const string photoPath = "/photo.jpg";
-		string[] photoPaths = { "/photo.jpg" };
-		var targetRelativeDirectory = string.Empty;
+		const string targetRelativeDirectory = "2000/01/01";
 		var photoExifDataByFilePath = new Dictionary<string, ExifData?> { { photoPath, ExifDataFakes.Create(DateTimeFakes.WithYear(2000), CoordinateFakes.Valid()) } };
 
 		Dictionary<string, ExifData?>? reverseGeocodedPhotoExifDataByFilePath = null;
@@ -57,84 +56,70 @@ public class ArchiveRunnerUnitTests
 				reverseGeocodedPhotoExifDataByFilePath.Add(filePathKey, ExifDataFakes.Create(exifData?.TakenDate, exifData?.Coordinate, ReverseGeocodeFakes.Valid()));
 		}
 
-		var groupedPhotoInfosByRelativeDirectory = new Dictionary<string, List<Photo>> { { targetRelativeDirectory, photos } };
+		var groupedPhotoInfosByRelativeDirectory = new Dictionary<string, IReadOnlyCollection<Photo>> { { targetRelativeDirectory, photos } };
 
-		Setup(options, photoPaths, true, true, true,
-			photoExifDataByFilePath, photos, groupedPhotoInfosByRelativeDirectory, verifyReverseGeocodeMocks, reverseGeocodedPhotoExifDataByFilePath);
+		Setup(options, true, true, true,
+			photos, groupedPhotoInfosByRelativeDirectory, verifyReverseGeocodeMocks);
 
 		var sut = Initialize(options);
 		var exitCode = await sut.Execute();
 		exitCode.Should().Be(ExitCode.Success);
 
-		Verify(options, photoPaths, true, true, true,
-			photoExifDataByFilePath, photos, reverseGeocodedPhotoExifDataByFilePath, verifyReverseGeocodeMocks);
+		Verify(options, true, true, true, photos, verifyReverseGeocodeMocks);
 
 		VerifyNoOtherCalls();
 	}
 
-	private void Setup(ArchiveOptions options, string[] photoPaths, bool allPhotosAreValidMockOutValue, bool allPhotosHasPhotoTakenMockOutValue, bool allPhotosHasCoordinateMockOutValue,
-		Dictionary<string, ExifData?> photoExifDataByFilePath, IReadOnlyCollection<Photo> photos, Dictionary<string, List<Photo>> groupedPhotoInfosByRelativeDirectory,
-		bool setupReverseGeocodeFetcher, Dictionary<string, ExifData?>? reverseGeocodedPhotoExifDataByFilePath)
+	private void Setup(ArchiveOptions options, bool allPhotosAreValidMockOutValue, bool allPhotosHasPhotoTakenMockOutValue, bool allPhotosHasCoordinateMockOutValue,
+		IReadOnlyCollection<Photo> photos, Dictionary<string, IReadOnlyCollection<Photo>> groupedPhotoInfosByRelativeDirectory, bool setupReverseGeocodeFetcher)
 	{
-		_photoCollectorMock.Setup(s => s.Collect(options.InputPath!, It.IsAny<bool>())).Returns(() => photoPaths);
-		_exifDataAppenderMock.Setup(s => s.ExifDataByPath(photoPaths, out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue)).Returns(() => photoExifDataByFilePath);
-
+		_photoCollectorMock.Setup(s => s.Collect(options.InputPath!, It.IsAny<bool>(), It.IsAny<bool>())).Returns(() => photos);
+		_exifDataAppenderMock.Setup(s => s.ExtractExifData(photos, out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue)).Returns(() => photos);
+		_fileServiceMock.Setup(s => s.CalculateFileHash(photos)).ReturnsAsync(photos);
 		if (setupReverseGeocodeFetcher)
 		{
 			_reverseGeocodeFetcherMock.Setup(s => s.RateLimitWarning());
 
-			_reverseGeocodeFetcherMock.Setup(s => s.Fetch(photoExifDataByFilePath))
-				.Returns(() => Task.FromResult(reverseGeocodedPhotoExifDataByFilePath)!);
-
-			_directoryGrouperServiceMock.Setup(s => s.GroupFiles(reverseGeocodedPhotoExifDataByFilePath!, options.InputPath!,
-					FolderProcessType.FlattenAllSubFolders, GroupByFolderType.YearMonthDay, true, true, false))
-				.Returns(() => groupedPhotoInfosByRelativeDirectory);
-		}
-		else
-		{
-			_directoryGrouperServiceMock.Setup(s => s.GroupFiles(photoExifDataByFilePath, options.InputPath!,
-					FolderProcessType.FlattenAllSubFolders, GroupByFolderType.YearMonthDay, true, true, false))
-				.Returns(() => groupedPhotoInfosByRelativeDirectory);
+			_reverseGeocodeFetcherMock.Setup(s => s.Fetch(photos))
+				.Returns(() => Task.FromResult(photos));
 		}
 
-		_fileServiceMock.Setup(s => s.CalculateFileHash(photos)).Returns(Task.CompletedTask);
+		_directoryGrouperServiceMock.Setup(s => s.GroupFiles(photos, options.InputPath!,
+				FolderProcessType.FlattenAllSubFolders, GroupByFolderType.YearMonthDay, true, true, false))
+			.Returns(() => groupedPhotoInfosByRelativeDirectory);
+
 		_duplicatePhotoRemoveServiceMock.Setup(s => s.GroupAndFilterByPhotoHash(photos)).Returns(() => photos);
-		_fileNamerServiceMock.Setup(s => s.SetArchiveFileName(photos));
+		_fileNamerServiceMock.Setup(s => s.SetArchiveFileName(photos)).Returns(photos);
 		_fileServiceMock.Setup(s => s.CopyIfNotExists(photos, options.OutputPath, options.IsDryRun)).Returns(photos);
 		if (!options.IsDryRun)
-			_fileServiceMock.Setup(s => s.VerifyFileIntegrity(photos, options.OutputPath)).ReturnsAsync(true);
+			_fileServiceMock.Setup(s => s.VerifyFileIntegrity(photos)).ReturnsAsync(true);
 
-		_dbServiceMock.Setup(s => s.Archive(photos, false)).ReturnsAsync(1);
+		_dbServiceMock.Setup(s => s.Archive(photos, options.IsDryRun)).ReturnsAsync(1);
 	}
 
-	private void Verify(ArchiveOptions options, string[] photoPaths, bool allPhotosAreValidMockOutValue, bool allPhotosHasPhotoTakenMockOutValue, bool allPhotosHasCoordinateMockOutValue,
-		Dictionary<string, ExifData?> photoExifDataByFilePath, IReadOnlyCollection<Photo> photos, Dictionary<string, ExifData?>? reverseGeocodedPhotoExifDataByFilePath, bool setupReverseGeocodeFetcher)
+	private void Verify(ArchiveOptions options, bool allPhotosAreValidMockOutValue, bool allPhotosHasPhotoTakenMockOutValue, bool allPhotosHasCoordinateMockOutValue,
+		IReadOnlyList<Photo> photos, bool setupReverseGeocodeFetcher)
 	{
-		_photoCollectorMock.Verify(s => s.Collect(options.InputPath!, It.IsAny<bool>()), Times.Once);
-		_exifDataAppenderMock.Verify(s => s.ExifDataByPath(photoPaths, out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue), Times.Once);
+		_photoCollectorMock.Verify(s => s.Collect(options.InputPath!, It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
+		_exifDataAppenderMock.Verify(s => s.ExtractExifData(photos, out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue), Times.Once);
 
 		if (setupReverseGeocodeFetcher)
 		{
 			_reverseGeocodeFetcherMock.Verify(v => v.RateLimitWarning(), Times.Once);
-			_reverseGeocodeFetcherMock.Verify(s => s.Fetch(photoExifDataByFilePath), Times.Once);
+			_reverseGeocodeFetcherMock.Verify(s => s.Fetch(photos), Times.Once);
+		}
 
-			_directoryGrouperServiceMock.Verify(s => s.GroupFiles(reverseGeocodedPhotoExifDataByFilePath!, options.InputPath!, FolderProcessType.FlattenAllSubFolders, GroupByFolderType.YearMonthDay,
-				true, true, false), Times.Once);
-		}
-		else
-		{
-			_directoryGrouperServiceMock.Verify(s => s.GroupFiles(photoExifDataByFilePath, options.InputPath!, FolderProcessType.FlattenAllSubFolders, GroupByFolderType.YearMonthDay,
-				true, true, false), Times.Once);
-		}
+		_directoryGrouperServiceMock.Verify(s => s.GroupFiles(photos, options.InputPath!, FolderProcessType.FlattenAllSubFolders, GroupByFolderType.YearMonthDay,
+			true, true, false), Times.Once);
 
 		_fileServiceMock.Verify(s => s.CalculateFileHash(photos), Times.Once);
 		_duplicatePhotoRemoveServiceMock.Verify(s => s.GroupAndFilterByPhotoHash(photos), Times.Once);
 		_fileNamerServiceMock.Verify(s => s.SetArchiveFileName(photos), Times.Once);
 		_fileServiceMock.Verify(s => s.CopyIfNotExists(photos, options.OutputPath, options.IsDryRun), Times.Once);
 		if (!options.IsDryRun)
-			_fileServiceMock.Verify(s => s.VerifyFileIntegrity(photos, options.OutputPath), Times.Once);
+			_fileServiceMock.Verify(s => s.VerifyFileIntegrity(photos), Times.Once);
 
-		_dbServiceMock.Verify(v => v.Archive(photos, false), Times.Once);
+		_dbServiceMock.Verify(v => v.Archive(photos, options.IsDryRun), Times.Once);
 	}
 
 	#endregion
@@ -153,11 +138,11 @@ public class ArchiveRunnerUnitTests
 	[Fact]
 	public async Task Execute_NoPhotoOnSourcePath_ShouldExitWithNoPhotoFoundOnDirectory()
 	{
-		_photoCollectorMock.Setup(s => s.Collect(SourceFolderPath, It.IsAny<bool>())).Returns(Array.Empty<string>);
+		_photoCollectorMock.Setup(s => s.Collect(SourceFolderPath, It.IsAny<bool>(), It.IsAny<bool>())).Returns(Array.Empty<Photo>);
 		var sut = Initialize(ArchiveOptionsFakes.WithPaths(OutputPath, SourceFolderPath));
 		var exitCode = await sut.Execute();
 		exitCode.Should().Be(ExitCode.NoPhotoFoundOnDirectory);
-		_photoCollectorMock.Verify(v => v.Collect(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+		_photoCollectorMock.Verify(v => v.Collect(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
 		VerifyNoOtherCalls();
 	}
 
@@ -204,14 +189,20 @@ public class ArchiveRunnerUnitTests
 
 	private async Task CheckPreventActions(bool allPhotosAreValidMockOutValue, bool allPhotosHasPhotoTakenOutValue, bool allPhotosHasCoordinateOutValue, ArchiveOptions options, ExitCode expectedExitCode)
 	{
-		_photoCollectorMock.Setup(s => s.Collect(SourceFolderPath, It.IsAny<bool>())).Returns(() => new[] { "/photo.jpg" });
-		_exifDataAppenderMock.Setup(s => s.ExifDataByPath(It.IsAny<string[]>(), out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenOutValue, out allPhotosHasCoordinateOutValue))
-			.Returns(() => new Dictionary<string, ExifData?> { { "/photo.jpg", ExifDataFakes.Valid() } });
+		var photos = new[] { PhotoFakes.Valid() };
+		_photoCollectorMock.Setup(s => s.Collect(SourceFolderPath, It.IsAny<bool>(), It.IsAny<bool>())).Returns(() => photos);
+
+		_exifDataAppenderMock.Setup(s => s.ExtractExifData(It.IsAny<IReadOnlyList<Photo>>(), out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenOutValue, out allPhotosHasCoordinateOutValue))
+			.Returns(() => photos);
+
 		var sut = Initialize(options);
 		var exitCode = await sut.Execute();
 		exitCode.Should().Be(expectedExitCode);
-		_photoCollectorMock.Verify(v => v.Collect(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
-		_exifDataAppenderMock.Verify(v => v.ExifDataByPath(It.IsAny<string[]>(), out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenOutValue, out allPhotosHasCoordinateOutValue));
+		_photoCollectorMock.Verify(v => v.Collect(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
+
+		_exifDataAppenderMock.Verify(v => v.ExtractExifData(It.IsAny<IReadOnlyList<Photo>>(), out allPhotosAreValidMockOutValue,
+			out allPhotosHasPhotoTakenOutValue, out allPhotosHasCoordinateOutValue), Times.Once);
+
 		VerifyNoOtherCalls();
 	}
 

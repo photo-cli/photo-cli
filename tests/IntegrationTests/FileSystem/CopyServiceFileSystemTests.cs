@@ -15,19 +15,17 @@ public class CopyServiceFileSystemTests
 	private static readonly ExifData ExifData2000 = ExifDataFakes.WithPhotoTakenDate(Date2000);
 	private static readonly ExifData ExifData2001 = ExifDataFakes.WithPhotoTakenDate(Date2001);
 
-	public static TheoryData<Dictionary<string, ExifData>, List<PhotoCsv>> PhotoDateTakenData = new()
+	public static TheoryData<List<Photo>, List<PhotoCsv>> PhotoDateTakenData = new()
 	{
 		{
-			new Dictionary<string, ExifData>
-			{
-				{ MockFileSystemHelper.Path(SourcePath, "photo0.jpg"), ExifData2000 },
-				{ MockFileSystemHelper.Path(SourcePath, "photo1.jpg"), ExifData2001 },
-			},
-			new List<PhotoCsv>
-			{
-				PhotoCsvFakes.CreateWithFileName("photo0.jpg", SourcePath, Date2000),
-				PhotoCsvFakes.CreateWithFileName("photo1.jpg", SourcePath, Date2001),
-			}
+			[
+				PhotoFakes.CreateWithExifData(ExifData2000, "photo0.jpg", sourcePath: SourcePath),
+				PhotoFakes.CreateWithExifData(ExifData2001, "photo1.jpg", sourcePath: SourcePath)
+			],
+			[
+				PhotoCsvFakes.CreateWithFileName(ExifData2000, "photo0.jpg", SourcePath),
+				PhotoCsvFakes.CreateWithFileName(ExifData2001, "photo1.jpg", SourcePath)
+			]
 		}
 	};
 
@@ -43,19 +41,20 @@ public class CopyServiceFileSystemTests
 	private const double Longitude1 = 1;
 	private static readonly List<string> ReverseGeocodesLatitude1Longitude1 = ReverseGeocodeFakes.WithCoordinate(Latitude1, Longitude1);
 
-	public static TheoryData<Dictionary<string, ExifData>, List<PhotoCsv>> CoordinateAndReverseGeocodeData = new()
+	private static readonly ExifData ExifDataCoordinateLatitude0Longitude0 = ExifDataFakes.WithCoordinateAndReverseGeocode(Latitude0, Longitude0, ReverseGeocodesLatitude0Longitude0);
+	private static readonly ExifData ExifDataCoordinateLatitude1Longitude1 = ExifDataFakes.WithCoordinateAndReverseGeocode(Longitude1, Longitude1, ReverseGeocodesLatitude1Longitude1);
+
+	public static TheoryData<List<Photo>, List<PhotoCsv>> CoordinateAndReverseGeocodeData = new()
 	{
 		{
-			new Dictionary<string, ExifData>
-			{
-				{ MockFileSystemHelper.Path(SourcePath, "photo0.jpg"), ExifDataFakes.WithCoordinateAndReverseGeocode(0, 0, ReverseGeocodesLatitude0Longitude0) },
-				{ MockFileSystemHelper.Path(SourcePath, "photo1.jpg"), ExifDataFakes.WithCoordinateAndReverseGeocode(1, 1, ReverseGeocodesLatitude1Longitude1) }
-			},
-			new List<PhotoCsv>
-			{
-				PhotoCsvFakes.CreateWithFileName("photo0.jpg", SourcePath, reverseGeocodes: ReverseGeocodesLatitude0Longitude0, latitude: Latitude0, longitude: Longitude0),
-				PhotoCsvFakes.CreateWithFileName("photo1.jpg", SourcePath, reverseGeocodes: ReverseGeocodesLatitude1Longitude1, latitude: Latitude1, longitude: Longitude1),
-			}
+			[
+				PhotoFakes.CreateWithExifData(ExifDataCoordinateLatitude0Longitude0, "photo0.jpg", sourcePath: SourcePath),
+				PhotoFakes.CreateWithExifData(ExifDataCoordinateLatitude1Longitude1, "photo1.jpg", sourcePath: SourcePath)
+			],
+			[
+				PhotoCsvFakes.CreateWithFileName(ExifDataCoordinateLatitude0Longitude0, "photo0.jpg", SourcePath, ReverseGeocodesLatitude0Longitude0),
+				PhotoCsvFakes.CreateWithFileName(ExifDataCoordinateLatitude1Longitude1, "photo1.jpg", SourcePath, ReverseGeocodesLatitude1Longitude1)
+			]
 		}
 	};
 
@@ -63,19 +62,24 @@ public class CopyServiceFileSystemTests
 
 	#region Mixed Data
 
-	public static TheoryData<Dictionary<string, ExifData>, List<PhotoCsv>> MixedData = new()
+	private static readonly ExifData ExifDataPhotoTaken = ExifDataFakes.WithPhotoTakenDate(DateTimeFakes.WithYear(2000));
+
+	private const double Latitude = 1;
+	private const double Longitude = 1;
+	private static readonly List<string> ReverseGeocodes = ReverseGeocodeFakes.WithCoordinate(Latitude, Longitude);
+	private static readonly ExifData ExifDataCoordinate = ExifDataFakes.WithCoordinateAndReverseGeocode(1, 1, ReverseGeocodes);
+
+	public static TheoryData<List<Photo>, List<PhotoCsv>> MixedData = new()
 	{
 		{
-			new Dictionary<string, ExifData>
-			{
-				{ MockFileSystemHelper.Path(SourcePath, "photo-photo-taken-date.jpg"), ExifData2000 },
-				{ MockFileSystemHelper.Path(SourcePath, "photo-coordinate-reverse-geocode.jpg"), ExifDataFakes.WithCoordinateAndReverseGeocode(0, 0, ReverseGeocodesLatitude0Longitude0) },
-			},
-			new List<PhotoCsv>
-			{
-				PhotoCsvFakes.CreateWithFileName("photo-photo-taken-date.jpg", SourcePath, Date2000),
-				PhotoCsvFakes.CreateWithFileName("photo-coordinate-reverse-geocode.jpg", SourcePath, reverseGeocodes: ReverseGeocodesLatitude0Longitude0, latitude: Latitude0, longitude: Longitude0),
-			}
+			[
+				PhotoFakes.CreateWithExifData(ExifData2000, "photo-taken-date.jpg", sourcePath: SourcePath),
+				PhotoFakes.CreateWithExifData(ExifDataCoordinate, "coordinate-reverse-geocode.jpg", sourcePath: SourcePath)
+			],
+			[
+				PhotoCsvFakes.CreateWithFileName(ExifDataPhotoTaken, "photo-taken-date.jpg", SourcePath),
+				PhotoCsvFakes.CreateWithFileName(ExifDataCoordinateLatitude1Longitude1, "coordinate-reverse-geocode.jpg", SourcePath, ReverseGeocodes)
+			]
 		}
 	};
 
@@ -85,13 +89,12 @@ public class CopyServiceFileSystemTests
 	[MemberData(nameof(PhotoDateTakenData))]
 	[MemberData(nameof(CoordinateAndReverseGeocodeData))]
 	[MemberData(nameof(MixedData))]
-	public async Task CsvOutput_Writes_File_And_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(Dictionary<string, ExifData> exifData,
-		List<PhotoCsv> expectedPhotoCsvModels)
+	public async Task CsvOutput_Writes_File_And_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(List<Photo> photos, List<PhotoCsv> expectedPhotoCsvModels)
 	{
 		var outputCsvPath = MockFileSystemHelper.Path("/output.csv");
 		var mockFileSystem = new MockFileSystem();
 		var sut = new CsvService(mockFileSystem, NullLogger<CsvService>.Instance, ToolOptionFakes.Create(), ConsoleWriterFakes.Valid());
-		await sut.WriteExifDataToCsvOutput(exifData!, outputCsvPath);
+		await sut.CreateInfoReport(photos, outputCsvPath);
 		var csvFile = mockFileSystem.FileInfo.New(outputCsvPath);
 		var actualPhotoCsvModels = CsvFileHelper.ReadRecords(csvFile);
 		actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModels);
@@ -101,28 +104,27 @@ public class CopyServiceFileSystemTests
 
 	#region Report
 
-	public static TheoryData<string, IEnumerable<Photo>, List<PhotoCsv>> ReportWritesToCsvFileAndVerifyPhotoCsvModelMatchedWithReadingOutputFileData =
-		new()
+	public static TheoryData<string, List<Photo>, List<PhotoCsv>> ReportWritesToCsvFileAndVerifyPhotoCsvModelMatchedWithReadingOutputFileData = new()
+	{
 		{
-			{
-				OutputPath,
-				new List<Photo> { PhotoFakes.Create("photo0.jpg", Date2000, sourcePath: SourcePath) },
-				new List<PhotoCsv>
-				{
-					PhotoCsvFakes.CreateWithFileName("photo0.jpg", SourcePath, Date2000, outputPath: OutputPath),
-				}
-			},
-		};
+			OutputPath,
+			[
+				PhotoFakes.Create("photo0.jpg", Date2000, sourcePath: SourcePath, outputFolder: OutputPath, targetRelativeDirectoryPath: "")
+			],
+			[
+				PhotoCsvFakes.WithTargetRelativePath(ExifData2000, "photo0.jpg", SourcePath, targetRelativePath: "photo0.jpg")
+			]
+		},
+	};
 
 	[Theory]
 	[MemberData(nameof(ReportWritesToCsvFileAndVerifyPhotoCsvModelMatchedWithReadingOutputFileData))]
-	public async Task CopyWithReport_Report_Writes_To_Csv_File_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(string output,
-		IEnumerable<Photo> photos, List<PhotoCsv> expectedPhotoCsvModels)
+	public async Task CopyWithReport_Writes_To_Csv_File_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(string output, IEnumerable<Photo> photos, List<PhotoCsv> expectedPhotoCsvModels)
 	{
 		var outputFolder = MockFileSystemHelper.Path(output);
 		var mockFileSystem = new MockFileSystem();
 		var sut = new CsvService(mockFileSystem, NullLogger<CsvService>.Instance, ToolOptionFakes.Create(), ConsoleWriterFakes.Valid());
-		await sut.Report(photos, outputFolder);
+		await sut.CreateCopyReport(photos, outputFolder);
 		var csvFile = mockFileSystem.FileInfo.New(Path.Combine(outputFolder, ToolOptionFakes.CsvReportFileName));
 		csvFile.Exists.Should().BeTrue();
 		var actualPhotoCsvModels = CsvFileHelper.ReadRecords(csvFile);
@@ -131,13 +133,12 @@ public class CopyServiceFileSystemTests
 
 	[Theory]
 	[MemberData(nameof(ReportWritesToCsvFileAndVerifyPhotoCsvModelMatchedWithReadingOutputFileData))]
-	public async Task DryRun_Report_Writes_To_Csv_File_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(string output,
-		IEnumerable<Photo> photos, List<PhotoCsv> expectedPhotoCsvModels)
+	public async Task DryRun_Report_Writes_To_Csv_File_And_Verify_PhotoCsv_Model_Matched_With_Reading_Output_File(string output, IEnumerable<Photo> photos, List<PhotoCsv> expectedPhotoCsvModels)
 	{
 		var outputFolder = MockFileSystemHelper.Path(output);
 		var mockFileSystem = new MockFileSystem();
 		var sut = new CsvService(mockFileSystem, NullLogger<CsvService>.Instance, ToolOptionFakes.Create(), ConsoleWriterFakes.Valid());
-		await sut.Report(photos, outputFolder);
+		await sut.CreateCopyReport(photos, outputFolder);
 		var csvFile = mockFileSystem.FileInfo.New(Path.Combine(outputFolder, "photo-cli-report.csv"));
 		csvFile.Exists.Should().BeTrue();
 		var actualPhotoCsvModels = CsvFileHelper.ReadRecords(csvFile);

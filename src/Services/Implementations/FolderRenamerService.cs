@@ -13,48 +13,47 @@ public class FolderRenamerService : IFolderRenamerService
 		_ignoredFolders = new List<string> { _options.NoAddressFolderName, _options.NoPhotoTakenDateFolderName, _options.NoAddressAndPhotoTakenDateFolderName };
 	}
 
-	public void RenameByFolderAppendType(IReadOnlyCollection<Photo> orderedPhotoInfos, FolderAppendType folderAppendType, FolderAppendLocationType folderAppendLocationType,
+	public IReadOnlyCollection<Photo> RenameByFolderAppendType(IReadOnlyCollection<Photo> orderedPhotos, FolderAppendType folderAppendType, FolderAppendLocationType folderAppendLocationType,
 		string targetRelativeDirectoryPath)
 	{
 		if (_ignoredFolders.Any(targetRelativeDirectoryPath.EndsWith) || targetRelativeDirectoryPath == string.Empty)
 		{
 			_logger.LogDebug("Ignored folder: {Path} found, skipping folder renaming", targetRelativeDirectoryPath);
-			return;
+			return orderedPhotos;
 		}
-
 
 		string? appendValue;
 		switch (folderAppendType)
 		{
 			case FolderAppendType.FirstYearMonthDay:
 			{
-				if (HasNoPhotoTakenDate(orderedPhotoInfos, targetRelativeDirectoryPath))
-					return;
-				var firstDateTime = GetFirstPhotoTakenDate(orderedPhotoInfos, targetRelativeDirectoryPath);
+				if (HasNoPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath))
+					return orderedPhotos;
+				var firstDateTime = GetFirstPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath);
 				appendValue = firstDateTime.ToString(_options.DateFormatWithDay);
 				break;
 			}
 			case FolderAppendType.FirstYearMonth:
 			{
-				if (HasNoPhotoTakenDate(orderedPhotoInfos, targetRelativeDirectoryPath))
-					return;
-				var firstDateTime = GetFirstPhotoTakenDate(orderedPhotoInfos, targetRelativeDirectoryPath);
+				if (HasNoPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath))
+					return orderedPhotos;
+				var firstDateTime = GetFirstPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath);
 				appendValue = firstDateTime.ToString(_options.DateFormatWithMonth);
 				break;
 			}
 			case FolderAppendType.FirstYear:
 			{
-				if (HasNoPhotoTakenDate(orderedPhotoInfos, targetRelativeDirectoryPath))
-					return;
-				var firstDateTime = GetFirstPhotoTakenDate(orderedPhotoInfos, targetRelativeDirectoryPath);
+				if (HasNoPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath))
+					return orderedPhotos;
+				var firstDateTime = GetFirstPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath);
 				appendValue = firstDateTime.ToString(_options.YearFormat);
 				break;
 			}
 			case FolderAppendType.DayRange:
 			{
-				if (HasNoPhotoTakenDate(orderedPhotoInfos, targetRelativeDirectoryPath))
-					return;
-				var (firstDateTime, lastDateTime) = GetFirstAndLastPhotoTakenDate(orderedPhotoInfos, targetRelativeDirectoryPath);
+				if (HasNoPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath))
+					return orderedPhotos;
+				var (firstDateTime, lastDateTime) = GetFirstAndLastPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath);
 				var firstDayFormat = firstDateTime.ToString(_options.DateFormatWithDay);
 				var lastDayFormat = lastDateTime.ToString(_options.DateFormatWithDay);
 				appendValue = $"{firstDayFormat}{_options.DayRangeSeparator}{lastDayFormat}";
@@ -62,9 +61,9 @@ public class FolderRenamerService : IFolderRenamerService
 			}
 			case FolderAppendType.MatchingMinimumAddress:
 			{
-				var photosHasReverseGeocode = orderedPhotoInfos.Where(w => w.HasReverseGeocode).ToList();
+				var photosHasReverseGeocode = orderedPhotos.Where(w => w.HasReverseGeocode).ToList();
 				if (!photosHasReverseGeocode.Any())
-					return;
+					return orderedPhotos;
 				var minReverseGeocodeItemCount = photosHasReverseGeocode.Min(m => m.ReverseGeocodeCount);
 
 				int? allSameIndexStartsWith = null;
@@ -80,7 +79,7 @@ public class FolderRenamerService : IFolderRenamerService
 				}
 
 				if (allSameIndexStartsWith == null)
-					return;
+					return orderedPhotos;
 				var allMatchingReverseGeocodes = photosHasReverseGeocode.First().ReverseGeocodes!.GetRange(0, allSameIndexStartsWith.Value + 1);
 				appendValue = string.Join(_options.AddressSeparator, allMatchingReverseGeocodes);
 				break;
@@ -90,40 +89,41 @@ public class FolderRenamerService : IFolderRenamerService
 		}
 
 		var appendedTargetRelativeDirectoryPath = PathHelper.AppendToTheBottomDirectory(folderAppendLocationType, targetRelativeDirectoryPath, appendValue, _options.FolderAppendSeparator);
-		foreach (var photoInfo in orderedPhotoInfos)
-			photoInfo.TargetRelativeDirectoryPath = appendedTargetRelativeDirectoryPath;
+		foreach (var photoInfo in orderedPhotos)
+			photoInfo.SetTargetRelativePath(appendedTargetRelativeDirectoryPath);
+
+		return orderedPhotos;
 	}
 
-	private bool HasNoPhotoTakenDate(IEnumerable<Photo> orderedPhotoInfos, string targetRelativeDirectoryPath)
+	private bool HasNoPhotoTakenDate(IEnumerable<Photo> orderedPhotos, string targetRelativeDirectoryPath)
 	{
-		var hasNoPhotoTakenDate = !orderedPhotoInfos.Any(a => a.HasPhotoTakenDateTime);
+		var hasNoPhotoTakenDate = !orderedPhotos.Any(a => a.HasTakenDateTime);
 		if (hasNoPhotoTakenDate)
 			_logger.LogDebug("No photo taken date will locate on {TargetRelativePath}, skipping folder renaming", targetRelativeDirectoryPath);
 		return hasNoPhotoTakenDate;
 	}
 
-	private DateTime GetFirstPhotoTakenDate(IReadOnlyCollection<Photo> orderedPhotoInfos, string targetRelativeDirectoryPath)
+	private DateTime GetFirstPhotoTakenDate(IReadOnlyCollection<Photo> orderedPhotos, string targetRelativeDirectoryPath)
 	{
-		var orderedPhotoInfosThatHavePhotoTakenDate = VerifyAndGetOrderedPhotoList(orderedPhotoInfos);
-		var firstDateTime = orderedPhotoInfosThatHavePhotoTakenDate.First(f => f.HasPhotoTakenDateTime).PhotoTakenDateTime!.Value;
+		var orderedPhotosThatHavePhotoTakenDate = VerifyAndGetOrderedPhotoList(orderedPhotos);
+		var firstDateTime = orderedPhotosThatHavePhotoTakenDate.First().TakenDateTime!.Value;
 		_logger.LogDebug("First photo taken date as {FirstTakenDate} will locate on {TargetRelativePath}", firstDateTime, targetRelativeDirectoryPath);
 		return firstDateTime;
 	}
 
-	private (DateTime, DateTime) GetFirstAndLastPhotoTakenDate(IReadOnlyCollection<Photo> orderedPhotoInfos, string targetRelativeDirectoryPath)
+	private (DateTime, DateTime) GetFirstAndLastPhotoTakenDate(IReadOnlyCollection<Photo> orderedPhotos, string targetRelativeDirectoryPath)
 	{
-		var orderedPhotoInfosThatHavePhotoTakenDate = VerifyAndGetOrderedPhotoList(orderedPhotoInfos);
-		var firstDateTime = orderedPhotoInfosThatHavePhotoTakenDate.First(f => f.HasPhotoTakenDateTime).PhotoTakenDateTime!.Value;
-		var lastDateTime = orderedPhotoInfosThatHavePhotoTakenDate.Last().PhotoTakenDateTime!.Value;
-		_logger.LogDebug("First photo taken date as {FirstTakenDate}, and last photo taken as {LastTakenDate} will locate on {TargetRelativePath}", firstDateTime, lastDateTime,
-			targetRelativeDirectoryPath);
+		var orderedPhotosThatHavePhotoTakenDate = VerifyAndGetOrderedPhotoList(orderedPhotos);
+		var firstDateTime = orderedPhotosThatHavePhotoTakenDate.First().TakenDateTime!.Value;
+		var lastDateTime = orderedPhotosThatHavePhotoTakenDate.Last().TakenDateTime!.Value;
+		_logger.LogDebug("First photo taken date as {FirstTakenDate}, and last photo taken as {LastTakenDate} will locate on {TargetRelativePath}", firstDateTime, lastDateTime, targetRelativeDirectoryPath);
 		return (firstDateTime, lastDateTime);
 	}
 
-	private List<Photo> VerifyAndGetOrderedPhotoList(IReadOnlyCollection<Photo> orderedPhotoInfos)
+	private List<Photo> VerifyAndGetOrderedPhotoList(IReadOnlyCollection<Photo> orderedPhotos)
 	{
-		var orderedPhotoInfosThatHavePhotoTakenDate = orderedPhotoInfos.Where(w => w.HasPhotoTakenDateTime).ToList();
-		orderedPhotoInfosThatHavePhotoTakenDate.ThrowIfNotOrderedByPhotoTakenDate();
-		return orderedPhotoInfosThatHavePhotoTakenDate;
+		var orderedPhotosThatHavePhotoTakenDate = orderedPhotos.Where(w => w.HasTakenDateTime).ToList();
+		orderedPhotosThatHavePhotoTakenDate.ThrowIfNotOrderedByPhotoTakenDate();
+		return orderedPhotosThatHavePhotoTakenDate;
 	}
 }

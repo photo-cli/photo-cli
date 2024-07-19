@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace PhotoCli.Utils.Extensions;
 
 public static class StringExtensions
@@ -15,12 +17,12 @@ public static class StringExtensions
 		return text[..index] + replace + text[(index + search.Length)..];
 	}
 
-	public static bool IsPresent(this string? value)
+	public static bool IsPresent([NotNullWhen(true)]this string? value)
 	{
 		return !string.IsNullOrEmpty(value);
 	}
 
-	public static bool IsMissing(this string? value)
+	public static bool IsMissing([NotNullWhen(false)]this string? value)
 	{
 		return string.IsNullOrEmpty(value);
 	}
