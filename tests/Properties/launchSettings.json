@@ -4,6 +4,9 @@
     "PhotoCli.Tests": {
       "commandName": "Project",
       "environmentVariables": {
+        "CompanionExtensions:1": "aae",
+        "CompanionExtensions:2": "mov",
+        "CompanionExtensions:3": "xmp"
       }
     }
   }

@@ -193,7 +193,7 @@ public static class Program
 			{
 				c.BaseAddress = new Uri("https://api.bigdatacloud.net/data/reverse-geocode");
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
-			}).AddResilience();;
+			}).AddResilience();
 
 			services.AddHttpClient<IOpenStreetMapFoundationReverseGeocodeService, OpenStreetMapFoundationReverseGeocodeService>(c =>
 			{
@@ -253,7 +253,7 @@ public static class Program
 			});
 
 			services.AddSingleton(configuration);
-			var toolOptionsRaw = configuration.Get<ToolOptionsRaw>();
+			var toolOptionsRaw = configuration.Get<ToolOptionsRaw>() ?? new ToolOptionsRaw();
 			var toolOptions = new ToolOptions(toolOptionsRaw);
 			services.AddSingleton(toolOptions);
 			services.AddTransient(typeof(IConsoleRunner), typeof(TConsoleRunner));
@@ -310,12 +310,11 @@ public static class Program
 			}
 			else
 			{
-				if (args.Count == 0) HelpTextBuilder.ExtendedHelpWritingToConsole(textWriter);
+				if (args.Count == 0)
+					HelpTextBuilder.ExtendedHelpWritingToConsole(textWriter);
 				exitCode = ExitCode.ParseArgsFailed;
 			}
-
 			parsedObject = null!;
-
 			return false;
 		}
 

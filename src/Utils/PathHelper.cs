@@ -30,4 +30,31 @@ public static class PathHelper
 	{
 		return value.Trim('/', '\\');
 	}
+
+	public static string FilePathWithoutExtension(string filePath)
+	{
+		var lastIndexOfDot = filePath.LastIndexOf('.');
+		return filePath[..lastIndexOfDot];
+	}
+
+	public static (string, string) GetFileNameExtensionSeparately(string fullFilePath)
+	{
+		try
+		{
+			var separatorLastIndex = fullFilePath.LastIndexOf(PathSeparator());
+			var lastIndexOfDot = fullFilePath.LastIndexOf('.');
+			var fileName = fullFilePath.Substring(separatorLastIndex + 1, lastIndexOfDot - separatorLastIndex - 1);
+			var extension = fullFilePath.Substring(lastIndexOfDot + 1, fullFilePath.Length - lastIndexOfDot - 1);
+			return (fileName, extension);
+		}
+		catch (Exception ex)
+		{
+			throw new PhotoCliException("File path format is not correct", ex);
+		}
+	}
+
+	public static string NormalizePath(string value)
+	{
+		return value.ToLowerInvariant();
+	}
 }

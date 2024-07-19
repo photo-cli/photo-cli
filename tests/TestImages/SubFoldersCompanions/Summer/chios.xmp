@@ -1,0 +1,23 @@
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="XMP Core 6.0.0">
+   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <rdf:Description rdf:about=""
+            xmlns:exif="http://ns.adobe.com/exif/1.0/"
+            xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/"
+            xmlns:dc="http://purl.org/dc/elements/1.1/">
+         <exif:GPSHPositioningError>3.5355339055557087</exif:GPSHPositioningError>
+         <exif:GPSImgDirection>135.62081146548243</exif:GPSImgDirection>
+         <exif:GPSAltitudeRef>0</exif:GPSAltitudeRef>
+         <exif:GPSAltitude>18.063114172829501</exif:GPSAltitude>
+         <exif:GPSLatitudeRef>N</exif:GPSLatitudeRef>
+         <exif:GPSLatitude>38.212829999999997</exif:GPSLatitude>
+         <exif:GPSLongitudeRef>E</exif:GPSLongitudeRef>
+         <exif:GPSLongitude>26.296645000000002</exif:GPSLongitude>
+         <exif:GPSImgDirectionRef>T</exif:GPSImgDirectionRef>
+         <exif:GPSSpeed>13</exif:GPSSpeed>
+         <exif:GPSSpeedRef>K</exif:GPSSpeedRef>
+         <exif:GPSTimeStamp>2024-05-29T03:01:20Z</exif:GPSTimeStamp>
+         <photoshop:DateCreated>2024-05-29T06:01:21+03:00</photoshop:DateCreated>
+         <dc:title>Chios Ferry</dc:title>
+      </rdf:Description>
+   </rdf:RDF>
+</x:xmpmeta>

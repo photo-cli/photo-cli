@@ -14,7 +14,7 @@ public class DuplicatePhotoRemoveService : IDuplicatePhotoRemoveService
 	public IReadOnlyCollection<Photo> GroupAndFilterByPhotoHash(IReadOnlyCollection<Photo> photos)
 	{
 		var uniquePhotos = new List<Photo>();
-		foreach (var photosGroupedByHash in photos.GroupBy(g => g.Sha1Hash))
+		foreach (var photosGroupedByHash in photos.GroupBy(g => g.PhotoFile.Sha1Hash))
 		{
 			if (photosGroupedByHash.Count() == 1)
 			{
@@ -27,7 +27,8 @@ public class DuplicatePhotoRemoveService : IDuplicatePhotoRemoveService
 			foreach (var photo in photosGroupedByHash.Skip(1))
 			{
 				++_statistics.PhotosSame;
-				_logger.LogWarning("Photo is skipped due to same photo has already been archived. Same photo paths: {Path1}, {Path2}", firstPhoto.FilePath, photo.FilePath);
+				_logger.LogWarning("Photo is skipped due to same photo has already been archived. Same photo paths: {Path1}, {Path2}",
+					firstPhoto.PhotoFile.SourcePath, photo.PhotoFile.SourcePath);
 			}
 		}
 		return uniquePhotos;

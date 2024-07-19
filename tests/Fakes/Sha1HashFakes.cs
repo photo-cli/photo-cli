@@ -12,6 +12,7 @@ public static class Sha1HashFakes
 			4 => "d470205a1d331a9d3765b3762b7c954bb8efc6ea",
 			5 => "9f4e6d352ec172e1059571250655e376769080fe",
 			6 => "620d23336a12ab54f9f0190fe93960a4dba2df59",
+			7 => "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8",
 			_ => throw new NotImplementedException()
 		};
 	}
@@ -32,4 +33,10 @@ public static class Sha1HashFakes
 	public const string Spain2 = "9f4e6d352ec172e1059571250655e376769080fe";
 	public const string NoGpsCoordinate = "90d835861e1aa3c829e3ab28a7f01ec3a090f664";
 	public const string NoPhotoTakenDate = "cf756397cc3ca81b2650c8801fd64e172504015a";
+
+	public const string Amsterdam = "874c35f5766856b778244c2ee20e79c978e61c5d";
+	public const string Chios = "191fe7ce27dd587b9ee867b6dabaa39785cae5a7";
+	public const string Copenhagen = "c51f74466414a19034a201236e0b020cbeaace6e";
+	public const string Hallstatt = "c75e7744129e419c5460aaf92fc85f3c71106439";
+	public const string Leiden = "1a48d579acb2b69de659aeed7a26e84035c05791";
 }

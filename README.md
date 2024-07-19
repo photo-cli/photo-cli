@@ -17,6 +17,8 @@
 - [Features Explained With An Example](#features-explained-with-examples)
 - [Installation](#installation)
 - [How It's Done?](#how-its-done)
+- [Supported Photo Types](#supported-photo-types)
+- [Processing Companion Files](#processing-companion-files)
 - [Address Building & Reverse Geocoding](#address-building--reverse-geocoding)
 - [Usages](#usages)
 - [Commands](#commands--verbs)
@@ -34,7 +36,7 @@
 
 ## Features Explained With Examples
 
-There is three main feature that can be explain better with examples.
+There is three main feature that can be explained better with examples.
 
 1. [Copy into a new organized folder example with `photo-cli copy` command](#1-copy-into-a-new-organized-folder-example-with-photo-cli-copy-command)
 2. [Archive & index into local SQLite incrementally in a specific folder with `photo-cli archive` command](#2-archive--index-into-local-sqlite-incrementally-in-a-specific-folder-with-photo-cli-archive-command)
@@ -470,7 +472,7 @@ To navigate your photographs on [Google Earth Web](https://earth.google.com/web/
 
 Important note: This application is a [command line tool](https://en.wikipedia.org/wiki/Command-line_interface) which don't have any user interface. To use this application, basic knowledge of how to run and send arguments to CLI applications is a must.
 
-1. Installing [.NET 6 runtime](https://dotnet.microsoft.com/download/dotnet/6.0) for your platform (Linux, macOS, Windows).
+1. Installing [.NET 8 runtime](https://dotnet.microsoft.com/download/dotnet/8.0) for your platform (Linux, macOS, Windows).
 
 2. Install or update with these commands both on Linux, macOS, Windows;
 
@@ -624,6 +626,26 @@ By extracting [Exchangeable image file format](https://en.wikipedia.org/wiki/Exi
 
 Most of the cameras and cellphones have [GPS](https://en.wikipedia.org/wiki/Global_Positioning_System) receiver on them. You need to be sure that on settings something like `Save GPS location` should
 be enabled.
+
+## Supported Photo Types
+
+With the default settings, we can process `jpg`, `jpeg`, `heic` and `png` photo files. As this tool internally using [MetadataExtractor](https://www.nuget.org/packages/MetadataExtractor/) package to extract image EXIF data, you can extend the supported photos with the [MetadataExtractor supported files](https://github.com/drewnoakes/metadata-extractor-dotnet?tab=readme-ov-file#features) by using [settings verb's set action](#setting-a-single-value).
+
+#### Setting Supported Extensions Example
+```
+settings -k SupportedExtensions -v jpg,ext1,ext2,ext3
+```
+
+## Processing Companion Files
+
+We are also processing the companion files with the same name of your main photo files. The default settings is currently only `mov` which is popular among [iPhone Live Photos](https://support.apple.com/en-us/104966) output is also exporting with a video file next to your photo.
+
+You can extend this companion extension by using [settings verb's set action](#setting-a-single-value).
+
+#### Setting Companion Extensions Example
+```
+settings -k CompanionExtensions -v mov,ext1,ext2,ext3
+```
 
 ## Address Building & Reverse Geocoding
 
@@ -1904,6 +1926,9 @@ photo-cli settings
 ```
 
 ```
+LogLevel=Warning
+CompanionExtensions=mov
+SupportedExtensions=jpg,jpeg,heic,png
 AddressSeparator=-
 ArchivePhotoTakenDateHashSeparator=-
 BigDataCloudApiKey=
@@ -1920,7 +1945,6 @@ DryRunCsvReportFileName=photo-cli-dry-run.csv
 FolderAppendSeparator=-
 GoogleMapsApiKey=
 LocationIqApiKey=
-LogLevel=Warning
 MonthFormat=MM
 NoAddressAndPhotoTakenDateFolderName=no-address-and-no-photo-taken-date
 NoAddressFolderName=no-address

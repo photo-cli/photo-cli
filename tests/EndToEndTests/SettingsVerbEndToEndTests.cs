@@ -40,7 +40,10 @@ public class SettingsVerbEndToEndTests : BaseEndToEndTests
 	{
 		{
 			CommandLineArgumentsFakes.SettingsBuildCommandLineOptions(),
-			@"AddressSeparator=-
+			@"LogLevel=Error
+CompanionExtensions=aae,mov,xmp
+SupportedExtensions=jpg,jpeg,heic,png
+AddressSeparator=-
 ArchivePhotoTakenDateHashSeparator=-
 BigDataCloudApiKey=
 ConnectionLimit=4
@@ -56,7 +59,6 @@ DryRunCsvReportFileName=photo-cli-dry-run.csv
 FolderAppendSeparator=-
 GoogleMapsApiKey=
 LocationIqApiKey=
-LogLevel=Error
 MonthFormat=MM
 NoAddressAndPhotoTakenDateFolderName=no-address-and-no-photo-taken-date
 NoAddressFolderName=no-address

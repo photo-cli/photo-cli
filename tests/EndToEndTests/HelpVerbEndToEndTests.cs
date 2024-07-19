@@ -23,7 +23,7 @@ public class HelpVerbEndToEndTests : BaseEndToEndTests
 	}
 
 	[Fact]
-	public async Task Running_Help_Verb_With_Copy_Verb_Should_Output_Copy_Usages()
+	public async Task Running_Help_Verb_With_Copy_Verb_Should_Output_Custom_Help_Text()
 	{
 		var copyExampleUsages = @"NOTES:
 - Instead of option names (for ex: DateTimeWithMinutes), you may use options values too. (for ex: 3)
@@ -75,7 +75,7 @@ photo-cli copy -c InSubFolder -e BigDataCloud -f FlattenAllSubFolders -g Address
 	}
 
 	[Fact]
-	public async Task Running_Help_Verb_With_Info_Verb_Should_Output_Copy_Usages()
+	public async Task Running_Help_Verb_With_Info_Verb_Should_Output_Custom_Help_Text()
 	{
 		var infoExampleUsages = @"NOTES:
 - Instead of option names (for ex: DateTimeWithMinutes), you may use options values too. (for ex: 3)
@@ -102,7 +102,7 @@ photo-cli info -c PreventProcess -e GoogleMaps -i [input-folder] -k google-api-k
 	}
 
 	[Fact]
-	public async Task Running_Help_Verb_With_Address_Verb_Should_Output_Copy_Usages()
+	public async Task Running_Help_Verb_With_Address_Verb_Should_Output_Custom_Help_Text()
 	{
 		var addressExampleUsages = @"NOTES:
 - Instead of option names (for ex: DateTimeWithMinutes), you may use options values too. (for ex: 3)
@@ -137,7 +137,7 @@ photo-cli address -e OpenStreetMapFoundation -i [photo-path].jpg -t FullResponse
 	}
 
 	[Fact]
-	public async Task Running_Help_Verb_With_Settings_Verb_Should_Output_Copy_Usages()
+	public async Task Running_Help_Verb_With_Settings_Verb_Should_Output_Custom_Help_Text()
 	{
 		var settingsExampleUsages = @"NOTES:
 - Instead of option names (for ex: DateTimeWithMinutes), you may use options values too. (for ex: 3)
@@ -179,9 +179,36 @@ photo-cli settings -r
 		await RunHelpAndVerifyOutput("settings", settingsExampleUsages);
 	}
 
+	[Fact]
+	public async Task Running_Help_Verb_With_Archive_Verb_Should_Output_Custom_Help_Text()
+	{
+		var archiveExampleUsages = @"NOTES:
+- Instead of option names (for ex: DateTimeWithMinutes), you may use options values too. (for ex: 3)
+- You can use relative folder paths. If you use the input folder as the working directory, you don't need to use the input argument.
+
+EXAMPLE USAGES:
+- Archive all photos in current folder (and it's subfolders recursively) into output folder by [year]/[month]/[day] hierarchy with a file name photo taken date with seconds prefixed by file hash. Saves all photo taken information into local SQLite database.
+
+Example with long argument names;
+photo-cli archive --output [output-folder]
+
+Example with short argument names;
+photo-cli archive -o [output-folder]
+
+- Archive all photos in input folder (and it's subfolders recursively), fetches all photo's reverse geocode information, copies into output folder by [year]/[month]/[day] hierarchy with a file name photo taken date with seconds prefixed by file hash. Saves all photo taken information and it's address (reverse geocode) into local SQLite database.
+
+Example with long argument names;
+photo-cli archive --no-coordinate PreventProcess --reverse-geocode OpenStreetMapFoundation --input [input-folder] --output [output-folder] --openstreetmap-properties country city town suburb --no-taken-date PreventProcess --invalid-format PreventProcess
+
+Example with short argument names;
+photo-cli archive -c PreventProcess -e OpenStreetMapFoundation -i [input-folder] -o [output-folder] -r country city town suburb -t PreventProcess -x PreventProcess
+";
+		await RunHelpAndVerifyOutput("archive", archiveExampleUsages);
+	}
+
 	private async Task RunHelpAndVerifyOutput(string verb, string expectedOutput)
 	{
-		var actualOutput = await RunMain(new[] { "help", verb });
+		var actualOutput = await RunMain(["help", verb]);
 		StringsShouldMatchDiscardingLineEndings(actualOutput, expectedOutput);
 	}
 }

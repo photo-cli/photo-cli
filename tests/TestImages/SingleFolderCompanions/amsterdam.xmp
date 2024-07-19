@@ -1,0 +1,23 @@
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="XMP Core 6.0.0">
+   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <rdf:Description rdf:about=""
+            xmlns:exif="http://ns.adobe.com/exif/1.0/"
+            xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/"
+            xmlns:dc="http://purl.org/dc/elements/1.1/">
+         <exif:GPSHPositioningError>4.6106891086944639</exif:GPSHPositioningError>
+         <exif:GPSImgDirection>56.558654797230467</exif:GPSImgDirection>
+         <exif:GPSAltitudeRef>0</exif:GPSAltitudeRef>
+         <exif:GPSAltitude>5.8255887466413778</exif:GPSAltitude>
+         <exif:GPSLatitudeRef>N</exif:GPSLatitudeRef>
+         <exif:GPSLatitude>52.38174166666667</exif:GPSLatitude>
+         <exif:GPSLongitudeRef>E</exif:GPSLongitudeRef>
+         <exif:GPSLongitude>4.8988216666666666</exif:GPSLongitude>
+         <exif:GPSImgDirectionRef>T</exif:GPSImgDirectionRef>
+         <exif:GPSSpeed>2.3999999999999999</exif:GPSSpeed>
+         <exif:GPSSpeedRef>K</exif:GPSSpeedRef>
+         <exif:GPSTimeStamp>2023-10-28T15:05:58Z</exif:GPSTimeStamp>
+         <photoshop:DateCreated>2023-10-28T17:05:59+02:00</photoshop:DateCreated>
+         <dc:title>Amsterdam Ferry</dc:title>
+      </rdf:Description>
+   </rdf:RDF>
+</x:xmpmeta>

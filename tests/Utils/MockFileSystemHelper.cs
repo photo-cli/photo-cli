@@ -4,12 +4,12 @@ namespace PhotoCli.Tests.Utils;
 
 public static class MockFileSystemHelper
 {
-	public static string Path(params string[] paths)
+	public static string Combine(params string[] paths)
 	{
 		return Path(System.IO.Path.Combine(paths));
 	}
 
-	public static string Path(bool useRelativePath = false, params string[] paths)
+	public static string Combine(bool useRelativePath, params string[] paths)
 	{
 		return Path(System.IO.Path.Combine(paths), useRelativePath);
 	}

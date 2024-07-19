@@ -20,6 +20,16 @@ public static class TestImagesPathHelper
 		return TestImagesFolderPath("SubFolders", path);
 	}
 
+	public static string SingleFolderCompanions(string? path = null)
+	{
+		return TestImagesFolderPath("SingleFolderCompanions", path);
+	}
+
+	public static string SubFoldersCompanions(string? path = null)
+	{
+		return TestImagesFolderPath("SubFoldersCompanions", path);
+	}
+
 	private static string TestImagesFolderPath(string folder, string? path)
 	{
 		var combined = Path.Combine(RootTestImagesDirectory, folder);

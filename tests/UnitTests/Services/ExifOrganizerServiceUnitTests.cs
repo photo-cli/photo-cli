@@ -6,27 +6,27 @@ public class ExifOrganizerUnitTests
 
 	#region All Valid Photo
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> PhotoDateTimeTakenActionAllPhotosThatHasDateEnsureListOrderedData = new()
+	public static TheoryData<List<Photo>, List<Photo>> PhotoDateTimeTakenActionAllPhotosThatHasDateEnsureListOrderedData = new()
 	{
 		{
-			new List<Photo> { PhotoFakes.WithDay(1) },
-			new List<Photo> { PhotoFakes.WithDay(1) }
+			[PhotoFakes.WithDay(1)],
+			[PhotoFakes.WithDay(1)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithDay(1), PhotoFakes.WithDay(2) },
-			new List<Photo> { PhotoFakes.WithDay(1), PhotoFakes.WithDay(2) }
+			[PhotoFakes.WithDay(1), PhotoFakes.WithDay(2)],
+			[PhotoFakes.WithDay(1), PhotoFakes.WithDay(2)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithDay(2), PhotoFakes.WithDay(1) },
-			new List<Photo> { PhotoFakes.WithDay(1), PhotoFakes.WithDay(2) }
+			[PhotoFakes.WithDay(2), PhotoFakes.WithDay(1)],
+			[PhotoFakes.WithDay(1), PhotoFakes.WithDay(2)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithDay(2), PhotoFakes.WithDay(1) },
-			new List<Photo> { PhotoFakes.WithDay(1), PhotoFakes.WithDay(2) }
+			[PhotoFakes.WithDay(2), PhotoFakes.WithDay(1)],
+			[PhotoFakes.WithDay(1), PhotoFakes.WithDay(2)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithDay(2), PhotoFakes.WithDay(3), PhotoFakes.WithDay(1) },
-			new List<Photo> { PhotoFakes.WithDay(1), PhotoFakes.WithDay(2), PhotoFakes.WithDay(3) }
+			[PhotoFakes.WithDay(2), PhotoFakes.WithDay(3), PhotoFakes.WithDay(1)],
+			[PhotoFakes.WithDay(1), PhotoFakes.WithDay(2), PhotoFakes.WithDay(3)]
 		},
 	};
 
@@ -47,23 +47,23 @@ public class ExifOrganizerUnitTests
 
 	#region DontCopyToOutput
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> PhotoDateTimeTakenActionCombinedPhotosWithDateAndNoDateShouldBeFilteredAndEnsureListOrderedData = new()
+	public static TheoryData<List<Photo>, List<Photo>> PhotoDateTimeTakenActionCombinedPhotosWithDateAndNoDateShouldBeFilteredAndEnsureListOrderedData = new()
 	{
 		{
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate() },
-			new List<Photo>()
+			[PhotoFakes.NoPhotoTakenDate()],
+			[]
 		},
 		{
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2) },
-			new List<Photo> { PhotoFakes.WithDay(2) }
+			[PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2)],
+			[PhotoFakes.WithDay(2)]
 		},
 		{
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(1) },
-			new List<Photo> { PhotoFakes.WithDay(1) }
+			[PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(1)],
+			[PhotoFakes.WithDay(1)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithDay(3), PhotoFakes.WithDay(2), PhotoFakes.NoPhotoTakenDate() },
-			new List<Photo> { PhotoFakes.WithDay(2), PhotoFakes.WithDay(3) }
+			[PhotoFakes.WithDay(3), PhotoFakes.WithDay(2), PhotoFakes.NoPhotoTakenDate()],
+			[PhotoFakes.WithDay(2), PhotoFakes.WithDay(3)]
 		},
 	};
 
@@ -78,27 +78,27 @@ public class ExifOrganizerUnitTests
 
 	#region AppendToEndOrderByFileName
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> PhotoDateTimeTakenActionAppendToEndOrderByFileNameEnsureListOrderedData = new()
+	public static TheoryData<List<Photo>, List<Photo>> PhotoDateTimeTakenActionAppendToEndOrderByFileNameEnsureListOrderedData = new()
 	{
 		{
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate() },
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate() }
+			[PhotoFakes.NoPhotoTakenDate()],
+			[PhotoFakes.NoPhotoTakenDate()]
 		},
 		{
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2) },
-			new List<Photo> { PhotoFakes.WithDay(2), PhotoFakes.NoPhotoTakenDate() }
+			[PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2)],
+			[PhotoFakes.WithDay(2), PhotoFakes.NoPhotoTakenDate()]
 		},
 		{
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(1) },
-			new List<Photo> { PhotoFakes.WithDay(1), PhotoFakes.NoPhotoTakenDate() }
+			[PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(1)],
+			[PhotoFakes.WithDay(1), PhotoFakes.NoPhotoTakenDate()]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithDay(3), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2) },
-			new List<Photo> { PhotoFakes.WithDay(2), PhotoFakes.WithDay(3), PhotoFakes.NoPhotoTakenDate() }
+			[PhotoFakes.WithDay(3), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2)],
+			[PhotoFakes.WithDay(2), PhotoFakes.WithDay(3), PhotoFakes.NoPhotoTakenDate()]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithDay(3), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2), PhotoFakes.NoPhotoTakenDate() },
-			new List<Photo> { PhotoFakes.WithDay(2), PhotoFakes.WithDay(3), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.NoPhotoTakenDate() }
+			[PhotoFakes.WithDay(3), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2), PhotoFakes.NoPhotoTakenDate()],
+			[PhotoFakes.WithDay(2), PhotoFakes.WithDay(3), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.NoPhotoTakenDate()]
 		},
 	};
 
@@ -113,27 +113,27 @@ public class ExifOrganizerUnitTests
 
 	#region InsertToBeginningOrderByFileName
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> PhotoDateTimeTakenActionInsertToBeginningOrderByFileNameEnsureListOrderedData = new()
+	public static TheoryData<List<Photo>, List<Photo>> PhotoDateTimeTakenActionInsertToBeginningOrderByFileNameEnsureListOrderedData = new()
 	{
 		{
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate() },
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate() }
+			[PhotoFakes.NoPhotoTakenDate()],
+			[PhotoFakes.NoPhotoTakenDate()]
 		},
 		{
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2) },
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2) }
+			[PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2)],
+			[PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithDay(1), PhotoFakes.NoPhotoTakenDate() },
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(1) }
+			[PhotoFakes.WithDay(1), PhotoFakes.NoPhotoTakenDate()],
+			[PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(1)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithDay(3), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2) },
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2), PhotoFakes.WithDay(3) }
+			[PhotoFakes.WithDay(3), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2)],
+			[PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2), PhotoFakes.WithDay(3)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithDay(3), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2), PhotoFakes.NoPhotoTakenDate() },
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2), PhotoFakes.WithDay(3) }
+			[PhotoFakes.WithDay(3), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2), PhotoFakes.NoPhotoTakenDate()],
+			[PhotoFakes.NoPhotoTakenDate(), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithDay(2), PhotoFakes.WithDay(3)]
 		},
 	};
 
@@ -152,19 +152,19 @@ public class ExifOrganizerUnitTests
 
 	#region All Valid ReverseGeocode
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> NoCoordinateActionAllPhotosThatHasReverseGeocodeEnsureListOrderedData = new()
+	public static TheoryData<List<Photo>, List<Photo>> NoCoordinateActionAllPhotosThatHasReverseGeocodeEnsureListOrderedData = new()
 	{
 		{
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(1, 1) },
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(1, 1) }
+			[PhotoFakes.WithReverseGeocodeAndDay(1, 1)],
+			[PhotoFakes.WithReverseGeocodeAndDay(1, 1)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.WithReverseGeocodeAndDay(1, 1) },
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(1, 1), PhotoFakes.WithReverseGeocodeAndDay(1, 2) }
+			[PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.WithReverseGeocodeAndDay(1, 1)],
+			[PhotoFakes.WithReverseGeocodeAndDay(1, 1), PhotoFakes.WithReverseGeocodeAndDay(1, 2)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.WithReverseGeocodeAndDay(2, 3), PhotoFakes.WithReverseGeocodeAndDay(2, 1) },
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(2, 1), PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.WithReverseGeocodeAndDay(2, 3) }
+			[PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.WithReverseGeocodeAndDay(2, 3), PhotoFakes.WithReverseGeocodeAndDay(2, 1)],
+			[PhotoFakes.WithReverseGeocodeAndDay(2, 1), PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.WithReverseGeocodeAndDay(2, 3)]
 		},
 	};
 
@@ -184,19 +184,19 @@ public class ExifOrganizerUnitTests
 
 	#region DontCopyToOutput
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> NoCoordinateActionCombinedPhotosThatHasReverseGeocodeOrNoReverseGeocodeEnsureListFilteredData = new()
+	public static TheoryData<List<Photo>, List<Photo>> NoCoordinateActionCombinedPhotosThatHasReverseGeocodeOrNoReverseGeocodeEnsureListFilteredData = new()
 	{
 		{
-			new List<Photo> { PhotoFakes.NoReverseGeocode() },
-			new List<Photo>()
+			[PhotoFakes.NoReverseGeocode()],
+			[]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(1, 1), PhotoFakes.NoReverseGeocode() },
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(1, 1) }
+			[PhotoFakes.WithReverseGeocodeAndDay(1, 1), PhotoFakes.NoReverseGeocode()],
+			[PhotoFakes.WithReverseGeocodeAndDay(1, 1)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithReverseGeocodeAndDay(2, 1) },
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(2, 1), PhotoFakes.WithReverseGeocodeAndDay(1, 2) }
+			[PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithReverseGeocodeAndDay(2, 1)],
+			[PhotoFakes.WithReverseGeocodeAndDay(2, 1), PhotoFakes.WithReverseGeocodeAndDay(1, 2)]
 		},
 	};
 
@@ -215,19 +215,19 @@ public class ExifOrganizerUnitTests
 
 	#region Both DontCopyToOutput
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> NoPhotoDateTimeAndNoCoordinateActionUsingDontCopyToOutputOnPhotoTakenDateActionAndNoCoordinateActionEnsureListFilteredAndOrderedData = new()
+	public static TheoryData<List<Photo>, List<Photo>> NoPhotoDateTimeAndNoCoordinateActionUsingDontCopyToOutputOnPhotoTakenDateActionAndNoCoordinateActionEnsureListFilteredAndOrderedData = new()
 	{
 		{
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.NoReverseGeocode() },
-			new List<Photo>()
+			[PhotoFakes.NoPhotoTakenDate(), PhotoFakes.NoReverseGeocode()],
+			[]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(1, 1), PhotoFakes.NoReverseGeocode(), PhotoFakes.NoPhotoTakenDate() },
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(1, 1) }
+			[PhotoFakes.WithReverseGeocodeAndDay(1, 1), PhotoFakes.NoReverseGeocode(), PhotoFakes.NoPhotoTakenDate()],
+			[PhotoFakes.WithReverseGeocodeAndDay(1, 1)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.NoReverseGeocode(), PhotoFakes.WithReverseGeocodeAndDay(2, 1) },
-			new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(2, 1), PhotoFakes.WithReverseGeocodeAndDay(1, 2) }
+			[PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.NoReverseGeocode(), PhotoFakes.WithReverseGeocodeAndDay(2, 1)],
+			[PhotoFakes.WithReverseGeocodeAndDay(2, 1), PhotoFakes.WithReverseGeocodeAndDay(1, 2)]
 		},
 	};
 
@@ -242,23 +242,22 @@ public class ExifOrganizerUnitTests
 
 	#region Both CopyToOutputDontChangeFileName
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>>
-		UsingContinueDontChangeFileNameOnPhotoTakenDateActionAndNoCoordinateActionEnsureListFilteredAndOrderedData = new()
+	public static TheoryData<List<Photo>, List<Photo>, List<Photo>> UsingContinueDontChangeFileNameOnPhotoTakenDateActionAndNoCoordinateActionEnsureListFilteredAndOrderedData = new()
 		{
 			{
-				new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.NoReverseGeocode() },
-				new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.NoReverseGeocode() },
-				new List<Photo>()
+				[PhotoFakes.NoPhotoTakenDate(), PhotoFakes.NoReverseGeocode()],
+				[PhotoFakes.NoPhotoTakenDate(), PhotoFakes.NoReverseGeocode()],
+				[]
 			},
 			{
-				new List<Photo> { PhotoFakes.NoReverseGeocode(), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithReverseGeocodeAndDay(1, 1) },
-				new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(1, 1), PhotoFakes.NoReverseGeocode(), PhotoFakes.NoPhotoTakenDate() },
-				new List<Photo>()
+				[PhotoFakes.NoReverseGeocode(), PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithReverseGeocodeAndDay(1, 1)],
+				[PhotoFakes.WithReverseGeocodeAndDay(1, 1), PhotoFakes.NoReverseGeocode(), PhotoFakes.NoPhotoTakenDate()],
+				[]
 			},
 			{
-				new List<Photo> { PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.NoReverseGeocode(), PhotoFakes.WithReverseGeocodeAndDay(2, 1), },
-				new List<Photo> { PhotoFakes.WithReverseGeocodeAndDay(2, 1), PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.NoReverseGeocode(), PhotoFakes.NoPhotoTakenDate(), },
-				new List<Photo>()
+				[PhotoFakes.NoPhotoTakenDate(), PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.NoReverseGeocode(), PhotoFakes.WithReverseGeocodeAndDay(2, 1)],
+				[PhotoFakes.WithReverseGeocodeAndDay(2, 1), PhotoFakes.WithReverseGeocodeAndDay(1, 2), PhotoFakes.NoReverseGeocode(), PhotoFakes.NoPhotoTakenDate()],
+				[]
 			},
 		};
 
@@ -279,27 +278,27 @@ public class ExifOrganizerUnitTests
 
 	#region All Valid Photo
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> InvalidFormatActionAllPhotosThatIsValidEnsureListOrderedByPhotoTakeDateData = new()
+	public static TheoryData<List<Photo>, List<Photo>> InvalidFormatActionAllPhotosThatIsValidEnsureListOrderedByPhotoTakeDateData = new()
 	{
 		{
-			new List<Photo> { PhotoFakes.ValidFileWithDay(1) },
-			new List<Photo> { PhotoFakes.ValidFileWithDay(1) }
+			[PhotoFakes.ValidFileWithDay(1)],
+			[PhotoFakes.ValidFileWithDay(1)]
 		},
 		{
-			new List<Photo> { PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2) },
-			new List<Photo> { PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2) }
+			[PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2)],
+			[PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2)]
 		},
 		{
-			new List<Photo> { PhotoFakes.ValidFileWithDay(2), PhotoFakes.ValidFileWithDay(1) },
-			new List<Photo> { PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2) }
+			[PhotoFakes.ValidFileWithDay(2), PhotoFakes.ValidFileWithDay(1)],
+			[PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2)]
 		},
 		{
-			new List<Photo> { PhotoFakes.ValidFileWithDay(2), PhotoFakes.ValidFileWithDay(1) },
-			new List<Photo> { PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2) }
+			[PhotoFakes.ValidFileWithDay(2), PhotoFakes.ValidFileWithDay(1)],
+			[PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2)]
 		},
 		{
-			new List<Photo> { PhotoFakes.ValidFileWithDay(2), PhotoFakes.ValidFileWithDay(3), PhotoFakes.ValidFileWithDay(1) },
-			new List<Photo> { PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2), PhotoFakes.ValidFileWithDay(3) }
+			[PhotoFakes.ValidFileWithDay(2), PhotoFakes.ValidFileWithDay(3), PhotoFakes.ValidFileWithDay(1)],
+			[PhotoFakes.ValidFileWithDay(1), PhotoFakes.ValidFileWithDay(2), PhotoFakes.ValidFileWithDay(3)]
 		},
 	};
 
@@ -319,32 +318,31 @@ public class ExifOrganizerUnitTests
 
 	#region DontCopyToOutput
 
-	public static TheoryData<List<Photo>, IReadOnlyCollection<Photo>> InvalidFormatActionDontCopyToOutputCombinedPhotosWithValidAndInvalidShouldBeFilteredAndEnsureListOrderedData = new()
+	public static TheoryData<List<Photo>, List<Photo>> InvalidFormatActionDontCopyToOutputCombinedPhotosWithValidAndInvalidShouldBeFilteredAndEnsureListOrderedData = new()
 	{
-
 		{
-			new List<Photo> { PhotoFakes.WithInvalidFileFormat() },
-			new List<Photo>()
+			[PhotoFakes.WithInvalidFileFormat()],
+			[]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithInvalidFileFormat(), PhotoFakes.WithDay(2) },
-			new List<Photo> { PhotoFakes.WithDay(2) }
+			[PhotoFakes.WithInvalidFileFormat(), PhotoFakes.WithDay(2)],
+			[PhotoFakes.WithDay(2)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithInvalidFileFormat(), PhotoFakes.WithDay(1) },
-			new List<Photo> { PhotoFakes.WithDay(1) }
+			[PhotoFakes.WithInvalidFileFormat(), PhotoFakes.WithDay(1)],
+			[PhotoFakes.WithDay(1)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithDay(3), PhotoFakes.WithDay(2), PhotoFakes.WithInvalidFileFormat() },
-			new List<Photo> { PhotoFakes.WithDay(2), PhotoFakes.WithDay(3) }
+			[PhotoFakes.WithDay(3), PhotoFakes.WithDay(2), PhotoFakes.WithInvalidFileFormat()],
+			[PhotoFakes.WithDay(2), PhotoFakes.WithDay(3)]
 		},
 		{
-			new List<Photo> { PhotoFakes.WithInvalidFileFormat(), PhotoFakes.NoPhotoTakenDate() },
-			new List<Photo> { PhotoFakes.NoPhotoTakenDate() }
+			[PhotoFakes.WithInvalidFileFormat(), PhotoFakes.NoPhotoTakenDate()],
+			[PhotoFakes.NoPhotoTakenDate()]
 		},
 		{
-			new List<Photo> { PhotoFakes.NoReverseGeocode(), PhotoFakes.WithInvalidFileFormat()},
-			new List<Photo> { PhotoFakes.NoReverseGeocode() }
+			[PhotoFakes.NoReverseGeocode(), PhotoFakes.WithInvalidFileFormat()],
+			[PhotoFakes.NoReverseGeocode()]
 		},
 	};
 
@@ -359,7 +357,7 @@ public class ExifOrganizerUnitTests
 
 	#endregion
 
-	private void OrderCheckListEquivalent(IReadOnlyCollection<Photo> sourceList, IEnumerable<Photo> expectedOrderedList,
+	private void OrderCheckListEquivalent(IReadOnlyList<Photo> sourceList, IEnumerable<Photo> expectedOrderedList,
 		CopyInvalidFormatAction invalidFormatAction = CopyInvalidFormatAction.Continue, CopyNoPhotoTakenDateAction noPhotoDateTimeTakenAction = CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction noCoordinateAction = CopyNoCoordinateAction.Continue)
 	{
 		var sut = new ExifOrganizerService(NullLogger<ExifOrganizerService>.Instance);
@@ -367,7 +365,7 @@ public class ExifOrganizerUnitTests
 		orderedPhotos.Should().BeEquivalentTo(expectedOrderedList, options => options.WithStrictOrdering());
 	}
 
-	private void OrderCheckListEquivalentWithNotToRenamePhotos(IReadOnlyCollection<Photo> sourceList, IEnumerable<Photo> expectedOrderedList, IEnumerable<Photo> expectedNotToRenamePhotos,
+	private void OrderCheckListEquivalentWithNotToRenamePhotos(IReadOnlyList<Photo> sourceList, IEnumerable<Photo> expectedOrderedList, IEnumerable<Photo> expectedNotToRenamePhotos,
 		CopyInvalidFormatAction invalidFormatAction = CopyInvalidFormatAction.Continue, CopyNoPhotoTakenDateAction noPhotoDateTimeTakenAction = CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction noCoordinateAction = CopyNoCoordinateAction.Continue)
 	{
 		var sut = new ExifOrganizerService(NullLogger<ExifOrganizerService>.Instance);

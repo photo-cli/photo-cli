@@ -22,6 +22,8 @@ public class ToolOptions
 	internal const string ArchivePhotoTakenDateHashSeparatorDefault = "-";
 	internal const int ConnectionLimitDefault = 4;
 	internal const int CoordinatePrecisionDefault = 4;
+	internal static readonly string[] SupportedExtensionsDefault = [ "jpg", "jpeg", "heic", "png" ];
+	public static readonly string[] CompanionExtensionsDefault = [ "mov" ];
 
 	public ToolOptions(ToolOptionsRaw options)
 	{
@@ -49,6 +51,8 @@ public class ToolOptions
 		LocationIqApiKey = options.LocationIqApiKey;
 		ArchivePhotoTakenDateHashSeparator = options.ArchivePhotoTakenDateHashSeparator ?? ArchivePhotoTakenDateHashSeparatorDefault;
 		CoordinatePrecision = options.CoordinatePrecision ?? CoordinatePrecisionDefault;
+		SupportedExtensions = options.SupportedExtensions ?? SupportedExtensionsDefault;
+		CompanionExtensions = options.CompanionExtensions ?? CompanionExtensionsDefault;
 	}
 
 	public LogLevel LogLevel { get; set; }
@@ -77,8 +81,9 @@ public class ToolOptions
 	public string? GoogleMapsApiKey { get; set; }
 	public string? LocationIqApiKey { get; set; }
 	public int CoordinatePrecision { get; set; }
-
 	public string ArchivePhotoTakenDateHashSeparator { get; set; }
+	public string[] SupportedExtensions { get; set; }
+	public string[] CompanionExtensions { get; set; }
 
 	public static ToolOptions Default()
 	{

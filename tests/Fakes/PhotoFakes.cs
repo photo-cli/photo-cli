@@ -1,12 +1,9 @@
+using System.IO.Abstractions;
+
 namespace PhotoCli.Tests.Fakes;
 
 public static class PhotoFakes
 {
-	public static Photo WithDayAndTargetRelativeDirectoryPath(int day, string targetRelativeDirectoryPath)
-	{
-		return Create(takenDate: DateTimeFakes.WithDay(day), targetRelativeDirectoryPath: targetRelativeDirectoryPath);
-	}
-
 	public static Photo WithNewFileNameDay(int day, int hourForSorting, string filePostFix)
 	{
 		var photoTakenDateTime = DateTimeFakes.WithDayHour(day, hourForSorting);
@@ -58,14 +55,14 @@ public static class PhotoFakes
 		return Create();
 	}
 
+	public static Photo Valid(int sampleId = 1)
+	{
+		return ValidFileWithDay(sampleId);
+	}
+
 	public static Photo ValidFileWithDay(int day)
 	{
 		return Create(takenDate: DateTimeFakes.WithDay(day));
-	}
-
-	public static Photo NoDateWithTargetRelativeDirectoryPath(string targetRelativeDirectoryPath)
-	{
-		return Create(targetRelativeDirectoryPath: targetRelativeDirectoryPath);
 	}
 
 	public static Photo WithMinuteSecond(int minute, int second)
@@ -121,16 +118,6 @@ public static class PhotoFakes
 		return list;
 	}
 
-	public static Photo WithNoNewName(string fileNameWithExtension, string? targetRelativeDirectoryPath = "")
-	{
-		return Create(fileNameWithExtension, targetRelativeDirectoryPath: targetRelativeDirectoryPath);
-	}
-
-	public static Photo WithNewName(string fileNameWithExtension, string newName, string? targetRelativeDirectoryPath = "")
-	{
-		return Create(fileNameWithExtension, targetRelativeDirectoryPath: targetRelativeDirectoryPath, newName: newName);
-	}
-
 	public static Photo WithArchiveFileName(int second, string sha1Hash)
 	{
 		var newName = DateTimeFakes.FormatSecond(second) + ToolOptionFakes.ArchivePhotoTakenDateHashSeparator + sha1Hash;
@@ -140,6 +127,13 @@ public static class PhotoFakes
 	public static Photo WithInvalidFileFormat()
 	{
 		return InvalidFileFormat();
+	}
+
+	public static (Photo, string) SourceAndFileNameWithExtensionWithFullSourcePath(string sourcePath, string fileNameWithExtension)
+	{
+		var sourceFullPath = MockFileSystemHelper.Path($"/{sourcePath}/{fileNameWithExtension}");
+		var photo = Create(sourcePath: sourcePath, fileNameWithExtension: fileNameWithExtension);
+		return (photo, sourceFullPath);
 	}
 
 	public static Photo WithValidFilePathInvalidFileFormat(string sourcePath, string fileNameWithExtension, string targetRelativeDirectoryPath)
@@ -163,16 +157,26 @@ public static class PhotoFakes
 		return Create(takenDate: DateTimeFakes.WithSecond(second), sha1Hash: sha1Hash);
 	}
 
-	public static Photo WithTargetPathsExifDataAndSha1Hash(string targetRelativeDirectoryPath, string fileNameWithExtension, ExifData exifData, string sha1Hash)
+	public static Photo WithNoCoordinate()
 	{
-		return CreateWithExifData(exifData, fileNameWithExtension, targetRelativeDirectoryPath, sha1Hash: sha1Hash);
+		return Create();
+	}
+
+	public static Photo WithCoordinate(double latitude, double longitude)
+	{
+		return Create(coordinate: new Coordinate(latitude, longitude));
+	}
+
+	public static Photo WithCoordinateAndReverseGeocode(double latitude, double longitude, IEnumerable<string> reverseGeocodes)
+	{
+		return Create(coordinate: new Coordinate(latitude, longitude), reverseGeocodes: reverseGeocodes);
 	}
 
 	public static Photo Create(string? fileNameWithExtension = null, DateTime? takenDate = null, Coordinate? coordinate = null, string? targetRelativeDirectoryPath = null, string? newName = null,
-		IEnumerable<string>? reverseGeocodes = null, string? sourcePath = null, string? sha1Hash = null)
+		IEnumerable<string>? reverseGeocodes = null, string? sourcePath = null, string? sha1Hash = null, string? outputFolder = null, string[]? companionFileNamesWithExtension = null)
 	{
 		var exifData = ExifDataFakes.Create(takenDate, coordinate, reverseGeocodes?.ToList());
-		return CreateWithExifData(exifData, fileNameWithExtension, targetRelativeDirectoryPath, newName, sourcePath, sha1Hash);
+		return CreateWithExifData(exifData, fileNameWithExtension, targetRelativeDirectoryPath, newName, sourcePath, sha1Hash, outputFolder, companionFileNamesWithExtension);
 	}
 
 	private static Photo InvalidFileFormat(string? fileNameWithExtension = null, string? targetRelativeDirectoryPath = null, string? newName = null, string? sourcePath = null, string? sha1Hash = null)
@@ -180,17 +184,43 @@ public static class PhotoFakes
 		return CreateWithExifData(null, fileNameWithExtension, targetRelativeDirectoryPath, newName, sourcePath, sha1Hash);
 	}
 
-	private static Photo CreateWithExifData(ExifData? exifData, string? fileNameWithExtension = null, string? targetRelativeDirectoryPath = null, string? newName = null, string? sourcePath = null, string? sha1Hash = null)
+	public static Photo WithSourcePathAndExifData(string fileNameWithExtension, ExifData? exifData)
+	{
+		return CreateWithExifData(exifData, fileNameWithExtension);
+	}
+
+	public static Photo WithTargetRelativePathAndOutput(string targetRelativeDirectoryPath, string outputFolder)
+	{
+		return CreateWithExifData(targetRelativeDirectoryPath: targetRelativeDirectoryPath, outputFolder: outputFolder);
+	}
+
+	public static Photo CreateWithExifData(ExifData? exifData = null, string? fileNameWithExtension = null, string? targetRelativeDirectoryPath = null, string? newName = null,
+		string? sourcePath = null, string? sha1Hash = null, string? outputFolder = null, string[]? companionFileNamesWithExtension = null)
 	{
 		sourcePath ??= DefaultSourcePath;
+		var crossPlatformSourcePath = MockFileSystemHelper.Path(sourcePath);
 		fileNameWithExtension ??= "dummy.jpg";
-		targetRelativeDirectoryPath ??= string.Empty;
-		var mockFileInfo = new MockFileInfo(new MockFileSystem(), Path.Combine(sourcePath, fileNameWithExtension));
-		var photo = new Photo(mockFileInfo, exifData, targetRelativeDirectoryPath) { NewName = newName };
+		var mainPhotoMockFileInfo = new MockFileInfo(new MockFileSystem(), Path.Combine(crossPlatformSourcePath, fileNameWithExtension));
+		List<IFileInfo>? companionFileInfos = null;
+		if (companionFileNamesWithExtension != null)
+		{
+			companionFileInfos = new List<IFileInfo>();
+			foreach (var companionFileNameWithExtension in companionFileNamesWithExtension)
+				companionFileInfos.Add(new MockFileInfo(new MockFileSystem(), Path.Combine(crossPlatformSourcePath, companionFileNameWithExtension)));
+		}
+		var photo = new Photo(mainPhotoMockFileInfo, companionFileInfos?.ToArray());
+		if (exifData != null)
+			photo.SetExifData(exifData);
+		if(newName.IsPresent())
+			photo.SetNewName(newName);
+		if(targetRelativeDirectoryPath != null)
+			photo.SetTargetRelativePath(targetRelativeDirectoryPath);
+		if (outputFolder.IsPresent())
+			photo.SetTarget(outputFolder);
 		if (sha1Hash != null)
-			photo.Sha1Hash = sha1Hash;
+			photo.PhotoFile.Sha1Hash = sha1Hash;
 		return photo;
 	}
 
-	public const string DefaultSourcePath = "source-path";
+	public const string DefaultSourcePath = "/source-path";
 }

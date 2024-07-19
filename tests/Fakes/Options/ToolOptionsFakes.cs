@@ -13,4 +13,18 @@ public static class ToolOptionsFakes
 		options.ConnectionLimit = connectionLimit;
 		return options;
 	}
+
+	public static ToolOptions WithSupportedExtensions(string[] supportedExtensions)
+	{
+		var options = ToolOptions.Default();
+		options.SupportedExtensions = supportedExtensions;
+		return options;
+	}
+
+	public static ToolOptions WithCompanionExtensions(string[] companionExtensions)
+	{
+		var options = ToolOptions.Default();
+		options.CompanionExtensions = companionExtensions;
+		return options;
+	}
 }
