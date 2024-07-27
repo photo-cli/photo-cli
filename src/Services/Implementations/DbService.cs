@@ -16,16 +16,19 @@ public class DbService : IDbService
 		var photoEntities = new List<PhotoEntity>();
 		foreach (var photo in photos)
 		{
-			var exifData = photo.PhotoExifData;
+			var exifData = photo.ExifData;
 			var takenDate = exifData?.TakenDate;
 			var coordinate = exifData?.Coordinate;
 			var reverseGeocodes = exifData?.ReverseGeocodes?.ToList();
 
-			var photoEntity = new PhotoEntity(photo.RelativePath(), DateTime.Now, takenDate, exifData?.ReverseGeocodeFormatted, coordinate?.Latitude, coordinate?.Longitude, takenDate?.Year,
+			if (photo.PhotoFile.TargetRelativePath.IsMissing())
+				throw new PhotoCliException($"Can't archive, {nameof(PhotoFile.TargetRelativePath)} is missing for {photo.PhotoFile.SourceFullPath}");
+
+			var photoEntity = new PhotoEntity(photo.PhotoFile.TargetRelativePath, DateTime.Now, takenDate, exifData?.ReverseGeocodeFormatted, coordinate?.Latitude, coordinate?.Longitude, takenDate?.Year,
 				takenDate?.Month, takenDate?.Day,
 				takenDate?.Hour, takenDate?.Minute, takenDate?.Second, reverseGeocodes?.ElementAtOrDefault(0), reverseGeocodes?.ElementAtOrDefault(1), reverseGeocodes?.ElementAtOrDefault(2),
 				reverseGeocodes?.ElementAtOrDefault(3), reverseGeocodes?.ElementAtOrDefault(4), reverseGeocodes?.ElementAtOrDefault(5), reverseGeocodes?.ElementAtOrDefault(6),
-				reverseGeocodes?.ElementAtOrDefault(7), photo.Sha1Hash);
+				reverseGeocodes?.ElementAtOrDefault(7), photo.PhotoFile.Sha1Hash);
 
 			photoEntities.Add(photoEntity);
 		}

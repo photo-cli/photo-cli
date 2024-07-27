@@ -21,4 +21,7 @@ public record Statistics
 	public int InternalError { get; set; }
 	public int PhotosExisted { get; set; }
 	public int PhotosSame { get; set; }
+
+	public int CompanionFilesCopied { get; set; }
+	public int CompanionFilesExisted { get; set; }
 }

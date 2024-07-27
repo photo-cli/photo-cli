@@ -31,4 +31,6 @@ public class ToolOptionsRaw
 	public string? LocationIqApiKey { get; set; }
 	public string? ArchivePhotoTakenDateHashSeparator { get; set; }
 	public int? CoordinatePrecision { get; set; }
+	public string[]? SupportedExtensions { get; set; }
+	public string[]? CompanionExtensions { get; set; }
 }

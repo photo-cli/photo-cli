@@ -37,6 +37,12 @@ public class StartupTests
 		await ProgramMainShouldExitWithValidationFailed(CommandLineArgumentsFakes.SettingsOptionsInvalid(), ExitCode.SettingsOptionsValidationFailed);
 	}
 
+	[Fact]
+	public async Task ArchiveOptions_Invalid_Should_Exit_With_InfoOptionsValidationFailed()
+	{
+		await ProgramMainShouldExitWithValidationFailed(CommandLineArgumentsFakes.ArchiveOptionsInvalid(), ExitCode.ArchiveOptionsValidationFailed);
+	}
+
 	private async Task ProgramMainShouldExitWithValidationFailed(string[] args, ExitCode expectedExitCode)
 	{
 		var processReturnCode = await Program.Main(args);

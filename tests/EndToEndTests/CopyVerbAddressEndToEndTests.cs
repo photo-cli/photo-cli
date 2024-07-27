@@ -19,8 +19,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolder(), NamingStyle.Address, FolderProcessType.Single,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya(),
 				SingleItalyFlorence(),
 				SingleItalyArezzo1(),
@@ -35,8 +34,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleItalyArezzo9Duplicate(),
 				SingleUnitedKingdom(),
 				SingleSpain1(),
-				SingleSpain2(),
-			},
+				SingleSpain2()
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2),
 			BuildRegex(PathCheckRegexType.Address)
 		}
@@ -49,8 +48,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud,
 				bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya(),
 				SingleItalyFlorence(),
 				SingleItalyArezzo1(),
@@ -65,8 +63,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleItalyArezzo9Duplicate(),
 				SingleUnitedKingdom(),
 				SingleSpain1(),
-				SingleSpain2(),
-			},
+				SingleSpain2()
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2),
 			BuildRegex(PathCheckRegexType.Address)
 		}
@@ -79,8 +77,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud,
 				bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya(),
 				SingleItalyFlorence(),
 				SingleItalyArezzo1(),
@@ -95,8 +92,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleItalyArezzo9Duplicate(),
 				SingleUnitedKingdom(),
 				SingleSpain1(),
-				SingleSpain2(),
-			},
+				SingleSpain2()
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2),
 			BuildRegex(PathCheckRegexType.Address)
 		}
@@ -113,8 +110,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud,
 				bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SingleKenya(),
 				SingleItalyFlorence(),
 				SingleItalyArezzo1(),
@@ -129,8 +125,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleItalyArezzo9Duplicate(),
 				SingleUnitedKingdom(),
 				SingleSpain1(),
-				SingleSpain2(),
-			},
+				SingleSpain2()
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2),
 			BuildRegex(PathCheckRegexType.DayAddress)
 		}
@@ -151,8 +147,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud,
 				bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya(),
 				SubFoldersItalyFlorence(),
 				SubFoldersItalyArezzo1(),
@@ -167,8 +162,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9Duplicate(),
 				SubFoldersUnitedKingdom(),
 				SubFoldersSpain1(),
-				SubFoldersSpain2(),
-			},
+				SubFoldersSpain2()
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2),
 			BuildRegex(PathCheckRegexType.Address)
 		}
@@ -181,8 +176,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud,
 				bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya(),
 				SubFoldersItalyFlorence(),
 				SubFoldersItalyArezzo1(),
@@ -197,8 +191,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9Duplicate(),
 				SubFoldersUnitedKingdom(),
 				SubFoldersSpain1(),
-				SubFoldersSpain2(),
-			},
+				SubFoldersSpain2()
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2),
 			BuildRegex(PathCheckRegexType.Address)
 		}
@@ -211,8 +205,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud,
 				bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya(),
 				SubFoldersItalyFlorence(),
 				SubFoldersItalyArezzo1(),
@@ -227,8 +220,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9Duplicate(),
 				SubFoldersUnitedKingdom(),
 				SubFoldersSpain1(),
-				SubFoldersSpain2(),
-			},
+				SubFoldersSpain2()
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2),
 			BuildRegex(PathCheckRegexType.Address)
 		}
@@ -245,8 +238,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud,
 				bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya(),
 				SubFoldersItalyFlorence(),
 				SubFoldersItalyArezzo1(),
@@ -261,8 +253,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9Duplicate(),
 				SubFoldersUnitedKingdom(),
 				SubFoldersSpain1(),
-				SubFoldersSpain2(),
-			},
+				SubFoldersSpain2()
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2),
 			BuildRegex(PathCheckRegexType.DayAddress)
 		}
@@ -278,8 +270,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, isDryRun: false, groupByFolderType: GroupByFolderType.AddressFlat,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersUnitedKingdom(),
 				SubFoldersKenya(),
 				SubFoldersSpain1(),
@@ -297,8 +288,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9Duplicate(),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
 				SubFoldersNoGpsCoordinate(),
-				SubFoldersNoPhotoTakenDate(),
-			},
+				SubFoldersNoPhotoTakenDate()
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2, 5),
 			BuildRegex(PathCheckRegexType.GroupByAddressFolderNamingByDay, NoGpsCoordinateDayFormatFileName, NoPhotoTakenDateFileName, NoGpsCoordinateAndNoPhotoTakenDateFileName)
 		}
@@ -310,8 +301,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.FlattenAllSubFolders,
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue, groupByFolderType: GroupByFolderType.AddressHierarchy,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersUnitedKingdom(),
 				SubFoldersKenya(),
 				SubFoldersSpain1(),
@@ -329,8 +319,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9Duplicate(),
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
 				SubFoldersNoGpsCoordinate(),
-				SubFoldersNoPhotoTakenDate(),
-			},
+				SubFoldersNoPhotoTakenDate()
+			],
 			new ConsoleOutputValues(18, 18, 15, 1, 2, 5),
 			BuildRegex(PathCheckRegexType.GroupByAddressFolderNamingByDay, NoGpsCoordinateDayFormatFileName, NoPhotoTakenDateFileName, NoGpsCoordinateAndNoPhotoTakenDateFileName)
 		}
@@ -351,8 +341,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud,
 				bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya(),
 				SubFoldersUnitedKingdom(),
 				SubFoldersItalyFlorence(),
@@ -367,8 +356,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9(),
 				SubFoldersItalyArezzo9Duplicate(),
 				SubFoldersSpain1(),
-				SubFoldersSpain2(),
-			},
+				SubFoldersSpain2()
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2, 3),
 			BuildRegex(PathCheckRegexType.SubFolderAddressWithNumberNaming)
 		}
@@ -381,8 +370,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				NumberNamingTextStyle.PaddingZeroCharacter, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud,
 				bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya(),
 				SubFoldersUnitedKingdom(),
 				SubFoldersItalyFlorence(),
@@ -397,8 +385,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9(),
 				SubFoldersItalyArezzo9Duplicate(),
 				SubFoldersSpain1(),
-				SubFoldersSpain2(),
-			},
+				SubFoldersSpain2()
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2, 3),
 			BuildRegex(PathCheckRegexType.SubFolderAddressWithNumberNaming)
 		}
@@ -411,8 +399,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				NumberNamingTextStyle.AllNamesAreSameLength, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud,
 				bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya(),
 				SubFoldersUnitedKingdom(),
 				SubFoldersItalyFlorence(),
@@ -427,8 +414,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9(),
 				SubFoldersItalyArezzo9Duplicate(),
 				SubFoldersSpain1(),
-				SubFoldersSpain2(),
-			},
+				SubFoldersSpain2()
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2, 3),
 			BuildRegex(PathCheckRegexType.SubFolderAddressWithNumberNaming)
 		}
@@ -444,8 +431,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.DayAddress, FolderProcessType.SubFoldersPreserveFolderHierarchy,
 				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.DontCopyToOutput, CopyNoCoordinateAction.DontCopyToOutput,
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoCsv>
-			{
+			[
 				SubFoldersKenya(),
 				SubFoldersUnitedKingdom(),
 				SubFoldersItalyFlorence(),
@@ -460,8 +446,8 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersItalyArezzo9(),
 				SubFoldersItalyArezzo9Duplicate(),
 				SubFoldersSpain1(),
-				SubFoldersSpain2(),
-			},
+				SubFoldersSpain2()
+			],
 			new ConsoleOutputValues(18, 15, 15, 1, 2, 3),
 			BuildRegex(PathCheckRegexType.SubFolderDayAddressWithNumberNaming)
 		}
@@ -471,39 +457,37 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 
 	#region Append Folder Name
 
-	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues, string>
-		SubFoldersPreserveFolderHierarchyByAppendingMatchingMinimumAddressAsSuffixToFolderNameWithNumericNamingUsingOnlySequentialNumbers = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues, string> SubFoldersPreserveFolderHierarchyByAppendingMatchingMinimumAddressAsSuffixToFolderNameWithNumericNamingUsingOnlySequentialNumbers = new()
+	{
 		{
-			{
-				CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
-					NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue,
-					folderAppendType: FolderAppendType.MatchingMinimumAddress, folderAppendLocationType: FolderAppendLocationType.Suffix,
-					reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-				new List<PhotoCsv>
-				{
-					SubFoldersKenya(),
-					SubFoldersUnitedKingdom(),
-					SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
-					SubFoldersSpain1(),
-					SubFoldersSpain2(),
-					SubFoldersNoPhotoTakenDate(),
-					SubFoldersItalyFlorence(),
-					SubFoldersNoGpsCoordinate(),
-					SubFoldersItalyArezzo1(),
-					SubFoldersItalyArezzo2(),
-					SubFoldersItalyArezzo3(),
-					SubFoldersItalyArezzo4(),
-					SubFoldersItalyArezzo5(),
-					SubFoldersItalyArezzo6(),
-					SubFoldersItalyArezzo7(),
-					SubFoldersItalyArezzo8(),
-					SubFoldersItalyArezzo9(),
-					SubFoldersItalyArezzo9Duplicate(),
-				},
-				new ConsoleOutputValues(18, 18, 15, 1, 2, 3),
-				BuildRegex(PathCheckRegexType.SubFolderDayWithNumberNaming, AnyFolderLevelRegex + NoGpsCoordinateAndNoPhotoTakenDateFileName, AnyFolderLevelRegex + NoPhotoTakenDateFileName)
-			}
-		};
+			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFolders(), NamingStyle.Day, FolderProcessType.SubFoldersPreserveFolderHierarchy,
+				NumberNamingTextStyle.OnlySequentialNumbers, CopyNoPhotoTakenDateAction.Continue, CopyNoCoordinateAction.Continue,
+				folderAppendType: FolderAppendType.MatchingMinimumAddress, folderAppendLocationType: FolderAppendLocationType.Suffix,
+				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
+			[
+				SubFoldersKenya(),
+				SubFoldersUnitedKingdom(),
+				SubFoldersNoGpsCoordinateAndNoPhotoTakenDateWithDefaultName(),
+				SubFoldersSpain1(),
+				SubFoldersSpain2(),
+				SubFoldersNoPhotoTakenDate(),
+				SubFoldersItalyFlorence(),
+				SubFoldersNoGpsCoordinate(),
+				SubFoldersItalyArezzo1(),
+				SubFoldersItalyArezzo2(),
+				SubFoldersItalyArezzo3(),
+				SubFoldersItalyArezzo4(),
+				SubFoldersItalyArezzo5(),
+				SubFoldersItalyArezzo6(),
+				SubFoldersItalyArezzo7(),
+				SubFoldersItalyArezzo8(),
+				SubFoldersItalyArezzo9(),
+				SubFoldersItalyArezzo9Duplicate()
+			],
+			new ConsoleOutputValues(18, 18, 15, 1, 2, 3),
+			BuildRegex(PathCheckRegexType.SubFolderDayWithNumberNaming, AnyFolderLevelRegex + NoGpsCoordinateAndNoPhotoTakenDateFileName, AnyFolderLevelRegex + NoPhotoTakenDateFileName)
+		}
+	};
 
 	#endregion
 
@@ -546,9 +530,7 @@ public class CopyVerbAddressEndToEndTests : BaseCopyVerbEndToEndTests
 				actualPhotoCsvModel.PhotoNewPath.Should().MatchRegex(regex);
 
 			actualConsoleOutput.Should().Be(expectedConsoleOutput);
-
-			foreach (var newPhoto in actualPhotoCsvModels.Select(actualPhotoCsvModel => new FileInfo(actualPhotoCsvModel.PhotoNewPath!)))
-				newPhoto.Exists.Should().Be(true);
+			VerifyCsvModelsNewPathExists(actualPhotoCsvModels, outputFolder);
 		}
 
 		DeleteOutput(outputFolder);

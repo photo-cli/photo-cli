@@ -13,4 +13,11 @@ public class BaseCopyVerbEndToEndTests : BaseEndToEndTests
 		var actualPhotoCsvModels = CsvFileHelper.ReadRecords(fileInfo);
 		return (actualConsoleOutput, actualPhotoCsvModels);
 	}
+
+	protected static void VerifyCsvModelsNewPathExists(IEnumerable<PhotoCsv> actualPhotoCsvModels, string outputFolder)
+	{
+		var fileInfos = actualPhotoCsvModels.Select(actualPhotoCsvModel => new FileInfo(Path.Combine(outputFolder, actualPhotoCsvModel.PhotoNewPath!)));
+		foreach (var fileInfo in fileInfos)
+			fileInfo.Exists.Should().Be(true);
+	}
 }

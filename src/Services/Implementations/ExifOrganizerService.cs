@@ -15,51 +15,53 @@ public class ExifOrganizerService : IExifOrganizerService
 		_logger = logger;
 	}
 
-	public (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterAndSortByNoActionTypes(IReadOnlyCollection<Photo> photoInfos, CopyInvalidFormatAction invalidFormatAction,
+	public (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterAndSortByNoActionTypes(IReadOnlyCollection<Photo> photos, CopyInvalidFormatAction invalidFormatAction,
 		CopyNoPhotoTakenDateAction noPhotoDateTimeTakenAction, CopyNoCoordinateAction noCoordinateAction, string targetRelativeDirectoryPath)
 	{
-		IReadOnlyCollection<Photo> filteredAndSorted = photoInfos;
-		var keptFilesNotInFilter = new List<Photo>();
+		IReadOnlyCollection<Photo> filteredAndSortedInternal = photos;
+		var keptFilesNotInFilterInternal = new List<Photo>();
 
-		_logger.LogDebug("Start filtering and sorting on {TargetFolder} with {PhotoCount} photos by invalid format action: {InvalidFormatAction}, no coordinate action: {NoCoordinateAction}, no coordinate action: {NoCoordinateAction}",
-			targetRelativeDirectoryPath, photoInfos.Count, invalidFormatAction, noCoordinateAction, noCoordinateAction);
+		_logger.LogDebug("Start filtering and sorting on {TargetFolder} with {PhotoCount} photos by invalid format action: {InvalidFormatAction}, no coordinate action: {NoCoordinateAction}",
+			targetRelativeDirectoryPath, photos.Count, invalidFormatAction, noCoordinateAction);
 
 		if (_invalidFormatActionsToFilter.Contains(invalidFormatAction))
 		{
-			var (filteredByValidFiles, keptInvalidFiles) = FilterByInvalidFormatAction(filteredAndSorted, invalidFormatAction);
+			var (filteredByValidFiles, keptInvalidFiles) = FilterByInvalidFormatAction(filteredAndSortedInternal, invalidFormatAction);
 			_logger.LogDebug("Filtered by no invalid format action: Filtered to {FilterToCount}, kept not in filter {KeptNotInFilterCount}", filteredByValidFiles.Count, keptInvalidFiles.Count);
-			filteredAndSorted = filteredByValidFiles;
-			keptFilesNotInFilter.AddRange(keptInvalidFiles);
+			filteredAndSortedInternal = filteredByValidFiles;
+			keptFilesNotInFilterInternal.AddRange(keptInvalidFiles);
 		}
 
 		if (_noCoordinateActionsToFilter.Contains(noCoordinateAction))
 		{
-			var (filteredByCoordinates, keptDontHaveCoordinates) = FilterByNoCoordinateAction(filteredAndSorted, noCoordinateAction);
+			var (filteredByCoordinates, keptDontHaveCoordinates) = FilterByNoCoordinateAction(filteredAndSortedInternal, noCoordinateAction);
 			_logger.LogDebug("Filtered by no coordinate action: Filtered to {FilterToCount}, kept not in filter {KeptNotInFilterCount}", filteredByCoordinates.Count, keptDontHaveCoordinates.Count);
-			filteredAndSorted = filteredByCoordinates;
-			keptFilesNotInFilter.AddRange(keptDontHaveCoordinates);
+			filteredAndSortedInternal = filteredByCoordinates;
+			keptFilesNotInFilterInternal.AddRange(keptDontHaveCoordinates);
 		}
 
 		if (_noPhotoTakenActionsToFilter.Contains(noPhotoDateTimeTakenAction))
 		{
-			var (photoTakenFilteredAndOrderedPhotos, keptDontHavePhotoTakenDate) = FilterAndSortByNoPhotoDateTimeTakenAction(filteredAndSorted, noPhotoDateTimeTakenAction);
+			var (photoTakenFilteredAndOrderedPhotos, keptDontHavePhotoTakenDate) = FilterAndSortByNoPhotoDateTimeTakenAction(filteredAndSortedInternal, noPhotoDateTimeTakenAction);
 			_logger.LogDebug("Filtered by no taken date action: Filtered to {FilterToCount}, kept not in filter {KeptNotInFilterCount}", photoTakenFilteredAndOrderedPhotos.Count, keptDontHavePhotoTakenDate.Count);
-			filteredAndSorted = photoTakenFilteredAndOrderedPhotos;
-			keptFilesNotInFilter.AddRange(keptDontHavePhotoTakenDate);
+			filteredAndSortedInternal = photoTakenFilteredAndOrderedPhotos;
+			keptFilesNotInFilterInternal.AddRange(keptDontHavePhotoTakenDate);
 		}
 		else
 		{
 			_logger.LogDebug("No taken date action as continue, just sort by photo date");
-			filteredAndSorted = SortByPhotoDateTime(filteredAndSorted);
+			filteredAndSortedInternal = SortByPhotoDateTime(filteredAndSortedInternal);
 		}
 
-		return (filteredAndSorted, keptFilesNotInFilter);
+		var filteredAndSortedReadOnly = filteredAndSortedInternal.ToList().AsReadOnly();
+		var keptFilesNotInFilterReadOnly = keptFilesNotInFilterInternal.AsReadOnly();
+		return (filteredAndSortedReadOnly, keptFilesNotInFilterReadOnly);
 	}
 
-	private (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterAndSortByNoPhotoDateTimeTakenAction(IReadOnlyCollection<Photo> photoInfos, CopyNoPhotoTakenDateAction noPhotoDateTimeTakenAction)
+	private (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterAndSortByNoPhotoDateTimeTakenAction(IReadOnlyCollection<Photo> photos, CopyNoPhotoTakenDateAction noPhotoDateTimeTakenAction)
 	{
-		var withDateOrdered = FilterAndOrderPhotosWithTakenDateTime(photoInfos);
-		var noDateOrderedByFileName = FilterAndOrderPhotosWithoutTakenDateTime(photoInfos);
+		var withDateOrdered = FilterAndOrderPhotosWithTakenDateTime(photos);
+		var noDateOrderedByFileName = FilterAndOrderPhotosWithoutTakenDateTime(photos);
 		List<Photo> photosOrdered;
 		List<Photo> photosNotToRename = new List<Photo>();
 
@@ -83,10 +85,10 @@ public class ExifOrganizerService : IExifOrganizerService
 		return (photosOrdered, photosNotToRename);
 	}
 
-	private (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterByInvalidFormatAction(IReadOnlyCollection<Photo> photoInfos, CopyInvalidFormatAction invalidFormatAction)
+	private (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterByInvalidFormatAction(IReadOnlyCollection<Photo> photos, CopyInvalidFormatAction invalidFormatAction)
 	{
-		var validFiles = photoInfos.Where(w => w.HasExifData).ToList();
-		var keptInvalidFiles = photoInfos.Where(w => !w.HasExifData).ToList();
+		var validFiles = photos.Where(w => w.HasExifData).ToList();
+		var keptInvalidFiles = photos.Where(w => !w.HasExifData).ToList();
 		switch (invalidFormatAction)
 		{
 			case CopyInvalidFormatAction.InSubFolder:
@@ -99,10 +101,10 @@ public class ExifOrganizerService : IExifOrganizerService
 	}
 
 
-	private (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterByNoCoordinateAction(IReadOnlyCollection<Photo> photoInfos, CopyNoCoordinateAction noCoordinateAction)
+	private (IReadOnlyCollection<Photo>, IReadOnlyCollection<Photo>) FilterByNoCoordinateAction(IReadOnlyCollection<Photo> photos, CopyNoCoordinateAction noCoordinateAction)
 	{
-		var withCoordinates = photoInfos.Where(w => w.HasCoordinate).ToList();
-		var withoutCoordinates = photoInfos.Where(w => !w.HasCoordinate).ToList();
+		var withCoordinates = photos.Where(w => w.HasCoordinate).ToList();
+		var withoutCoordinates = photos.Where(w => !w.HasCoordinate).ToList();
 		switch (noCoordinateAction)
 		{
 			case CopyNoCoordinateAction.InSubFolder:
@@ -114,21 +116,21 @@ public class ExifOrganizerService : IExifOrganizerService
 		}
 	}
 
-	private IReadOnlyCollection<Photo> SortByPhotoDateTime(IReadOnlyCollection<Photo> photoInfos)
+	private IReadOnlyCollection<Photo> SortByPhotoDateTime(IReadOnlyCollection<Photo> photos)
 	{
-		var withDateOrdered = FilterAndOrderPhotosWithTakenDateTime(photoInfos).ToList();
-		var noDateOrderedByFileName = FilterAndOrderPhotosWithoutTakenDateTime(photoInfos);
+		var withDateOrdered = FilterAndOrderPhotosWithTakenDateTime(photos).ToList();
+		var noDateOrderedByFileName = FilterAndOrderPhotosWithoutTakenDateTime(photos);
 		withDateOrdered.AddRange(noDateOrderedByFileName);
 		return withDateOrdered;
 	}
 
-	private IEnumerable<Photo> FilterAndOrderPhotosWithTakenDateTime(IEnumerable<Photo> photoInfos)
+	private IOrderedEnumerable<Photo> FilterAndOrderPhotosWithTakenDateTime(IEnumerable<Photo> photos)
 	{
-		return photoInfos.Where(w => w.PhotoTakenDateTime.HasValue).OrderBy(o => o.PhotoTakenDateTime).ThenBy(t => t.FileNameWithoutExtension).ThenBy(t => t.FilePath);
+		return photos.Where(w => w.HasTakenDateTime).OrderBy(o => o.TakenDateTime).ThenBy(t => t.PhotoFile.FileName).ThenBy(t => t.PhotoFile.SourcePath);
 	}
 
-	private IEnumerable<Photo> FilterAndOrderPhotosWithoutTakenDateTime(IEnumerable<Photo> photoInfos)
+	private IOrderedEnumerable<Photo> FilterAndOrderPhotosWithoutTakenDateTime(IEnumerable<Photo> photos)
 	{
-		return photoInfos.Where(w => !w.PhotoTakenDateTime.HasValue).OrderBy(o => o.FileNameWithoutExtension).ThenBy(t => t.FilePath);
+		return photos.Where(w => !w.HasTakenDateTime).OrderBy(o => o.PhotoFile.FileName).ThenBy(t => t.PhotoFile.SourcePath);
 	}
 }

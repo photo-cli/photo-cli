@@ -64,11 +64,10 @@ public class FileNamerServiceUnitTests
 				{ DateTimeFakes.FormatDay(1), new List<Photo> { PhotoInfoDay1Hour0 } },
 				{ DateTimeFakes.FormatDay(2), new List<Photo> { PhotoInfoDay2Hour0 } }
 			},
-			new List<Photo>
-			{
+			[
 				PhotoFakes.WithNewFileNameDay(1, 0, string.Empty),
 				PhotoFakes.WithNewFileNameDay(2, 0, string.Empty)
-			}
+			]
 		}
 	};
 
@@ -79,19 +78,18 @@ public class FileNamerServiceUnitTests
 			{
 				{
 					DateTimeFakes.FormatDay(1),
-					new List<Photo> { PhotoInfoDay1Hour0, PhotoInfoDay1Hour1 }
+					[PhotoInfoDay1Hour0, PhotoInfoDay1Hour1]
 				},
 				{
 					DateTimeFakes.FormatDay(2),
-					new List<Photo> { PhotoInfoDay2Hour0 }
+					[PhotoInfoDay2Hour0]
 				}
 			},
-			new List<Photo>
-			{
+			[
 				PhotoFakes.WithNewFileNameDay(1, 0, "-1"),
 				PhotoFakes.WithNewFileNameDay(1, 1, "-2"),
 				PhotoFakes.WithNewFileNameDay(2, 0, string.Empty)
-			}
+			]
 		}
 	};
 
@@ -102,26 +100,25 @@ public class FileNamerServiceUnitTests
 			{
 				{
 					DateTimeFakes.FormatDay(3),
-					new List<Photo> { PhotoInfoDay3Hour10, PhotoInfoDay3Hour14, PhotoInfoDay3Hour23 }
+					[PhotoInfoDay3Hour10, PhotoInfoDay3Hour14, PhotoInfoDay3Hour23]
 				},
 				{
 					DateTimeFakes.FormatDay(1),
-					new List<Photo> { PhotoInfoDay1Hour0, PhotoInfoDay1Hour1 }
+					[PhotoInfoDay1Hour0, PhotoInfoDay1Hour1]
 				},
 				{
 					DateTimeFakes.FormatDay(2),
-					new List<Photo> { PhotoInfoDay2Hour0 }
+					[PhotoInfoDay2Hour0]
 				}
 			},
-			new List<Photo>
-			{
+			[
 				PhotoFakes.WithNewFileNameDay(3, 10, "-1"),
 				PhotoFakes.WithNewFileNameDay(1, 1, "-2"),
 				PhotoFakes.WithNewFileNameDay(3, 14, "-2"),
 				PhotoFakes.WithNewFileNameDay(2, 0, string.Empty),
 				PhotoFakes.WithNewFileNameDay(3, 23, "-3"),
-				PhotoFakes.WithNewFileNameDay(1, 0, "-1"),
-			}
+				PhotoFakes.WithNewFileNameDay(1, 0, "-1")
+			]
 		}
 	};
 
@@ -169,19 +166,18 @@ public class FileNamerServiceUnitTests
 			{
 				{
 					DateTimeFakes.FormatMinute(1),
-					new List<Photo> { PhotoInfoMinute1Second0, PhotoInfoMinute1Second1 }
+					[PhotoInfoMinute1Second0, PhotoInfoMinute1Second1]
 				},
 				{
 					DateTimeFakes.FormatMinute(2),
-					new List<Photo> { PhotoInfoMinute2Second0 }
+					[PhotoInfoMinute2Second0]
 				}
 			},
-			new List<Photo>
-			{
+			[
 				PhotoFakes.WithNewFileNameMinute(1, 0, "-1"),
 				PhotoFakes.WithNewFileNameMinute(1, 1, "-2"),
-				PhotoFakes.WithNewFileNameMinute(2, 0, string.Empty),
-			}
+				PhotoFakes.WithNewFileNameMinute(2, 0, string.Empty)
+			]
 		}
 	};
 
@@ -192,26 +188,25 @@ public class FileNamerServiceUnitTests
 			{
 				{
 					DateTimeFakes.FormatMinute(3),
-					new List<Photo> { PhotoInfoMinute3Second17, PhotoInfoMinute3Second36, PhotoInfoMinute3Second54 }
+					[PhotoInfoMinute3Second17, PhotoInfoMinute3Second36, PhotoInfoMinute3Second54]
 				},
 				{
 					DateTimeFakes.FormatMinute(1),
-					new List<Photo> { PhotoInfoMinute1Second0, PhotoInfoMinute1Second1 }
+					[PhotoInfoMinute1Second0, PhotoInfoMinute1Second1]
 				},
 				{
 					DateTimeFakes.FormatMinute(2),
-					new List<Photo> { PhotoInfoMinute2Second0 }
+					[PhotoInfoMinute2Second0]
 				}
 			},
-			new List<Photo>
-			{
+			[
 				PhotoFakes.WithNewFileNameMinute(3, 36, "-2"),
 				PhotoFakes.WithNewFileNameMinute(1, 1, "-2"),
 				PhotoFakes.WithNewFileNameMinute(3, 54, "-3"),
 				PhotoFakes.WithNewFileNameMinute(2, 0, string.Empty),
 				PhotoFakes.WithNewFileNameMinute(3, 17, "-1"),
-				PhotoFakes.WithNewFileNameMinute(1, 0, "-1"),
-			}
+				PhotoFakes.WithNewFileNameMinute(1, 0, "-1")
+			]
 		}
 	};
 
@@ -245,11 +240,10 @@ public class FileNamerServiceUnitTests
 				{ DateTimeFakes.FormatSecond(1), new List<Photo> { PhotoInfoSecond1Fake1 } },
 				{ DateTimeFakes.FormatSecond(2), new List<Photo> { PhotoInfoSecond2Fake1 } },
 			},
-			new List<Photo>
-			{
+			[
 				PhotoFakes.WithNewFileNameSecond(1, string.Empty),
-				PhotoFakes.WithNewFileNameSecond(2, string.Empty),
-			}
+				PhotoFakes.WithNewFileNameSecond(2, string.Empty)
+			]
 		}
 	};
 
@@ -260,19 +254,18 @@ public class FileNamerServiceUnitTests
 			{
 				{
 					DateTimeFakes.FormatSecond(1),
-					new List<Photo> { PhotoInfoSecond1Fake1, PhotoInfoSecond1Fake2 }
+					[PhotoInfoSecond1Fake1, PhotoInfoSecond1Fake2]
 				},
 				{
 					DateTimeFakes.FormatSecond(2),
-					new List<Photo> { PhotoInfoSecond2Fake1 }
+					[PhotoInfoSecond2Fake1]
 				}
 			},
-			new List<Photo>
-			{
+			[
 				PhotoFakes.WithNewFileNameSecond(1, "-1"),
 				PhotoFakes.WithNewFileNameSecond(1, "-2"),
-				PhotoFakes.WithNewFileNameSecond(2, string.Empty),
-			}
+				PhotoFakes.WithNewFileNameSecond(2, string.Empty)
+			]
 		}
 	};
 
@@ -283,26 +276,25 @@ public class FileNamerServiceUnitTests
 			{
 				{
 					DateTimeFakes.FormatSecond(3),
-					new List<Photo> { PhotoInfoSecond3Fake1, PhotoInfoSecond3Fake2, PhotoInfoSecond3Fake3 }
+					[PhotoInfoSecond3Fake1, PhotoInfoSecond3Fake2, PhotoInfoSecond3Fake3]
 				},
 				{
 					DateTimeFakes.FormatSecond(1),
-					new List<Photo> { PhotoInfoSecond1Fake1, PhotoInfoSecond1Fake2 }
+					[PhotoInfoSecond1Fake1, PhotoInfoSecond1Fake2]
 				},
 				{
 					DateTimeFakes.FormatSecond(2),
-					new List<Photo> { PhotoInfoSecond2Fake1 }
+					[PhotoInfoSecond2Fake1]
 				}
 			},
-			new List<Photo>
-			{
+			[
 				PhotoFakes.WithNewFileNameSecond(3, "-2"),
 				PhotoFakes.WithNewFileNameSecond(1, "-1"),
 				PhotoFakes.WithNewFileNameSecond(3, "-1"),
 				PhotoFakes.WithNewFileNameSecond(2, string.Empty),
 				PhotoFakes.WithNewFileNameSecond(3, "-3"),
-				PhotoFakes.WithNewFileNameSecond(1, "-2"),
-			}
+				PhotoFakes.WithNewFileNameSecond(1, "-2")
+			]
 		}
 	};
 
@@ -324,7 +316,6 @@ public class FileNamerServiceUnitTests
 	{
 		SetupSequentialNumberEnumeratorForEachPossibleNumber(expectedPhotoInfosWithNewFileNames.Count, _sequentialNumberEnumerator);
 
-
 		_photoTakenDateGrouper.Setup(s => s.Group(It.IsAny<List<Photo>>(), namingStyle)).Returns(() => mockGroupedPhotoInfosByDate);
 
 		_sut.SetFileName(
@@ -337,7 +328,7 @@ public class FileNamerServiceUnitTests
 		_photoTakenDateGrouper.VerifyNoOtherCalls();
 
 		var allPhotoInfosFlattened = mockGroupedPhotoInfosByDate.SelectMany(s => s.Value).ToList();
-		allPhotoInfosFlattened.Should().BeEquivalentTo(expectedPhotoInfosWithNewFileNames);
+		allPhotoInfosFlattened.Should().BeEquivalentTo(expectedPhotoInfosWithNewFileNames, c => c.Excluding(e => e.PhotoFile));
 	}
 
 	private static void SetupSequentialNumberEnumeratorForEachPossibleNumber(int toNameUntil, Mock<ISequentialNumberEnumeratorService> sequentialNumberEnumerator)
@@ -357,7 +348,7 @@ public class FileNamerServiceUnitTests
 	{
 		{
 			new Dictionary<string, List<Photo>>(),
-			new List<Photo>()
+			[]
 		}
 	};
 
@@ -372,34 +363,29 @@ public class FileNamerServiceUnitTests
 		VerifyNotOtherCalls();
 	}
 
-
 	public static TheoryData<List<Photo>, List<Photo>> SetArchiveFileNameData = new()
 	{
 		{
-			new List<Photo>
-			{
-				PhotoFakes.WithSecondAndSha1Hash(1, Sha1HashFakes.Sample(1)),
-			},
-			new List<Photo>
-			{
-				PhotoFakes.WithArchiveFileName(1, Sha1HashFakes.Sample(1)),
-			}
+			[
+				PhotoFakes.WithSecondAndSha1Hash(1, Sha1HashFakes.Sample(1))
+			],
+			[
+				PhotoFakes.WithArchiveFileName(1, Sha1HashFakes.Sample(1))
+			]
 		},
 		{
-			new List<Photo>
-			{
+			[
 				PhotoFakes.WithSecondAndSha1Hash(2, Sha1HashFakes.Sample(2)),
-				PhotoFakes.WithSecondAndSha1Hash(3, Sha1HashFakes.Sample(3)),
-			},
-			new List<Photo>
-			{
+				PhotoFakes.WithSecondAndSha1Hash(3, Sha1HashFakes.Sample(3))
+			],
+			[
 				PhotoFakes.WithArchiveFileName(2, Sha1HashFakes.Sample(2)),
-				PhotoFakes.WithArchiveFileName(3, Sha1HashFakes.Sample(3)),
-			}
+				PhotoFakes.WithArchiveFileName(3, Sha1HashFakes.Sample(3))
+			]
 		},
 		{
-			new List<Photo>(),
-			new List<Photo>()
+			[],
+			[]
 		}
 	};
 
@@ -408,7 +394,17 @@ public class FileNamerServiceUnitTests
 	public void SetArchiveFileName_GivenPhotoInput_ShouldRenameAndMatch(List<Photo> inputPhotos, List<Photo> expectedPhotos)
 	{
 		_sut.SetArchiveFileName(inputPhotos);
-		inputPhotos.Should().BeEquivalentTo(expectedPhotos);
+		inputPhotos.Should().BeEquivalentTo(expectedPhotos, c => c.Excluding(e => e.PhotoFile));
+	}
+
+	[Fact]
+	public void SetArchiveFileName_PhotosWithoutSHA1Hash_ShouldThrowPhotoCliException()
+	{
+		var (noShaPhoto, sourceFullPath) = PhotoFakes.SourceAndFileNameWithExtensionWithFullSourcePath("source-path", "without-sha1-hash.jpg");
+		var inputPhotos = new List<Photo> { noShaPhoto };
+
+		var photoCliException = Assert.Throws<PhotoCliException>(() => _sut.SetArchiveFileName(inputPhotos));
+		photoCliException.Message.Should().Be($"Couldn't set file name for {sourceFullPath} without Sha1Hash is set");
 	}
 
 	private void VerifyNotOtherCalls()

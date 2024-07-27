@@ -18,19 +18,20 @@ public class DirectoryGrouperService : IDirectoryGrouperService
 		_consoleWriter = consoleWriter;
 	}
 
-	public Dictionary<string, List<Photo>> GroupFiles(Dictionary<string, ExifData?> photoExifDataByFilePath, string sourceRootPath, FolderProcessType folderProcessType,
+	public Dictionary<string, IReadOnlyCollection<Photo>> GroupFiles(IReadOnlyCollection<Photo> photos, string sourceRootPath, FolderProcessType folderProcessType,
 		GroupByFolderType? groupByFolderType, bool invalidFileFormatGroupedInSubFolder, bool noPhotoDateTimeTakenGroupedInSubFolder, bool noReverseGeocodeGroupedInSubFolder)
 	{
 		_consoleWriter.ProgressStart(ProgressName);
-		var groupedPhotoInfosByRelativeDirectory = new Dictionary<string, List<Photo>>();
-		var sourceRootDirectoryPath = _fileSystem.DirectoryInfo.FromDirectoryName(sourceRootPath).FullName;
+		var groupedPhotosByRelativeDirectoryInternal = new Dictionary<string, List<Photo>>();
+		var sourceRootDirectoryPath = _fileSystem.DirectoryInfo.New(sourceRootPath).FullName;
 		var sourcePathTrimmed = PathHelper.TrimFolderSeparators(sourceRootDirectoryPath);
-		foreach (var (filePath, exifData) in photoExifDataByFilePath)
+		foreach (var photo in photos)
 		{
-			var fileInfo = _fileSystem.FileInfo.FromFileName(filePath);
-			var directory = fileInfo.Directory.FullName!.Trim('/');
+			var fileInfo = _fileSystem.FileInfo.New(photo.PhotoFile.SourcePath);
+			var directory = fileInfo.Directory!.FullName.Trim('/');
 			string targetRelativeDirectoryPath;
 
+			var exifData = photo.ExifData;
 			if (exifData != null && groupByFolderType is GroupByFolderType.AddressFlat)
 			{
 				targetRelativeDirectoryPath = exifData.ReverseGeocodeFormatted ?? string.Empty;
@@ -87,23 +88,16 @@ public class DirectoryGrouperService : IDirectoryGrouperService
 					targetRelativeDirectoryPath = Path.Combine(targetRelativeDirectoryPath, _options.NoAddressFolderName);
 			}
 
-			_logger.LogTrace("File ({FilePath}) target directory: {TargetRelativeDirectoryPath} ", filePath, targetRelativeDirectoryPath);
-
-			var photoInfo = new Photo(fileInfo, exifData, targetRelativeDirectoryPath);
-			if (groupedPhotoInfosByRelativeDirectory.TryGetValue(targetRelativeDirectoryPath, out var photoInfos))
-			{
-				photoInfos.Add(photoInfo);
-			}
+			_logger.LogTrace("File ({FilePath}) target directory: {TargetRelativeDirectoryPath} ", photo.PhotoFile.SourcePath, targetRelativeDirectoryPath);
+			photo.SetTargetRelativePath(targetRelativeDirectoryPath);
+			if (groupedPhotosByRelativeDirectoryInternal.TryGetValue(targetRelativeDirectoryPath, out var groupPhotos))
+				groupPhotos.Add(photo);
 			else
-			{
-				groupedPhotoInfosByRelativeDirectory.Add(targetRelativeDirectoryPath, new List<Photo>
-				{
-					photoInfo
-				});
-			}
+				groupedPhotosByRelativeDirectoryInternal.Add(targetRelativeDirectoryPath, [photo]);
 		}
 
+		var groupedPhotosByRelativeDirectoryReadOnly = groupedPhotosByRelativeDirectoryInternal.ToDictionary(k => k.Key, e => (IReadOnlyCollection<Photo>)e.Value.AsReadOnly());
 		_consoleWriter.ProgressFinish(ProgressName);
-		return groupedPhotoInfosByRelativeDirectory;
+		return groupedPhotosByRelativeDirectoryReadOnly;
 	}
 }

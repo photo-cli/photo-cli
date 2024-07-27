@@ -7,70 +7,61 @@ public class DuplicatePhotoRemoveServiceUnitTests
 	public static TheoryData<List<Photo>, List<Photo>, int, string[]> AllDuplicate = new()
 	{
 		{
-			new List<Photo>
-			{
+			[
 				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1)),
-				PhotoFakes.WithSha1Hash("file1-duplicate.jpg", Sha1HashFakes.Sample(1)),
-			},
-			new List<Photo>
-			{
-				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1)),
-			},
+				PhotoFakes.WithSha1Hash("file1-duplicate.jpg", Sha1HashFakes.Sample(1))
+			],
+			[
+				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1))
+			],
 			1,
-			new []
-			{
-				PhotoSkippedLog("file1.jpg", "file1-duplicate.jpg"),
-			}
+			[
+				PhotoSkippedLog("file1.jpg", "file1-duplicate.jpg")
+			]
 		}
 	};
 
 	public static TheoryData<List<Photo>, List<Photo>, int, string[]> ContainsUniqueAndSingleDuplicate = new()
 	{
 		{
-			new List<Photo>
-			{
+			[
 				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1)),
 				PhotoFakes.WithSha1Hash("file2.jpg", Sha1HashFakes.Sample(2)),
-				PhotoFakes.WithSha1Hash("file2-duplicate.jpg", Sha1HashFakes.Sample(2)),
-			},
-			new List<Photo>
-			{
+				PhotoFakes.WithSha1Hash("file2-duplicate.jpg", Sha1HashFakes.Sample(2))
+			],
+			[
 				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1)),
-				PhotoFakes.WithSha1Hash("file2.jpg", Sha1HashFakes.Sample(2)),
-			},
+				PhotoFakes.WithSha1Hash("file2.jpg", Sha1HashFakes.Sample(2))
+			],
 			1,
-			new []
-			{
-				PhotoSkippedLog("file2.jpg", "file2-duplicate.jpg"),
-			}
+			[
+				PhotoSkippedLog("file2.jpg", "file2-duplicate.jpg")
+			]
 		}
 	};
 
 	public static TheoryData<List<Photo>, List<Photo>, int, string[]> ContainsUniqueAndMultipleDuplicatesOccursManyTimes = new()
 	{
 		{
-			new List<Photo>
-			{
+			[
 				PhotoFakes.WithSha1Hash("file2.jpg", Sha1HashFakes.Sample(2)),
 				PhotoFakes.WithSha1Hash("file3.jpg", Sha1HashFakes.Sample(3)),
 				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1)),
 				PhotoFakes.WithSha1Hash("file2-duplicate.jpg", Sha1HashFakes.Sample(2)),
 				PhotoFakes.WithSha1Hash("file3-duplicate1.jpg", Sha1HashFakes.Sample(3)),
-				PhotoFakes.WithSha1Hash("file3-duplicate2.jpg", Sha1HashFakes.Sample(3)),
-			},
-			new List<Photo>
-			{
+				PhotoFakes.WithSha1Hash("file3-duplicate2.jpg", Sha1HashFakes.Sample(3))
+			],
+			[
 				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1)),
 				PhotoFakes.WithSha1Hash("file2.jpg", Sha1HashFakes.Sample(2)),
-				PhotoFakes.WithSha1Hash("file3.jpg", Sha1HashFakes.Sample(3)),
-			},
+				PhotoFakes.WithSha1Hash("file3.jpg", Sha1HashFakes.Sample(3))
+			],
 			3,
-			new []
-			{
+			[
 				PhotoSkippedLog("file2.jpg", "file2-duplicate.jpg"),
 				PhotoSkippedLog("file3.jpg", "file3-duplicate1.jpg"),
-				PhotoSkippedLog("file3.jpg", "file3-duplicate2.jpg"),
-			}
+				PhotoSkippedLog("file3.jpg", "file3-duplicate2.jpg")
+			]
 		},
 	};
 
@@ -93,30 +84,26 @@ public class DuplicatePhotoRemoveServiceUnitTests
 	public static TheoryData<List<Photo>, List<Photo>> AllUniquePhotos = new()
 	{
 		{
-			new List<Photo>
-			{
-				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1)),
-			},
-			new List<Photo>
-			{
-				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1)),
-			}
+			[
+				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1))
+			],
+			[
+				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1))
+			]
 		},
 		{
-			new List<Photo>
-			{
+			[
 				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1)),
-				PhotoFakes.WithSha1Hash("file2.jpg", Sha1HashFakes.Sample(2)),
-			},
-			new List<Photo>
-			{
+				PhotoFakes.WithSha1Hash("file2.jpg", Sha1HashFakes.Sample(2))
+			],
+			[
 				PhotoFakes.WithSha1Hash("file1.jpg", Sha1HashFakes.Sample(1)),
-				PhotoFakes.WithSha1Hash("file2.jpg", Sha1HashFakes.Sample(2)),
-			}
+				PhotoFakes.WithSha1Hash("file2.jpg", Sha1HashFakes.Sample(2))
+			]
 		},
 		{
-			new List<Photo>(),
-			new List<Photo>()
+			[],
+			[]
 		},
 	};
 
@@ -135,6 +122,6 @@ public class DuplicatePhotoRemoveServiceUnitTests
 
 	private static string PhotoSkippedLog(string path1, string path2)
 	{
-		return $"Photo is skipped due to same photo has already been archived. Same photo paths: {MockFileSystemHelper.Path("/", PhotoFakes.DefaultSourcePath, path1)}, {MockFileSystemHelper.Path("/", PhotoFakes.DefaultSourcePath, path2)}";
+		return $"Photo is skipped due to same photo has already been archived. Same photo paths: {MockFileSystemHelper.Combine(PhotoFakes.DefaultSourcePath, path1)}, {MockFileSystemHelper.Combine(PhotoFakes.DefaultSourcePath, path2)}";
 	}
 }

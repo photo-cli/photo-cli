@@ -159,6 +159,12 @@ public static class CommandLineArgumentsFakes
 		return args;
 	}
 
+	public static string[] ArchiveOptionsInvalid()
+	{
+		var args = new[] { "archive" };
+		return args;
+	}
+
 	public static string[] NotParseable()
 	{
 		var args = new[] { "--invalid-option value" };

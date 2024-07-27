@@ -2,51 +2,77 @@ using System.IO.Abstractions;
 
 namespace PhotoCli.Models;
 
-public class Photo
+public record Photo
 {
-	public Photo(IFileSystemInfo fileInfo, ExifData? photoExifData, string targetRelativeDirectoryPath)
+	public Photo(IFileInfo photoFile, IFileInfo[]? companionFiles = null)
 	{
-		FilePath = fileInfo.FullName;
-		if (!fileInfo.Extension.StartsWith("."))
-			throw new PhotoCliException("File extension should start with `.`");
-		FileNameWithoutExtension = fileInfo.Name.Replace(fileInfo.Extension, string.Empty);
-		Extension = fileInfo.Extension.Remove(0, 1).ToLowerInvariant();
-		PhotoExifData = photoExifData;
-		TargetRelativeDirectoryPath = targetRelativeDirectoryPath;
+		PhotoFile = new PhotoFile(photoFile);
+		if (companionFiles != null)
+			CompanionFiles = companionFiles.Select(companionFile => new PhotoFile(companionFile)).ToArray();
 	}
 
-	public string FileNameWithoutExtension { get; }
-	public string Extension { get; }
+	#region File
 
-	public string FilePath { get; }
+	public PhotoFile PhotoFile { get; init; }
+	public IReadOnlyCollection<PhotoFile>? CompanionFiles { get; init; }
 
-	public ExifData? PhotoExifData { get; }
+	public string? NewName { get; private set; }
 
-	public bool HasExifData => PhotoExifData != null;
-	public DateTime? PhotoTakenDateTime => PhotoExifData?.TakenDate;
-	public string? ReverseGeocodeFormatted => PhotoExifData?.ReverseGeocodeFormatted;
+	public string? TargetRelativePath { get; private set; }
 
-	public string TargetRelativeDirectoryPath { get; set; }
+	#endregion
 
-	public string? NewName { get; set; }
+	#region Exif - Metadata
 
-	public bool HasPhotoTakenDateTime => PhotoTakenDateTime.HasValue;
-	public bool HasCoordinate => PhotoExifData?.Coordinate != null;
-	public bool HasReverseGeocode => PhotoExifData?.ReverseGeocodes != null && PhotoExifData.ReverseGeocodes.Any();
-	public List<string>? ReverseGeocodes => PhotoExifData?.ReverseGeocodes?.ToList() ?? null;
+	public ExifData? ExifData { get; private set; }
+	public bool HasExifData => ExifData != null;
 
-	public int ReverseGeocodeCount => PhotoExifData?.ReverseGeocodes?.Count() ?? 0;
-	private string GetFileNameForOutput => NewName ?? FileNameWithoutExtension;
+	#region Exif - Photo Taken Date
 
-	public string? Sha1Hash { get; set; }
+	public DateTime? TakenDateTime => ExifData?.TakenDate;
+	public bool HasTakenDateTime => TakenDateTime.HasValue;
 
-	public string DestinationPath(string outputFolder)
+	#endregion
+
+	#region Exif - Coordinate - Reverse Geocode - Address
+
+	public Coordinate? Coordinate => ExifData?.Coordinate;
+	public bool HasCoordinate => Coordinate != null;
+	public List<string>? ReverseGeocodes => ExifData?.ReverseGeocodes?.ToList() ?? null;
+	public bool HasReverseGeocode => ExifData?.ReverseGeocodes != null && ExifData.ReverseGeocodes.Any();
+	public int ReverseGeocodeCount => ExifData?.ReverseGeocodes?.Count() ?? 0;
+	public string? ReverseGeocodeFormatted => ExifData?.ReverseGeocodeFormatted;
+
+	#endregion
+
+	#endregion
+
+	public void SetExifData(ExifData exifData)
 	{
-		return Path.Combine(outputFolder, RelativePath());
+		ExifData = exifData;
 	}
 
-	public string RelativePath()
+	public void SetNewName(string newName)
 	{
-		return Path.Combine(TargetRelativeDirectoryPath, $"{GetFileNameForOutput}.{Extension}");
+		NewName = newName;
+	}
+
+	public void SetTargetRelativePath(string targetRelativePath)
+	{
+		TargetRelativePath = targetRelativePath;
+	}
+
+	public void SetTarget(string outputFolder)
+	{
+		if (TargetRelativePath == null)
+			throw new PhotoCliException($"Can't {nameof(SetTarget)} before setting {nameof(TargetRelativePath)}");
+
+		PhotoFile.SetTarget(TargetRelativePath, outputFolder, NewName);
+
+		if (CompanionFiles != null)
+		{
+			foreach (var companionFile in CompanionFiles)
+				companionFile.SetTarget(TargetRelativePath, outputFolder, NewName);
+		}
 	}
 }

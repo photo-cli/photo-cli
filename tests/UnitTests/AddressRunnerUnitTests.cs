@@ -90,7 +90,7 @@ public class AddressRunnerUnitTests
 	private void SetupMockFileSystem(bool fileExists)
 	{
 		_fileSystemMock.Setup(s => s.FileInfo).Returns(() => new MockFileInfoFactory(new MockFileSystem()));
-		_fileSystemMock.SetupGet(s => s.FileInfo.FromFileName(It.IsAny<string>()).Exists).Returns(() => fileExists);
+		_fileSystemMock.SetupGet(s => s.FileInfo.New(It.IsAny<string>()).Exists).Returns(() => fileExists);
 	}
 
 	private void VerifyAll()

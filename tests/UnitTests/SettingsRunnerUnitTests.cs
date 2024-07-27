@@ -51,7 +51,7 @@ public class SettingsRunnerUnitTests
 		var settingsRunner = new SettingsRunner(settingsOptions, toolOptions, fileSystem, validatorMock.Object, Mock.Of<IConsoleWriter>());
 		var actualExitCode = await settingsRunner.Execute();
 		actualExitCode.Should().Be(ExitCode.Success);
-		await using var settingsJsonFileStream = fileSystem.FileStream.Create("appsettings.json", FileMode.Open);
+		await using var settingsJsonFileStream = fileSystem.FileStream.New("appsettings.json", FileMode.Open);
 		var newSavedToolOptionsRawDeserialized = await JsonSerializer.DeserializeAsync<ToolOptionsRaw>(settingsJsonFileStream);
 		return newSavedToolOptionsRawDeserialized;
 	}

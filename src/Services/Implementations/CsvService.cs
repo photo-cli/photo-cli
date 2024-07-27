@@ -19,7 +19,7 @@ public class CsvService : ICsvService
 		_consoleWriter = consoleWriter;
 	}
 
-	public async Task Report(IEnumerable<Photo> photos, string outputPath, bool isDryRun = false)
+	public async Task CreateCopyReport(IEnumerable<Photo> photos, string outputPath, bool isDryRun = false)
 	{
 		_consoleWriter.ProgressStart(ProgressName);
 		string reportFile;
@@ -29,29 +29,29 @@ public class CsvService : ICsvService
 		}
 		else
 		{
-			var directory = _fileSystem.DirectoryInfo.FromDirectoryName(outputPath);
+			var directory = _fileSystem.DirectoryInfo.New(outputPath);
 			if (!directory.Exists)
 				directory.Create();
 			reportFile = Path.Combine(outputPath, _options.CsvReportFileName);
 		}
 
-		await WritePhotoToCsvOutput(photos, reportFile, outputPath);
+		await WritePhotoToCsvOutput(photos, reportFile);
 		_consoleWriter.ProgressFinish(ProgressName);
 	}
 
-	public async Task WriteExifDataToCsvOutput(Dictionary<string, ExifData?> photoExifDataByPath, string outputFile)
+	public async Task CreateInfoReport(IEnumerable<Photo> photos, string outputFile)
 	{
 		_consoleWriter.ProgressStart(ProgressName);
 		var photoCsvModels = new List<PhotoCsv>();
-		foreach (var (photoPath, exifData) in photoExifDataByPath)
-			photoCsvModels.Add(ExifDataToPhotoCsv(exifData, photoPath));
+		foreach (var photo in photos)
+			photoCsvModels.Add(Map(photo, false));
 		await WritePhotoCsvReport(outputFile, photoCsvModels);
 		_consoleWriter.ProgressFinish(ProgressName);
 	}
 
-	private async Task WritePhotoToCsvOutput(IEnumerable<Photo> photos, string outputFile, string outputFolder)
+	private async Task WritePhotoToCsvOutput(IEnumerable<Photo> photos, string outputFile)
 	{
-		var photoCsvModels = photos.Select(photo => ExifDataToPhotoCsv(photo.PhotoExifData, photo.FilePath, photo.DestinationPath(outputFolder), photo.Sha1Hash));
+		var photoCsvModels = photos.Select(s => Map(s, true));
 		await WritePhotoCsvReport(outputFile, photoCsvModels);
 	}
 
@@ -63,16 +63,20 @@ public class CsvService : ICsvService
 		await csv.WriteRecordsAsync(photoCsvModels);
 	}
 
-	private PhotoCsv ExifDataToPhotoCsv(ExifData? exifData, string photoPath, string? photoNewPath = null, string? sha1Hash = null)
+	private static PhotoCsv Map(Photo photo, bool mapNewPath)
 	{
-		var takenDate = exifData?.TakenDate;
-		var coordinate = exifData?.Coordinate;
-		var reverseGeocodes = exifData?.ReverseGeocodes?.ToList();
-		var photoCsv = new PhotoCsv(photoPath, photoNewPath, takenDate, exifData?.ReverseGeocodeFormatted, coordinate?.Latitude, coordinate?.Longitude, takenDate?.Year,
-			takenDate?.Month, takenDate?.Day,
-			takenDate?.Hour, takenDate?.Minute, takenDate?.Second, reverseGeocodes?.ElementAtOrDefault(0), reverseGeocodes?.ElementAtOrDefault(1), reverseGeocodes?.ElementAtOrDefault(2),
+		var takenDate = photo.ExifData?.TakenDate;
+		var coordinate = photo.ExifData?.Coordinate;
+		var reverseGeocodes = photo.ExifData?.ReverseGeocodes?.ToList();
+		var newPath = mapNewPath ? photo.PhotoFile.TargetRelativePath : null;
+
+		var photoCsv = new PhotoCsv(photo.PhotoFile.SourceFullPath, newPath, takenDate,
+			photo.ExifData?.ReverseGeocodeFormatted, coordinate?.Latitude, coordinate?.Longitude,
+			takenDate?.Year, takenDate?.Month, takenDate?.Day, takenDate?.Hour, takenDate?.Minute,
+			takenDate?.Second, reverseGeocodes?.ElementAtOrDefault(0), reverseGeocodes?.ElementAtOrDefault(1), reverseGeocodes?.ElementAtOrDefault(2),
 			reverseGeocodes?.ElementAtOrDefault(3), reverseGeocodes?.ElementAtOrDefault(4), reverseGeocodes?.ElementAtOrDefault(5), reverseGeocodes?.ElementAtOrDefault(6),
-			reverseGeocodes?.ElementAtOrDefault(7), sha1Hash);
+			reverseGeocodes?.ElementAtOrDefault(7), photo.PhotoFile.Sha1Hash);
+
 		return photoCsv;
 	}
 }

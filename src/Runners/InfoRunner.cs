@@ -35,7 +35,7 @@ public class InfoRunner : BaseRunner, IConsoleRunner
 		if (!CheckOutputPath(out var exitCodeOutputPath))
 			return exitCodeOutputPath;
 
-		var photoPaths = _photoCollectorService.Collect(sourceFolderPath, _options.AllFolders);
+		var photoPaths = _photoCollectorService.Collect(sourceFolderPath, _options.AllFolders, false);
 
 		if (!ValidatePhotoPaths(out var exitCodePhotoPaths, photoPaths, sourceFolderPath))
 			return exitCodePhotoPaths;
@@ -44,18 +44,17 @@ public class InfoRunner : BaseRunner, IConsoleRunner
 		var isNoCoordinatePreventProcessOptionSelected = _options.NoCoordinateAction == InfoNoCoordinateAction.PreventProcess;
 		var isInvalidFileFormatPreventProcessOptionSelected = _options.InvalidFileFormatAction == InfoInvalidFormatAction.PreventProcess;
 
-		var photoExifDataByPath = _exifDataAppenderService.ExifDataByPath(photoPaths, out var allPhotosAreValid, out var allPhotosHasPhotoTaken, out var allPhotosHasCoordinate);
+		var photos = _exifDataAppenderService.ExtractExifData(photoPaths, out var allPhotosAreValid, out var allPhotosHasPhotoTaken, out var allPhotosHasCoordinate);
 		if (!NoExifDataPreventActions(out var exitCodeNoExif, allPhotosAreValid, allPhotosHasPhotoTaken, allPhotosHasCoordinate,
-			    isInvalidFileFormatPreventProcessOptionSelected, isNoPhotoTakenDatePreventProcessOptionSelected, isNoCoordinatePreventProcessOptionSelected,
-			    photoExifDataByPath))
+			    isInvalidFileFormatPreventProcessOptionSelected, isNoPhotoTakenDatePreventProcessOptionSelected, isNoCoordinatePreventProcessOptionSelected, photos))
 		{
 			return exitCodeNoExif;
 		}
 
 		if (_options.ReverseGeocodeProvider != ReverseGeocodeProvider.Disabled)
-			photoExifDataByPath = await _reverseGeocodeFetcherService.Fetch(photoExifDataByPath);
+			photos = await _reverseGeocodeFetcherService.Fetch(photos);
 
-		await _csvService.WriteExifDataToCsvOutput(photoExifDataByPath, _options.OutputPath);
+		await _csvService.CreateInfoReport(photos, _options.OutputPath);
 
 		WriteStatistics();
 
@@ -64,7 +63,7 @@ public class InfoRunner : BaseRunner, IConsoleRunner
 
 	private bool CheckOutputPath(out ExitCode exitCode)
 	{
-		var outputFile = _fileSystem.FileInfo.FromFileName(_options.OutputPath);
+		var outputFile = _fileSystem.FileInfo.New(_options.OutputPath);
 		if (outputFile.Exists)
 		{
 			_logger.LogCritical("Output file: {Path} is exists", _options.OutputPath);
@@ -72,7 +71,7 @@ public class InfoRunner : BaseRunner, IConsoleRunner
 			return false;
 		}
 
-		if (!outputFile.Directory.Exists && !HasCreatedDirectory(outputFile.Directory))
+		if (outputFile.Directory == null || !outputFile.Directory.Exists && !HasCreatedDirectory(outputFile.Directory))
 		{
 			exitCode = ExitCode.OutputPathDontHaveCreateDirectoryPermission;
 			return false;

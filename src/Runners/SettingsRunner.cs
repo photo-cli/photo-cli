@@ -25,7 +25,7 @@ public class SettingsRunner : IConsoleRunner
 	{
 		if (_cliOptions.Key != null && _cliOptions.Value != null)
 		{
-			if (_cliOptions.Key == nameof(LogLevel))
+			if (_cliOptions.Key == nameof(ToolOptions.LogLevel))
 			{
 				_toolOptions.LogLevel = new LogLevel
 				{
@@ -37,8 +37,20 @@ public class SettingsRunner : IConsoleRunner
 				var property = GetPropertyByKey();
 				if (property == null)
 					return ExitCode.PropertyNotFound;
-				var propertyValue = Convert.ChangeType(_cliOptions.Value, property.PropertyType);
-				property.SetValue(_toolOptions, propertyValue);
+				if (property.PropertyType == typeof(string[]))
+				{
+					var values = _cliOptions.Value.Split(",").Select(s => s.Trim()).ToArray();
+					property.SetValue(_toolOptions, values);
+				}
+				else if(property.PropertyType.BaseType == typeof(ValueType) || property.PropertyType == typeof(string))
+				{
+					var propertyValue = Convert.ChangeType(_cliOptions.Value, property.PropertyType);
+					property.SetValue(_toolOptions, propertyValue);
+				}
+				else
+				{
+					throw new PhotoCliException("Not defined setting type to set");
+				}
 			}
 
 			if (!Validate(_toolOptions))
@@ -50,7 +62,10 @@ public class SettingsRunner : IConsoleRunner
 			var property = GetPropertyByKey();
 			if (property == null)
 				return ExitCode.PropertyNotFound;
-			ConsoleWriteProperty(property);
+			if (property.PropertyType.BaseType == typeof(Array))
+				ConsoleWriteArrayProperty(property);
+			else
+				ConsoleWriteBasicProperty(property);
 		}
 		else if (_cliOptions.Reset)
 		{
@@ -59,8 +74,11 @@ public class SettingsRunner : IConsoleRunner
 		}
 		else
 		{
-			foreach (var property in GetProperties())
-				ConsoleWriteProperty(property);
+			ConsoleWriteKeyValue(nameof(ToolOptions.LogLevel), _toolOptions.LogLevel.Default);
+			foreach (var property in GetArrayProperties())
+				ConsoleWriteArrayProperty(property);
+			foreach (var property in GetBasicProperties())
+				ConsoleWriteBasicProperty(property);
 		}
 
 		return ExitCode.Success;
@@ -84,15 +102,15 @@ public class SettingsRunner : IConsoleRunner
 		string appSettingsFilePath;
 		if (Environment.CommandLine.Contains(".store"))
 		{
-			var runningDll = _fileSystem.FileInfo.FromFileName(Environment.CommandLine);
-			appSettingsFilePath = Path.Combine(runningDll.Directory.FullName, Constants.AppSettingsFileName);
+			var runningDll = _fileSystem.FileInfo.New(Environment.CommandLine);
+			appSettingsFilePath = Path.Combine(runningDll.Directory!.FullName, Constants.AppSettingsFileName);
 		}
 		else
 		{
 			appSettingsFilePath = Constants.AppSettingsFileName;
 		}
 
-		await using var stream = _fileSystem.FileStream.Create(appSettingsFilePath, FileMode.Create);
+		await using var stream = _fileSystem.FileStream.New(appSettingsFilePath, FileMode.Create);
 		await JsonSerializer.SerializeAsync(stream, options, new JsonSerializerOptions { WriteIndented = true });
 	}
 
@@ -101,17 +119,30 @@ public class SettingsRunner : IConsoleRunner
 		return _cliOptions.Key != null ? typeof(ToolOptions).GetProperty(_cliOptions.Key) : null;
 	}
 
-	private IEnumerable<PropertyInfo> GetProperties()
+	private IEnumerable<PropertyInfo> GetBasicProperties()
 	{
-		return typeof(ToolOptions).GetProperties().OrderBy(o => o.Name);
+		return typeof(ToolOptions).GetProperties()
+			.Where(w => w.PropertyType.BaseType == typeof(ValueType) || w.PropertyType == typeof(string))
+			.OrderBy(o => o.Name);
 	}
 
-	private void ConsoleWriteProperty(PropertyInfo property)
+	private IEnumerable<PropertyInfo> GetArrayProperties()
 	{
-		if (property.Name == nameof(LogLevel))
-			ConsoleWriteKeyValue(property.Name, _toolOptions.LogLevel.Default);
-		else
-			ConsoleWriteKeyValue(property.Name, property.GetValue(_toolOptions)?.ToString());
+		return typeof(ToolOptions).GetProperties()
+			.Where(x => x.PropertyType.BaseType == typeof(Array))
+			.OrderBy(o => o.Name);
+	}
+
+	private void ConsoleWriteBasicProperty(PropertyInfo property)
+	{
+		ConsoleWriteKeyValue(property.Name, property.GetValue(_toolOptions)?.ToString());
+	}
+
+	private void ConsoleWriteArrayProperty(PropertyInfo property)
+	{
+		var arrayValue = (object[]?)property.GetValue(_toolOptions);
+		var values = arrayValue != null ? string.Join(",", arrayValue) : string.Empty;
+		ConsoleWriteKeyValue(property.Name, values);
 	}
 
 	private void ConsoleWriteKeyValue(string key, string? value)

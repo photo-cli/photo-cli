@@ -11,7 +11,7 @@ public class ExifDataGrouperService : IExifDataGrouperService
 		_logger = logger;
 	}
 
-	public Dictionary<string, List<Photo>> Group(IEnumerable<Photo> photoInfos, NamingStyle namingStyle)
+	public Dictionary<string, List<Photo>> Group(IEnumerable<Photo> photos, NamingStyle namingStyle)
 	{
 		if (namingStyle is NamingStyle.Numeric)
 			throw new PhotoCliException($"{nameof(NamingStyle)} can't be {namingStyle}");
@@ -20,15 +20,15 @@ public class ExifDataGrouperService : IExifDataGrouperService
 		switch (namingStyle)
 		{
 			case NamingStyle.Day:
-				photosGrouped = Filter(photoInfos, true, false).GroupBy(g => g.PhotoTakenDateTime!.Value.Date.ToString(_options.DateFormatWithDay))
+				photosGrouped = Filter(photos, true, false).GroupBy(g => g.TakenDateTime!.Value.Date.ToString(_options.DateFormatWithDay))
 					.ToDictionary(k => k.Key, grouping => grouping.ToList());
 				break;
 			case NamingStyle.DateTimeWithMinutes:
-				photosGrouped = Filter(photoInfos, true, false).GroupBy(g => new
+				photosGrouped = Filter(photos, true, false).GroupBy(g => new
 				{
-					g.PhotoTakenDateTime!.Value.Date,
-					g.PhotoTakenDateTime!.Value.Hour,
-					g.PhotoTakenDateTime!.Value.Minute
+					g.TakenDateTime!.Value.Date,
+					g.TakenDateTime!.Value.Hour,
+					g.TakenDateTime!.Value.Minute
 				}).ToDictionary(k =>
 				{
 					var dateTime = new DateTime(k.Key.Date.Year, k.Key.Date.Month, k.Key.Date.Day, k.Key.Hour, k.Key.Minute, 0);
@@ -36,12 +36,12 @@ public class ExifDataGrouperService : IExifDataGrouperService
 				}, grouping => grouping.ToList());
 				break;
 			case NamingStyle.DateTimeWithSeconds:
-				photosGrouped = Filter(photoInfos, true, false).GroupBy(g => new
+				photosGrouped = Filter(photos, true, false).GroupBy(g => new
 				{
-					g.PhotoTakenDateTime!.Value.Date,
-					g.PhotoTakenDateTime!.Value.Hour,
-					g.PhotoTakenDateTime!.Value.Minute,
-					g.PhotoTakenDateTime!.Value.Second,
+					g.TakenDateTime!.Value.Date,
+					g.TakenDateTime!.Value.Hour,
+					g.TakenDateTime!.Value.Minute,
+					g.TakenDateTime!.Value.Second,
 				}).ToDictionary(k =>
 				{
 					var dateTime = new DateTime(k.Key.Date.Year, k.Key.Date.Month, k.Key.Date.Day, k.Key.Hour, k.Key.Minute, k.Key.Second);
@@ -49,14 +49,14 @@ public class ExifDataGrouperService : IExifDataGrouperService
 				}, grouping => grouping.ToList());
 				break;
 			case NamingStyle.Address:
-				photosGrouped = Filter(photoInfos, false, true).GroupBy(g => g.ReverseGeocodeFormatted)
+				photosGrouped = Filter(photos, false, true).GroupBy(g => g.ReverseGeocodeFormatted)
 					.ToDictionary(k => k.Key!, grouping => grouping.ToList());
 				break;
 			case NamingStyle.DayAddress or NamingStyle.AddressDay:
-				photosGrouped = Filter(photoInfos, true, true).GroupBy(g => new
+				photosGrouped = Filter(photos, true, true).GroupBy(g => new
 				{
 					ReverseGeocode = g.ReverseGeocodeFormatted,
-					g.PhotoTakenDateTime!.Value.Date
+					g.TakenDateTime!.Value.Date
 				}).ToDictionary(k =>
 				{
 					var dateTime = new DateTime(k.Key.Date.Year, k.Key.Date.Month, k.Key.Date.Day);
@@ -65,12 +65,12 @@ public class ExifDataGrouperService : IExifDataGrouperService
 				}, grouping => grouping.ToList());
 				break;
 			case NamingStyle.DateTimeWithMinutesAddress or NamingStyle.AddressDateTimeWithMinutes:
-				photosGrouped = Filter(photoInfos, true, true).GroupBy(g => new
+				photosGrouped = Filter(photos, true, true).GroupBy(g => new
 				{
 					ReverseGeocode = g.ReverseGeocodeFormatted,
-					g.PhotoTakenDateTime!.Value.Date,
-					g.PhotoTakenDateTime!.Value.Hour,
-					g.PhotoTakenDateTime!.Value.Minute,
+					g.TakenDateTime!.Value.Date,
+					g.TakenDateTime!.Value.Hour,
+					g.TakenDateTime!.Value.Minute,
 				}).ToDictionary(k =>
 				{
 					var dateTime = new DateTime(k.Key.Date.Year, k.Key.Date.Month, k.Key.Date.Day, k.Key.Hour, k.Key.Minute, 0);
@@ -79,13 +79,13 @@ public class ExifDataGrouperService : IExifDataGrouperService
 				}, grouping => grouping.ToList());
 				break;
 			case NamingStyle.DateTimeWithSecondsAddress or NamingStyle.AddressDateTimeWithSeconds:
-				photosGrouped = Filter(photoInfos, true, true).GroupBy(g => new
+				photosGrouped = Filter(photos, true, true).GroupBy(g => new
 				{
 					ReverseGeocode = g.ReverseGeocodeFormatted,
-					g.PhotoTakenDateTime!.Value.Date,
-					g.PhotoTakenDateTime!.Value.Hour,
-					g.PhotoTakenDateTime!.Value.Minute,
-					g.PhotoTakenDateTime!.Value.Second,
+					g.TakenDateTime!.Value.Date,
+					g.TakenDateTime!.Value.Hour,
+					g.TakenDateTime!.Value.Minute,
+					g.TakenDateTime!.Value.Second,
 				}).ToDictionary(k =>
 				{
 					var dateTime = new DateTime(k.Key.Date.Year, k.Key.Date.Month, k.Key.Date.Day, k.Key.Hour, k.Key.Minute, k.Key.Second);
@@ -106,14 +106,14 @@ public class ExifDataGrouperService : IExifDataGrouperService
 		return isDateBeforeAddress ? $"{dateTimeFormat}-{address}" : $"{address}-{dateTimeFormat}";
 	}
 
-	private static IEnumerable<Photo> Filter(IEnumerable<Photo> photoInfos, bool filterPhotoTakenDate, bool filterReverseGeocode)
+	private static IEnumerable<Photo> Filter(IEnumerable<Photo> photos, bool filterPhotoTakenDate, bool filterReverseGeocode)
 	{
 		if (filterPhotoTakenDate && filterReverseGeocode)
-			return photoInfos.Where(w => w.HasPhotoTakenDateTime && w.HasReverseGeocode).ToList();
+			return photos.Where(w => w is { HasTakenDateTime: true, HasReverseGeocode: true }).ToList();
 		if (filterPhotoTakenDate)
-			return photoInfos.Where(w => w.HasPhotoTakenDateTime).ToList();
+			return photos.Where(w => w.HasTakenDateTime).ToList();
 		if (filterReverseGeocode)
-			return photoInfos.Where(w => w.HasReverseGeocode).ToList();
+			return photos.Where(w => w.HasReverseGeocode).ToList();
 		throw new PhotoCliException($"One of this {nameof(filterPhotoTakenDate)} or {nameof(filterReverseGeocode)} should be true");
 	}
 }

@@ -2,6 +2,6 @@ namespace PhotoCli.Services.Contracts;
 
 public interface IFileNamerService
 {
-	void SetFileName(IReadOnlyCollection<Photo> orderedPhotoInfos, NamingStyle namingStyle, NumberNamingTextStyle numberNamingTextStyle);
-	void SetArchiveFileName(IReadOnlyCollection<Photo> orderedPhotoInfos);
+	IReadOnlyCollection<Photo> SetFileName(IReadOnlyCollection<Photo> orderedPhotos, NamingStyle namingStyle, NumberNamingTextStyle numberNamingTextStyle);
+	IReadOnlyCollection<Photo> SetArchiveFileName(IReadOnlyCollection<Photo> orderedPhotos);
 }

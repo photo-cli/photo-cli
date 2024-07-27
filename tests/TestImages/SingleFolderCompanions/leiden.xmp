@@ -1,0 +1,23 @@
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="XMP Core 6.0.0">
+   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <rdf:Description rdf:about=""
+            xmlns:exif="http://ns.adobe.com/exif/1.0/"
+            xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/"
+            xmlns:dc="http://purl.org/dc/elements/1.1/">
+         <exif:GPSHPositioningError>4.088621864671671</exif:GPSHPositioningError>
+         <exif:GPSImgDirection>32.85491943359375</exif:GPSImgDirection>
+         <exif:GPSAltitudeRef>0</exif:GPSAltitudeRef>
+         <exif:GPSAltitude>1.0960960385992455</exif:GPSAltitude>
+         <exif:GPSLatitudeRef>N</exif:GPSLatitudeRef>
+         <exif:GPSLatitude>52.164136166666665</exif:GPSLatitude>
+         <exif:GPSLongitudeRef>E</exif:GPSLongitudeRef>
+         <exif:GPSLongitude>4.4859549999999997</exif:GPSLongitude>
+         <exif:GPSImgDirectionRef>T</exif:GPSImgDirectionRef>
+         <exif:GPSSpeed>0.0</exif:GPSSpeed>
+         <exif:GPSSpeedRef>K</exif:GPSSpeedRef>
+         <exif:GPSTimeStamp>2024-03-02T09:50:26Z</exif:GPSTimeStamp>
+         <photoshop:DateCreated>2024-03-02T10:50:27+01:00</photoshop:DateCreated>
+         <dc:title>Leiden Windmill</dc:title>
+      </rdf:Description>
+   </rdf:RDF>
+</x:xmpmeta>

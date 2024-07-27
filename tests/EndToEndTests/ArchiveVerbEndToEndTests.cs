@@ -16,8 +16,7 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 	{
 		{
 			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SingleFolder()),
-			new List<PhotoEntity>
-			{
+			[
 				Kenya(),
 				ItalyFlorence(),
 				ItalyArezzo1(),
@@ -33,8 +32,8 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 				Spain1(),
 				Spain2(),
 				NoPhotoTakenDate(),
-				NoGpsCoordinate(),
-			},
+				NoGpsCoordinate()
+			],
 			new ConsoleOutputValues(18, 16, 15, 1, 2, 7)
 		}
 	};
@@ -43,8 +42,7 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 	{
 		{
 			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SubFolders()),
-			new List<PhotoEntity>
-			{
+			[
 				Kenya(),
 				ItalyFlorence(),
 				ItalyArezzo1(),
@@ -60,8 +58,8 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 				Spain1(),
 				Spain2(),
 				NoPhotoTakenDate(),
-				NoGpsCoordinate(),
-			},
+				NoGpsCoordinate()
+			],
 			new ConsoleOutputValues(18, 16, 15, 1, 2, 7)
 		}
 	};
@@ -100,8 +98,7 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 		{
 			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SingleFolder(),
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoEntity>
-			{
+			[
 				Kenya(),
 				ItalyFlorence(),
 				ItalyArezzo1(),
@@ -117,8 +114,8 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 				Spain1(),
 				Spain2(),
 				NoPhotoTakenDate(),
-				NoGpsCoordinate(),
-			},
+				NoGpsCoordinate()
+			],
 			new ConsoleOutputValues(18, 16, 15, 1, 2, 7)
 		}
 	};
@@ -128,8 +125,7 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 		{
 			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SubFolders(),
 				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
-			new List<PhotoEntity>
-			{
+			[
 				Kenya(),
 				ItalyFlorence(),
 				ItalyArezzo1(),
@@ -145,8 +141,8 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 				Spain1(),
 				Spain2(),
 				NoPhotoTakenDate(),
-				NoGpsCoordinate(),
-			},
+				NoGpsCoordinate()
+			],
 			new ConsoleOutputValues(18, 16, 15, 1, 2, 7)
 		}
 	};
@@ -289,6 +285,92 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 
 	#endregion
 
+	#region Companions
+
+	private static readonly List<string> ExpectedCompanionsFilesOnOutput =
+	[
+		"2023/10/01/2023.10.01_19.00.06-c75e7744129e419c5460aaf92fc85f3c71106439.aae",
+		"2023/10/01/2023.10.01_19.00.06-c75e7744129e419c5460aaf92fc85f3c71106439.mov",
+		"2023/10/01/2023.10.01_19.00.06-c75e7744129e419c5460aaf92fc85f3c71106439.xmp",
+
+		"2023/10/28/2023.10.28_17.05.59-874c35f5766856b778244c2ee20e79c978e61c5d.aae",
+		"2023/10/28/2023.10.28_17.05.59-874c35f5766856b778244c2ee20e79c978e61c5d.mov",
+		"2023/10/28/2023.10.28_17.05.59-874c35f5766856b778244c2ee20e79c978e61c5d.xmp",
+
+		"2023/11/11/2023.11.11_13.58.22-c51f74466414a19034a201236e0b020cbeaace6e.aae",
+		"2023/11/11/2023.11.11_13.58.22-c51f74466414a19034a201236e0b020cbeaace6e.mov",
+		"2023/11/11/2023.11.11_13.58.22-c51f74466414a19034a201236e0b020cbeaace6e.xmp",
+
+		"2024/03/02/2024.03.02_10.50.27-1a48d579acb2b69de659aeed7a26e84035c05791.aae",
+		"2024/03/02/2024.03.02_10.50.27-1a48d579acb2b69de659aeed7a26e84035c05791.mov",
+		"2024/03/02/2024.03.02_10.50.27-1a48d579acb2b69de659aeed7a26e84035c05791.xmp",
+
+		"2024/05/29/2024.05.29_06.01.21-191fe7ce27dd587b9ee867b6dabaa39785cae5a7.aae",
+		"2024/05/29/2024.05.29_06.01.21-191fe7ce27dd587b9ee867b6dabaa39785cae5a7.mov",
+		"2024/05/29/2024.05.29_06.01.21-191fe7ce27dd587b9ee867b6dabaa39785cae5a7.xmp",
+	];
+
+	public static TheoryData<ICollection<string>, List<PhotoEntity>, ConsoleOutputValues, List<string>> SingleFolderWithoutReverseGeocodingCompanions = new()
+	{
+		{
+			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SingleFolderCompanions()),
+			[
+				Amsterdam(),
+				Chios(),
+				Copenhagen(),
+				Hallstatt(),
+				Leiden(),
+			],
+			new ConsoleOutputValues(5, 5, 5, DirectoriesCreated: 5, CompanionsFound: 15, CompanionsCopied: 15),
+			ExpectedCompanionsFilesOnOutput
+		}
+	};
+
+	public static TheoryData<ICollection<string>, List<PhotoEntity>, ConsoleOutputValues, List<string>> SubFoldersWithoutReverseGeocodingCompanions = new()
+	{
+		{
+			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SubFoldersCompanions()),
+			[
+				Amsterdam(),
+				Chios(),
+				Copenhagen(),
+				Hallstatt(),
+				Leiden(),
+			],
+			new ConsoleOutputValues(5, 5, 5, DirectoriesCreated: 5, CompanionsFound: 15, CompanionsCopied: 15),
+			ExpectedCompanionsFilesOnOutput
+		}
+	};
+
+	[Theory]
+	[MemberData(nameof(SingleFolderWithoutReverseGeocodingCompanions))]
+	[MemberData(nameof(SubFoldersWithoutReverseGeocodingCompanions))]
+	public async Task Run_GivingArgumentsWithCompanions_ShouldCreateAndVerifyPhotosOnFileSystem(ICollection<string> args, List<PhotoEntity> expectedPhotoEntities,
+		ConsoleOutputValues expectedConsoleOutput, List<string> expectedCompanionFiles)
+	{
+		var outputFolder = OutputFolderForE2ETestPrivateToEachTest();
+
+		CommandLineArgumentsFakes.AddOutputPathOptions(outputFolder, args);
+		var actualOutput = await RunMain(args);
+
+		var actualConsoleOutput = ParseConsoleOutput(actualOutput);
+		var actualPhotoEntities = await ReadPhotoEntitiesFromSqLite(outputFolder);
+
+		using (new AssertionScope())
+		{
+			actualPhotoEntities.Should().BeEquivalentTo(expectedPhotoEntities, c => c
+				.Excluding(e => e.Id)
+				.Excluding(e => e.CreatedAt));
+
+			actualConsoleOutput.Should().Be(expectedConsoleOutput);
+			VerifyExpectedFilesOnOutput(expectedCompanionFiles, outputFolder);
+		}
+
+		DeleteOutput(outputFolder);
+	}
+
+	#endregion
+
 	private static async Task<List<PhotoEntity>> ReadPhotoEntitiesFromSqLite(string outputPath)
 	{
 		var optionsBuilder = new DbContextOptionsBuilder<ArchiveDbContext>();
@@ -388,6 +470,31 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 	private static PhotoEntity CreatePhotoEntity(string path, string sha1Hash, ExifData? exifData = null)
 	{
 		return PhotoEntityFakes.CreateWithExifData(MockFileSystemHelper.Path(path, true), exifData, sha1Hash);
+	}
+
+	private static PhotoEntity Amsterdam()
+	{
+		return CreatePhotoEntity($"2023/10/28/2023.10.28_17.05.59-{Sha1HashFakes.Amsterdam}.heic", Sha1HashFakes.Amsterdam, ExifDataFakes.CompanionsAmsterdam());
+	}
+
+	private static PhotoEntity Chios()
+	{
+		return CreatePhotoEntity($"2024/05/29/2024.05.29_06.01.21-{Sha1HashFakes.Chios}.heic", Sha1HashFakes.Chios, ExifDataFakes.CompanionsChios());
+	}
+
+	private static PhotoEntity Copenhagen()
+	{
+		return CreatePhotoEntity($"2023/11/11/2023.11.11_13.58.22-{Sha1HashFakes.Copenhagen}.heic", Sha1HashFakes.Copenhagen, ExifDataFakes.CompanionsCopenhagen());
+	}
+
+	private static PhotoEntity Hallstatt()
+	{
+		return CreatePhotoEntity($"2023/10/01/2023.10.01_19.00.06-{Sha1HashFakes.Hallstatt}.heic", Sha1HashFakes.Hallstatt, ExifDataFakes.CompanionsHallstatt());
+	}
+
+	private static PhotoEntity Leiden()
+	{
+		return CreatePhotoEntity($"2024/03/02/2024.03.02_10.50.27-{Sha1HashFakes.Leiden}.heic", Sha1HashFakes.Leiden, ExifDataFakes.CompanionsLeiden());
 	}
 
 	#endregion

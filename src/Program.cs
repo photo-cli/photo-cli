@@ -29,6 +29,8 @@ using System.IO.Abstractions;
 using CommandLine;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.Extensions.Http.Resilience;
+using Polly;
 
 #endregion
 
@@ -186,32 +188,48 @@ public static class Program
 			services.AddSingleton<ICoordinateCache<OpenStreetMapResponse>, CoordinateCache<OpenStreetMapResponse>>();
 
 			var agent = UserAgent.Instance();
+
 			services.AddHttpClient<IBigDataCloudReverseGeocodeService, BigDataCloudReverseGeocodeService>(c =>
 			{
 				c.BaseAddress = new Uri("https://api.bigdatacloud.net/data/reverse-geocode");
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
-			});
+			}).AddResilience();
 
 			services.AddHttpClient<IOpenStreetMapFoundationReverseGeocodeService, OpenStreetMapFoundationReverseGeocodeService>(c =>
 			{
 				c.BaseAddress = new Uri("https://nominatim.openstreetmap.org/reverse");
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
-			});
+			}).AddResilience();
 
 			services.AddHttpClient<IGoogleMapsReverseGeocodeService, GoogleMapsReverseGeocodeService>(c =>
 			{
 				c.BaseAddress = new Uri("https://maps.googleapis.com/maps/api/geocode/json");
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
-			});
+			}).AddResilience();
 
 			services.AddHttpClient<ILocationIqReverseGeocodeService, LocationIqReverseGeocodeService>(c =>
 			{
 				c.BaseAddress = new Uri("https://us1.locationiq.com/v1/reverse.php");
 				c.DefaultRequestHeaders.UserAgent.Add(agent);
-			});
+			}).AddResilience();
 
 			#endregion
 		});
+	}
+
+	private static IHttpClientBuilder AddResilience(this IHttpClientBuilder httpClientBuilder)
+	{
+		httpClientBuilder.AddResilienceHandler("retry-timeout-pipeline", builder =>
+		{
+			builder.AddRetry(new HttpRetryStrategyOptions
+			{
+				MaxRetryAttempts = 10,
+				BackoffType = DelayBackoffType.Exponential
+			});
+
+			builder.AddTimeout(TimeSpan.FromSeconds(5));
+		});
+		return httpClientBuilder;
 	}
 
 	private static IHost BuildHostCore<TConsoleRunner>(TextWriter textWriter, Action<IServiceCollection, IConfigurationRoot>? additionalConfigureServices) where TConsoleRunner : IConsoleRunner
@@ -235,7 +253,7 @@ public static class Program
 			});
 
 			services.AddSingleton(configuration);
-			var toolOptionsRaw = configuration.Get<ToolOptionsRaw>();
+			var toolOptionsRaw = configuration.Get<ToolOptionsRaw>() ?? new ToolOptionsRaw();
 			var toolOptions = new ToolOptions(toolOptionsRaw);
 			services.AddSingleton(toolOptions);
 			services.AddTransient(typeof(IConsoleRunner), typeof(TConsoleRunner));
@@ -292,12 +310,11 @@ public static class Program
 			}
 			else
 			{
-				if (args.Count == 0) HelpTextBuilder.ExtendedHelpWritingToConsole(textWriter);
+				if (args.Count == 0)
+					HelpTextBuilder.ExtendedHelpWritingToConsole(textWriter);
 				exitCode = ExitCode.ParseArgsFailed;
 			}
-
 			parsedObject = null!;
-
 			return false;
 		}
 

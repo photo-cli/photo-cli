@@ -4,10 +4,10 @@ public static class ReadOnlyCollectionExtensions
 {
 	public static void ThrowIfNotOrderedByPhotoTakenDate(this IReadOnlyCollection<Photo> list)
 	{
-		var orderedPhotoInfosThatHavePhotoTakenDate = list.Where(w => w.HasPhotoTakenDateTime).ToList();
+		var orderedPhotosThatHavePhotoTakenDate = list.Where(w => w.HasTakenDateTime).ToList();
 
-		var validateSorted = orderedPhotoInfosThatHavePhotoTakenDate
-			.Zip(orderedPhotoInfosThatHavePhotoTakenDate.Skip(1), (curr, next) => curr.PhotoTakenDateTime!.Value <= next.PhotoTakenDateTime!.Value)
+		var validateSorted = orderedPhotosThatHavePhotoTakenDate
+			.Zip(orderedPhotosThatHavePhotoTakenDate.Skip(1), (curr, next) => curr.TakenDateTime <= next.TakenDateTime)
 			.All(x => x);
 
 		if (!validateSorted)
