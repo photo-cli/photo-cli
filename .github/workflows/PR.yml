@@ -1,3 +1,4 @@
+name: pr
 on:
   pull_request:
     branches:
@@ -9,7 +10,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 

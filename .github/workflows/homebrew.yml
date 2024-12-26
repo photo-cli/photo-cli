@@ -1,0 +1,39 @@
+name: homebrew
+on:
+  workflow_run:
+    workflows:
+      - stable
+    types:
+      - completed
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Wait for 10 minutes
+        run: sleep 600
+
+      - name: Checkout Homebrew Repository
+        uses: actions/checkout@v4
+        with:
+          repository: photo-cli/homebrew-photo-cli
+          ref: main
+          token: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
+          path: homebrew-repo
+
+      - name: Homebrew Formula Update
+        run: |
+          version=$(curl https://api.nuget.org/v3-flatcontainer/photo-cli/index.json | jq -r '.versions | last')
+          echo $version
+          curl -o photo-cli.nupkg https://api.nuget.org/v3-flatcontainer/photo-cli/$version/photo-cli.$version.nupkg
+          sha256=$(sha256sum photo-cli.nupkg | awk '{print $1}')
+          echo $sha256
+          cd homebrew-repo
+          sed -i "s/^\(\s*sha256\s*\"\)[^\"]*\"/\1$sha256\"/" photo-cli.rb
+          sed -i "s#^\(\s*url\s*\"\)[^\"]*\"#\1https://nuget.org/api/v2/package/photo-cli/$version\"#" photo-cli.rb
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add photo-cli.rb
+          git commit -m "build: $version"
+          git status
+          git push -u origin main
