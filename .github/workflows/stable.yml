@@ -51,7 +51,81 @@ jobs:
         SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
 
     - name: Pack
-      run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output .
+      run: dotnet pack PhotoCli.csproj --configuration Release /p:Version=${VERSION} --no-build --output ./output/nupkg/
 
     - name: Publish
-      run: dotnet nuget push *.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push ./output/nupkg/PhotoCli.${{env.VERSION}}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+    - name: Publish Windows x64
+      run: dotnet publish PhotoCli.csproj --configuration Release --runtime win-x64 --self-contained true --output ./output/win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
+
+    - name: Publish Windows ARM64
+      run: dotnet publish PhotoCli.csproj --configuration Release --runtime win-arm64 --self-contained true --output ./output/win-arm64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
+
+    - name: Publish Linux x64
+      run: dotnet publish PhotoCli.csproj --configuration Release --runtime linux-x64 --self-contained true --output ./output/linux-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
+
+    - name: Publish Linux arm64
+      run: dotnet publish PhotoCli.csproj --configuration Release --runtime linux-arm64 --self-contained true --output ./output/linux-arm64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
+
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+        body_path: INSTALL.md
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Nuget Tool Package
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./output/nupkg/PhotoCli.${{env.VERSION}}.nupkg
+        asset_name: PhotoCli.${{env.VERSION}}.nupkg
+        asset_content_type: application/octet-stream
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Windows x64
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./output/win-x64/PhotoCli.exe
+        asset_name: PhotoCli.${{env.VERSION}}.win-x64.exe
+        asset_content_type: application/octet-stream
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Windows arm64
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./output/win-arm64/PhotoCli.exe
+        asset_name: PhotoCli.${{env.VERSION}}.win-arm64.exe
+        asset_content_type: application/octet-stream
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Linux x64
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./output/linux-x64/PhotoCli
+        asset_name: PhotoCli.${{env.VERSION}}.linux-x64
+        asset_content_type: application/octet-stream
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Linux arm64
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./output/linux-arm64/PhotoCli
+        asset_name: PhotoCli.${{env.VERSION}}.linux-arm64
+        asset_content_type: application/octet-stream
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
