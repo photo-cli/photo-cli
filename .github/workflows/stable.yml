@@ -57,16 +57,16 @@ jobs:
       run: dotnet nuget push ./output/nupkg/photo-cli.${{env.VERSION}}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
 
     - name: Publish Windows x64
-      run: dotnet publish PhotoCli.csproj --configuration Release --runtime win-x64 --self-contained true --output ./output/win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
+      run: dotnet publish src/PhotoCli.csproj --configuration Release --runtime win-x64 --self-contained true --output ./output/win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
 
     - name: Publish Windows ARM64
-      run: dotnet publish PhotoCli.csproj --configuration Release --runtime win-arm64 --self-contained true --output ./output/win-arm64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
+      run: dotnet publish src/PhotoCli.csproj --configuration Release --runtime win-arm64 --self-contained true --output ./output/win-arm64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
 
     - name: Publish Linux x64
-      run: dotnet publish PhotoCli.csproj --configuration Release --runtime linux-x64 --self-contained true --output ./output/linux-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
+      run: dotnet publish src/PhotoCli.csproj --configuration Release --runtime linux-x64 --self-contained true --output ./output/linux-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
 
     - name: Publish Linux arm64
-      run: dotnet publish PhotoCli.csproj --configuration Release --runtime linux-arm64 --self-contained true --output ./output/linux-arm64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
+      run: dotnet publish src/PhotoCli.csproj --configuration Release --runtime linux-arm64 --self-contained true --output ./output/linux-arm64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
 
     - name: Create release
       id: create_release
@@ -84,7 +84,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./output/nupkg/PhotoCli.${{env.VERSION}}.nupkg
+        asset_path: ./output/nupkg/photo-cli.${{env.VERSION}}.nupkg
         asset_name: PhotoCli.${{env.VERSION}}.nupkg
         asset_content_type: application/octet-stream
       env:
