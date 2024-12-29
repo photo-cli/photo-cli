@@ -54,7 +54,7 @@ jobs:
       run: dotnet pack src/PhotoCli.csproj --configuration Release /p:Version=${VERSION} --no-build --output ./output/nupkg/
 
     - name: Publish
-      run: dotnet nuget push ./output/nupkg/PhotoCli.${{env.VERSION}}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      run: dotnet nuget push ./output/nupkg/photo-cli.${{env.VERSION}}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
 
     - name: Publish Windows x64
       run: dotnet publish PhotoCli.csproj --configuration Release --runtime win-x64 --self-contained true --output ./output/win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
