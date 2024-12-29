@@ -470,17 +470,11 @@ To navigate your photographs on [Google Earth Web](https://earth.google.com/web/
 
 ## Installation
 
-Important note: This application is a [command line tool](https://en.wikipedia.org/wiki/Command-line_interface) which don't have any user interface. To use this application, basic knowledge of how to run and send arguments to CLI applications is a must.
+This application can be installed by Homebrew (macOS & Linux), standalone executable (without dependency and SDK) or as .NET tool.
 
-1. Installing [.NET 8 runtime](https://dotnet.microsoft.com/download/dotnet/8.0) for your platform (Linux, macOS, Windows).
+See the [installation](INSTALL.md) for details.
 
-2. Install or update with these commands both on Linux, macOS, Windows;
-
-| Install:                           | To update newer version:               |
-|------------------------------------|----------------------------------------|
-| `dotnet tool install photo-cli -g` | `dotnet tool update photo-cli -g`      |
-
-3. Installing the tool globally provides access to the `photo-cli` command in your terminal.
+Installing the application globally provides access to the `photo-cli` command in your terminal.
 
 ```
 photo-cli [command]
@@ -489,18 +483,6 @@ photo-cli help [command]
 ```
 
 Note: You may test commands on [test photographs](docs/test-photographs) which has coordinates and photograph taken dates in it.
-
-4. (For macOS and Linux) You should add your `.dotnet/tools` (path may change for your installation choices) to your PATH environment variable.
-
-For macOS - Z Shell add the following line to your `~/.zshenv` file.
-```
-export PATH="$PATH:/Users/[your-account-name]/.dotnet/tools"
-```
-
-For Linux Bash add the following line to your `~/.profile` file.
-```
-export PATH="$PATH:/home/ac/.dotnet/tools"
-```
 
 ### Sample Usage Screenshots
 
