@@ -9,6 +9,7 @@
         <RepositoryUrl>https://github.com/photo-cli/photo-cli</RepositoryUrl>
         <Company>photo-cli</Company>
         <Product>photo-cli</Product>
+        <RollForward>LatestMajor</RollForward>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -45,6 +46,10 @@
         </None>
         <None Include="..\docs\assets\nuget-readme.md" Pack="true" PackagePath="\" />
         <None Include="..\docs\assets\icon.png" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <RuntimeHostConfigurationOption Include="rollForward" Value="LatestMajor" />
     </ItemGroup>
 
 </Project>
