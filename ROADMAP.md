@@ -8,8 +8,8 @@
 | 0.3.0-preview(N) | Jun 2024                    |
 | 0.3.0            | Jul 2024                    |
 | 0.N.0            | possible new features       |
-| 1.0.0-preview(N) | Nov 2024                    |
-| 1.0.0            | Dec 2024                    |
+| 1.0.0-preview(N) | 2025                        |
+| 1.0.0            | 2025                        |
 
 ## Issues Planned For Each Version
 
