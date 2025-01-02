@@ -2,6 +2,14 @@ Important note: This application is a command line tool which don't have any use
 
 This application can run on macOS, Windows & Linux for Arm64, x64, x86 architectures. Executable types varies depending on OS.
 
+## Dependency
+.NET SDK (8 or later) required for application to run and `dotnet` command should be available on your path variable.
+
+You can either download from https://dotnet.microsoft.com/en-us/download or using the following Brew cask for macOS / Linux.
+```
+brew install dotnet-sdk --cask
+```
+
 # macOS
 
 You can install by Homebrew (preferred) or as .NET tool.
@@ -15,11 +23,11 @@ Ref: https://github.com/photo-cli/homebrew-photo-cli
 
 # Windows && Linux
 
-You can install as .NET CLI (preferred) or standalone executable that can be found on assets.
+You can install as .NET tool (preferred) or standalone executable that can be found on assets.
 
 # Install as .NET Tool
 
-.NET tool can be installed by .net cli (preferred), could be downloaded manually from https://www.nuget.org/packages/photo-cli/ or directly from assets.
+.NET tool can be installed as .NET tool (preferred), could be downloaded manually from https://www.nuget.org/packages/photo-cli/ or directly from assets.
 
 #### .NET CLI
 ```shell
