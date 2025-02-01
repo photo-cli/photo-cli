@@ -1,4 +1,7 @@
-# 0.3.0
+# 0.3.1 - 0.3.3
+- Homebrew & standalone executable builds by release automation.
+
+# 0.3.0 (2024-07-27)
 
 - Companion file support
 - Resilience in reserve geocoding requests
