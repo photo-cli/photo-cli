@@ -84,15 +84,6 @@ namespace PhotoCli.Migrations
                     b.Property<string>("Sha1Hash")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Test2")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Test3")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Test4")
-                        .HasColumnType("TEXT");
-
                     b.Property<int?>("Year")
                         .HasColumnType("INTEGER");
 
