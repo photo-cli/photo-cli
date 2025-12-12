@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 
 namespace PhotoCli.Tests.Utils;
 
@@ -7,6 +7,11 @@ public static class MockFileSystemHelper
 	public static string Combine(params string[] paths)
 	{
 		return Path(System.IO.Path.Combine(paths));
+	}
+
+	public static string CombineRelativePath(params string[] paths)
+	{
+		return Path(System.IO.Path.Combine(paths), true);
 	}
 
 	public static string Combine(bool useRelativePath, params string[] paths)

@@ -1,9 +1,15 @@
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace PhotoCli.Tests.IntegrationTests.PackageTests.FluentValidation;
 
 public class ToolOptionsFluentValidationTests : BaseFluentValidationTests<ToolOptions, ToolOptionsValidator>
 {
+	protected override ToolOptionsValidator CreateValidator()
+	{
+		return new ToolOptionsValidator(NullLogger<ToolOptionsValidator>.Instance);
+	}
+
 	#region Valid
 
 	[Fact]
@@ -17,7 +23,11 @@ public class ToolOptionsFluentValidationTests : BaseFluentValidationTests<ToolOp
 	public void Setting_Valid_LogLevel_Should_Have_No_Error()
 	{
 		var toolOptions = ToolOptions.Default();
-		toolOptions.LogLevel.Default = LogLevel.Critical.ToString();
+		toolOptions.LogLevel = new Dictionary<string, string>
+		{
+			{ "Default", nameof(LogLevel.Critical) },
+			{ "PhotoCli.Namespace", nameof(LogLevel.Trace) },
+		};
 		ValidationShouldHaveNoError(toolOptions);
 	}
 
@@ -117,14 +127,18 @@ public class ToolOptionsFluentValidationTests : BaseFluentValidationTests<ToolOp
 	public void Setting_Invalid_LogLevel_Should_Give_PredicateValidator_And_Verify_Error_Message()
 	{
 		var toolOptions = ToolOptions.Default();
-		toolOptions.LogLevel.Default = "invalid-log-level";
-		CheckPropertyInvalidValue(toolOptions, $"{nameof(ToolOptions.LogLevel)}.{nameof(ToolOptions.LogLevel.Default)}", LogLevels());
+		toolOptions.LogLevel = new Dictionary<string, string>
+		{
+			{ "Default", "invalid-log-level" },
+			{ "PhotoCli.Namespace", nameof(LogLevel.Critical) },
+		};
+		CheckPropertyInvalidValue(toolOptions, nameof(ToolOptions.LogLevel), LogLevelsErrorMessage());
 	}
 
-	private string LogLevels()
+	private string LogLevelsErrorMessage()
 	{
 		var levels = string.Join(", ", Enum.GetNames<LogLevel>());
-		return $"Log level should be on of these values: {levels}";
+		return $"One or more log levels are invalid. Log level should be one of these values: {levels}";
 	}
 
 	#endregion

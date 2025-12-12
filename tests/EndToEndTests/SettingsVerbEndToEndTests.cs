@@ -1,12 +1,7 @@
 namespace PhotoCli.Tests.EndToEndTests;
 
-[Collection(XunitSharedCollectionsToDisableParallelExecution.EndToEndTests)]
 public class SettingsVerbEndToEndTests : BaseEndToEndTests
 {
-	public SettingsVerbEndToEndTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-	{
-	}
-
 	private const string AppSettingsJsonFileName = "appsettings.json";
 
 	private const string DefaultAppSettingsValue = @"{
@@ -40,32 +35,35 @@ public class SettingsVerbEndToEndTests : BaseEndToEndTests
 	{
 		{
 			CommandLineArgumentsFakes.SettingsBuildCommandLineOptions(),
-			@"LogLevel=Error
-CompanionExtensions=aae,mov,xmp
-SupportedExtensions=jpg,jpeg,heic,png
-AddressSeparator=-
-ArchivePhotoTakenDateHashSeparator=-
-BigDataCloudApiKey=
-ConnectionLimit=4
-CoordinatePrecision=4
-CsvReportFileName=photo-cli-report.csv
-DateFormatWithDay=yyyy.MM.dd
+			@"LogLevel.Default=Error
+YearFormat=yyyy
+MonthFormat=MM
+DayFormat=dd
 DateFormatWithMonth=yyyy.MM
+DateFormatWithDay=yyyy.MM.dd
 DateTimeFormatWithMinutes=yyyy.MM.dd_HH.mm
 DateTimeFormatWithSeconds=yyyy.MM.dd_HH.mm.ss
-DayFormat=dd
-DayRangeSeparator=-
-DryRunCsvReportFileName=photo-cli-dry-run.csv
+AddressSeparator=-
 FolderAppendSeparator=-
+DayRangeSeparator=-
+SameNameNumberSeparator=-
+PhotoFormatInvalidFolderName=invalid-photo-format
+NoPhotoTakenDateFolderName=no-photo-taken-date
+NoAddressFolderName=no-address
+NoAddressAndPhotoTakenDateFolderName=no-address-and-no-photo-taken-date
+CsvReportFileName=photo-cli-report.csv
+DryRunCsvReportFileName=photo-cli-dry-run.csv
+ConnectionLimit=4
+BigDataCloudApiKey=
 GoogleMapsApiKey=
 LocationIqApiKey=
-MonthFormat=MM
-NoAddressAndPhotoTakenDateFolderName=no-address-and-no-photo-taken-date
-NoAddressFolderName=no-address
-NoPhotoTakenDateFolderName=no-photo-taken-date
-PhotoFormatInvalidFolderName=invalid-photo-format
-SameNameNumberSeparator=-
-YearFormat=yyyy"
+CoordinatePrecision=4
+ArchivePhotoTakenDateHashSeparator=-
+SupportedExtensions=jpg,jpeg,heic,png
+CompanionExtensions=aae,mov,xmp
+LogCategoryNameOutput=False
+MacOsCommand=open
+MacOsArgumentPrefix=-a Preview"
 		}
 	};
 
@@ -74,7 +72,7 @@ YearFormat=yyyy"
 	public async Task Running_With_Settings_Verb_Arguments_With_Listing_Should_Be_Match_With_The_Values_Of_AppSettings_json_File(string[] args, string expectedOutput)
 	{
 		ResetAppSettings();
-		var actualOutput = await RunMain(args);
+		var actualOutput = await RunMainRaw(args);
 		StringsShouldMatchDiscardingLineEndings(actualOutput, expectedOutput);
 		var actualAppSettingsValues = ActualAppSettingsJson();
 		var expectedAppSettingsValues = DefaultAppSettingsJson();
@@ -89,7 +87,7 @@ YearFormat=yyyy"
 		{
 			CommandLineArgumentsFakes.SettingsBuildCommandLineOptions("YearFormat"),
 			"YearFormat",
-			@"yyyy"
+			"yyyy"
 		}
 	};
 
@@ -98,7 +96,7 @@ YearFormat=yyyy"
 	public async Task Running_With_Settings_Verb_Arguments_With_A_Get_Value_Should_Be_Match_With_Expected_Output(string[] args, string key, string expectedValue)
 	{
 		ResetAppSettings();
-		var actualOutput = await RunMain(args);
+		var actualOutput = await RunMainRaw(args);
 		var expectedOutput = $"{key}={expectedValue}";
 		actualOutput.Should().Be(expectedOutput);
 		var appSettingsValues = ActualAppSettingsJson();
@@ -125,8 +123,8 @@ YearFormat=yyyy"
 	public async Task Running_With_Settings_Verb_Arguments_With_A_Set_Value_Should_Write_To_AppSettings_json_File(string[] args, string key, string expectedValue)
 	{
 		ResetAppSettings();
-		var actualOutput = await RunMain(args);
-		actualOutput.Should().Be(string.Empty);
+		var actualOutput = await RunMainRaw(args);
+		actualOutput.Should().Be("Settings have been saved");
 		var appSettingsValues = ActualAppSettingsJson();
 		var actualValue = appSettingsValues[key];
 		actualValue.Should().Be(expectedValue);

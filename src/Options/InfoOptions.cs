@@ -3,7 +3,7 @@ using CommandLine;
 namespace PhotoCli.Options;
 
 [Verb(OptionNames.InfoVerb, HelpText = "Creates a report (CSV file) listing all photo taken date and address (reverse geocode).")]
-public class InfoOptions : IReverseGeocodeOptions
+public class InfoOptions : IActionableReverseGeocodeOptions
 {
 	// Notes: Constructor parameters and properties should be in same order for Immutable Options Type in CommandLineParser.
 	// ref: https://github.com/commandlineparser/commandline/wiki/Immutable-Options-Type
@@ -18,7 +18,7 @@ public class InfoOptions : IReverseGeocodeOptions
 		ReverseGeocodeProvider reverseGeoCodeProvider = ReverseGeocodeProvider.Disabled, string? bigDataCloudApiKey = null, IEnumerable<int>? bigDataCloudAdminLevels = null,
 		IEnumerable<string>? googleMapsAddressTypes = null,
 		string? googleMapsApiKey = null, IEnumerable<string>? openStreetMapProperties = null,
-		string? locationIqApiKey = null, bool? hasPaidLicense = null, string? language = null)
+		string? locationIqApiKey = null, bool? hasPaidLicense = null, string? language = null, MissingReverseGeocodeAction missingReverseGeocodeAction = MissingReverseGeocodeAction.Continue)
 	{
 		// Required
 		OutputPath = outputPath;
@@ -40,6 +40,7 @@ public class InfoOptions : IReverseGeocodeOptions
 		LocationIqApiKey = locationIqApiKey;
 		HasPaidLicense = hasPaidLicense;
 		Language = language;
+		MissingReverseGeocodeAction = missingReverseGeocodeAction;
 	}
 
 	#region Required
@@ -51,7 +52,7 @@ public class InfoOptions : IReverseGeocodeOptions
 
 	#region Optional
 
-	[Option(OptionNames.InputPathOptionNameShort, OptionNames.InputPathOptionNameLong, HelpText = HelpTexts.InputPath)]
+	[Option(OptionNames.ArchivePathOptionNameShort, OptionNames.ArchivePathOptionNameLong, HelpText = HelpTexts.InputPath)]
 	public string? InputPath { get; }
 
 	[Option(OptionNames.AllFoldersOptionNameShort, OptionNames.AllFoldersOptionNameLong, HelpText = HelpTexts.AllFolders)]
@@ -96,6 +97,9 @@ public class InfoOptions : IReverseGeocodeOptions
 
 	[Option(OptionNames.LanguageOptionNameShort, OptionNames.LanguageOptionNameLong, HelpText = HelpTexts.Language)]
 	public string? Language { get; }
+
+	[Option(OptionNames.MissingReverseGeocodeActionShort, OptionNames.MissingReverseGeocodeActionLong, HelpText = HelpTexts.MissingReverseGeocodeAction)]
+	public MissingReverseGeocodeAction MissingReverseGeocodeAction { get; }
 
 	#endregion
 }

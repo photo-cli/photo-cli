@@ -51,4 +51,9 @@ public class SettingsOptionsFluentValidationTests : BaseFluentValidationTests<Se
 	}
 
 	#endregion
+
+	protected override SettingsOptionsValidator CreateValidator()
+	{
+		return new SettingsOptionsValidator();
+	}
 }

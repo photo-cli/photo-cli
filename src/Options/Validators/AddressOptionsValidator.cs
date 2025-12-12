@@ -6,13 +6,19 @@ public class AddressOptionsValidator : BaseValidator<AddressOptions>
 {
 	public AddressOptionsValidator()
 	{
-		RuleFor(r => r.InputPath).NotNull().WithMessage(Required(nameof(CopyOptions.InputPath), OptionNames.InputPathOptionNameLong, OptionNames.InputPathOptionNameShort))
-			.Matches(Constants.PhotoExtensionRegex).WithMessage($"{nameof(CopyOptions.InputPath)} should have .jpg, .jpeg, or .heic extension");
+		var inputPathInfo = GetOptionFormat(e => e.InputPath);
 
-		RuleFor(r => r.ReverseGeocodeProvider).Must(m => m != ReverseGeocodeProvider.Disabled)
-			.WithMessage(Required(nameof(ReverseGeocodeProvider), OptionNames.ReverseGeocodeProvidersOptionNameLong, OptionNames.ReverseGeocodeProvidersOptionNameShort));
+		RuleFor(r => r.InputPath)
+			.RequiredString(inputPathInfo)
+			.Matches(Constants.PhotoExtensionRegex).WithMessage($"{nameof(CopyOptions.InputPath)} should have .jpg, .jpeg, .heic or .hif extension");
 
-		RuleFor(r => r.AddressListType).IsInEnum();
-		When(w => w.AddressListType == AddressListType.SelectedProperties, () => { Include(new SharedReverseGeocodeValidator()); });
+		RuleFor(r => r.ReverseGeocodeProvider).ValidEnum();
+
+		RuleFor(r => r.AddressListType).ValidEnum(true);
+
+		When(w => w.AddressListType == AddressListType.SelectedProperties, () =>
+		{
+			Include(new SharedReverseGeocodeValidator(typeof(AddressOptions)));
+		});
 	}
 }

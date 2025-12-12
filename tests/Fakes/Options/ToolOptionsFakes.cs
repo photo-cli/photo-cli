@@ -7,7 +7,7 @@ public static class ToolOptionsFakes
 		return ToolOptions.Default();
 	}
 
-	public static ToolOptions WithConnectionLimit(int connectionLimit)
+	public static ToolOptions WithConnectionLimit(byte connectionLimit)
 	{
 		var options = ToolOptions.Default();
 		options.ConnectionLimit = connectionLimit;

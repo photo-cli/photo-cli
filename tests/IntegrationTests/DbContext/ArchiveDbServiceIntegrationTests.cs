@@ -2,11 +2,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PhotoCli.Tests.IntegrationTests.DbContext;
 
-[Collection(XunitSharedCollectionsToDisableParallelExecution.EndToEndTests)]
-public class DbServiceUnitTests
+public class ArchiveDbServiceIntegrationTests : DbServiceIntegrationTestsBase
 {
-	private const string OutputPath = "output-folder";
-
 	public static TheoryData<List<Photo>, List<PhotoEntity>> PhotoTakenDate = new()
 	{
 		{
@@ -100,12 +97,12 @@ public class DbServiceUnitTests
 	[MemberData(nameof(CoordinateWithReverseGeocode))]
 	public async Task Archive_GivenPhotosSavedInMemorySqLiteDb_ShouldMatchAllPropertiesMatched(List<Photo> photos, List<PhotoEntity> expectedPhotoEntities)
 	{
-		var archiveDbContextProvider = new ArchiveDbContextProvider(new InMemorySQLiteConnectionStringProvider(), NullLogger<ArchiveDbContextProvider>.Instance);
-		var sut = new DbService(archiveDbContextProvider, NullLogger<DbService>.Instance);
+		var (sut, archiveDbContextProvider) = DbServiceSetup();
 
-		var actualAffectedRows = await sut.Archive(photos);
+		var actualArchiveResult = await sut.Archive(photos);
 
-		actualAffectedRows.Should().Be(expectedPhotoEntities.Count);
+		actualArchiveResult.Success.Should().Be(true);
+		actualArchiveResult.Photos.Count.Should().Be(expectedPhotoEntities.Count);
 		var savedPhotoEntities = await archiveDbContextProvider.CreateOrGetInstance().Photos.ToListAsync();
 
 		savedPhotoEntities.Should().BeEquivalentTo(expectedPhotoEntities, c => c
@@ -116,13 +113,13 @@ public class DbServiceUnitTests
 	[Fact]
 	public async Task Archive_DryRun_ShouldNotPersistRecords()
 	{
-		var archiveDbContextProvider = new ArchiveDbContextProvider(new InMemorySQLiteConnectionStringProvider(), NullLogger<ArchiveDbContextProvider>.Instance);
-		var sut = new DbService(archiveDbContextProvider, NullLogger<DbService>.Instance);
+		var (sut, archiveDbContextProvider) = DbServiceSetup();
 
-		var photos = new List<Photo>{ PhotoFakes.WithTargetRelativePathAndOutput("", OutputPath) };
-		var actualAffectedRows = await sut.Archive(photos, true);
+		var photos = new List<Photo> { PhotoFakes.WithTargetRelativePathAndOutput("", OutputPath) };
+		var actualAffectedRowsArchiveResult = await sut.Archive(photos, true);
 
-		actualAffectedRows.Should().Be(0);
+		actualAffectedRowsArchiveResult.Success.Should().Be(true);
+		actualAffectedRowsArchiveResult.Photos.Should().BeEmpty();
 		var savedPhotoEntities = await archiveDbContextProvider.CreateOrGetInstance().Photos.ToListAsync();
 		savedPhotoEntities.Should().BeEmpty();
 	}
@@ -131,10 +128,8 @@ public class DbServiceUnitTests
 	public async Task Archive_PhotosWithoutTargetRelativePath_ShouldThrowPhotoCliException()
 	{
 		var (withoutTargetRelativePathPhoto, sourceFullPath) = PhotoFakes.SourceAndFileNameWithExtensionWithFullSourcePath("source-path", "photo-without-target-relative-path.jpg");
-		var photos = new List<Photo>{ withoutTargetRelativePathPhoto };
-
-		var archiveDbContextProvider = new ArchiveDbContextProvider(new InMemorySQLiteConnectionStringProvider(), NullLogger<ArchiveDbContextProvider>.Instance);
-		var sut = new DbService(archiveDbContextProvider, NullLogger<DbService>.Instance);
+		var photos = new List<Photo> { withoutTargetRelativePathPhoto };
+		var (sut, archiveDbContextProvider) = DbServiceSetup();
 		var photoCliException = await Assert.ThrowsAsync<PhotoCliException>(async () => await sut.Archive(photos));
 
 		photoCliException.Message.Should().Be($"Can't archive, TargetRelativePath is missing for {sourceFullPath}");
@@ -143,15 +138,5 @@ public class DbServiceUnitTests
 	private static Photo WithTargetPathsExifDataAndSha1Hash(string targetRelativeDirectoryPath, string fileNameWithExtension, ExifData exifData, string sha1Hash)
 	{
 		return PhotoFakes.CreateWithExifData(exifData, fileNameWithExtension, targetRelativeDirectoryPath, sha1Hash: sha1Hash, outputFolder: OutputPath);
-	}
-
-	private static string OutputFilePathWithJpg(string fileName)
-	{
-		return MockFileSystemHelper.Combine(true, OutputPath, $"{fileName}.jpg");
-	}
-
-	private static string FilePathWithJpg(string fileName)
-	{
-		return $"{fileName}.jpg";
 	}
 }

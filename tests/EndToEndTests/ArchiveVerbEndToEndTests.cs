@@ -3,16 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PhotoCli.Tests.EndToEndTests;
 
-[Collection(XunitSharedCollectionsToDisableParallelExecution.EndToEndTests)]
 public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 {
-	public ArchiveVerbEndToEndTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-	{
-	}
-
 	#region Without Reverse Geocode
 
-	public static TheoryData<ICollection<string>, List<PhotoEntity>, ConsoleOutputValues> SingleFolderWithoutReverseGeocoding = new()
+	public static TheoryData<ICollection<string>, List<PhotoEntity>, Statistics> SingleFolderWithoutReverseGeocoding = new()
 	{
 		{
 			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SingleFolder()),
@@ -34,11 +29,11 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 				NoPhotoTakenDate(),
 				NoGpsCoordinate()
 			],
-			new ConsoleOutputValues(18, 16, 15, 1, 2, 7)
+			StatisticsFakes.Basic(18, 16, 2, 15, 1, 2, 7)
 		}
 	};
 
-	public static TheoryData<ICollection<string>, List<PhotoEntity>, ConsoleOutputValues> SubFoldersWithoutReverseGeocoding = new()
+	public static TheoryData<ICollection<string>, List<PhotoEntity>, Statistics> SubFoldersWithoutReverseGeocoding = new()
 	{
 		{
 			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SubFolders()),
@@ -60,32 +55,27 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 				NoPhotoTakenDate(),
 				NoGpsCoordinate()
 			],
-			new ConsoleOutputValues(18, 16, 15, 1, 2, 7)
+			StatisticsFakes.Basic(18, 16, 2, 15, 1, 2, 7)
 		}
 	};
 
 	[Theory]
 	[MemberData(nameof(SingleFolderWithoutReverseGeocoding))]
 	[MemberData(nameof(SubFoldersWithoutReverseGeocoding))]
-	public async Task Run_WithoutReverseGeocodeGivingArguments_ShouldCreateAndVerifyPhotosOnFileSystem(ICollection<string> args, List<PhotoEntity> expectedPhotoEntities, ConsoleOutputValues expectedConsoleOutput)
+	public async Task Run_WithoutReverseGeocodeGivingArguments_ShouldCreateAndVerifyPhotosOnFileSystem(ICollection<string> args, List<PhotoEntity> expectedPhotoEntities, Statistics expectedStatistics)
 	{
 		var outputFolder = OutputFolderForE2ETestPrivateToEachTest();
-
 		CommandLineArgumentsFakes.AddOutputPathOptions(outputFolder, args);
-		var actualOutput = await RunMain(args);
-
-		var actualConsoleOutput = ParseConsoleOutput(actualOutput);
+		var actualStatistics = await RunMainOutputAsStatistics(args);
 		var actualPhotoEntities = await ReadPhotoEntitiesFromSqLite(outputFolder);
-
 		using (new AssertionScope())
 		{
 			actualPhotoEntities.Should().BeEquivalentTo(expectedPhotoEntities, c => c
 				.Excluding(e => e.Id)
 				.Excluding(e => e.CreatedAt));
 
-			actualConsoleOutput.Should().Be(expectedConsoleOutput);
+			actualStatistics.Should().BeEquivalentTo(expectedStatistics);
 		}
-
 		DeleteOutput(outputFolder);
 	}
 
@@ -93,11 +83,11 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 
 	#region With ReverseGeocode
 
-	public static TheoryData<ICollection<string>, List<PhotoEntity>, ConsoleOutputValues> SingleFolderWithReverseGeocoding = new()
+	public static TheoryData<ICollection<string>, List<PhotoEntity>, Statistics> SingleFolderWithReverseGeocoding = new()
 	{
 		{
 			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SingleFolder(),
-				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
+				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: ["3", "4", "5", "6", "7"]),
 			[
 				Kenya(),
 				ItalyFlorence(),
@@ -116,15 +106,15 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 				NoPhotoTakenDate(),
 				NoGpsCoordinate()
 			],
-			new ConsoleOutputValues(18, 16, 15, 1, 2, 7)
+			StatisticsFakes.Basic(18, 16, 2, 15, 1, 2, 7)
 		}
 	};
 
-	public static TheoryData<ICollection<string>, List<PhotoEntity>, ConsoleOutputValues> SubFoldersWithReverseGeocoding = new()
+	public static TheoryData<ICollection<string>, List<PhotoEntity>, Statistics> SubFoldersWithReverseGeocoding = new()
 	{
 		{
 			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SubFolders(),
-				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: new List<string> { "3", "4", "5", "6", "7" }),
+				reverseGeocodeProvider: ReverseGeocodeProvider.BigDataCloud, bigDataCloudAdminLevels: ["3", "4", "5", "6", "7"]),
 			[
 				Kenya(),
 				ItalyFlorence(),
@@ -143,21 +133,19 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 				NoPhotoTakenDate(),
 				NoGpsCoordinate()
 			],
-			new ConsoleOutputValues(18, 16, 15, 1, 2, 7)
+			StatisticsFakes.Basic(18, 16, 2, 15, 1, 2, 7)
 		}
 	};
 
 	[Theory]
 	[MemberData(nameof(SingleFolderWithReverseGeocoding))]
 	[MemberData(nameof(SubFoldersWithReverseGeocoding))]
-	public async Task Run_WithReverseGeocodeGivingArguments_ShouldCreateAndVerifyPhotosOnFileSystem(ICollection<string> args, List<PhotoEntity> expectedPhotoEntities, ConsoleOutputValues expectedConsoleOutput)
+	public async Task Run_WithReverseGeocodeGivingArguments_ShouldCreateAndVerifyPhotosOnFileSystem(ICollection<string> args, List<PhotoEntity> expectedPhotoEntities, Statistics expectedStatistics)
 	{
 		var outputFolder = OutputFolderForE2ETestPrivateToEachTest();
 
 		CommandLineArgumentsFakes.AddOutputPathOptions(outputFolder, args);
-		var actualOutput = await RunMain(args);
-
-		var actualConsoleOutput = ParseConsoleOutput(actualOutput);
+		var actualStatistics = await RunMainOutputAsStatistics(args);
 		var actualPhotoEntities = await ReadPhotoEntitiesFromSqLite(outputFolder);
 
 		using (new AssertionScope())
@@ -180,8 +168,10 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 					actualPhotoEntity.Address1.Should().BeNullOrEmpty();
 				}
 			}
-
-			actualConsoleOutput.Should().Be(expectedConsoleOutput);
+			actualStatistics.Should().BeEquivalentTo(expectedStatistics, c => c
+				.Excluding(e => e.ReserveGeocodeFromMemory)
+				.Excluding(e => e.ReserveGeocodeRequestSent)
+			);
 		}
 
 		DeleteOutput(outputFolder);
@@ -223,23 +213,19 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 	[MemberData(nameof(NoPhotoTakenDateActionWithPreventProcessOption))]
 	[MemberData(nameof(NoCoordinateActionWithPreventProcessOption))]
 	[MemberData(nameof(NoPhotoTakenDateAndNoCoordinateActionWithPreventProcessOption))]
-	public async Task Run_NoExifDataPreventActionsWithPreventOptions_ShouldExitWithSpecificExitCodeWithoutCreatingOutputFolder(ICollection<string> args, ExitCode expectedExitCode, ConsoleOutputValues
-			expectedConsoleOutput)
+	public async Task Run_NoExifDataPreventActionsWithPreventOptions_ShouldExitWithSpecificExitCodeWithoutCreatingOutputFolder(ICollection<string> args, ExitCode expectedExitCode,
+		ConsoleOutputValues expectedConsoleOutput)
 	{
 		var outputFolder = OutputFolderForE2ETestPrivateToEachTest();
-
 		CommandLineArgumentsFakes.AddOutputPathOptions(outputFolder, args);
-		var actualOutput = await RunMain(args, expectedExitCode);
-
+		var actualOutput = await RunMainRaw(args, expectedExitCode);
 		var actualConsoleOutput = ParseConsoleOutput(actualOutput);
 		var outputFolderDryRunIsExist = Directory.Exists(outputFolder);
-
 		using (new AssertionScope())
 		{
 			actualConsoleOutput.Should().Be(expectedConsoleOutput);
 			outputFolderDryRunIsExist.Should().Be(false);
 		}
-
 		DeleteOutput(outputFolder);
 	}
 
@@ -247,38 +233,34 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 
 	#region Dry Run
 
-	public static TheoryData<ICollection<string>, ConsoleOutputValues> DryRunSingleFolder = new()
+	public static TheoryData<ICollection<string>, Statistics> DryRunSingleFolder = new()
 	{
 		{
 			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SingleFolder(), true),
-			new ConsoleOutputValues(18, 16, 15, 1, 2, 7)
+			StatisticsFakes.Basic(18, 16, 2, 15, 1, 2, 7)
 		}
 	};
 
-	public static TheoryData<ICollection<string>, ConsoleOutputValues> DryRunSubFolders = new()
+	public static TheoryData<ICollection<string>, Statistics> DryRunSubFolders = new()
 	{
 		{
 			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SubFolders(), true),
-			new ConsoleOutputValues(18, 16, 15, 1, 2, 7)
+			StatisticsFakes.Basic(18, 16, 2, 15, 1, 2, 7)
 		}
 	};
 
 	[Theory]
 	[MemberData(nameof(DryRunSingleFolder))]
 	[MemberData(nameof(DryRunSubFolders))]
-	public async Task Run_DryRun_ShouldCreateAndVerifyPhotosOnFileSystem(ICollection<string> args, ConsoleOutputValues expectedConsoleOutput)
+	public async Task Run_DryRun_ShouldCreateAndVerifyPhotosOnFileSystem(ICollection<string> args, Statistics expectedStatistics)
 	{
 		var outputFolder = OutputFolderForE2ETestPrivateToEachTest();
-
 		CommandLineArgumentsFakes.AddOutputPathOptions(outputFolder, args);
-		var actualOutput = await RunMain(args);
-
-		var actualConsoleOutput = ParseConsoleOutput(actualOutput);
+		var actualConsoleOutput = await RunMainOutputAsStatistics(args);
 		var outputFolderDryRunIsExist = Directory.Exists(outputFolder);
-
 		using (new AssertionScope())
 		{
-			actualConsoleOutput.Should().Be(expectedConsoleOutput);
+			actualConsoleOutput.Should().BeEquivalentTo(expectedStatistics);
 			outputFolderDryRunIsExist.Should().Be(false);
 		}
 	}
@@ -310,7 +292,7 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 		"2024/05/29/2024.05.29_06.01.21-191fe7ce27dd587b9ee867b6dabaa39785cae5a7.xmp",
 	];
 
-	public static TheoryData<ICollection<string>, List<PhotoEntity>, ConsoleOutputValues, List<string>> SingleFolderWithoutReverseGeocodingCompanions = new()
+	public static TheoryData<ICollection<string>, List<PhotoEntity>, Statistics, List<string>> SingleFolderWithoutReverseGeocodingCompanions = new()
 	{
 		{
 			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SingleFolderCompanions()),
@@ -321,12 +303,12 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 				Hallstatt(),
 				Leiden(),
 			],
-			new ConsoleOutputValues(5, 5, 5, DirectoriesCreated: 5, CompanionsFound: 15, CompanionsCopied: 15),
+			StatisticsFakes.Companions(5, 5, 0,5, 0, 0, 5, 15, 15),
 			ExpectedCompanionsFilesOnOutput
 		}
 	};
 
-	public static TheoryData<ICollection<string>, List<PhotoEntity>, ConsoleOutputValues, List<string>> SubFoldersWithoutReverseGeocodingCompanions = new()
+	public static TheoryData<ICollection<string>, List<PhotoEntity>, Statistics, List<string>> SubFoldersWithoutReverseGeocodingCompanions = new()
 	{
 		{
 			CommandLineArgumentsFakes.ArchiveBuildCommandLineOptionsWithoutOutputPath(TestImagesPathHelper.SubFoldersCompanions()),
@@ -337,7 +319,7 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 				Hallstatt(),
 				Leiden(),
 			],
-			new ConsoleOutputValues(5, 5, 5, DirectoriesCreated: 5, CompanionsFound: 15, CompanionsCopied: 15),
+			StatisticsFakes.Companions(5, 5, 0,5, 0, 0, 5, 15, 15),
 			ExpectedCompanionsFilesOnOutput
 		}
 	};
@@ -346,26 +328,21 @@ public class ArchiveVerbEndToEndTests : BaseEndToEndTests
 	[MemberData(nameof(SingleFolderWithoutReverseGeocodingCompanions))]
 	[MemberData(nameof(SubFoldersWithoutReverseGeocodingCompanions))]
 	public async Task Run_GivingArgumentsWithCompanions_ShouldCreateAndVerifyPhotosOnFileSystem(ICollection<string> args, List<PhotoEntity> expectedPhotoEntities,
-		ConsoleOutputValues expectedConsoleOutput, List<string> expectedCompanionFiles)
+		Statistics expectedStatistics, List<string> expectedCompanionFiles)
 	{
 		var outputFolder = OutputFolderForE2ETestPrivateToEachTest();
-
 		CommandLineArgumentsFakes.AddOutputPathOptions(outputFolder, args);
-		var actualOutput = await RunMain(args);
-
-		var actualConsoleOutput = ParseConsoleOutput(actualOutput);
+		var actualStatistics = await RunMainOutputAsStatistics(args);
 		var actualPhotoEntities = await ReadPhotoEntitiesFromSqLite(outputFolder);
-
 		using (new AssertionScope())
 		{
 			actualPhotoEntities.Should().BeEquivalentTo(expectedPhotoEntities, c => c
 				.Excluding(e => e.Id)
 				.Excluding(e => e.CreatedAt));
 
-			actualConsoleOutput.Should().Be(expectedConsoleOutput);
+			actualStatistics.Should().BeEquivalentTo(expectedStatistics);
 			VerifyExpectedFilesOnOutput(expectedCompanionFiles, outputFolder);
 		}
-
 		DeleteOutput(outputFolder);
 	}
 

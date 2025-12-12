@@ -9,22 +9,17 @@ public static class ExifDataFakes
 		return WithDay(1);
 	}
 
-	public static ExifData ValidSampleId(int sampleId)
+	public static ExifData PhotoTakenDateSampleId(byte sampleId)
 	{
 		return WithDay(sampleId);
 	}
 
-	public static ExifData PhotoTakenDateSampleId(int sampleId)
-	{
-		return WithDay(sampleId);
-	}
-
-	public static ExifData WithDay(int day)
+	public static ExifData WithDay(byte day)
 	{
 		return Create(DateTimeFakes.WithDay(day));
 	}
 
-	public static ExifData WithMonth(int month)
+	public static ExifData WithMonth(byte month)
 	{
 		return Create(DateTimeFakes.WithMonth(month));
 	}
@@ -39,7 +34,7 @@ public static class ExifDataFakes
 		return Create(DateTimeFakes.WithYear(year));
 	}
 
-	public static ExifData WithSeconds(int second)
+	public static ExifData WithSeconds(byte second)
 	{
 		return Create(DateTimeFakes.WithSecond(second));
 	}
@@ -49,7 +44,7 @@ public static class ExifDataFakes
 		return Create(DateTimeFakes.WithYear(year), reverseGeocodes: ReverseGeocodeFakes.Valid());
 	}
 
-	public static ExifData WithDayAndReverseGeocodeSampleId(int day, int sampleId)
+	public static ExifData WithDayAndReverseGeocodeSampleId(byte day, int sampleId)
 	{
 		return Create(DateTimeFakes.WithDay(day), reverseGeocodes: ReverseGeocodeFakes.Sample(sampleId));
 	}
@@ -59,9 +54,19 @@ public static class ExifDataFakes
 		return Create(reverseGeocodes: ReverseGeocodeFakes.Sample(sampleId));
 	}
 
+	public static ExifData WithReverseGeocodes(IEnumerable<string> reverseGeocodes)
+	{
+		return Create(reverseGeocodes: reverseGeocodes);
+	}
+
+	public static ExifData WithoutReverseGeocodes()
+	{
+		return Create(reverseGeocodes: null);
+	}
+
 	public static ExifData WithNoPhotoTakenDate()
 	{
-		return new ExifData(null, CoordinateFakes.Valid(), ToolOptionFakes.AddressSeparator) { ReverseGeocodes = ReverseGeocodeFakes.Valid()};
+		return new ExifData(null, CoordinateFakes.Valid(), ToolOptionFakes.AddressSeparator) { ReverseGeocodes = ReverseGeocodeFakes.Valid() };
 	}
 
 	public static ExifData WithNoCoordinate()
@@ -76,7 +81,7 @@ public static class ExifDataFakes
 
 	public static ExifData WithNoReverseGeocodeAndNoTakenDate()
 	{
-		return new ExifData(null, null, ToolOptionFakes.AddressSeparator);;
+		return new ExifData(null, null, ToolOptionFakes.AddressSeparator); ;
 	}
 
 	public static ExifData? WithInvalidFileFormat()
@@ -89,20 +94,15 @@ public static class ExifDataFakes
 		return Create(coordinate: coordinate);
 	}
 
-	public static ExifData WithCoordinate(double latitude, double longitude)
-	{
-		return Create(coordinate: new Coordinate(latitude, longitude));
-	}
-
 	public static ExifData WithCoordinateAndReverseGeocode(double latitude, double longitude, List<string> reverseGeocodes)
 	{
 		return Create(null, new Coordinate(latitude, longitude), reverseGeocodes);
 	}
 
 	public static ExifData WithCoordinateSampleId(int sampleId)
-    {
-    	return Create(coordinate: CoordinateFakes.Sample(sampleId));
-    }
+	{
+		return Create(coordinate: CoordinateFakes.Sample(sampleId));
+	}
 
 	public static ExifData WithCoordinateAndReverseGeocodeSampleId(int coordinateSampleId, int reverseGeocodeSampleId)
 	{
@@ -111,7 +111,7 @@ public static class ExifDataFakes
 
 	public static ExifData Create(DateTime? takenDate = null, Coordinate? coordinate = null, IEnumerable<string>? reverseGeocodes = null)
 	{
-		var roundedCoordinate = coordinate != null ? CoordinateRound(coordinate): null;
+		var roundedCoordinate = coordinate != null ? CoordinateRound(coordinate) : null;
 		return new ExifData(takenDate, roundedCoordinate, ToolOptionFakes.AddressSeparator) { ReverseGeocodes = reverseGeocodes };
 	}
 
@@ -142,7 +142,7 @@ public static class ExifDataFakes
 
 	public static ExifData ItalyArezzo4()
 	{
-		return Create(new DateTime(2008, 10, 22, 16, 43, 21), new Coordinate(43.468365,11.881634999972222));
+		return Create(new DateTime(2008, 10, 22, 16, 43, 21), new Coordinate(43.468365, 11.881634999972222));
 	}
 
 	public static ExifData ItalyArezzo5()

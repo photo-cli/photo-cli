@@ -1,4 +1,4 @@
-﻿using Moq.Protected;
+using Moq.Protected;
 
 namespace PhotoCli.Tests.Utils;
 

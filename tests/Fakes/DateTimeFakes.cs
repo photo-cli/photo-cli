@@ -9,22 +9,22 @@ public static class DateTimeFakes
 	private const int HourDefault = 0;
 	private const int SecondDefault = 0;
 
-	public static DateTime WithDayHour(int day, int hour)
+	public static DateTime WithDayHour(byte day, byte hour)
 	{
 		return new DateTime(YearDefault, MonthDefault, day, hour, MinuteDefault, SecondDefault);
 	}
 
-	public static DateTime WithMinuteSecond(int minute, int second)
+	public static DateTime WithMinuteSecond(byte minute, byte second)
 	{
 		return new DateTime(YearDefault, MonthDefault, DayDefault, HourDefault, minute, second);
 	}
 
-	public static DateTime WithDay(int day)
+	public static DateTime WithDay(byte day)
 	{
 		return new DateTime(YearDefault, MonthDefault, day);
 	}
 
-	public static DateTime WithMonth(int month)
+	public static DateTime WithMonth(byte month)
 	{
 		return new DateTime(YearDefault, month, DayDefault);
 	}
@@ -34,25 +34,25 @@ public static class DateTimeFakes
 		return new DateTime(year, MonthDefault, DayDefault);
 	}
 
-	public static string FormatDay(int day)
+	public static string FormatDay(byte day)
 	{
 		var dateTime = WithDay(day);
 		return dateTime.ToString(ToolOptionFakes.DateFormatWithDay);
 	}
 
-	public static string DirectoryFormatDay(int day)
+	public static string DirectoryFormatDay(byte day)
 	{
 		var dateTime = WithDay(day);
 		return Path.Combine(dateTime.ToString(ToolOptionFakes.YearFormat), dateTime.ToString(ToolOptionFakes.MonthFormat), dateTime.ToString(ToolOptionFakes.DayFormat));
 	}
 
-	public static string FormatMonth(int month)
+	public static string FormatMonth(byte month)
 	{
 		var dateTime = WithMonth(month);
 		return dateTime.ToString(ToolOptionFakes.DateFormatWithMonth);
 	}
 
-	public static string DirectoryFormatMonth(int month)
+	public static string DirectoryFormatMonth(byte month)
 	{
 		var dateTime = WithMonth(month);
 		return Path.Combine(dateTime.ToString(ToolOptionFakes.YearFormat), dateTime.ToString(ToolOptionFakes.MonthFormat));
@@ -75,7 +75,7 @@ public static class DateTimeFakes
 		return dateTime.ToString(ToolOptionFakes.DateTimeFormatWithMinutes);
 	}
 
-	public static DateTime WithSecond(int second)
+	public static DateTime WithSecond(byte second)
 	{
 		return new DateTime(YearDefault, MonthDefault, DayDefault, HourDefault, MinuteDefault, second);
 	}
@@ -85,7 +85,7 @@ public static class DateTimeFakes
 		return DateTime.MinValue;
 	}
 
-	public static string FormatSecond(int second)
+	public static string FormatSecond(byte second)
 	{
 		var dateTime = WithSecond(second);
 		return dateTime.ToString(ToolOptionFakes.DateTimeFormatWithSecondsDefault);

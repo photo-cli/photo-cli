@@ -62,4 +62,9 @@ public class ApiKeyStoreFluentValidationTests : BaseFluentValidationTests<ApiKey
 	}
 
 	#endregion
+
+	protected override ApiKeyStoreValidator CreateValidator()
+	{
+		return new ApiKeyStoreValidator();
+	}
 }
