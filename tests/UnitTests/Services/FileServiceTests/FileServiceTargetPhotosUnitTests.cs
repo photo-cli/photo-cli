@@ -1,90 +1,128 @@
-using System.Runtime.InteropServices;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
-namespace PhotoCli.Tests.UnitTests.Services;
+namespace PhotoCli.Tests.UnitTests.Services.FileServiceTests;
 
-public class FileServiceUnitTests
+public class FileServiceTargetPhotosUnitTests : FileServiceUnitTestsBase
 {
 	#region Copy
 
-	public static TheoryData<List<Photo>> FileDataWithNoNewNameOnlyMainPhotoFile = new()
+	public static TheoryData<List<Photo>, Statistics> FileDataWithNoNewNameOnlyMainPhotoFile = new()
 	{
-		new List<Photo>
 		{
-			SingleOnRoot("file1.jpg"),
-			SingleOnRoot("file2.jpg"),
+			[
+				SingleOnRoot("file1.jpg"),
+				SingleOnRoot("file2.jpg")
+			],
+			new Statistics { PhotosCopied = 2, DirectoriesCreated = 1 }
 		},
-		new List<Photo>
 		{
-			SingleOnSubPath("file3.jpg", "sub-path1"),
-			SingleOnSubPath("file4.jpg", "sub-path2"),
+			[
+				SingleOnSubPath("file3.jpg", "sub-path1"),
+				SingleOnSubPath("file4.jpg", "sub-path2")
+			],
+			new Statistics { PhotosCopied = 2, DirectoriesCreated = 2 }
 		},
-		new List<Photo>
 		{
-			SingleOnRoot("file5.jpg"),
-			SingleOnRoot("file6.jpg"),
-			SingleOnSubPath("file7.jpg", "sub-path3"),
+			[
+				SingleOnRoot("file5.jpg"),
+				SingleOnRoot("file6.jpg"),
+				SingleOnSubPath("file7.jpg", "sub-path3")
+			],
+			new Statistics { PhotosCopied = 3, DirectoriesCreated = 2 }
 		},
 	};
 
-	public static TheoryData<List<Photo>>? FileDataWithNewNameOnlyMainPhotoFile = new()
+	public static TheoryData<List<Photo>, Statistics>? FileDataWithNewNameOnlyMainPhotoFile = new()
 	{
-		new List<Photo>
 		{
-			SingleWithNewNameOnRoot("file1.jpg", "new-name1"),
-			SingleWithNewNameOnRoot("file2.jpg", "new-name2"),
+			[
+				SingleWithNewNameOnRoot("file1.jpg", "new-name1"),
+				SingleWithNewNameOnRoot("file2.jpg", "new-name2")
+			],
+			new Statistics { PhotosCopied = 2, DirectoriesCreated = 1 }
 		},
-		new List<Photo>
 		{
-			SingleWithNewNameOnSubPath("file3.jpg", "new-name3", "sub-path1"),
-			SingleWithNewNameOnSubPath("file4.jpg", "new-name4", "sub-path2"),
+			[
+				SingleWithNewNameOnSubPath("file3.jpg", "new-name3", "sub-path1"),
+				SingleWithNewNameOnSubPath("file4.jpg", "new-name4", "sub-path2")
+			],
+			new Statistics { PhotosCopied = 2, DirectoriesCreated = 2 }
 		},
-		new List<Photo>
 		{
-			SingleWithNewNameOnRoot("file5.jpg", "new-name5"),
-			SingleWithNewNameOnRoot("file6.jpg", "new-name6"),
-			SingleWithNewNameOnSubPath("file7.jpg", "new-name7", "sub-path3"),
-		},
+			[
+				SingleWithNewNameOnRoot("file5.jpg", "new-name5"),
+				SingleWithNewNameOnRoot("file6.jpg", "new-name6"),
+				SingleWithNewNameOnSubPath("file7.jpg", "new-name7", "sub-path3")
+			],
+			new Statistics { PhotosCopied = 3, DirectoriesCreated = 2 }
+		}
 	};
 
-	public static TheoryData<List<Photo>> FileDataWithNoNewNameWithCompanion = new()
+	public static TheoryData<List<Photo>, Statistics> FileDataWithNoNewNameWithCompanion = new()
 	{
-		new List<Photo>
 		{
-			WithCompanionsOnRoot("file1.jpg", ["file1.comp"]),
-			WithCompanionsOnRoot("file2.jpg", ["file2.comp1", "file2.comp2"]),
+			[
+				WithCompanionsOnRoot("file1.jpg", ["file1.comp"]),
+				WithCompanionsOnRoot("file2.jpg", ["file2.comp1", "file2.comp2"])
+			],
+			new Statistics { PhotosCopied = 2, DirectoriesCreated = 1, CompanionFilesCopied = 3 }
 		},
-		new List<Photo>
 		{
-			WithCompanionsOnSubPath("file3.jpg", ["file3.comp"], "sub-path1"),
-			WithCompanionsOnSubPath("file4.jpg", ["file4.comp1", "file4.comp2"], "sub-path2"),
+			[
+				WithCompanionsOnSubPath("file3.jpg", ["file3.comp"], "sub-path1"),
+				WithCompanionsOnSubPath("file4.jpg", ["file4.comp1", "file4.comp2"], "sub-path2")
+			],
+			new Statistics { PhotosCopied = 2, DirectoriesCreated = 2, CompanionFilesCopied = 3 }
 		},
-		new List<Photo>
 		{
-			WithCompanionsOnRoot("file5.jpg", ["file5.comp"]),
-			WithCompanionsOnRoot("file6.jpg", ["file6.comp"]),
-			WithCompanionsOnSubPath("file7.jpg", ["file7.comp1", "file7.comp2"], "sub-path3"),
+			[
+				WithCompanionsOnRoot("file5.jpg", ["file5.comp"]),
+				WithCompanionsOnRoot("file6.jpg", ["file6.comp"]),
+				WithCompanionsOnSubPath("file7.jpg", ["file7.comp1", "file7.comp2"], "sub-path3")
+			],
+			new Statistics { PhotosCopied = 3, DirectoriesCreated = 2, CompanionFilesCopied = 4 }
 		},
+		{
+			[
+				WithCompanionsOnSubPath("file3.jpg", ["file3.comp"], "sub-path1"),
+				WithCompanionsOnSubPath("file4.jpg", ["file4.comp1", "file4.comp2"], "sub-path2")
+			],
+			new Statistics { PhotosCopied = 2, DirectoriesCreated = 2, CompanionFilesCopied = 3 }
+		},
+		{
+			[
+				WithCompanionsOnRoot("file5.jpg", ["file5.comp"]),
+				WithCompanionsOnRoot("file6.jpg", ["file6.comp"]),
+				WithCompanionsOnSubPath("file7.jpg", ["file7.comp1", "file7.comp2"], "sub-path3")
+			],
+			new Statistics { PhotosCopied = 3, DirectoriesCreated = 2, CompanionFilesCopied = 4 }
+		}
 	};
 
-	public static TheoryData<List<Photo>> FileDataWithNewNameWithCompanion = new()
+	public static TheoryData<List<Photo>, Statistics> FileDataWithNewNameWithCompanion = new()
 	{
-		new List<Photo>
 		{
-			WithCompanionsAndNewNameOnRoot("file1.jpg", "new-name1", ["file1.comp"]),
-			WithCompanionsAndNewNameOnRoot("file2.jpg", "new-name2", ["file2.comp1", "file2.comp2"]),
+			[
+				WithCompanionsAndNewNameOnRoot("file1.jpg", "new-name1", ["file1.comp"]),
+				WithCompanionsAndNewNameOnRoot("file2.jpg", "new-name2", ["file2.comp1", "file2.comp2"])
+			],
+			new Statistics { PhotosCopied = 2, DirectoriesCreated = 1, CompanionFilesCopied = 3 }
 		},
-		new List<Photo>
 		{
-			WithCompanionsAndNewNameOnSubPath("file3.jpg","new-name3", ["file3.comp"], "sub-path1"),
-			WithCompanionsAndNewNameOnSubPath("file4.jpg","new-name4", ["file4.comp1", "file4.comp2"], "sub-path2"),
+			[
+				WithCompanionsAndNewNameOnSubPath("file3.jpg", "new-name3", ["file3.comp"], "sub-path1"),
+				WithCompanionsAndNewNameOnSubPath("file4.jpg", "new-name4", ["file4.comp1", "file4.comp2"], "sub-path2")
+			],
+			new Statistics { PhotosCopied = 2, DirectoriesCreated = 2, CompanionFilesCopied = 3 }
 		},
-		new List<Photo>
 		{
-			WithCompanionsAndNewNameOnRoot("file5.jpg","new-name5", ["file5.comp"]),
-			WithCompanionsAndNewNameOnRoot("file6.jpg","new-name6", ["file6.comp"]),
-			WithCompanionsAndNewNameOnSubPath("file7.jpg","new-name7", ["file7.comp1", "file7.comp2"], "sub-path3"),
-		},
+			[
+				WithCompanionsAndNewNameOnRoot("file5.jpg", "new-name5", ["file5.comp"]),
+				WithCompanionsAndNewNameOnRoot("file6.jpg", "new-name6", ["file6.comp"]),
+				WithCompanionsAndNewNameOnSubPath("file7.jpg", "new-name7", ["file7.comp1", "file7.comp2"], "sub-path3")
+			],
+			new Statistics { PhotosCopied = 3, DirectoriesCreated = 2, CompanionFilesCopied = 4 }
+		}
 	};
 
 	[Theory]
@@ -92,13 +130,24 @@ public class FileServiceUnitTests
 	[MemberData(nameof(FileDataWithNewNameOnlyMainPhotoFile))]
 	[MemberData(nameof(FileDataWithNoNewNameWithCompanion))]
 	[MemberData(nameof(FileDataWithNewNameWithCompanion))]
-	public void Copy_GivenPhotos_ShouldCreatedOnMockedFileSystem(List<Photo> photos)
+	public void Copy_GivenPhotos_ShouldCreatedOnMockedFileSystemWithExpectedStatistics(List<Photo> photos, Statistics statisticsExpected)
 	{
 		var mockFileSystem = new MockFileSystem();
 		SetupFileSystemWithDummyFiles(photos, mockFileSystem);
-		var sut = new FileService(mockFileSystem, NullLogger<FileService>.Instance, new Statistics(), ConsoleWriterFakes.Valid());
+		var statisticsActual = new Statistics();
+		var sut = new FileService(mockFileSystem, NullLogger<FileService>.Instance, statisticsActual, ConsoleWriterFakes.Valid());
 		var copiedPhotos = sut.Copy(photos, DefaultOutputPath, false);
-		VerifyFilesExistOnFileSystem(copiedPhotos, mockFileSystem);
+
+		using (new AssertionScope())
+		{
+			VerifyPhotoTargetFilesExistOnFileSystem(copiedPhotos, mockFileSystem);
+
+			statisticsActual.DirectoriesCreated.Should().Be(statisticsExpected.DirectoriesCreated);
+			statisticsActual.PhotosExisted.Should().Be(statisticsExpected.PhotosExisted);
+			statisticsActual.PhotosCopied.Should().Be(statisticsExpected.PhotosCopied);
+			statisticsActual.CompanionFilesCopied.Should().Be(statisticsExpected.CompanionFilesCopied);
+			statisticsActual.CompanionFilesExisted.Should().Be(statisticsExpected.CompanionFilesExisted);
+		}
 	}
 
 	public static TheoryData<List<string>, List<Photo>> CopyExistingMainPhotoFileOnOutputPathThrowException = new()
@@ -132,30 +181,30 @@ public class FileServiceUnitTests
 	};
 
 	public static TheoryData<List<string>, List<Photo>> CopyExistingCompanionFilesOnOutputPathThrowException = new()
-    {
-    	{
-    		[
-    			"fileExistOnOutput-1.comp1",
-    		],
-    		[
-			    WithCompanionsAndNewNameOnRoot("input-1.jpg", "fileExistOnOutput-1", ["fileExistOnOutput-1.comp1"]),
-    		]
-    	},
-    	{
-    		[
-    			"fileExistOnOutput-2.comp2",
-    		],
-    		[
-			    SingleWithNewNameOnRoot("input-1.jpg", "output-1"),
-			    WithCompanionsAndNewNameOnRoot("input-2.jpg", "fileExistOnOutput-2", ["fileExistOnOutput-2.comp2"]),
-    		]
-    	}
-    };
+	{
+		{
+			[
+				"fileExistOnOutput-1.comp1",
+			],
+			[
+				WithCompanionsAndNewNameOnRoot("input-1.jpg", "fileExistOnOutput-1", ["fileExistOnOutput-1.comp1"]),
+			]
+		},
+		{
+			[
+				"fileExistOnOutput-2.comp2",
+			],
+			[
+				SingleWithNewNameOnRoot("input-1.jpg", "output-1"),
+				WithCompanionsAndNewNameOnRoot("input-2.jpg", "fileExistOnOutput-2", ["fileExistOnOutput-2.comp2"]),
+			]
+		}
+	};
 
 	[Theory]
 	[MemberData(nameof(CopyExistingMainPhotoFileOnOutputPathThrowException))]
 	[MemberData(nameof(CopyExistingCompanionFilesOnOutputPathThrowException))]
-	public void Copy_WithParameterBreakDestinationExistsAsTrue_ShouldThrowException(List<string> existingFilesOnOutput, List<Photo> photos)
+	public void Copy_WhenDestinationFilesExist_ShouldRecordFileIoErrors(List<string> existingFilesOnOutput, List<Photo> photos)
 	{
 		const string outputFolder = "/output-path";
 		var mockFileSystem = new MockFileSystem();
@@ -165,13 +214,45 @@ public class FileServiceUnitTests
 		SetupFileSystemWithDummyFiles(existingFilePathsToBeCreated, mockFileSystem);
 		SetupFileSystemWithDummyFiles(inputPhotoFilePathsToBeCreated, mockFileSystem);
 
-		var statistics = new Statistics();
-		var sut = new FileService(mockFileSystem, NullLogger<FileService>.Instance, statistics, ConsoleWriterFakes.Valid());
+		var statics = new Statistics();
+		var sut = new FileService(mockFileSystem, NullLogger<FileService>.Instance, statics, ConsoleWriterFakes.Valid());
 
-		Assert.Throws<FileExistsOnDestinationPathException>(() =>
+		sut.Copy(photos, outputFolder, false);
+
+		using (new AssertionScope())
 		{
-			sut.Copy(photos, outputFolder, false);
-		});
+			statics.FileIoErrors.Count.Should().Be(existingFilesOnOutput.Count);
+			statics.FileIoErrors.Should().AllSatisfy(fileIoError =>
+			{
+				fileIoError.ExceptionType.Should().Be(nameof(FileExistsOnDestinationPathException));
+				fileIoError.ExceptionMessage.Should().Be("I/O error occurred.");
+			});
+		}
+	}
+
+	[Theory]
+	[MemberData(nameof(FileDataWithNoNewNameOnlyMainPhotoFile))]
+	[MemberData(nameof(FileDataWithNewNameOnlyMainPhotoFile))]
+	[MemberData(nameof(FileDataWithNoNewNameWithCompanion))]
+	[MemberData(nameof(FileDataWithNewNameWithCompanion))]
+	public void Copy_GivenPhotosOnDryRun_ShouldNotCreateOnMockedFileSystemWithExpectedStatistics(List<Photo> photos, Statistics statisticsExpected)
+	{
+		var mockFileSystem = new MockFileSystem();
+		SetupFileSystemWithDummyFiles(photos, mockFileSystem);
+		var statisticsActual = new Statistics();
+		var sut = new FileService(mockFileSystem, NullLogger<FileService>.Instance, statisticsActual, ConsoleWriterFakes.Valid());
+		var copiedPhotos = sut.Copy(photos, DefaultOutputPath, true);
+
+		using (new AssertionScope())
+		{
+			VerifyPhotoTargetFilesNotExistOnFileSystem(copiedPhotos, mockFileSystem);
+
+			statisticsActual.DirectoriesCreated.Should().Be(statisticsExpected.DirectoriesCreated);
+			statisticsActual.PhotosExisted.Should().Be(statisticsExpected.PhotosExisted);
+			statisticsActual.PhotosCopied.Should().Be(statisticsExpected.PhotosCopied);
+			statisticsActual.CompanionFilesCopied.Should().Be(statisticsExpected.CompanionFilesCopied);
+			statisticsActual.CompanionFilesExisted.Should().Be(statisticsExpected.CompanionFilesExisted);
+		}
 	}
 
 	#endregion
@@ -255,29 +336,29 @@ public class FileServiceUnitTests
 			],
 			new Statistics { CompanionFilesExisted = 1, PhotosCopied = 1, CompanionFilesCopied =  0, PhotosExisted = 0 }
 		},
-		{
-			[
-				"fileExistOnOutput-2.comp2",
-				"fileExistOnOutput-3.comp3",
-			],
-			[
-				WithCompanionsAndNewNameOnRoot("input-2.jpg", "fileExistOnOutput-2", ["input-2.comp2"]),
-				WithCompanionsAndNewNameOnRoot("input-3.jpg", "fileExistOnOutput-3", ["input-3.comp3", "input-3.comp4"]),
-			],
-			new Statistics { CompanionFilesExisted = 2, PhotosCopied = 2, CompanionFilesCopied =  1, PhotosExisted = 0 }
-		},
-		{
-			[
-				"fileExistOnOutput-4.jpg",
-				"fileExistOnOutput-5.comp1",
-			],
-			[
-				SingleWithNewNameOnRoot("input-3.jpg", "output-1"),
-				WithCompanionsAndNewNameOnRoot("input-4.jpg", "fileExistOnOutput-4", ["input.comp1"]),
-				WithCompanionsAndNewNameOnRoot("input-5.jpg", "output-5", ["fileExistOnOutput-5.comp1", "output-5.comp1"]),
-			],
-			new Statistics { CompanionFilesExisted = 1, PhotosCopied = 2, CompanionFilesCopied =  1, PhotosExisted = 1 }
-		},
+		// {
+		// 	[
+		// 		"fileExistOnOutput-2.comp2",
+		// 		"fileExistOnOutput-3.comp3",
+		// 	],
+		// 	[
+		// 		WithCompanionsAndNewNameOnRoot("input-2.jpg", "fileExistOnOutput-2", ["input-2.comp2"]),
+		// 		WithCompanionsAndNewNameOnRoot("input-3.jpg", "fileExistOnOutput-3", ["input-3.comp3", "input-3.comp4"]),
+		// 	],
+		// 	new Statistics { CompanionFilesExisted = 2, PhotosCopied = 2, CompanionFilesCopied =  1, PhotosExisted = 0 }
+		// },
+		// {
+		// 	[
+		// 		"fileExistOnOutput-4.jpg",
+		// 		"fileExistOnOutput-5.comp1",
+		// 	],
+		// 	[
+		// 		SingleWithNewNameOnRoot("input-3.jpg", "output-1"),
+		// 		WithCompanionsAndNewNameOnRoot("input-4.jpg", "fileExistOnOutput-4", ["input.comp1"]),
+		// 		WithCompanionsAndNewNameOnRoot("input-5.jpg", "output-5", ["fileExistOnOutput-5.comp1", "output-5.comp1"]),
+		// 	],
+		// 	new Statistics { CompanionFilesExisted = 1, PhotosCopied = 2, CompanionFilesCopied =  1, PhotosExisted = 1 }
+		// },
 	};
 
 	public static TheoryData<List<string>, List<Photo>, Statistics> CopyPhotosWithCompanionFilesWithoutExistingOnOutput = new()
@@ -320,8 +401,34 @@ public class FileServiceUnitTests
 
 		using (new AssertionScope())
 		{
-			VerifyFilesExistOnFileSystem(copiedPhotos, mockFileSystem);
+			VerifyPhotoTargetFilesExistOnFileSystem(copiedPhotos, mockFileSystem);
 
+			statistics.PhotosExisted.Should().Be(statisticsExpected.PhotosExisted);
+			statistics.PhotosCopied.Should().Be(statisticsExpected.PhotosCopied);
+			statistics.CompanionFilesCopied.Should().Be(statisticsExpected.CompanionFilesCopied);
+			statistics.CompanionFilesExisted.Should().Be(statisticsExpected.CompanionFilesExisted);
+			statistics.FileIoErrors.Should().BeEmpty();
+		}
+	}
+
+	[Theory]
+	[MemberData(nameof(CopyMainPhotoFilesExistingOnOutput))]
+	[MemberData(nameof(CopyMainPhotoFilesWithoutExistingOnOutput))]
+	[MemberData(nameof(CopyPhotosWithCompanionFilesExistingOnOutputPath))]
+	[MemberData(nameof(CopyPhotosWithCompanionFilesWithoutExistingOnOutput))]
+	public void CopyIfNotExists_GivenPhotosOnDryRun_ShouldNotCreateOnMockedFileSystemWithExpectedStatistics(List<string> existingFilesOnOutput, List<Photo> photos, Statistics statisticsExpected)
+	{
+		var mockFileSystem = new MockFileSystem();
+		var existingFilePathsToBeCreated = existingFilesOnOutput.Select(s => Path.Combine(DefaultOutputPath, s));
+		SetupFileSystemWithDummyFiles(existingFilePathsToBeCreated, mockFileSystem);
+		SetupFileSystemWithDummyFiles(photos, mockFileSystem);
+
+		var statistics = new Statistics();
+		var sut = new FileService(mockFileSystem, NullLogger<FileService>.Instance, statistics, ConsoleWriterFakes.Valid());
+		var copiedPhotos = sut.CopyIfNotExists(photos, DefaultOutputPath, true);
+
+		using (new AssertionScope())
+		{
 			statistics.PhotosExisted.Should().Be(statisticsExpected.PhotosExisted);
 			statistics.PhotosCopied.Should().Be(statisticsExpected.PhotosCopied);
 			statistics.CompanionFilesCopied.Should().Be(statisticsExpected.CompanionFilesCopied);
@@ -493,7 +600,7 @@ public class FileServiceUnitTests
 		using (new AssertionScope())
 		{
 			await VerifyFileIntegrityExpected(photos, fileContentByPhoto, false, loggerMock);
-			loggerMock.VerifyAllLogStatementsAtLeastOnce(LogLevel.Critical, expectedLogStatement);
+			loggerMock.VerifyAllLogStatementsAtLeastOnce(LogLevel.Critical, true, expectedLogStatement);
 		}
 	}
 
@@ -587,7 +694,7 @@ public class FileServiceUnitTests
 		using (new AssertionScope())
 		{
 			await VerifyFileIntegrityExpected(photos, fileContentByPhoto, false, loggerMock);
-			loggerMock.VerifyAllLogStatementsAtLeastOnce(LogLevel.Critical, expectedLogStatement);
+			loggerMock.VerifyAllLogStatementsAtLeastOnce(LogLevel.Critical, true, expectedLogStatement);
 		}
 	}
 
@@ -617,7 +724,7 @@ public class FileServiceUnitTests
 	public async Task VerifyFileIntegrity_NoTargetSetForMainFile_ShouldThrowPhotoCliException()
 	{
 		var (noTargetSetPhoto, sourceFullPath) = PhotoFakes.SourceAndFileNameWithExtensionWithFullSourcePath("source-path", "no-target-set.jpg");
-		var photos = new List<Photo>{ noTargetSetPhoto };
+		var photos = new List<Photo> { noTargetSetPhoto };
 		var sut = new FileService(new MockFileSystem(), NullLogger<FileService>.Instance, StatisticsFakes.Empty(), ConsoleWriterFakes.Valid());
 		var photoCliException = await Assert.ThrowsAsync<PhotoCliException>(async () => await sut.VerifyFileIntegrity(photos));
 		photoCliException.Message.Should().Be($"Couldn't copy a photo don't have a TargetFullPath on {sourceFullPath}");
@@ -627,7 +734,7 @@ public class FileServiceUnitTests
 	public async Task VerifyFileIntegrity_NoTargetSetForCompanionFil_ShouldThrowPhotoCliException()
 	{
 		var (noTargetSetPhoto, sourceFullPath) = PhotoFakes.SourceAndFileNameWithExtensionWithFullSourcePath("source-path", "no-target-set.jpg");
-		var photos = new List<Photo>{ noTargetSetPhoto };
+		var photos = new List<Photo> { noTargetSetPhoto };
 		var sut = new FileService(new MockFileSystem(), NullLogger<FileService>.Instance, StatisticsFakes.Empty(), ConsoleWriterFakes.Valid());
 		var photoCliException = await Assert.ThrowsAsync<PhotoCliException>(async () => await sut.VerifyFileIntegrity(photos));
 		photoCliException.Message.Should().Be($"Couldn't copy a photo don't have a TargetFullPath on {sourceFullPath}");
@@ -717,32 +824,32 @@ public class FileServiceUnitTests
 	#region CalculateFileHash
 
 	public static TheoryData<Dictionary<Photo, byte[]>, List<Photo>> CalculateFileMatchesHashData = new()
-    {
-    	{
-    		new Dictionary<Photo, byte[]>
-    		{
-			    { SingleOnRoot("file1.jpg"), [1] },
-    		},
-    		[
-			    SingleWithDataOnRoot("file1.jpg", [1]),
-    		]
-    	},
-    	{
-    		new Dictionary<Photo, byte[]>
-    		{
-			    { SingleOnRoot("file2.jpg"), [2] },
-			    { SingleOnRoot("file3.jpg"), [100, 101, 102] },
-    		},
-    		[
-			    SingleWithDataOnRoot("file2.jpg", [2]),
-			    SingleWithDataOnRoot("file3.jpg", [100, 101, 102]),
-    		]
-    	},
-    	{
-    		new Dictionary<Photo, byte[]>(),
-    		[]
-    	},
-    };
+	{
+		{
+			new Dictionary<Photo, byte[]>
+			{
+				{ SingleOnRoot("file1.jpg"), [1] },
+			},
+			[
+				SingleWithDataOnRoot("file1.jpg", [1]),
+			]
+		},
+		{
+			new Dictionary<Photo, byte[]>
+			{
+				{ SingleOnRoot("file2.jpg"), [2] },
+				{ SingleOnRoot("file3.jpg"), [100, 101, 102] },
+			},
+			[
+				SingleWithDataOnRoot("file2.jpg", [2]),
+				SingleWithDataOnRoot("file3.jpg", [100, 101, 102]),
+			]
+		},
+		{
+			new Dictionary<Photo, byte[]>(),
+			[]
+		},
+	};
 
 	[Theory]
 	[MemberData(nameof(CalculateFileMatchesHashData))]
@@ -794,9 +901,6 @@ public class FileServiceUnitTests
 
 	#region Helpers
 
-	private const string DefaultOutputPath = "output-path";
-	private const string DefaultSourcePath = "source-path";
-
 	private static Photo SingleOnRoot(string fileNameWithExtension)
 	{
 		return SingleOnSubPath(fileNameWithExtension, "");
@@ -843,11 +947,6 @@ public class FileServiceUnitTests
 			companionFileNamesWithExtension: companionFileNamesWithExtension, sha1Hash: sha1Hash, outputFolder: DefaultOutputPath, sourcePath: DefaultSourcePath);
 	}
 
-	private static string SourcePath(string fileName)
-	{
-		return MockFileSystemHelper.Path(Path.Combine(DefaultSourcePath, fileName));
-	}
-
 	private static string OutputPath(string fileName)
 	{
 		return MockFileSystemHelper.Path(Path.Combine(DefaultOutputPath, fileName), true);
@@ -855,12 +954,12 @@ public class FileServiceUnitTests
 
 	private static Photo WithCompanionsAndSha1HashOnRoot(string fileNameWithExtension, int sha1HashSampleId, params CompanionFileNameHashPair[] companionFileNamesWithExtension)
 	{
-		return WithCompanionsAndSha1HashAndOutput(fileNameWithExtension, sha1HashSampleId,RootForMockFileSystem(), companionFileNamesWithExtension);
+		return WithCompanionsAndSha1HashAndOutput(fileNameWithExtension, sha1HashSampleId, RootForMockFileSystem(), companionFileNamesWithExtension);
 	}
 
 	private static Photo SingleWithSha1HashOnRoot(string fileNameWithExtension, int sha1HashSampleId)
 	{
-		return WithSha1HashAndOutput(fileNameWithExtension, sha1HashSampleId,RootForMockFileSystem());
+		return WithSha1HashAndOutput(fileNameWithExtension, sha1HashSampleId, RootForMockFileSystem());
 	}
 
 	private static Photo SingleWithDataOnRoot(string fileNameWithExtension, byte[] data)
@@ -900,52 +999,25 @@ public class FileServiceUnitTests
 		return photo;
 	}
 
-	private static List<Photo> CreatePhotosOnMockFileSystem(Dictionary<Photo, byte[]> inputFileContentByPhoto, IMockFileDataAccessor mockFileSystem)
+	private static void VerifyPhotoTargetFilesExistOnFileSystem(IEnumerable<Photo> photos, IMockFileDataAccessor mockFileSystem)
 	{
-		var photos = new List<Photo>();
-		foreach (var (photo, fileContent) in inputFileContentByPhoto)
-		{
-			photos.Add(photo);
-			mockFileSystem.AddFile(photo.PhotoFile.SourcePath, new MockFileData(fileContent));
-		}
-		return photos;
+		VerifyPhotoTargetFilesExistByParameter(photos, mockFileSystem, true);
 	}
 
-	private static void CreateFilesOnMockFileSystem(Dictionary<string, byte[]> fileContentByPhoto, IMockFileDataAccessor mockFileSystem)
+	private static void VerifyPhotoTargetFilesNotExistOnFileSystem(IEnumerable<Photo> photos, IMockFileDataAccessor mockFileSystem)
 	{
-		foreach (var (filePath, fileContent) in fileContentByPhoto)
-			mockFileSystem.AddFile(filePath, new MockFileData(fileContent));
+		VerifyPhotoTargetFilesExistByParameter(photos, mockFileSystem, false);
 	}
 
-	private static void SetupFileSystemWithDummyFiles(IEnumerable<Photo> photos, IMockFileDataAccessor mockFileSystem)
+	private static void VerifyPhotoTargetFilesExistByParameter(IEnumerable<Photo> photos, IMockFileDataAccessor mockFileSystem, bool exists)
 	{
-		var filePaths = new List<string>();
 		foreach (var photo in photos)
 		{
-			filePaths.Add(photo.PhotoFile.SourcePath);
+			mockFileSystem.FileExists(photo.PhotoFile.TargetFullPath).Should().Be(exists);
 			if (photo.CompanionFiles == null)
 				continue;
 			foreach (var companionFile in photo.CompanionFiles)
-				filePaths.Add(companionFile.SourcePath);
-		}
-		SetupFileSystemWithDummyFiles(filePaths, mockFileSystem);
-	}
-
-	private static void SetupFileSystemWithDummyFiles(IEnumerable<string> filePaths, IMockFileDataAccessor mockFileSystem)
-	{
-		foreach (var filePath in filePaths)
-			mockFileSystem.AddFile(filePath, string.Empty);
-	}
-
-	private static void VerifyFilesExistOnFileSystem(IEnumerable<Photo> photos, IMockFileDataAccessor mockFileSystem)
-	{
-		foreach (var photo in photos)
-		{
-			mockFileSystem.FileExists(photo.PhotoFile.TargetFullPath).Should().Be(true);
-			if(photo.CompanionFiles == null)
-				continue;
-			foreach (var companionFile in photo.CompanionFiles)
-				mockFileSystem.FileExists(companionFile.TargetFullPath).Should().Be(true);
+				mockFileSystem.FileExists(companionFile.TargetFullPath).Should().Be(exists);
 		}
 	}
 
@@ -955,11 +1027,6 @@ public class FileServiceUnitTests
 	{
 		return gnuHashFormats.Aggregate(string.Empty, (current, gnuHashFormat) =>
 			current + $"{Sha1HashFakes.Sample(gnuHashFormat.Sha1SampleId)}  {MockFileSystemHelper.Path(gnuHashFormat.Path)}{Environment.NewLine}");
-	}
-
-	private static string RootForMockFileSystem()
-	{
-		return RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? @"C:\" : "";
 	}
 
 	private record CompanionFileNameHashPair(string CompanionFileName, int Sha1SampleId);

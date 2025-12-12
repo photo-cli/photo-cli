@@ -43,7 +43,7 @@ public class FileService : IFileService
 
 			if (isDryRun)
 			{
-				_directoriesCreatedHistoryForDryRun ??= [_fileSystem.DirectoryInfo.New(outputFolder).FullName];
+				_directoriesCreatedHistoryForDryRun ??= [];
 				if (!_directoriesCreatedHistoryForDryRun.Contains(newPhotoFileInfo.Directory!.FullName))
 				{
 					_directoriesCreatedHistoryForDryRun.Add(newPhotoFileInfo.Directory.FullName);
@@ -63,7 +63,7 @@ public class FileService : IFileService
 				if (newPhotoFileInfo.Exists)
 				{
 					if (breakOnDestinationExist)
-						throw new FileExistsOnDestinationPathException(photo.PhotoFile.TargetFullPath);
+						throw new FileExistsOnDestinationPathException(photo.PhotoFile);
 					++_statistics.PhotosExisted;
 					_logger.LogInformation("Photo is existed on to: {Path}, skipping", photo.PhotoFile.TargetFullPath);
 					continue;
@@ -84,7 +84,7 @@ public class FileService : IFileService
 						if (newCompanionFileInfo.Exists)
 						{
 							if (breakOnDestinationExist)
-								throw new FileExistsOnDestinationPathException(companionFile.TargetFullPath);
+								throw new FileExistsOnDestinationPathException(companionFile);
 							++_statistics.CompanionFilesExisted;
 							_logger.LogInformation("Companion file is existed on to: {Path}, skipping", companionFile.TargetFullPath);
 							continue;
@@ -100,7 +100,12 @@ public class FileService : IFileService
 			}
 			catch (IOException ioException)
 			{
-				_statistics.FileIoErrors.Add(ioException.Message);
+				_statistics.FileIoErrors.Add(new FileIoErrorInfo
+				{
+					FilePath = photo.PhotoFile.SourcePath,
+					ExceptionMessage = ioException.Message,
+					ExceptionType = ioException.GetType().Name
+				});
 				_logger.LogCritical(ioException, "Can't copy file");
 			}
 			_logger.LogInformation("Photo is copied to: {To} from: {From}", photo.PhotoFile.TargetFullPath, fileInfo.FullName);
@@ -201,6 +206,55 @@ public class FileService : IFileService
 		}
 		_consoleWriter.ProgressFinish(progressName);
 		return photos;
+	}
+
+	public void CreateOutputFolderIfNotExists(string outputFolder)
+	{
+		_fileSystem.Directory.CreateDirectory(outputFolder);
+	}
+
+	public void DeletePhotoSources(IReadOnlyCollection<Photo> photos, bool isDryRun = false)
+	{
+		const string fileProgressName = "Deleting source files";
+		_consoleWriter.ProgressStart(fileProgressName);
+		var directories = new HashSet<string>();
+		foreach (var photo in photos)
+		{
+			var photoFileInfo = _fileSystem.FileInfo.New(photo.PhotoFile.SourceFullPath);
+			if (photoFileInfo.Directory == null)
+				throw new PhotoCliException("directory should be available");
+
+			if (photo.CompanionFiles != null)
+			{
+				foreach (var companionFile in photo.CompanionFiles)
+				{
+					var companionFileInfo = _fileSystem.FileInfo.New(companionFile.SourceFullPath);
+					companionFileInfo.Delete();
+					++_statistics.SourceCompanionFileDeleted;
+				}
+			}
+			directories.Add(photoFileInfo.Directory.FullName);
+			photoFileInfo.Delete();
+			++_statistics.SourcePhotoFileDeleted;
+		}
+
+		_consoleWriter.ProgressFinish(fileProgressName);
+
+		const string directoryProgressName = "Deleting empty directories";
+		_consoleWriter.ProgressStart(directoryProgressName);
+		var sortedDirectoriesByDeepestToTop = directories.OrderByDescending(o => o.Count(c => c == PathHelper.PathSeparator())).ToList();
+		foreach (var directory in sortedDirectoriesByDeepestToTop)
+		{
+			var directoryInfo = _fileSystem.DirectoryInfo.New(directory);
+			var anyFile = directoryInfo.EnumerateFiles().Any();
+			var anyDirectory = directoryInfo.EnumerateDirectories().Any();
+			if (!anyFile && !anyDirectory)
+			{
+				directoryInfo.Delete();
+				++_statistics.SourceEmptyDirectoryDeleted;
+			}
+		}
+		_consoleWriter.ProgressFinish(directoryProgressName);
 	}
 
 	private string GnuHashFileTreeFormat(IEnumerable<Photo> photos)

@@ -2,12 +2,12 @@ namespace PhotoCli.Services.Implementations;
 
 public class ArchiveIsqLiteConnectionStringProvider : ISQLiteConnectionStringProvider
 {
-	private readonly ArchiveOptions _options;
+	private readonly ArchiveDatabaseOptions _archiveDatabaseOptions;
 
-	public ArchiveIsqLiteConnectionStringProvider(ArchiveOptions options)
+	public ArchiveIsqLiteConnectionStringProvider(ArchiveDatabaseOptions options)
 	{
-		_options = options;
+		_archiveDatabaseOptions = options;
 	}
 
-	public string Value => $"Filename={_options.OutputPath}/{Constants.ArchiveSQLiteDatabaseFileName}";
+	public string Value => $"Filename={_archiveDatabaseOptions.Path}/{Constants.ArchiveSQLiteDatabaseFileName}";
 }

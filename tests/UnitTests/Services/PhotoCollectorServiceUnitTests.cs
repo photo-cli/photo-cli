@@ -210,7 +210,7 @@ public class PhotoCollectorServiceUnitTests
 		PhotosShouldMatchWithFilePaths(photos, photoFileWithCompanionPaths);
 	}
 
-	public static TheoryData<ToolOptions,string[]> CompanionFilesNotMatchingWithPhoto = new()
+	public static TheoryData<ToolOptions, string[]> CompanionFilesNotMatchingWithPhoto = new()
 	{
 		{
 			ToolOptionsFakes.WithCompanionExtensions(["mov"]),
@@ -245,7 +245,7 @@ public class PhotoCollectorServiceUnitTests
 	}
 
 
-	public static TheoryData<ToolOptions,string[]> CompanionFilesWithOnAllDirectories = new()
+	public static TheoryData<ToolOptions, string[]> CompanionFilesWithOnAllDirectories = new()
 	{
 		{
 			ToolOptionsFakes.WithCompanionExtensions(["mov"]),
@@ -281,7 +281,7 @@ public class PhotoCollectorServiceUnitTests
 	{
 		var notExistingFolder = MockFileSystemHelper.Path("/notExisting-folder");
 		var sut = new PhotoCollectorService(_fileSystem, ConsoleWriterFakes.Valid(), StatisticsFakes.Empty(), ToolOptionsFakes.Valid(), NullLogger<PhotoCollectorService>.Instance);
-		var expectedException = Assert.Throws<PhotoCliException>(() => sut.Collect(notExistingFolder, true,  true));
+		var expectedException = Assert.Throws<PhotoCliException>(() => sut.Collect(notExistingFolder, true, true));
 		var expectedExceptionMessage = $"Directory not found, do not change the file system after start processing. -> Could not find a part of the path '{notExistingFolder}'.";
 		expectedException.Message.Should().Be(expectedExceptionMessage);
 	}
@@ -294,7 +294,7 @@ public class PhotoCollectorServiceUnitTests
 	public void Searching_Empty_Directory_Should_Return_Empty_Photo_List(bool allDirectories, bool searchCompanionFiles)
 	{
 		var sut = new PhotoCollectorService(_fileSystem, ConsoleWriterFakes.Valid(), StatisticsFakes.Empty(), ToolOptionsFakes.Valid(), NullLogger<PhotoCollectorService>.Instance);
-		var photos = sut.Collect(TestDirectoryPath, allDirectories,  searchCompanionFiles);
+		var photos = sut.Collect(TestDirectoryPath, allDirectories, searchCompanionFiles);
 		photos.Should().BeEmpty();
 	}
 
@@ -307,7 +307,7 @@ public class PhotoCollectorServiceUnitTests
 
 	private static string TestFilePath(string fileName)
 	{
-		var filePathRelativeToTest =  Path.Combine(TestDirectoryPath, fileName);
+		var filePathRelativeToTest = Path.Combine(TestDirectoryPath, fileName);
 		return MockFileSystemHelper.Path(filePathRelativeToTest);
 	}
 
