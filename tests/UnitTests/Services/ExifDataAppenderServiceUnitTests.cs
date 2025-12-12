@@ -10,29 +10,26 @@ public class ExifDataAppenderServiceUnitTests
 			new Dictionary<Photo, ExifData>
 			{
 				{
-					PhotoFakes.WithSourcePathAndExifData("valid-exif.jpg", ExifDataFakes.Valid()),
-					ExifDataFakes.Valid()
-				},
+					PhotoInputWithFileName("valid-exif.jpg"), ExifDataFakes.Valid()
+				}
 			},
 			[
-				PhotoFakes.WithSourcePathAndExifData("valid-exif.jpg", ExifDataFakes.Valid()),
+				PhotoOutputWithFileNameToVerify("valid-exif.jpg", ExifDataFakes.Valid()),
 			]
 		},
 		{
 			new Dictionary<Photo, ExifData>
 			{
 				{
-					PhotoFakes.WithSourcePathAndExifData("photo-taken-date.jpg", ExifDataFakes.WithYear(2000)),
-					ExifDataFakes.WithYear(2000)
+					PhotoInputWithFileName("photo-taken-date.jpg"), ExifDataFakes.WithYear(2000)
 				},
 				{
-					PhotoFakes.WithSourcePathAndExifData("coordinate.jpg", ExifDataFakes.WithCoordinateSampleId(1)),
-					ExifDataFakes.WithCoordinateSampleId(1)
-				},
+					PhotoInputWithFileName("coordinate.jpg"), ExifDataFakes.WithCoordinateSampleId(1)
+				}
 			},
 			[
-				PhotoFakes.WithSourcePathAndExifData("photo-taken-date.jpg", ExifDataFakes.WithYear(2000)),
-				PhotoFakes.WithSourcePathAndExifData("coordinate.jpg", ExifDataFakes.WithCoordinateSampleId(1)),
+				PhotoOutputWithFileNameToVerify("photo-taken-date.jpg", ExifDataFakes.WithYear(2000)),
+				PhotoOutputWithFileNameToVerify("coordinate.jpg", ExifDataFakes.WithCoordinateSampleId(1)),
 			]
 		},
 	};
@@ -43,29 +40,26 @@ public class ExifDataAppenderServiceUnitTests
 			new Dictionary<Photo, ExifData?>
 			{
 				{
-					PhotoFakes.WithSourcePathAndExifData("invalid-exif.jpg", null),
-					null
-				},
+					PhotoInputWithFileName("invalid-exif.jpg"), null
+				}
 			},
 			[
-				PhotoFakes.WithSourcePathAndExifData("invalid-exif.jpg", null),
+				PhotoOutputWithFileNameToVerify("invalid-exif.jpg", null),
 			]
 		},
 		{
 			new Dictionary<Photo, ExifData?>
 			{
 				{
-					PhotoFakes.WithSourcePathAndExifData("invalid-1.jpg", null),
-					null
+					PhotoInputWithFileName("invalid-1.jpg"), null
 				},
 				{
-					PhotoFakes.WithSourcePathAndExifData("invalid-2.jpg", null),
-					null
-				},
+					PhotoInputWithFileName("invalid-2.jpg"), null
+				}
 			},
 			[
-				PhotoFakes.WithSourcePathAndExifData("invalid-1.jpg", null),
-				PhotoFakes.WithSourcePathAndExifData("invalid-2.jpg", null),
+				PhotoOutputWithFileNameToVerify("invalid-1.jpg", null),
+				PhotoOutputWithFileNameToVerify("invalid-2.jpg", null),
 			]
 		},
 	};
@@ -76,8 +70,8 @@ public class ExifDataAppenderServiceUnitTests
 	public void Given_Photos_Should_Match_With_Photos_With_Exif(Dictionary<Photo, ExifData> exifDataByPhoto, IReadOnlyList<Photo> expectedOutputPhotos)
 	{
 		var (sut, inputPhotos) = SetupExifDataByPhoto(exifDataByPhoto);
-		var actualPhotos = sut.ExtractExifData(inputPhotos, out _, out _, out _);
-		actualPhotos.Should().BeEquivalentTo(expectedOutputPhotos);
+		var exifDataResult = sut.ExtractExifData(inputPhotos);
+		exifDataResult.Photos.Should().BeEquivalentTo(expectedOutputPhotos);
 	}
 
 	#endregion
@@ -89,20 +83,17 @@ public class ExifDataAppenderServiceUnitTests
 		new Dictionary<Photo, ExifData>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("valid-exif.jpg", ExifDataFakes.Valid()),
-				ExifDataFakes.Valid()
-			},
+				PhotoInputDummy(), ExifDataFakes.Valid()
+			}
 		},
 		new Dictionary<Photo, ExifData>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("photo-taken-date.jpg", ExifDataFakes.WithYear(2000)),
-				ExifDataFakes.WithYear(2000)
+				PhotoInputDummy(), ExifDataFakes.WithYear(2000)
 			},
 			{
-				PhotoFakes.WithSourcePathAndExifData("coordinate.jpg", ExifDataFakes.WithCoordinateSampleId(1)),
-				ExifDataFakes.WithCoordinateSampleId(1)
-			},
+				PhotoInputDummy(), ExifDataFakes.WithCoordinateSampleId(1)
+			}
 		},
 	};
 
@@ -111,8 +102,8 @@ public class ExifDataAppenderServiceUnitTests
 	public void Given_Valid_Photos_Should_Return_AllPhotosAreValid_As_True(Dictionary<Photo, ExifData> exifDataByPhoto)
 	{
 		var (sut, inputPhotos) = SetupExifDataByPhoto(exifDataByPhoto);
-		sut.ExtractExifData(inputPhotos, out var allPhotosAreValid, out _, out _);
-		allPhotosAreValid.Should().BeTrue();
+		var exifDataResult = sut.ExtractExifData(inputPhotos);
+		exifDataResult.AllPhotosAreValid.Should().BeTrue();
 	}
 
 	public static TheoryData<Dictionary<Photo, ExifData?>> ContainsInvalidPhoto = new()
@@ -120,34 +111,28 @@ public class ExifDataAppenderServiceUnitTests
 		new Dictionary<Photo, ExifData?>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("invalid.jpg", ExifDataFakes.WithInvalidFileFormat()),
-				ExifDataFakes.WithInvalidFileFormat()
-			},
+				PhotoInputDummy(), ExifDataFakes.WithInvalidFileFormat()
+			}
 		},
 		new Dictionary<Photo, ExifData?>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("valid.jpg", ExifDataFakes.Valid()),
-				ExifDataFakes.Valid()
+				PhotoInputDummy(), ExifDataFakes.Valid()
 			},
 			{
-				PhotoFakes.WithSourcePathAndExifData("invalid.jpg", ExifDataFakes.WithInvalidFileFormat()),
-				ExifDataFakes.WithInvalidFileFormat()
-			},
+				PhotoInputDummy(), ExifDataFakes.WithInvalidFileFormat()
+			}
 		},
 		new Dictionary<Photo, ExifData?>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("valid-1.jpg", ExifDataFakes.ValidSampleId(1)),
-				ExifDataFakes.Valid()
+				PhotoInputDummy(), ExifDataFakes.Valid()
 			},
 			{
-				PhotoFakes.WithSourcePathAndExifData("invalid.jpg", ExifDataFakes.WithInvalidFileFormat()),
-				ExifDataFakes.WithInvalidFileFormat()
+				PhotoInputDummy(), ExifDataFakes.WithInvalidFileFormat()
 			},
 			{
-				PhotoFakes.WithSourcePathAndExifData("valid-2.jpg", ExifDataFakes.ValidSampleId(2)),
-				ExifDataFakes.Valid()
+				PhotoInputDummy(), ExifDataFakes.Valid()
 			},
 		},
 	};
@@ -157,8 +142,8 @@ public class ExifDataAppenderServiceUnitTests
 	public void Given_Photos_That_Contain_Invalid_Should_Return_AllPhotosAreValid_As_False(Dictionary<Photo, ExifData> exifDataByPhoto)
 	{
 		var (sut, inputPhotos) = SetupExifDataByPhoto(exifDataByPhoto);
-		sut.ExtractExifData(inputPhotos, out var allPhotosAreValid, out _, out _);
-		allPhotosAreValid.Should().BeFalse();
+		var exifDataResult = sut.ExtractExifData(inputPhotos);
+		exifDataResult.AllPhotosAreValid.Should().BeFalse();
 	}
 
 	#endregion
@@ -170,20 +155,17 @@ public class ExifDataAppenderServiceUnitTests
 		new Dictionary<Photo, ExifData>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("has-photo-taken.jpg", ExifDataFakes.PhotoTakenDateSampleId(1)),
-				ExifDataFakes.PhotoTakenDateSampleId(1)
-			},
+				PhotoInputDummy(), ExifDataFakes.PhotoTakenDateSampleId(1)
+			}
 		},
 		new Dictionary<Photo, ExifData>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("has-photo-taken-1.jpg", ExifDataFakes.PhotoTakenDateSampleId(1)),
-				ExifDataFakes.PhotoTakenDateSampleId(1)
+				PhotoInputDummy(), ExifDataFakes.PhotoTakenDateSampleId(1)
 			},
 			{
-				PhotoFakes.WithSourcePathAndExifData("has-photo-taken-2.jpg", ExifDataFakes.PhotoTakenDateSampleId(2)),
-				ExifDataFakes.PhotoTakenDateSampleId(2)
-			},
+				PhotoInputDummy(), ExifDataFakes.PhotoTakenDateSampleId(2)
+			}
 		},
 	};
 
@@ -192,8 +174,8 @@ public class ExifDataAppenderServiceUnitTests
 	public void Given_All_Photo_Has_Taken_Date_Should_Return_AllPhotosHasPhotoTaken_As_True(Dictionary<Photo, ExifData> exifDataByPhoto)
 	{
 		var (sut, inputPhotos) = SetupExifDataByPhoto(exifDataByPhoto);
-		sut.ExtractExifData(inputPhotos, out _, out var allPhotosHasPhotoTaken, out _);
-		allPhotosHasPhotoTaken.Should().BeTrue();
+		var exifDataResult = sut.ExtractExifData(inputPhotos);
+		exifDataResult.AllPhotosHasPhotoTaken.Should().BeTrue();
 	}
 
 	public static TheoryData<Dictionary<Photo, ExifData?>> ContainsNoPhotoTakenDatePhoto = new()
@@ -201,35 +183,29 @@ public class ExifDataAppenderServiceUnitTests
 		new Dictionary<Photo, ExifData?>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("no-photo-taken.jpg", ExifDataFakes.WithNoPhotoTakenDate()),
-				ExifDataFakes.WithNoPhotoTakenDate()
-			},
+				PhotoInputWithFileName("no-photo-taken.jpg"), ExifDataFakes.WithNoPhotoTakenDate()
+			}
 		},
 		new Dictionary<Photo, ExifData?>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("has-photo-taken.jpg", ExifDataFakes.PhotoTakenDateSampleId(1)),
-				ExifDataFakes.PhotoTakenDateSampleId(1)
+				PhotoInputWithFileName("has-photo-taken.jpg"), ExifDataFakes.PhotoTakenDateSampleId(1)
 			},
 			{
-				PhotoFakes.WithSourcePathAndExifData("no-photo-taken.jpg", ExifDataFakes.WithNoPhotoTakenDate()),
-				ExifDataFakes.WithNoPhotoTakenDate()
-			},
+				PhotoInputWithFileName("no-photo-taken.jpg"), ExifDataFakes.WithNoPhotoTakenDate()
+			}
 		},
 		new Dictionary<Photo, ExifData?>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("has-photo-taken-1.jpg", ExifDataFakes.PhotoTakenDateSampleId(1)),
-				ExifDataFakes.PhotoTakenDateSampleId(1)
+				PhotoInputWithFileName("has-photo-taken-1.jpg"), ExifDataFakes.PhotoTakenDateSampleId(1)
 			},
 			{
-				PhotoFakes.WithSourcePathAndExifData("no-photo-taken.jpg", ExifDataFakes.WithNoPhotoTakenDate()),
-				ExifDataFakes.WithNoPhotoTakenDate()
+				PhotoInputWithFileName("no-photo-taken.jpg"), ExifDataFakes.WithNoPhotoTakenDate()
 			},
 			{
-				PhotoFakes.WithSourcePathAndExifData("has-photo-taken-2.jpg", ExifDataFakes.PhotoTakenDateSampleId(2)),
-				ExifDataFakes.PhotoTakenDateSampleId(2)
-			},
+				PhotoInputWithFileName("has-photo-taken-2.jpg"), ExifDataFakes.PhotoTakenDateSampleId(2)
+			}
 		},
 	};
 
@@ -238,8 +214,8 @@ public class ExifDataAppenderServiceUnitTests
 	public void Given_Photos_That_Contain_No_Photo_Taken_Date_Should_Return_AllPhotosAreValid_As_False(Dictionary<Photo, ExifData> exifDataByPhoto)
 	{
 		var (sut, inputPhotos) = SetupExifDataByPhoto(exifDataByPhoto);
-		sut.ExtractExifData(inputPhotos, out _, out var allPhotosHasPhotoTaken, out _);
-		allPhotosHasPhotoTaken.Should().BeFalse();
+		var exifDataResult = sut.ExtractExifData(inputPhotos);
+		exifDataResult.AllPhotosHasPhotoTaken.Should().BeFalse();
 	}
 
 	#endregion
@@ -251,20 +227,17 @@ public class ExifDataAppenderServiceUnitTests
 		new Dictionary<Photo, ExifData>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("has-coordinate.jpg", ExifDataFakes.WithCoordinateSampleId(1)),
-				ExifDataFakes.WithCoordinateSampleId(1)
-			},
+				PhotoInputWithFileName("has-coordinate.jpg"), ExifDataFakes.WithCoordinateSampleId(1)
+			}
 		},
 		new Dictionary<Photo, ExifData>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("has-coordinate-1.jpg", ExifDataFakes.WithCoordinateSampleId(1)),
-				ExifDataFakes.WithCoordinateSampleId(1)
+				PhotoInputWithFileName("has-coordinate-1.jpg"), ExifDataFakes.WithCoordinateSampleId(1)
 			},
 			{
-				PhotoFakes.WithSourcePathAndExifData("has-coordinate-2.jpg", ExifDataFakes.WithCoordinateSampleId(2)),
-				ExifDataFakes.WithCoordinateSampleId(2)
-			},
+				PhotoInputWithFileName("has-coordinate-2.jpg"), ExifDataFakes.WithCoordinateSampleId(2)
+			}
 		},
 	};
 
@@ -273,8 +246,8 @@ public class ExifDataAppenderServiceUnitTests
 	public void Given_All_Photo_Has_Coordinate_Should_Return_AllPhotosHasCoordinate_As_True(Dictionary<Photo, ExifData> exifDataByPhoto)
 	{
 		var (sut, inputPhotos) = SetupExifDataByPhoto(exifDataByPhoto);
-		sut.ExtractExifData(inputPhotos, out _, out _, out var allPhotosHasCoordinate);
-		allPhotosHasCoordinate.Should().BeTrue();
+		var exifDataResult = sut.ExtractExifData(inputPhotos);
+		exifDataResult.AllPhotosHasCoordinate.Should().BeTrue();
 	}
 
 	public static TheoryData<Dictionary<Photo, ExifData?>> ContainsNoPhotoCoordinatePhoto = new()
@@ -282,35 +255,29 @@ public class ExifDataAppenderServiceUnitTests
 		new Dictionary<Photo, ExifData?>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("no-coordinate.jpg", ExifDataFakes.WithNoCoordinate()),
-				ExifDataFakes.WithNoCoordinate()
-			},
+				PhotoInputWithFileName("no-coordinate.jpg"), ExifDataFakes.WithNoCoordinate()
+			}
 		},
 		new Dictionary<Photo, ExifData?>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("has-coordinate.jpg", ExifDataFakes.WithCoordinateSampleId(1)),
-				ExifDataFakes.WithCoordinateSampleId(1)
+				PhotoInputWithFileName("has-coordinate.jpg"), ExifDataFakes.WithCoordinateSampleId(1)
 			},
 			{
-				PhotoFakes.WithSourcePathAndExifData("no-coordinate.jpg", ExifDataFakes.WithNoCoordinate()),
-				ExifDataFakes.WithNoCoordinate()
-			},
+				PhotoInputWithFileName("no-coordinate.jpg"), ExifDataFakes.WithNoCoordinate()
+			}
 		},
 		new Dictionary<Photo, ExifData?>
 		{
 			{
-				PhotoFakes.WithSourcePathAndExifData("has-coordinate-1.jpg", ExifDataFakes.WithCoordinateSampleId(1)),
-				ExifDataFakes.WithCoordinateSampleId(1)
+				PhotoInputWithFileName("has-coordinate-1.jpg"), ExifDataFakes.WithCoordinateSampleId(1)
 			},
 			{
-				PhotoFakes.WithSourcePathAndExifData("no-coordinate.jpg", ExifDataFakes.WithNoCoordinate()),
-				ExifDataFakes.WithNoCoordinate()
+				PhotoInputWithFileName("no-coordinate.jpg"), ExifDataFakes.WithNoCoordinate()
 			},
 			{
-				PhotoFakes.WithSourcePathAndExifData("has-coordinate-2.jpg", ExifDataFakes.WithCoordinateSampleId(2)),
-				ExifDataFakes.WithCoordinateSampleId(2)
-			},
+				PhotoInputWithFileName("has-coordinate-2.jpg"), ExifDataFakes.WithCoordinateSampleId(2)
+			}
 		},
 	};
 
@@ -319,11 +286,114 @@ public class ExifDataAppenderServiceUnitTests
 	public void Given_Photos_That_Contain_No_Photo_Coordinate_Should_Return_AllPhotosHasPhotoTaken_As_False(Dictionary<Photo, ExifData> exifDataByPhoto)
 	{
 		var (sut, inputPhotos) = SetupExifDataByPhoto(exifDataByPhoto);
-		sut.ExtractExifData(inputPhotos, out _, out _, out var allPhotosHasCoordinate);
-		allPhotosHasCoordinate.Should().BeFalse();
+		var exifDataResult = sut.ExtractExifData(inputPhotos);
+		exifDataResult.AllPhotosHasCoordinate.Should().BeFalse();
 	}
 
 	#endregion
+
+	#region AlbumDateRanges
+
+	public static TheoryData<Dictionary<Photo, ExifData>, AlbumDateRange?> PhotosTakenDateCalculatedRangeMatchingWithExpectedAlbumRange = new()
+	{
+		{
+			new Dictionary<Photo, ExifData>
+			{
+				{
+					PhotoInputDummy(), ExifDataFakes.WithYear(2000)
+				},
+				{
+					PhotoInputDummy(), ExifDataFakes.WithYear(2001)
+				}
+			},
+			AlbumDateRangeFakes.WithStartEnd(DateTimeFakes.WithYear(2000), DateTimeFakes.WithYear(2001))
+		},
+		{
+			new Dictionary<Photo, ExifData>
+			{
+				{
+					PhotoInputDummy(), ExifDataFakes.WithPhotoTakenDate(new DateTime(2007, 3, 14, 18, 45, 42))
+				},
+				{
+					PhotoInputDummy(), ExifDataFakes.WithPhotoTakenDate(new DateTime(2004, 11, 29, 9, 12, 37))
+				}
+			},
+			AlbumDateRangeFakes.WithStartEnd(new DateTime(2004, 11, 29, 9, 12, 37), new DateTime(2007, 3, 14, 18, 45, 42))
+		},
+		{
+			new Dictionary<Photo, ExifData>
+			{
+				{
+					PhotoInputDummy(), ExifDataFakes.WithPhotoTakenDate(new DateTime(2016, 7, 21, 23, 2, 9))
+				},
+				{
+					PhotoInputDummy(), ExifDataFakes.WithPhotoTakenDate(new DateTime(2037, 3, 1, 13, 59, 34))
+				},
+				{
+					PhotoInputDummy(), ExifDataFakes.WithPhotoTakenDate(new DateTime(2007, 12, 3, 2, 19, 0))
+				},
+				{
+					PhotoInputDummy(), ExifDataFakes.WithPhotoTakenDate(new DateTime(2012, 10, 23, 16, 12, 45))
+				}
+			},
+			AlbumDateRangeFakes.WithStartEnd(new DateTime(2007, 12, 3, 2, 19, 0), new DateTime(2037, 3, 1, 13, 59, 34))
+		},
+	};
+
+	[Theory]
+	[MemberData(nameof(PhotosTakenDateCalculatedRangeMatchingWithExpectedAlbumRange))]
+	public void ExtractExifData_GivenPhotosWithDateTaken_ShouldMatchWithTheDateRange(Dictionary<Photo, ExifData> exifDataByPhoto, AlbumDateRange? expectedAlbumDateRange)
+	{
+		var (sut, inputPhotos) = SetupExifDataByPhoto(exifDataByPhoto);
+		var exifDataResult = sut.ExtractExifData(inputPhotos);
+		exifDataResult.DateRange.Should().BeEquivalentTo(expectedAlbumDateRange);
+	}
+
+	public static TheoryData<Dictionary<Photo, ExifData?>> PhotosWithNoPhotoDateTaken = new()
+	{
+		new Dictionary<Photo, ExifData?>
+		{
+			{
+				PhotoInputDummy(), ExifDataFakes.WithNoPhotoTakenDate()
+			}
+		},
+		new Dictionary<Photo, ExifData?>
+		{
+			{
+				PhotoInputDummy(), ExifDataFakes.WithNoPhotoTakenDate()
+			},
+			{
+				PhotoInputDummy(), null
+			}
+		},
+		new Dictionary<Photo, ExifData?>(),
+	};
+
+	[Theory]
+	[MemberData(nameof(PhotosWithNoPhotoDateTaken))]
+	public void ExtractExifData_GivenPhotosWithNoPhotoDateTaken_ShouldReturnDateRangeAsNull(Dictionary<Photo, ExifData> exifDataByPhoto)
+	{
+		var (sut, inputPhotos) = SetupExifDataByPhoto(exifDataByPhoto);
+		var exifDataResult = sut.ExtractExifData(inputPhotos);
+		exifDataResult.DateRange.Should().BeNull();
+	}
+
+	#endregion
+
+	private static Photo PhotoInputWithFileName(string fileNameWithExtension)
+	{
+		return PhotoFakes.WithSourcePathAndWithoutExifData(fileNameWithExtension);
+	}
+
+	private static Photo PhotoInputDummy()
+	{
+		return PhotoFakes.WithSourcePathAndWithoutExifData($"{Guid.NewGuid()}.jpg");
+	}
+
+	private static Photo PhotoOutputWithFileNameToVerify(string fileNameWithExtension, ExifData? exifData)
+	{
+		return PhotoFakes.WithSourcePathAndExifData(fileNameWithExtension, exifData);
+	}
 
 	private static (ExifDataAppenderService, List<Photo>) SetupExifDataByPhoto(Dictionary<Photo, ExifData> exifDataByPhoto)
 	{
@@ -331,11 +401,14 @@ public class ExifDataAppenderServiceUnitTests
 		var exifParseServiceMock = new Mock<IExifParserService>(MockBehavior.Strict);
 		foreach (var (photo, exifData) in exifDataByPhoto)
 		{
-			exifParseServiceMock.Setup(e => e.Parse(photo.PhotoFile.SourcePath, It.IsAny<bool>(), It.IsAny<bool>())).Returns(exifData);
+			exifParseServiceMock.Setup(e => e
+				.Parse(photo.PhotoFile.SourcePath, It.IsAny<bool>(), It.IsAny<bool>()))
+				.Returns(exifData);
+
 			inputPhotos.Add(photo);
 		}
 
-		var sut = new ExifDataAppenderService(exifParseServiceMock.Object, StatisticsFakes.Empty(), ConsoleWriterFakes.Valid());
+		var sut = new ExifDataAppenderService(exifParseServiceMock.Object);
 		return (sut, inputPhotos);
 	}
 }

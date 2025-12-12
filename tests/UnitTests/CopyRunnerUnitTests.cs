@@ -11,6 +11,7 @@ public class CopyRunnerUnitTests
 	private readonly Mock<IExifOrganizerService> _organizeByNoPhotoTakenActionMock = new(MockBehavior.Strict);
 	private readonly Mock<IFolderRenamerService> _organizeDirectoriesByFolderProcessTypeMock = new(MockBehavior.Strict);
 	private readonly Mock<IReverseGeocodeFetcherService> _reverseGeocodeFetcherMock = new(MockBehavior.Strict);
+	private readonly Mock<IConsoleWriter> _consoleWriterMock = new();
 	private readonly MockFileSystem _fileSystemMock = new();
 	private const string OutputPath = "output-folder";
 	private const string SourceFolderPath = "source-folder";
@@ -72,12 +73,14 @@ public class CopyRunnerUnitTests
 		bool setupVerifyFileIntegrity, bool verifyReport, bool verifyFileIntegrityResult = true)
 	{
 		_photoCollectorMock.Setup(s => s.Collect(copyOptions.InputPath!, It.IsAny<bool>(), It.IsAny<bool>())).Returns(() => photos);
-		_exifDataAppenderMock.Setup(s => s.ExtractExifData(photos, out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue)).Returns(() => photos);
+
+		_exifDataAppenderMock.Setup(s => s
+			.ExtractExifData(photos))
+			.Returns(() => new ExifDataResult(photos, allPhotosAreValidMockOutValue, allPhotosHasPhotoTakenMockOutValue, allPhotosHasCoordinateMockOutValue, null));
 
 		if (setupReverseGeocodeFetcher)
 		{
-			_reverseGeocodeFetcherMock.Setup(s => s.Fetch(photos))
-				.Returns(() => Task.FromResult(photos));
+			_reverseGeocodeFetcherMock.Setup(s => s.Fetch(photos, It.IsAny<bool>())).Returns(() => Task.FromResult(new ReverseGeocodeResult(photos, true)));
 
 			_reverseGeocodeFetcherMock.Setup(s => s.RateLimitWarning());
 		}
@@ -115,17 +118,17 @@ public class CopyRunnerUnitTests
 		string targetRelativeDirectory, Dictionary<string, IReadOnlyCollection<Photo>> groupedPhotoInfosByRelativeDirectory, bool verifyOrganizeDirectoriesByFolderProcessType, bool verifyReverseGeocodeFetcher, bool verifyVerifyFileIntegrity, bool verifySaveGnuHashFileTree, bool verifyReport)
 	{
 		_photoCollectorMock.Verify(v => v.Collect(SourceFolderPath, It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
-		_exifDataAppenderMock.Verify(v => v.ExtractExifData(photos, out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue), Times.Once);
+		_exifDataAppenderMock.Verify(v => v.ExtractExifData(photos), Times.Once);
 
 		if (verifyReverseGeocodeFetcher)
 		{
-			_reverseGeocodeFetcherMock.Verify(v => v.Fetch(photos), Times.Once);
+			_reverseGeocodeFetcherMock.Verify(v => v.Fetch(photos, It.IsAny<bool>()), Times.Once);
 
 			_reverseGeocodeFetcherMock.Verify(v => v.RateLimitWarning(), Times.Once);
 		}
 
 		_directoryGrouperMock.Verify(v => v.GroupFiles(photos, copyOptions.InputPath!,
-			It.IsAny<FolderProcessType>(), It.IsAny<GroupByFolderType?>(),It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
+			It.IsAny<FolderProcessType>(), It.IsAny<GroupByFolderType?>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
 
 		var timesGroupPhotoFolderIteration = Times.Exactly(groupedPhotoInfosByRelativeDirectory.Count);
 
@@ -146,10 +149,10 @@ public class CopyRunnerUnitTests
 		if (verifyVerifyFileIntegrity)
 			_fileServiceMock.Verify(s => s.VerifyFileIntegrity(photos), timesGroupPhotoFolderIteration);
 
-		if(verifySaveGnuHashFileTree)
+		if (verifySaveGnuHashFileTree)
 			_fileServiceMock.Verify(s => s.SaveGnuHashFileTree(photos, OutputPath), Times.Once);
 
-		if(verifyReport)
+		if (verifyReport)
 			_csvServiceMock.Verify(s => s.CreateCopyReport(It.IsAny<IEnumerable<Photo>>(), OutputPath, It.IsAny<bool>()), Times.Once);
 
 		VerifyNoOtherCalls();
@@ -233,10 +236,10 @@ public class CopyRunnerUnitTests
 	#region Prevent Process Actions
 
 	[Theory]
-	[InlineData(CopyNoPhotoTakenDateAction.PreventProcess, true, CopyNoCoordinateAction.PreventProcess,true)]
-	[InlineData(CopyNoPhotoTakenDateAction.PreventProcess, true, CopyNoCoordinateAction.PreventProcess,false)]
-	[InlineData(CopyNoPhotoTakenDateAction.PreventProcess, false, CopyNoCoordinateAction.PreventProcess,true)]
-	[InlineData(CopyNoPhotoTakenDateAction.PreventProcess, false, CopyNoCoordinateAction.PreventProcess,false)]
+	[InlineData(CopyNoPhotoTakenDateAction.PreventProcess, true, CopyNoCoordinateAction.PreventProcess, true)]
+	[InlineData(CopyNoPhotoTakenDateAction.PreventProcess, true, CopyNoCoordinateAction.PreventProcess, false)]
+	[InlineData(CopyNoPhotoTakenDateAction.PreventProcess, false, CopyNoCoordinateAction.PreventProcess, true)]
+	[InlineData(CopyNoPhotoTakenDateAction.PreventProcess, false, CopyNoCoordinateAction.PreventProcess, false)]
 	public async Task When_InvalidFormatAction_PreventProcess_And_AllPhotosAreValid_Is_False_Runner_Should_Exit_With_PhotosWithInvalidFileFormatPreventedProcess(
 		CopyNoPhotoTakenDateAction noPhotoTakenDateAction, bool allPhotosHasPhotoTaken, CopyNoCoordinateAction noCoordinateAction, bool allPhotosHasCoordinate)
 	{
@@ -245,11 +248,11 @@ public class CopyRunnerUnitTests
 	}
 
 	[Theory]
-	[InlineData(CopyInvalidFormatAction.PreventProcess, true, CopyNoCoordinateAction.PreventProcess,true)]
-	[InlineData(CopyInvalidFormatAction.PreventProcess, true, CopyNoCoordinateAction.DontCopyToOutput,true)]
-	[InlineData(CopyInvalidFormatAction.PreventProcess, true, CopyNoCoordinateAction.DontCopyToOutput,false)]
-	[InlineData(CopyInvalidFormatAction.DontCopyToOutput, false, CopyNoCoordinateAction.PreventProcess,true)]
-	[InlineData(CopyInvalidFormatAction.DontCopyToOutput, false, CopyNoCoordinateAction.DontCopyToOutput,true)]
+	[InlineData(CopyInvalidFormatAction.PreventProcess, true, CopyNoCoordinateAction.PreventProcess, true)]
+	[InlineData(CopyInvalidFormatAction.PreventProcess, true, CopyNoCoordinateAction.DontCopyToOutput, true)]
+	[InlineData(CopyInvalidFormatAction.PreventProcess, true, CopyNoCoordinateAction.DontCopyToOutput, false)]
+	[InlineData(CopyInvalidFormatAction.DontCopyToOutput, false, CopyNoCoordinateAction.PreventProcess, true)]
+	[InlineData(CopyInvalidFormatAction.DontCopyToOutput, false, CopyNoCoordinateAction.DontCopyToOutput, true)]
 	public async Task When_NoPhotoDateTimeTakenAction_PreventProcess_And_AllPhotosHasPhotoTaken_Is_False_Runner_Should_Exit_With_PhotosWithNoDatePreventedProcess(
 		CopyInvalidFormatAction invalidFormatAction, bool allPhotosAreValid, CopyNoCoordinateAction noCoordinateAction, bool allPhotosHasCoordinate)
 	{
@@ -258,11 +261,11 @@ public class CopyRunnerUnitTests
 	}
 
 	[Theory]
-	[InlineData(CopyInvalidFormatAction.PreventProcess, true, CopyNoPhotoTakenDateAction.PreventProcess,true)]
-	[InlineData(CopyInvalidFormatAction.PreventProcess, true, CopyNoPhotoTakenDateAction.DontCopyToOutput,true)]
-	[InlineData(CopyInvalidFormatAction.PreventProcess, true, CopyNoPhotoTakenDateAction.DontCopyToOutput,false)]
-	[InlineData(CopyInvalidFormatAction.DontCopyToOutput, false, CopyNoPhotoTakenDateAction.PreventProcess,true)]
-	[InlineData(CopyInvalidFormatAction.DontCopyToOutput, false, CopyNoPhotoTakenDateAction.DontCopyToOutput,true)]
+	[InlineData(CopyInvalidFormatAction.PreventProcess, true, CopyNoPhotoTakenDateAction.PreventProcess, true)]
+	[InlineData(CopyInvalidFormatAction.PreventProcess, true, CopyNoPhotoTakenDateAction.DontCopyToOutput, true)]
+	[InlineData(CopyInvalidFormatAction.PreventProcess, true, CopyNoPhotoTakenDateAction.DontCopyToOutput, false)]
+	[InlineData(CopyInvalidFormatAction.DontCopyToOutput, false, CopyNoPhotoTakenDateAction.PreventProcess, true)]
+	[InlineData(CopyInvalidFormatAction.DontCopyToOutput, false, CopyNoPhotoTakenDateAction.DontCopyToOutput, true)]
 	public async Task When_NoPhotoCoordinateAction_PreventProcess_And_AllPhotosHasCoordinate_Is_False_Runner_Should_Exit_With_PhotosWithNoCoordinatePreventedProcess(
 		CopyInvalidFormatAction invalidFormatAction, bool allPhotosAreValid, CopyNoPhotoTakenDateAction noPhotoTakenDateAction, bool allPhotosHasPhotoTaken)
 	{
@@ -285,16 +288,15 @@ public class CopyRunnerUnitTests
 		PhotoCollectorSetupNonEmptyList();
 
 		_exifDataAppenderMock.Setup(s => s
-			.ExtractExifData(It.IsAny<IReadOnlyList<Photo>>(), out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenOutValue, out allPhotosHasCoordinateOutValue))
-			.Returns(() => new[] { PhotoFakes.Valid() });
+			.ExtractExifData(It.IsAny<IReadOnlyList<Photo>>()))
+			.Returns(() => new ExifDataResult(new[] { PhotoFakes.Valid() }, allPhotosAreValidMockOutValue, allPhotosHasPhotoTakenOutValue, allPhotosHasCoordinateOutValue, null));
 
 		var sut = Initialize(copyOptions);
 		var exitCode = await sut.Execute();
 		exitCode.Should().Be(expectedExitCode);
 		PhotoCollectorVerify();
 
-		_exifDataAppenderMock.Verify(v => v
-			.ExtractExifData(It.IsAny<IReadOnlyList<Photo>>(), out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenOutValue, out allPhotosHasCoordinateOutValue), Times.Once);
+		_exifDataAppenderMock.Verify(v => v.ExtractExifData(It.IsAny<IReadOnlyList<Photo>>()), Times.Once);
 
 		VerifyNoOtherCalls();
 	}
@@ -328,7 +330,7 @@ public class CopyRunnerUnitTests
 
 		return new CopyRunner(NullLogger<CopyRunner>.Instance, options, _photoCollectorMock.Object, _exifDataAppenderMock.Object, _directoryGrouperMock.Object, _fileNamerMock.Object,
 			_fileServiceMock.Object, _fileSystemMock, _organizeByNoPhotoTakenActionMock.Object, _organizeDirectoriesByFolderProcessTypeMock.Object, _reverseGeocodeFetcherMock.Object,
-			_csvServiceMock.Object, ToolOptionFakes.Create(), new Statistics(), ConsoleWriterFakes.Valid());
+			_csvServiceMock.Object, ToolOptionFakes.Create(), new Statistics(), _consoleWriterMock.Object);
 	}
 
 

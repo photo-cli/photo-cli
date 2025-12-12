@@ -1,6 +1,5 @@
 using System.IO.Abstractions;
 using FluentValidation;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace PhotoCli.Tests.UnitTests;
 
@@ -32,14 +31,18 @@ public class SettingsRunnerUnitTests
 		actualSettingsValueSavedOnJson.Should().Be(expectedSettingsValue);
 	}
 
-	[Fact]
-	public async Task Setting_A_New_LogLevel_Should_Persist_In_AppSettings_Json()
+	[Theory]
+	[InlineData("Default", "Critical")]
+	[InlineData("Microsoft", "Warning")]
+	[InlineData("System", "Error")]
+	public async Task SettingSet_WithANewLogLevelKeyValueShouldPersist_InAppSettingsJson(string logKey, string logValue)
 	{
-		var expectedSettingsValue = LogLevel.Critical.ToString();
+		var expectedSettingsValue = $"{logKey}={logValue}";
 		var settingsOptions = new SettingsOptions(nameof(ToolOptionsRaw.LogLevel), expectedSettingsValue);
 		var newSavedToolOptionsRawDeserialized = await SetAndGetNewDeserializedAppSettingsJson(settingsOptions);
-		var actualSettingsValueSavedOnJson = newSavedToolOptionsRawDeserialized?.LogLevel?.Default;
-		actualSettingsValueSavedOnJson.Should().Be(expectedSettingsValue);
+		newSavedToolOptionsRawDeserialized.Should().NotBeNull();
+		var actualSettingsValueSavedOnJson = newSavedToolOptionsRawDeserialized?.LogLevel?[logKey];
+		actualSettingsValueSavedOnJson.Should().Be(logValue);
 	}
 
 	private static async Task<ToolOptionsRaw?> SetAndGetNewDeserializedAppSettingsJson(SettingsOptions settingsOptions, ToolOptions? toolOptions = null)
@@ -66,74 +69,81 @@ public class SettingsRunnerUnitTests
 		var mockValidator = new Mock<IValidator<ToolOptions>>();
 		mockValidator.Setup(s => s.Validate(toolOptions)).Returns(ValidationResultFakes.NoError);
 		var consoleWriterMock = new Mock<IConsoleWriter>();
-		consoleWriterMock.Setup(s => s.Write(It.IsAny<string>()));
+		consoleWriterMock.Setup(s => s.RawWriteLine(It.IsAny<string>()));
 		var settingsRunner = new SettingsRunner(settingsOptions, toolOptions, Mock.Of<IFileSystem>(), mockValidator.Object, consoleWriterMock.Object);
 		var actualExitCode = await settingsRunner.Execute();
 		actualExitCode.Should().Be(ExitCode.Success);
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.AddressSeparator)}={expectedSettingsValue}"));
+		consoleWriterMock.Verify(v => v.RawWriteLine($"{nameof(ToolOptions.AddressSeparator)}={expectedSettingsValue}"));
 	}
 
 	[Fact]
-	public async Task Getting_All_Values_Should_Be_Written_To_Console()
+	public async Task Execute_WithoutAnyParameters_ShouldWriteAllToolOptionsToConsole()
 	{
 		var settingsOptions = new SettingsOptions();
 		var toolOptions = ToolOptions.Default();
-		toolOptions.AddressSeparator = "address-separator";
-		toolOptions.ConnectionLimit = 100;
-		toolOptions.CoordinatePrecision = 7;
-		toolOptions.DayFormat = "day-format";
-		toolOptions.LogLevel = new Options.LogLevel { Default = "Critical" };
-		toolOptions.MonthFormat = "month-format";
-		toolOptions.YearFormat = "year-format";
-		toolOptions.DayRangeSeparator = "day-range-separator";
-		toolOptions.SameNameNumberSeparator = "same-name-number-separator";
-		toolOptions.FolderAppendSeparator = "folder-append-separator";
-		toolOptions.CsvReportFileName = "csv-report-file-name";
-		toolOptions.DateFormatWithDay = "date-format-with-day";
-		toolOptions.DateFormatWithMonth = "date-format-with-month";
-		toolOptions.BigDataCloudApiKey = "big-data-cloud-api-key";
-		toolOptions.GoogleMapsApiKey = "google-maps-api-key";
-		toolOptions.LocationIqApiKey = "location-iq-api-key";
-		toolOptions.NoAddressFolderName = "no-address-folder-name";
-		toolOptions.DateTimeFormatWithMinutes = "date-time-format-with-minutes";
-		toolOptions.DateTimeFormatWithSeconds = "date-time-format-with-seconds";
-		toolOptions.DryRunCsvReportFileName = "dry-run-csv-report-file-name";
-		toolOptions.NoPhotoTakenDateFolderName = "no-photo-taken-date-folder-name";
-		toolOptions.NoAddressAndPhotoTakenDateFolderName = "no-address-and-photo-taken-date-folder-name";
-		toolOptions.ArchivePhotoTakenDateHashSeparator = "archive-photo-taken-date-hash-separator";
-
 		var mockValidator = new Mock<IValidator<ToolOptions>>();
 		mockValidator.Setup(s => s.Validate(toolOptions)).Returns(ValidationResultFakes.NoError);
 		var consoleWriterMock = new Mock<IConsoleWriter>();
-		consoleWriterMock.Setup(s => s.Write(It.IsAny<string>()));
+		consoleWriterMock.Setup(s => s.RawWriteLine(It.IsAny<string>()));
 		var settingsRunner = new SettingsRunner(settingsOptions, toolOptions, Mock.Of<IFileSystem>(), mockValidator.Object, consoleWriterMock.Object);
 
 		var actualExitCode = await settingsRunner.Execute();
 
 		actualExitCode.Should().Be(ExitCode.Success);
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.AddressSeparator)}={toolOptions.AddressSeparator}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.ConnectionLimit)}={toolOptions.ConnectionLimit.ToString()}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.CoordinatePrecision)}={toolOptions.CoordinatePrecision.ToString()}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.DayFormat)}={toolOptions.DayFormat}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.LogLevel)}={toolOptions.LogLevel.Default}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.MonthFormat)}={toolOptions.MonthFormat}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.YearFormat)}={toolOptions.YearFormat}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.DayRangeSeparator)}={toolOptions.DayRangeSeparator}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.SameNameNumberSeparator)}={toolOptions.SameNameNumberSeparator}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.FolderAppendSeparator)}={toolOptions.FolderAppendSeparator}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.CsvReportFileName)}={toolOptions.CsvReportFileName}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.DateFormatWithDay)}={toolOptions.DateFormatWithDay}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.DateFormatWithMonth)}={toolOptions.DateFormatWithMonth}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.BigDataCloudApiKey)}={toolOptions.BigDataCloudApiKey}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.GoogleMapsApiKey)}={toolOptions.GoogleMapsApiKey}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.LocationIqApiKey)}={toolOptions.LocationIqApiKey}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.NoAddressFolderName)}={toolOptions.NoAddressFolderName}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.DateTimeFormatWithMinutes)}={toolOptions.DateTimeFormatWithMinutes}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.DateTimeFormatWithSeconds)}={toolOptions.DateTimeFormatWithSeconds}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.DryRunCsvReportFileName)}={toolOptions.DryRunCsvReportFileName}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.NoPhotoTakenDateFolderName)}={toolOptions.NoPhotoTakenDateFolderName}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.NoAddressAndPhotoTakenDateFolderName)}={toolOptions.NoAddressAndPhotoTakenDateFolderName}"));
-		consoleWriterMock.Verify(v => v.Write($"{nameof(ToolOptions.ArchivePhotoTakenDateHashSeparator)}={toolOptions.ArchivePhotoTakenDateHashSeparator}"));
+
+		VerifyBasicPropertyOutput(nameof(toolOptions.YearFormat), toolOptions.YearFormat, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.MonthFormat), toolOptions.MonthFormat, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.DayFormat), toolOptions.DayFormat, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.DateFormatWithMonth), toolOptions.DateFormatWithMonth, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.DateFormatWithDay), toolOptions.DateFormatWithDay, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.DateTimeFormatWithMinutes), toolOptions.DateTimeFormatWithMinutes, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.DateTimeFormatWithSeconds), toolOptions.DateTimeFormatWithSeconds, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.AddressSeparator), toolOptions.AddressSeparator, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.FolderAppendSeparator), toolOptions.FolderAppendSeparator, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.DayRangeSeparator), toolOptions.DayRangeSeparator, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.SameNameNumberSeparator), toolOptions.SameNameNumberSeparator, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.PhotoFormatInvalidFolderName), toolOptions.PhotoFormatInvalidFolderName, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.NoPhotoTakenDateFolderName), toolOptions.NoPhotoTakenDateFolderName, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.NoAddressFolderName), toolOptions.NoAddressFolderName, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.NoAddressAndPhotoTakenDateFolderName), toolOptions.NoAddressAndPhotoTakenDateFolderName, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.CsvReportFileName), toolOptions.CsvReportFileName, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.DryRunCsvReportFileName), toolOptions.DryRunCsvReportFileName, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.ConnectionLimit), toolOptions.ConnectionLimit, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.BigDataCloudApiKey), toolOptions.BigDataCloudApiKey, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.GoogleMapsApiKey), toolOptions.GoogleMapsApiKey, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.LocationIqApiKey), toolOptions.LocationIqApiKey, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.CoordinatePrecision), toolOptions.CoordinatePrecision, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.ArchivePhotoTakenDateHashSeparator), toolOptions.ArchivePhotoTakenDateHashSeparator, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.LogCategoryNameOutput), toolOptions.LogCategoryNameOutput, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.MacOsCommand), toolOptions.MacOsCommand, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.MacOsArgumentPrefix), toolOptions.MacOsArgumentPrefix, consoleWriterMock);
+
+		VerifyListPropertyOutput(nameof(ToolOptions.SupportedExtensions), toolOptions.SupportedExtensions, consoleWriterMock);
+		VerifyListPropertyOutput(nameof(ToolOptions.CompanionExtensions), toolOptions.CompanionExtensions, consoleWriterMock);
+
+		VerifyLogLevelOutputForCategory("Default", consoleWriterMock, toolOptions);
+		VerifyLogLevelOutputForCategory("PhotoCli", consoleWriterMock, toolOptions);
+		VerifyLogLevelOutputForCategory("PhotoCli.Services.Implementations.ReverseGeocodes", consoleWriterMock, toolOptions);
+		VerifyLogLevelOutputForCategory("Polly", consoleWriterMock, toolOptions);
+		VerifyLogLevelOutputForCategory("Microsoft", consoleWriterMock, toolOptions);
+		VerifyLogLevelOutputForCategory("System.Net.Http.HttpClient", consoleWriterMock, toolOptions);
+
+		consoleWriterMock.VerifyNoOtherCalls();
+	}
+
+	private static void VerifyBasicPropertyOutput(string settingsKey, object? settingValue, Mock<IConsoleWriter> consoleWriterMock)
+	{
+		consoleWriterMock.Verify(v  => v.RawWriteLine($"{settingsKey}={settingValue}"));
+	}
+
+	private static void VerifyListPropertyOutput(string settingsKey, string[] settingValues, Mock<IConsoleWriter> consoleWriterMock)
+	{
+		consoleWriterMock.Verify(v  => v.RawWriteLine($"{settingsKey}={string.Join(",", settingValues)}"));
+	}
+
+	private static void VerifyLogLevelOutputForCategory(string logCategoryName, Mock<IConsoleWriter> consoleWriterMock, ToolOptions toolOptions)
+	{
+		consoleWriterMock.Verify(v  => v.RawWriteLine($"{nameof(ToolOptions.LogLevel)}.{logCategoryName}={toolOptions.LogLevel![logCategoryName]}"));
 	}
 
 	[Fact]
@@ -162,7 +172,7 @@ public class SettingsRunnerUnitTests
 		var settingsRunner = new SettingsRunner(SettingsOptionsFakes.Set(), ToolOptions.Default(), Mock.Of<IFileSystem>(), validatorMock.Object, consoleWriterMock.Object);
 		var actualExitCode = await settingsRunner.Execute();
 		actualExitCode.Should().Be(ExitCode.InvalidSettingsValue);
-		consoleWriterMock.Verify(v => v.Write(errorMessage));
+		consoleWriterMock.Verify(v => v.WriteError(errorMessage));
 		consoleWriterMock.VerifyNoOtherCalls();
 	}
 
