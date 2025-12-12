@@ -19,7 +19,6 @@ public static class OpenStreetMapReverseGeocodeResponseFakes
         ""city"": ""Ankara"",
         ""town"": ""Çankaya"",
         ""province"": ""Ankara"",
-        ""region"": ""İç Anadolu Bölgesi"",
         ""postcode"": ""06580"",
         ""country"": ""Türkiye"",
         ""country_code"": ""tr""
@@ -31,5 +30,26 @@ public static class OpenStreetMapReverseGeocodeResponseFakes
         ""32.8416601""
     ]
 }";
+	}
+	public static string AnkaraAddressTypesLogOutput()
+	{
+		var addressPropertyValueDict = new Dictionary<string, string>
+		{
+			{ "CountryCode", "tr" },
+			{ "Country", "Türkiye" },
+			{ "Region", "" },
+			{ "Province", "Ankara" },
+			{ "City", "Ankara" },
+			{ "Town", "Çankaya" },
+			{ "Postcode", "06580" },
+			{ "Suburb", "Mebusevleri Mahallesi" },
+			{ "Road", "Dumlupınar Yolu" },
+			{ "Military", "Anıtkabir" },
+			{ "Barracks", "" },
+		};
+
+		var log = string.Join(", ", addressPropertyValueDict.Select(s => s.Key + " = " + s.Value));
+		return log;
+
 	}
 }

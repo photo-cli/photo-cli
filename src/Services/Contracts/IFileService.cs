@@ -7,4 +7,6 @@ public interface IFileService
 	Task<bool> VerifyFileIntegrity(IEnumerable<Photo> photos);
 	Task SaveGnuHashFileTree(IEnumerable<Photo> photos, string outputFolder);
 	Task<IReadOnlyCollection<Photo>> CalculateFileHash(IReadOnlyCollection<Photo> photos);
+	void CreateOutputFolderIfNotExists(string outputFolder);
+	void DeletePhotoSources(IReadOnlyCollection<Photo> photos, bool isDryRun = false);
 }

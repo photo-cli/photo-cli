@@ -6,5 +6,7 @@ public record PhotoEntity(string Path, DateTime CreatedAt, DateTime? DateTaken =
 	string? Address1 = "", string? Address2 = "", string? Address3 = "", string? Address4 = "", string? Address5 = "", string? Address6 = "", string? Address7 = "", string? Address8 = "",
 	string? Sha1Hash = "")
 {
-	public long Id { get; }
+	public long Id { get; set; }
+	public bool IsDeleted { get; set; }
+	public DateTime? ModifiedAt { get; set; }
 }

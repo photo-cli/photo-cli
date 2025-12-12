@@ -39,13 +39,13 @@ public class PhotoCollectorService : IPhotoCollectorService
 				.EnumerateFiles(folderPath, "*.*", searchOption)
 				.Where(w => supportedExtensions.Any(a => w.EndsWith(a, StringComparison.InvariantCultureIgnoreCase))).ToArray();
 		}
-		catch(DirectoryNotFoundException directoryNotFoundException)
+		catch (DirectoryNotFoundException directoryNotFoundException)
 		{
 			const string message = "Directory not found, do not change the file system after start processing.";
 			_logger.LogCritical(directoryNotFoundException, message);
 			throw new PhotoCliException($"{message} -> {directoryNotFoundException.Message}");
 		}
-		catch(UnauthorizedAccessException unauthorizedAccessException)
+		catch (UnauthorizedAccessException unauthorizedAccessException)
 		{
 			const string message = "Cannot read files with the current user. Give more specific folder as input or give user a read access for the path listed in error.";
 			_logger.LogCritical(unauthorizedAccessException, message);
@@ -82,7 +82,7 @@ public class PhotoCollectorService : IPhotoCollectorService
 				companionFileCount += photoCompanionFileInfo.Count;
 				photosInternal.Add(photo);
 			}
-
+			_statistics.CompanionFilesFound = companionFileCount;
 			_consoleWriter.ProgressFinish(ProgressPhotoCompanionFilesName, $"{companionFileCount} companion file(s) found.");
 		}
 		else

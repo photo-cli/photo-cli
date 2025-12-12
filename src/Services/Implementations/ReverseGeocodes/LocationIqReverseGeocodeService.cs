@@ -4,8 +4,9 @@ public class LocationIqReverseGeocodeService : OpenStreetMapReverseGeocodeServic
 {
 	private readonly ApiKeyStore _apiKeyStore;
 
-	public LocationIqReverseGeocodeService(HttpClient httpClient, ILogger<LocationIqReverseGeocodeService> logger, ApiKeyStore apiKeyStore, ICoordinateCache<OpenStreetMapResponse> coordinateCache)
-		: base(httpClient, logger, coordinateCache)
+	public LocationIqReverseGeocodeService(HttpClient httpClient, ILogger<LocationIqReverseGeocodeService> logger, ApiKeyStore apiKeyStore,
+		IReverseGeocodeCache<OpenStreetMapResponse> reverseGeocodeCache, Statistics statistics)
+		: base(httpClient, logger, reverseGeocodeCache, statistics)
 	{
 		_apiKeyStore = apiKeyStore;
 	}

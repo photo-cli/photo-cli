@@ -21,6 +21,6 @@ public class RequiredStringValidator<T> : PropertyValidator<T, string?>
 
 	protected override string GetDefaultMessageTemplate(string errorCode)
 	{
-		return _customErrorMessage ?? "`{PropertyName}` should be a valid string";
+		return (_customErrorMessage ?? "`{PropertyName}`") + " is required";
 	}
 }

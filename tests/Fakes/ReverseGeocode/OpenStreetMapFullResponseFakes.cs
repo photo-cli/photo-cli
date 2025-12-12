@@ -1,4 +1,4 @@
-﻿namespace PhotoCli.Tests.Fakes.ReverseGeocode;
+namespace PhotoCli.Tests.Fakes.ReverseGeocode;
 
 public static class OpenStreetMapFullResponseFakes
 {

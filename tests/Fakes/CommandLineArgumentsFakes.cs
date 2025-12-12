@@ -33,10 +33,10 @@ public static class CommandLineArgumentsFakes
 		AddArgumentWithParameter(NoCoordinateActionOptionNameShort, noCoordinateAction.ToString(), args);
 		AddArgumentWithParameter(InvalidFormatActionOptionNameShort, invalidFormatAction.ToString(), args);
 
-		if(outputPath != null)
+		if (outputPath != null)
 			AddArgumentWithParameter(OutputPathOptionNameShort, outputPath, args);
 
-		if(isDryRun)
+		if (isDryRun)
 			AddArgumentWithoutParameter(IsDryRunOptionNameShort, args);
 
 		if (reverseGeocodeProvider != null)
@@ -178,7 +178,7 @@ public static class CommandLineArgumentsFakes
 		var args = new List<string> { "archive" };
 
 		AddArgumentWithParameter(InputPathOptionNameShort, sourcePhotoPath, args);
-		if(isDryRun)
+		if (isDryRun)
 			AddArgumentWithoutParameter(IsDryRunOptionNameShort, args);
 		AddArgumentWithParameter(InvalidFormatActionOptionNameShort, invalidFormatAction.ToString(), args);
 		AddArgumentWithParameter(NoPhotoDateTimeTakenActionOptionNameShort, noPhotoTakenDateAction.ToString(), args);
@@ -197,4 +197,27 @@ public static class CommandLineArgumentsFakes
 	{
 		AddArgumentWithParameter(OutputPathOptionNameShort, outputPath, args);
 	}
+
+	public static ICollection<string> ListBuildCommandLineOptions(ListType listType, string inputPath, int? albumId = null, int? year = null, byte? month = null, byte? day = null,
+		bool rawOutput = false)
+	{
+		var args = new List<string> { "list" };
+
+		AddArgumentWithParameter('t', listType.ToString(), args);
+		AddArgumentWithParameter(InputPathOptionNameShort, inputPath, args);
+
+		if (albumId != null)
+			AddArgumentWithParameter('n', albumId.Value.ToString(), args);
+		if (year != null)
+			AddArgumentWithParameter('y', year.Value.ToString(), args);
+		if (month != null)
+			AddArgumentWithParameter('m', month.Value.ToString(), args);
+		if (day != null)
+			AddArgumentWithParameter('d', day.Value.ToString(), args);
+		if (rawOutput)
+			AddArgumentWithoutParameter('r', args);
+
+		return args;
+	}
+
 }

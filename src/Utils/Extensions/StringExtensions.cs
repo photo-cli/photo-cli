@@ -17,12 +17,12 @@ public static class StringExtensions
 		return text[..index] + replace + text[(index + search.Length)..];
 	}
 
-	public static bool IsPresent([NotNullWhen(true)]this string? value)
+	public static bool IsPresent([NotNullWhen(true)] this string? value)
 	{
 		return !string.IsNullOrEmpty(value);
 	}
 
-	public static bool IsMissing([NotNullWhen(false)]this string? value)
+	public static bool IsMissing([NotNullWhen(false)] this string? value)
 	{
 		return string.IsNullOrEmpty(value);
 	}

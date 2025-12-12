@@ -2,7 +2,7 @@ namespace PhotoCli.Tests.Fakes.Options;
 
 public static class CopyOptionsFakes
 {
-	private const string ValidOutputPath = "output-folder";
+	internal const string ValidOutputPath = "output-folder";
 
 	public static CopyOptions WithPaths(string outputFolderPath, string? sourceFolderPath = null)
 	{
@@ -67,7 +67,7 @@ public static class CopyOptionsFakes
 		return Create();
 	}
 
-	public static CopyOptions WithReverseGeocodeService(ReverseGeocodeProvider reverseGeocodeProvider = ReverseGeocodeProvider.BigDataCloud)
+	public static CopyOptions WithReverseGeocodeService(ReverseGeocodeProvider reverseGeocodeProvider)
 	{
 		return Create(reverseGeoCodeProviderOptional: reverseGeocodeProvider);
 	}
@@ -76,18 +76,18 @@ public static class CopyOptionsFakes
 		// required
 		string? outputPath = ValidOutputPath, NamingStyle? namingStyleRequired = null, FolderProcessType? folderProcessTypeRequired = null, NumberNamingTextStyle? numberNamingTextStyleRequired = null,
 		// optional
-		CopyInvalidFormatAction? invalidFormatActionOptional = null , CopyNoPhotoTakenDateAction? noPhotoTakenDateActionOptional = null, CopyNoCoordinateAction? noCoordinateActionOptional = null,
+		CopyInvalidFormatAction? invalidFormatActionOptional = null, CopyNoPhotoTakenDateAction? noPhotoTakenDateActionOptional = null, CopyNoCoordinateAction? noCoordinateActionOptional = null,
 		string? sourcePhotosFolderPathOptional = null, bool isDryRunOptional = false, GroupByFolderType? groupByFolderTypeOptional = null,
-		FolderAppendType? folderAppendTypeOptional = null, FolderAppendLocationType? folderAppendLocationTypeOptional = null, bool verify = false,
+		FolderAppendType? folderAppendTypeOptional = null, FolderAppendLocationType? folderAppendLocationTypeOptional = null, bool verify = false, short? expectedDayRange = null,
 		// shared ReverseGeocode
 		ReverseGeocodeProvider reverseGeoCodeProviderOptional = ReverseGeocodeProvider.Disabled,
-		IEnumerable<int>? bigDataCloudAdminLevelsOptional = null, bool? hasPaidLicenseOptional = false)
+		IEnumerable<int>? bigDataCloudAdminLevelsOptional = null, bool? hasPaidLicenseOptional = false, MissingReverseGeocodeAction missingReverseGeocodeAction = MissingReverseGeocodeAction.Continue)
 	{
 		return new CopyOptions(outputPath!, namingStyleRequired ?? NamingStyleFakes.Valid(),
 			folderProcessTypeRequired ?? FolderProcessTypeFakes.Valid(), numberNamingTextStyleRequired ?? NumberNamingTextStyleFakes.Valid(),
-			invalidFormatActionOptional ?? CopyInvalidFormatActionFakes.Valid() , noPhotoTakenDateActionOptional ?? CopyNoPhotoTakenDateActionFakes.Valid(), noCoordinateActionOptional ?? CopyNoCoordinateActionFakes.Valid(),
-			sourcePhotosFolderPathOptional, isDryRunOptional, groupByFolderTypeOptional, folderAppendTypeOptional, folderAppendLocationTypeOptional, verify, reverseGeoCodeProviderOptional,
-			bigDataCloudAdminLevels: bigDataCloudAdminLevelsOptional, hasPaidLicense: hasPaidLicenseOptional);
+			invalidFormatActionOptional ?? CopyInvalidFormatActionFakes.Valid(), noPhotoTakenDateActionOptional ?? CopyNoPhotoTakenDateActionFakes.Valid(), noCoordinateActionOptional ?? CopyNoCoordinateActionFakes.Valid(),
+			sourcePhotosFolderPathOptional, isDryRunOptional, groupByFolderTypeOptional, folderAppendTypeOptional, folderAppendLocationTypeOptional, verify, expectedDayRange, reverseGeoCodeProviderOptional,
+			bigDataCloudAdminLevels: bigDataCloudAdminLevelsOptional, hasPaidLicense: hasPaidLicenseOptional, missingReverseGeocodeAction: missingReverseGeocodeAction);
 	}
 
 	public static CopyOptions ValidReverseGeocodeService(ReverseGeocodeProvider reverseGeocodeProvider = ReverseGeocodeProvider.BigDataCloud)

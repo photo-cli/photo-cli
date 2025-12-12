@@ -170,4 +170,19 @@ public static class BigDataCloudReverseGeocodeResponseFakes
     }
 }";
 	}
+
+	public static string AnkaraAdminLevelsLogOutput()
+	{
+		var namesByAdminLevel = new Dictionary<int, string>
+		{
+			{ 8, "Mebusevleri Mahallesi" },
+			{ 6, "Çankaya" },
+			{ 4, "Ankara" },
+			{ 3, "İç Anadolu Bölgesi" },
+			{ 2, "Türkiye" },
+		};
+		var log = string.Join(", ", namesByAdminLevel.Select(s => "[" + s.Key + ", " + s.Value + "]"));
+		return log;
+	}
+
 }

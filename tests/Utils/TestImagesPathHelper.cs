@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace PhotoCli.Tests.Utils;
 
 public static class TestImagesPathHelper
@@ -30,12 +32,23 @@ public static class TestImagesPathHelper
 		return TestImagesFolderPath("SubFoldersCompanions", path);
 	}
 
-	private static string TestImagesFolderPath(string folder, string? path)
+	private static string TestImagesFolderPath(string folder, string? path = null)
 	{
 		var combined = Path.Combine(RootTestImagesDirectory, folder);
 		if (path != null)
 			combined = Path.Combine(combined, path);
 		return combined;
+	}
+
+	public static string ArchiveFolder()
+	{
+		var archivePath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "ArchiveWindows" : "ArchiveUnix";
+		return TestImagesFolderPath(archivePath);
+	}
+
+	public static string NotExistingFolder()
+	{
+		return TestImagesFolderPath("not-existing-folder"); ;
 	}
 
 	public static class ExifSubIfdDirectory

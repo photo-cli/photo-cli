@@ -78,7 +78,7 @@ public class DuplicatePhotoRemoveServiceUnitTests
 		var actualPhotos = sut.GroupAndFilterByPhotoHash(photos);
 		actualPhotos.Should().BeEquivalentTo(expectedPhotos);
 		statistic.PhotosSame.Should().Be(expectedPhotosExistedStatistic);
-		loggerMock.VerifyAllLogStatementsAtLeastOnce(LogLevel.Warning, logStatements);
+		loggerMock.VerifyAllLogStatementsAtLeastOnce(LogLevel.Warning, true, logStatements);
 	}
 
 	public static TheoryData<List<Photo>, List<Photo>> AllUniquePhotos = new()
@@ -122,6 +122,6 @@ public class DuplicatePhotoRemoveServiceUnitTests
 
 	private static string PhotoSkippedLog(string path1, string path2)
 	{
-		return $"Photo is skipped due to same photo has already been archived. Same photo paths: {MockFileSystemHelper.Combine(PhotoFakes.DefaultSourcePath, path1)}, {MockFileSystemHelper.Combine(PhotoFakes.DefaultSourcePath, path2)}";
+		return $"Photo is skipped due to same photo has already been archived. Same photo paths: <{MockFileSystemHelper.Combine(PhotoFakes.DefaultSourcePath, path1)}>, <{MockFileSystemHelper.Combine(PhotoFakes.DefaultSourcePath, path2)}>";
 	}
 }

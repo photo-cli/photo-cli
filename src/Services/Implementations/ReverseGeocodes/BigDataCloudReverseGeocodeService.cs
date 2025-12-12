@@ -1,27 +1,33 @@
+using System.Diagnostics;
 using System.Net.Http.Json;
+using PhotoCli.Utils.Logging;
 
 namespace PhotoCli.Services.Implementations.ReverseGeocodes;
 
 public class BigDataCloudReverseGeocodeService : IBigDataCloudReverseGeocodeService
 {
+	private const ReverseGeocodeProvider Provider = ReverseGeocodeProvider.BigDataCloud;
 	private readonly ApiKeyStore _apiKeyStore;
 	private readonly HttpClient _httpClient;
 	private readonly ILogger<BigDataCloudReverseGeocodeService> _logger;
-	private readonly ICoordinateCache<BigDataCloudResponse> _coordinateCache;
+	private readonly IReverseGeocodeCache<BigDataCloudResponse> _reverseGeocodeCache;
+	private readonly Statistics _statistics;
 
 	public BigDataCloudReverseGeocodeService(
 		HttpClient httpClient,
 		ILogger<BigDataCloudReverseGeocodeService> logger,
 		ApiKeyStore apiKeyStore,
-		ICoordinateCache<BigDataCloudResponse> coordinateCache)
+		IReverseGeocodeCache<BigDataCloudResponse> reverseGeocodeCache,
+		Statistics statistics)
 	{
 		_httpClient = httpClient;
 		_logger = logger;
 		_apiKeyStore = apiKeyStore;
-		_coordinateCache = coordinateCache;
+		_reverseGeocodeCache = reverseGeocodeCache;
+		_statistics = statistics;
 	}
 
-	public async Task<IEnumerable<string>> Get(Coordinate coordinate, string? language, IEnumerable<int> adminLevels)
+	public async Task<ReverseGeocodeAddressResult> Get(Coordinate coordinate, PhotoFile photoFile, string? language, IEnumerable<int> adminLevels)
 	{
 		var bigDataCloudRequest = new ReverseGeocodeRequest(coordinate, language);
 		var bigDataCloudResponse = await SerializeFullResponse(bigDataCloudRequest);
@@ -29,18 +35,33 @@ public class BigDataCloudReverseGeocodeService : IBigDataCloudReverseGeocodeServ
 		if (administratorLevels == null)
 		{
 			_logger.LogCritical("Can't get {Type}", nameof(BigDataCloudAdministrative));
-			return ArraySegment<string>.Empty;
+			return new ReverseGeocodeAddressResult(ArraySegment<string>.Empty, false);
 		}
 
 		var levelNames = new List<string>();
-		foreach (var adminLevel in adminLevels)
+		var allPhotosHasReverseGeocodedAsRequested = true;
+		var addressIndex = 1;
+
+		var namesByLevel = GetAdminLevels(administratorLevels);
+
+		foreach (var adminLevelIndex in adminLevels)
 		{
-			var levelName = GetAdminLevelName(adminLevel, administratorLevels);
-			if (levelName != null)
+			_logger.LogDebug("Requesting Address index of {AddressIndex} with {BigDataCloudAdminLevel}", addressIndex, adminLevelIndex);
+			if (namesByLevel.TryGetValue(adminLevelIndex, out var levelName))
+			{
 				levelNames.Add(levelName);
+			}
+			else
+			{
+				_logger.LogErrorWithPath("Requested address level: {BigDataCloudAdminLevel} on index #{AddressIndex}, not found on BigDataCloudAdmin's response. Available levels found: {AvailableLevels}",
+					photoFile.SourceFullPath, adminLevelIndex, addressIndex, namesByLevel);
+
+				allPhotosHasReverseGeocodedAsRequested = false;
+			}
+			++addressIndex;
 		}
 
-		return levelNames;
+		return new ReverseGeocodeAddressResult(levelNames, allPhotosHasReverseGeocodedAsRequested);
 	}
 
 	public async Task<BigDataCloudResponse?> SerializeFullResponse(ReverseGeocodeRequest request)
@@ -52,12 +73,13 @@ public class BigDataCloudReverseGeocodeService : IBigDataCloudReverseGeocodeServ
 			if (request.Language != null)
 				queryString += $"&localityLanguage={request.Language}";
 
-			if (_coordinateCache.TryGet(request, out var cachedData))
-				return cachedData;
+			var (cacheHit, cachedResponse) = await _reverseGeocodeCache.TryGet(request, Provider);
+			if (cacheHit)
+				return cachedResponse;
 
 			var bigDataCloudResponse = await _httpClient.GetFromJsonAsync<BigDataCloudResponse>(queryString, StaticOptions.JsonSerializerOptions);
-			_coordinateCache.SetResponse(request, bigDataCloudResponse);
-
+			++_statistics.ReserveGeocodeRequestSent;
+			await _reverseGeocodeCache.SetResponse(request, Provider, bigDataCloudResponse);
 			return bigDataCloudResponse;
 		}
 		catch (Exception e)
@@ -94,14 +116,31 @@ public class BigDataCloudReverseGeocodeService : IBigDataCloudReverseGeocodeServ
 		return addressPropertyValueDict;
 	}
 
-	private string? GetAdminLevelName(int adminLevel, IEnumerable<BigDataCloudAdministrative> administratorLevels)
+	private Dictionary<int, string> GetAdminLevels(IEnumerable<BigDataCloudAdministrative> administratorLevels)
 	{
-		var administratorLevelList = administratorLevels.Where(s => s.AdminLevel == adminLevel).ToList();
-		if (administratorLevelList.Count > 1)
-			_logger.LogWarning("Multiple admin level {Level} result found in list {Levels}", adminLevel, administratorLevels);
-		var administratorLevel = administratorLevelList.FirstOrDefault();
-		if (administratorLevel == null)
-			return null;
-		return administratorLevel.Name ?? administratorLevel.IsoName ?? null;
+		var namesByLevel = new Dictionary<int, string>();
+		foreach (var administratorLevel in administratorLevels.OrderByDescending(o => o.Order))
+		{
+			if (!administratorLevel.AdminLevel.HasValue)
+			{
+				_logger.LogError("Empty admin level found in BigDataCloudAdministrative response. Name: {Name}, IsoName: {IsoName}",
+					administratorLevel.Name, administratorLevel.IsoName);
+
+				continue;
+			}
+
+			var value = administratorLevel.Name ?? administratorLevel.IsoName;
+			if (value.IsMissing())
+			{
+				_logger.LogError("Empty admin level name found in BigDataCloudAdministrative response. AdminLevel: {AdminLevel}, IsoName: {IsoName}",
+					administratorLevel.AdminLevel, administratorLevel.IsoName);
+
+				continue;
+			}
+
+			if (!namesByLevel.TryAdd(administratorLevel.AdminLevel.Value, value))
+				_logger.LogWarning("Multiple admin level {Level} result found in list {Levels}", administratorLevel.AdminLevel, administratorLevels);
+		}
+		return namesByLevel;
 	}
 }

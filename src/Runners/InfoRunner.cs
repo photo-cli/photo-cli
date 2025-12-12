@@ -1,4 +1,5 @@
 using System.IO.Abstractions;
+using Spectre.Console;
 
 namespace PhotoCli.Runners;
 
@@ -44,15 +45,20 @@ public class InfoRunner : BaseRunner, IConsoleRunner
 		var isNoCoordinatePreventProcessOptionSelected = _options.NoCoordinateAction == InfoNoCoordinateAction.PreventProcess;
 		var isInvalidFileFormatPreventProcessOptionSelected = _options.InvalidFileFormatAction == InfoInvalidFormatAction.PreventProcess;
 
-		var photos = _exifDataAppenderService.ExtractExifData(photoPaths, out var allPhotosAreValid, out var allPhotosHasPhotoTaken, out var allPhotosHasCoordinate);
-		if (!NoExifDataPreventActions(out var exitCodeNoExif, allPhotosAreValid, allPhotosHasPhotoTaken, allPhotosHasCoordinate,
-			    isInvalidFileFormatPreventProcessOptionSelected, isNoPhotoTakenDatePreventProcessOptionSelected, isNoCoordinatePreventProcessOptionSelected, photos))
+		var exifDataResult = _exifDataAppenderService.ExtractExifData(photoPaths);
+		var photos = exifDataResult.Photos;
+		if (!ExifDataPreventActions(out var exitCodeNoExif, exifDataResult,
+				isInvalidFileFormatPreventProcessOptionSelected, isNoPhotoTakenDatePreventProcessOptionSelected, isNoCoordinatePreventProcessOptionSelected, null))
 		{
 			return exitCodeNoExif;
 		}
 
 		if (_options.ReverseGeocodeProvider != ReverseGeocodeProvider.Disabled)
-			photos = await _reverseGeocodeFetcherService.Fetch(photos);
+		{
+			(photos, var allPhotosHasReverseGeocodedAsRequested) = await _reverseGeocodeFetcherService.Fetch(photos, true);
+			if (_options.MissingReverseGeocodeAction == MissingReverseGeocodeAction.PreventProcess && !allPhotosHasReverseGeocodedAsRequested)
+				return ExitCode.PhotosWithMissingReverseGeocodeInfoAsRequested;
+		}
 
 		await _csvService.CreateInfoReport(photos, _options.OutputPath);
 

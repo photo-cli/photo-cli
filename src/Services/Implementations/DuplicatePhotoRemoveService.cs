@@ -1,3 +1,6 @@
+using PhotoCli.Utils.Logging;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+
 namespace PhotoCli.Services.Implementations;
 
 public class DuplicatePhotoRemoveService : IDuplicatePhotoRemoveService
@@ -27,7 +30,7 @@ public class DuplicatePhotoRemoveService : IDuplicatePhotoRemoveService
 			foreach (var photo in photosGroupedByHash.Skip(1))
 			{
 				++_statistics.PhotosSame;
-				_logger.LogWarning("Photo is skipped due to same photo has already been archived. Same photo paths: {Path1}, {Path2}",
+				_logger.LogWithTwoPaths(LogLevel.Warning, "Photo is skipped due to same photo has already been archived. Same photo paths",
 					firstPhoto.PhotoFile.SourcePath, photo.PhotoFile.SourcePath);
 			}
 		}

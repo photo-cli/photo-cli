@@ -1,12 +1,11 @@
 namespace PhotoCli.Utils;
 
-public class FileExistsOnDestinationPathException : PhotoCliException
+public class FileExistsOnDestinationPathException : IOException
 {
-	public string FilePath { get; }
+	public PhotoFile PhotoFile { get; }
 
-	public FileExistsOnDestinationPathException(string filePath)
-		: base("File exists on destination path")
+	public FileExistsOnDestinationPathException(PhotoFile photoFile)
 	{
-		FilePath = filePath;
+		PhotoFile = photoFile;
 	}
 }

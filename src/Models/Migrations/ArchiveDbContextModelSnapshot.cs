@@ -15,7 +15,63 @@ namespace PhotoCli.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.13");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
+
+            modelBuilder.Entity("PhotoCli.Models.AlbumEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Configuration")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name");
+
+                    b.ToTable("Albums");
+                });
+
+            modelBuilder.Entity("PhotoCli.Models.AlbumHistoryEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AlbumId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Configuration")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("SnapshotAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AlbumId");
+
+                    b.ToTable("AlbumHistories");
+                });
 
             modelBuilder.Entity("PhotoCli.Models.PhotoEntity", b =>
                 {
@@ -59,6 +115,9 @@ namespace PhotoCli.Migrations
                     b.Property<int?>("Hour")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
                     b.Property<double?>("Latitude")
                         .HasColumnType("REAL");
 
@@ -67,6 +126,9 @@ namespace PhotoCli.Migrations
 
                     b.Property<int?>("Minute")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("Month")
                         .HasColumnType("INTEGER");
@@ -82,15 +144,6 @@ namespace PhotoCli.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Sha1Hash")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Test2")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Test3")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Test4")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("Year")
@@ -109,6 +162,56 @@ namespace PhotoCli.Migrations
                     b.HasIndex("Year", "Month", "Day");
 
                     b.ToTable("Photos");
+                });
+
+            modelBuilder.Entity("PhotoCli.Models.ReverseGeocodeCacheEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Language")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("REAL");
+
+                    b.Property<byte>("Precision")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte>("Provider")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Response")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Latitude", "Longitude", "Provider", "Precision");
+
+                    b.ToTable("ReverseGeocodeCache");
+                });
+
+            modelBuilder.Entity("PhotoCli.Models.AlbumHistoryEntity", b =>
+                {
+                    b.HasOne("PhotoCli.Models.AlbumEntity", "Album")
+                        .WithMany("History")
+                        .HasForeignKey("AlbumId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Album");
+                });
+
+            modelBuilder.Entity("PhotoCli.Models.AlbumEntity", b =>
+                {
+                    b.Navigation("History");
                 });
 #pragma warning restore 612, 618
         }

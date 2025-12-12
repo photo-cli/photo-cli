@@ -2,16 +2,11 @@ namespace PhotoCli.Tests.EndToEndTests;
 
 public class BaseCopyVerbEndToEndTests : BaseEndToEndTests
 {
-	protected BaseCopyVerbEndToEndTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+	protected async Task<(Statistics, List<PhotoCsv>)> ExecuteCopy(ICollection<string> args, FileInfo fileInfo)
 	{
-	}
-
-	protected async Task<(ConsoleOutputValues, List<PhotoCsv>)> ExecuteCopy(ICollection<string> args, FileInfo fileInfo)
-	{
-		var actualOutput = await RunMain(args);
-		var actualConsoleOutput = ParseConsoleOutput(actualOutput);
+		var actualStatistics = await RunMainOutputAsStatistics(args);
 		var actualPhotoCsvModels = CsvFileHelper.ReadRecords(fileInfo);
-		return (actualConsoleOutput, actualPhotoCsvModels);
+		return (actualStatistics, actualPhotoCsvModels);
 	}
 
 	protected static void VerifyCsvModelsNewPathExists(IEnumerable<PhotoCsv> actualPhotoCsvModels, string outputFolder)

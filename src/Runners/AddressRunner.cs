@@ -1,4 +1,5 @@
 using System.IO.Abstractions;
+using Spectre.Console;
 
 namespace PhotoCli.Runners;
 
@@ -37,13 +38,14 @@ public class AddressRunner : IConsoleRunner
 					_consoleWriter.Write($"{propertyName}: {propertyValue}");
 				break;
 			case AddressListType.SelectedProperties:
-				var reverseGeocodes = await _reverseGeocodeService.Get(photoExifData.Coordinate);
-				var formattedReverseGeocodes = string.Join(Environment.NewLine, reverseGeocodes);
+				var photoFile = new PhotoFile(outputFile);
+				var reverseGeocodes = await _reverseGeocodeService.Get(photoExifData.Coordinate, photoFile);
+				var formattedReverseGeocodes = string.Join(Environment.NewLine, reverseGeocodes.AddressList);
 				_consoleWriter.Write(formattedReverseGeocodes);
 				break;
 			case AddressListType.FullResponse:
 				var rawResponse = await _reverseGeocodeService.RawResponse(photoExifData.Coordinate!);
-				_consoleWriter.Write(rawResponse);
+				_consoleWriter.WriteJson(rawResponse);
 				break;
 			default:
 				throw new PhotoCliException($"Not implemented {nameof(AddressListType)}: {_options.AddressListType}");

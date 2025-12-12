@@ -3,14 +3,14 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace PhotoCli.Tests.UnitTests.Services.ReverseGeocodes;
 
-public class BigDataCloudReverseGeocodeServiceUnitTests
+public class BigDataCloudReverseGeocodeServiceUnitTests() : ReverseGeocodeServiceUnitTestBase<BigDataCloudResponse>(ReverseGeocodeProvider.BigDataCloud)
 {
 	public static TheoryData<List<int>, List<string>> WithGivenOptionsReverseGeocodeResultShouldBeGivenExpectedAddressData = new()
 	{
-		{ new List<int> { 2 }, new List<string> { "Türkiye" } },
-		{ new List<int> { 2, 4 }, new List<string> { "Türkiye", "Ankara" } },
-		{ new List<int> { 2, 4, 6 }, new List<string> { "Türkiye", "Ankara", "Çankaya" } },
-		{ new List<int> { 2, 4, 6, 8 }, new List<string> { "Türkiye", "Ankara", "Çankaya", "Mebusevleri Mahallesi" } }
+		{ [2], ["Türkiye"] },
+		{ [2, 4], ["Türkiye", "Ankara"] },
+		{ [2, 4, 6], ["Türkiye", "Ankara", "Çankaya"] },
+		{ [2, 4, 6, 8], ["Türkiye", "Ankara", "Çankaya", "Mebusevleri Mahallesi"] }
 	};
 
 	[Theory]
@@ -18,18 +18,21 @@ public class BigDataCloudReverseGeocodeServiceUnitTests
 	public async Task With_Given_Options_ReverseGeocode_Result_Should_Be_Given_Expected_Address_Data(List<int> adminLevels, List<string> expectedAddresses)
 	{
 		var sut = MockGeocodeService(BigDataCloudReverseGeocodeResponseFakes.Ankara());
-		var actualReverseGeocode = await sut.Get(CoordinateFakes.Ankara(), "tr", adminLevels);
-		actualReverseGeocode.Should().BeEquivalentTo(expectedAddresses);
+		var reverseGeocodeResponseActual = await sut.Get(CoordinateFakes.Ankara(), PhotoFileValid, "tr", adminLevels);
+		reverseGeocodeResponseActual.Should().BeEquivalentTo(new ReverseGeocodeAddressResult(expectedAddresses, true));
 	}
 
 	[Fact]
 	public async Task Service_Error_Should_Give_Empty_List()
 	{
 		var mockHttpClient = MockHttpClient.WithError();
-		var coordinateCacheMock = new Mock<CoordinateCache<BigDataCloudResponse>>();
-		var sut = new BigDataCloudReverseGeocodeService(mockHttpClient, NullLogger<BigDataCloudReverseGeocodeService>.Instance, ApiKeyStoreFakes.BigDataCloudValid(), coordinateCacheMock.Object);
-		var actualReverseGeocode = await sut.Get(CoordinateFakes.Ankara(), "tr", BigDataCloudAdminLevelsFakes.Valid());
-		actualReverseGeocode.Should().BeEquivalentTo(ArraySegment<string>.Empty);
+		var coordinateCacheMock = new Mock<IReverseGeocodeCache<BigDataCloudResponse>>();
+
+		var sut = new BigDataCloudReverseGeocodeService(mockHttpClient, NullLogger<BigDataCloudReverseGeocodeService>.Instance, ApiKeyStoreFakes.BigDataCloudValid(),
+			coordinateCacheMock.Object, StatisticsFakes.Empty());
+
+		var reverseGeocodeResponseActual = await sut.Get(CoordinateFakes.Ankara(), PhotoFileValid, "tr", BigDataCloudAdminLevelsFakes.Valid());
+		reverseGeocodeResponseActual.Should().BeEquivalentTo(new ReverseGeocodeAddressResult(ArraySegment<string>.Empty, false));
 	}
 
 	[Fact]
@@ -55,8 +58,11 @@ public class BigDataCloudReverseGeocodeServiceUnitTests
 		var httpClientMock = new HttpClient(httpMessageHandlerMock.Object);
 
 		var cacheResponseFakeExpected = BigDataCloudFullResponseFakes.Valid(coordinate);
-		var mockBigDataCloudResponseCache = MockCoordinateCache(coordinate, cacheResponseFakeExpected);
-		var sut = new BigDataCloudReverseGeocodeService(httpClientMock, NullLogger<BigDataCloudReverseGeocodeService>.Instance, ApiKeyStoreFakes.BigDataCloudValid(), mockBigDataCloudResponseCache);
+		var mockBigDataCloudResponseCache = ReverseGeocodeCacheMock(coordinate, cacheResponseFakeExpected);
+
+		var sut = new BigDataCloudReverseGeocodeService(httpClientMock, NullLogger<BigDataCloudReverseGeocodeService>.Instance, ApiKeyStoreFakes.BigDataCloudValid(),
+			mockBigDataCloudResponseCache, StatisticsFakes.Empty());
+
 		var cacheResponseActual = await sut.SerializeFullResponse(new ReverseGeocodeRequest(coordinate));
 
 		cacheResponseActual.Should().Be(cacheResponseFakeExpected);
@@ -67,18 +73,16 @@ public class BigDataCloudReverseGeocodeServiceUnitTests
 	{
 		{
 			new Coordinate(-89.1234567, -179.1234567),
-			new []
-			{
-				new Coordinate(-89.1234568, -179.1234568),
-			}
+			[
+				new Coordinate(-89.1234568, -179.1234568)
+			]
 		},
 		{
 			new Coordinate(89.1234567, 179.1234567),
-			new []
-			{
+			[
 				new Coordinate(89.1234566, 179.1234566),
-				new Coordinate(45.1234566, 91.1234566),
-			}
+				new Coordinate(45.1234566, 91.1234566)
+			]
 		},
 	};
 
@@ -86,20 +90,16 @@ public class BigDataCloudReverseGeocodeServiceUnitTests
 	[MemberData(nameof(CacheMissData))]
 	public async Task SerializeFullResponse_Should_Requested_From_HttpClient(Coordinate cacheCoordinate, Coordinate[] requestCoordinates)
 	{
-		var (httpMessageHandlerMock, mockHttpClient) = MockHttpMessageHandler.WithResponse(BigDataCloudReverseGeocodeResponseFakes.Ankara());
+		var (httpMessageHandlerMock, httpClientMock) = MockHttpMessageHandler.WithResponse(BigDataCloudReverseGeocodeResponseFakes.Ankara());
+		var mockBigDataCloudResponseCache = ReverseGeocodeCacheMock(cacheCoordinate, BigDataCloudFullResponseFakes.Valid(cacheCoordinate));
 
-		var mockBigDataCloudResponseCache = MockCoordinateCache(cacheCoordinate, BigDataCloudFullResponseFakes.Valid(cacheCoordinate));
-
-		var sut = new BigDataCloudReverseGeocodeService(
-			mockHttpClient,
-			NullLogger<BigDataCloudReverseGeocodeService>.Instance,
-			ApiKeyStoreFakes.BigDataCloudValid(),
-			mockBigDataCloudResponseCache);
+		var sut = new BigDataCloudReverseGeocodeService(httpClientMock, NullLogger<BigDataCloudReverseGeocodeService>.Instance, ApiKeyStoreFakes.BigDataCloudValid(),
+			mockBigDataCloudResponseCache, StatisticsFakes.Empty());
 
 		foreach (var requestCoordinate in requestCoordinates)
 			_ = await sut.SerializeFullResponse(new ReverseGeocodeRequest(requestCoordinate));
 
-		httpMessageHandlerMock.Protected().Verify("SendAsync", Times.Exactly(requestCoordinates.Length), ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>());
+		VerifyMockMessageHandlerSendRequestExactly(Times.Exactly(requestCoordinates.Length), httpMessageHandlerMock);
 	}
 
 	public static TheoryData<Dictionary<string, object>> ExpectedAvailableReverseGeocodes = new()
@@ -126,37 +126,86 @@ public class BigDataCloudReverseGeocodeServiceUnitTests
 	[Fact]
 	public async Task AllAvailableReverseGeocodes_MultipleAdminLevelResponseFromService_ShouldLogWarningMessageOfInconsistentData()
 	{
-		var loggerMock = new Mock<ILogger<BigDataCloudReverseGeocodeService>>();
-		var sut = MockGeocodeService(BigDataCloudReverseGeocodeResponseFakes.MultipleAdminLevel(), loggerMock.Object);
+		var (sut, loggerMock) = MockServiceAndLoggerWithValidResponseNoCache(BigDataCloudReverseGeocodeResponseFakes.MultipleAdminLevel());
 		await sut.AllAvailableReverseGeocodes(CoordinateFakes.Valid(), "tr");
 		var logStatements = new[]
 		{
 			"BigDataCloud returned inconsistent/duplicate data. Multiple admin level on 3 found. Used value: First value on level3, duplicate value: Duplicate value on level3"
 		};
-		loggerMock.VerifyAllLogStatementsAtLeastOnce(LogLevel.Warning, logStatements);
+		loggerMock.VerifyAllLogStatementsAtLeastOnce(LogLevel.Warning, true, logStatements);
 	}
 
-	private static BigDataCloudReverseGeocodeService MockGeocodeService(string response, ILogger<BigDataCloudReverseGeocodeService>? logger = null)
+	public static TheoryData<List<int>, List<string>, string[]> RequestedAddressTypesSomeMissingWithValuesAndExpectedLogs = new()
 	{
-		var mockHttpClient = MockHttpClient.WithResponse(response);
-		logger ??= NullLogger<BigDataCloudReverseGeocodeService>.Instance;
-		var coordinateCacheMock = new Mock<CoordinateCache<BigDataCloudResponse>>();
-		return new BigDataCloudReverseGeocodeService(mockHttpClient, logger, ApiKeyStoreFakes.BigDataCloudValid(), coordinateCacheMock.Object);
+		{
+			[100],
+			[],
+			[RequestedAddressLevelNotFoundLogStatement(100, 1)]
+		},
+		{
+			[2, 101],
+			["Türkiye"],
+			[RequestedAddressLevelNotFoundLogStatement(101, 2)]
+		},
+		{
+			[102, 4],
+			["Ankara"],
+			[RequestedAddressLevelNotFoundLogStatement(102, 1)]
+		},
+		{
+			[2, 3, 4, 103, 6, 104, 8],
+			["Türkiye", "İç Anadolu Bölgesi", "Ankara", "Çankaya", "Mebusevleri Mahallesi"],
+			[
+				RequestedAddressLevelNotFoundLogStatement(103, 4),
+				RequestedAddressLevelNotFoundLogStatement(104, 6),
+			]
+		},
+	};
+
+	[Theory]
+	[MemberData(nameof(RequestedAddressTypesSomeMissingWithValuesAndExpectedLogs))]
+	public async Task Get_SomeRequestedAddressLevelsMissing_ShouldReturnAllPhotosHasReverseGeocodedAsRequestedAsFalseWithMatchWithAddressAndLogs(List<int> adminLevels,
+		List<string> expectedAddresses, string[] expectedLogStatements)
+	{
+		await MockAndResponseShouldMatchWithExpectedReverseGeocodeAddressResultAndLogs(adminLevels, expectedAddresses, false, expectedLogStatements);
 	}
 
-	private static ICoordinateCache<BigDataCloudResponse> MockCoordinateCache(Coordinate coordinateCacheKey, BigDataCloudResponse responseCacheResult)
+
+	private BigDataCloudReverseGeocodeService MockGeocodeService(string responseMock)
 	{
-		var request =  new ReverseGeocodeRequest(coordinateCacheKey);
+		var (sut, _) = MockServiceAndLoggerWithValidResponseNoCache(responseMock);
+		return sut;
+	}
 
-		var mockCoordinateCache = new Mock<ICoordinateCache<BigDataCloudResponse>>();
-		mockCoordinateCache
-			.Setup(x => x.TryGet(request, out It.Ref<BigDataCloudResponse?>.IsAny))
-			.Returns((ReverseGeocodeRequest _, out BigDataCloudResponse? value) =>
-			{
-				value = responseCacheResult;
-				return true;
-			});
+	private async Task MockAndResponseShouldMatchWithExpectedReverseGeocodeAddressResultAndLogs(List<int> adminLevels, List<string> expectedAddresses,
+		bool expectedAllPhotosHasReverseGeocodedAsRequested, string[]? expectedLogStatements = null)
+	{
+		var (sut, logger) = MockServiceAndLoggerWithValidResponseNoCache(BigDataCloudReverseGeocodeResponseFakes.Ankara());
+		var reverseGeocodeResponseActual = await sut.Get(CoordinateFakes.Ankara(), PhotoFileValid, "en", adminLevels);
 
-		return mockCoordinateCache.Object;
+		using (new AssertionScope())
+		{
+			reverseGeocodeResponseActual.Should().BeEquivalentTo(new ReverseGeocodeAddressResult(expectedAddresses, expectedAllPhotosHasReverseGeocodedAsRequested));
+			if (expectedLogStatements != null)
+				logger.VerifyAllLogStatementsAtLeastOnce(LogLevel.Error, false, expectedLogStatements);
+		}
+	}
+
+	private (BigDataCloudReverseGeocodeService, Mock<ILogger<BigDataCloudReverseGeocodeService>>) MockServiceAndLoggerWithValidResponseNoCache(string responseMock)
+	{
+		var httpClientMock = MockHttpClient.WithResponse(responseMock);
+		var loggerMock = new Mock<ILogger<BigDataCloudReverseGeocodeService>>();
+
+		var reverseGeocodeService = new BigDataCloudReverseGeocodeService(httpClientMock, loggerMock.Object, ApiKeyStoreFakes.BigDataCloudValid(),
+			ReverseGeocodeCacheAlwaysMiss(), StatisticsFakes.Empty());
+
+		return (reverseGeocodeService, loggerMock);
+	}
+
+	private static string RequestedAddressLevelNotFoundLogStatement(int adminLevel, int addressIndex)
+	{
+		return $"Requested address level: {adminLevel} on index #{addressIndex}, not found on BigDataCloudAdmin's response. " +
+			   $"Available levels found: {BigDataCloudReverseGeocodeResponseFakes.AnkaraAdminLevelsLogOutput()}. " +
+			   $"Path:<{PhotoPathValid}>";
 	}
 }

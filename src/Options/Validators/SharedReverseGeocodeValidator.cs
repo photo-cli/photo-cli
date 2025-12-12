@@ -4,33 +4,37 @@ namespace PhotoCli.Options.Validators;
 
 public class SharedReverseGeocodeValidator : BaseValidator<IReverseGeocodeOptions>
 {
-	public SharedReverseGeocodeValidator()
+	public SharedReverseGeocodeValidator(Type optionType)
 	{
-		#region ReverseGeocode Providers
+		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.BigDataCloud, () =>
+		{
+			var bigDataCloudAdminLevels = GetOptionFormatByType(optionType, nameof(IReverseGeocodeOptions.BigDataCloudAdminLevels));
+			var bigDataCloudProviderInfo = GetOptionFormatByTypeWithValue(optionType, nameof(IReverseGeocodeOptions.ReverseGeocodeProvider), nameof(ReverseGeocodeProvider.BigDataCloud));
+			RuleFor(r => r.BigDataCloudAdminLevels).NotEmpty().WithMessage(MustUseMessage(bigDataCloudAdminLevels, bigDataCloudProviderInfo));
+		});
 
-		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.BigDataCloud,
-			() =>
-			{
-				RuleFor(r => r.BigDataCloudAdminLevels).NotEmpty().WithMessage(MustUseMessage(nameof(IReverseGeocodeOptions.BigDataCloudAdminLevels), nameof(ReverseGeocodeProvider.BigDataCloud),
-					OptionNames.BigDataCloudAdminLevelsOptionNameLong, OptionNames.BigDataCloudAdminLevelsOptionNameShort));
-			});
+		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.OpenStreetMapFoundation, () =>
+		{
+			RequireOpenStreetMapProperties(ReverseGeocodeProvider.OpenStreetMapFoundation, optionType);
+		});
 
-		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.OpenStreetMapFoundation, () => { RequireOpenStreetMapProperties(ReverseGeocodeProvider.OpenStreetMapFoundation); });
-		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.LocationIq, () => { RequireOpenStreetMapProperties(ReverseGeocodeProvider.LocationIq); });
+		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.LocationIq, () =>
+		{
+			RequireOpenStreetMapProperties(ReverseGeocodeProvider.LocationIq, optionType);
+		});
 
-		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.GoogleMaps,
-			() =>
-			{
-				RuleFor(r => r.GoogleMapsAddressTypes).NotEmpty().WithMessage(MustUseMessage(nameof(IReverseGeocodeOptions.GoogleMapsAddressTypes), nameof(ReverseGeocodeProvider.GoogleMaps),
-					OptionNames.GoogleMapsAddressTypesOptionNameLong, OptionNames.GoogleMapsAddressTypesOptionNameShort));
-			});
-
-		#endregion
+		When(w => w.ReverseGeocodeProvider is ReverseGeocodeProvider.GoogleMaps, () =>
+		{
+			var googleMapsAddressTypes = GetOptionFormatByType(optionType, nameof(IReverseGeocodeOptions.GoogleMapsAddressTypes));
+			var googleMapsProviderInfo = GetOptionFormatByTypeWithValue(optionType, nameof(IReverseGeocodeOptions.ReverseGeocodeProvider), nameof(ReverseGeocodeProvider.GoogleMaps));
+			RuleFor(r => r.GoogleMapsAddressTypes).NotEmpty().WithMessage(MustUseMessage(googleMapsAddressTypes, googleMapsProviderInfo));
+		});
 	}
 
-	private void RequireOpenStreetMapProperties(ReverseGeocodeProvider reverseGeocodeProvider)
+	private void RequireOpenStreetMapProperties(ReverseGeocodeProvider reverseGeocodeProvider, Type optionType)
 	{
-		RuleFor(r => r.OpenStreetMapProperties).NotEmpty().WithMessage(MustUseMessage(nameof(IReverseGeocodeOptions.OpenStreetMapProperties), reverseGeocodeProvider.ToString(),
-			OptionNames.OpenStreetMapPropertiesOptionNameLong, OptionNames.OpenStreetMapPropertiesOptionNameShort));
+		var openStreetProperties = GetOptionFormatByType(optionType, nameof(IReverseGeocodeOptions.OpenStreetMapProperties));
+		var reverseGeocodeProviderInfo = GetOptionFormatByTypeWithValue(optionType, nameof(IReverseGeocodeOptions.ReverseGeocodeProvider), reverseGeocodeProvider.ToString());
+		RuleFor(r => r.OpenStreetMapProperties).NotEmpty().WithMessage(MustUseMessage(openStreetProperties, reverseGeocodeProviderInfo));
 	}
 }

@@ -1,0 +1,45 @@
+# .NET build artifacts
+**/bin/
+**/obj/
+**/out/
+
+# IDE and editor files
+.idea/
+.vs/
+.vscode/
+*.user
+*.suo
+*.DotSettings.user
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation and non-essential files
+docs/
+*.md
+!nuget-readme.md
+LICENSE
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+
+# Tests
+tests/
+
+# CI/CD
+.github/
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Other
+.editorconfig
+global.json
+.claude/

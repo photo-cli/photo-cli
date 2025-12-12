@@ -26,64 +26,64 @@ public class FolderRenamerService : IFolderRenamerService
 		switch (folderAppendType)
 		{
 			case FolderAppendType.FirstYearMonthDay:
-			{
-				if (HasNoPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath))
-					return orderedPhotos;
-				var firstDateTime = GetFirstPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath);
-				appendValue = firstDateTime.ToString(_options.DateFormatWithDay);
-				break;
-			}
-			case FolderAppendType.FirstYearMonth:
-			{
-				if (HasNoPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath))
-					return orderedPhotos;
-				var firstDateTime = GetFirstPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath);
-				appendValue = firstDateTime.ToString(_options.DateFormatWithMonth);
-				break;
-			}
-			case FolderAppendType.FirstYear:
-			{
-				if (HasNoPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath))
-					return orderedPhotos;
-				var firstDateTime = GetFirstPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath);
-				appendValue = firstDateTime.ToString(_options.YearFormat);
-				break;
-			}
-			case FolderAppendType.DayRange:
-			{
-				if (HasNoPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath))
-					return orderedPhotos;
-				var (firstDateTime, lastDateTime) = GetFirstAndLastPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath);
-				var firstDayFormat = firstDateTime.ToString(_options.DateFormatWithDay);
-				var lastDayFormat = lastDateTime.ToString(_options.DateFormatWithDay);
-				appendValue = $"{firstDayFormat}{_options.DayRangeSeparator}{lastDayFormat}";
-				break;
-			}
-			case FolderAppendType.MatchingMinimumAddress:
-			{
-				var photosHasReverseGeocode = orderedPhotos.Where(w => w.HasReverseGeocode).ToList();
-				if (!photosHasReverseGeocode.Any())
-					return orderedPhotos;
-				var minReverseGeocodeItemCount = photosHasReverseGeocode.Min(m => m.ReverseGeocodeCount);
-
-				int? allSameIndexStartsWith = null;
-				for (var reverseGeocodeIndex = minReverseGeocodeItemCount - 1; reverseGeocodeIndex >= 0; reverseGeocodeIndex--)
 				{
-					var index = reverseGeocodeIndex;
-					var groupedBySpecificReverseGeocodeItemOnIndex = photosHasReverseGeocode.GroupBy(g => g.ReverseGeocodes?.ElementAtOrDefault(index));
-
-					if (groupedBySpecificReverseGeocodeItemOnIndex.Count() == 1)
-						allSameIndexStartsWith ??= reverseGeocodeIndex;
-					else
-						allSameIndexStartsWith = null;
+					if (HasNoPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath))
+						return orderedPhotos;
+					var firstDateTime = GetFirstPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath);
+					appendValue = firstDateTime.ToString(_options.DateFormatWithDay);
+					break;
 				}
+			case FolderAppendType.FirstYearMonth:
+				{
+					if (HasNoPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath))
+						return orderedPhotos;
+					var firstDateTime = GetFirstPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath);
+					appendValue = firstDateTime.ToString(_options.DateFormatWithMonth);
+					break;
+				}
+			case FolderAppendType.FirstYear:
+				{
+					if (HasNoPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath))
+						return orderedPhotos;
+					var firstDateTime = GetFirstPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath);
+					appendValue = firstDateTime.ToString(_options.YearFormat);
+					break;
+				}
+			case FolderAppendType.DayRange:
+				{
+					if (HasNoPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath))
+						return orderedPhotos;
+					var (firstDateTime, lastDateTime) = GetFirstAndLastPhotoTakenDate(orderedPhotos, targetRelativeDirectoryPath);
+					var firstDayFormat = firstDateTime.ToString(_options.DateFormatWithDay);
+					var lastDayFormat = lastDateTime.ToString(_options.DateFormatWithDay);
+					appendValue = $"{firstDayFormat}{_options.DayRangeSeparator}{lastDayFormat}";
+					break;
+				}
+			case FolderAppendType.MatchingMinimumAddress:
+				{
+					var photosHasReverseGeocode = orderedPhotos.Where(w => w.HasReverseGeocode).ToList();
+					if (!photosHasReverseGeocode.Any())
+						return orderedPhotos;
+					var minReverseGeocodeItemCount = photosHasReverseGeocode.Min(m => m.ReverseGeocodeCount);
 
-				if (allSameIndexStartsWith == null)
-					return orderedPhotos;
-				var allMatchingReverseGeocodes = photosHasReverseGeocode.First().ReverseGeocodes!.GetRange(0, allSameIndexStartsWith.Value + 1);
-				appendValue = string.Join(_options.AddressSeparator, allMatchingReverseGeocodes);
-				break;
-			}
+					int? allSameIndexStartsWith = null;
+					for (var reverseGeocodeIndex = minReverseGeocodeItemCount - 1; reverseGeocodeIndex >= 0; reverseGeocodeIndex--)
+					{
+						var index = reverseGeocodeIndex;
+						var groupedBySpecificReverseGeocodeItemOnIndex = photosHasReverseGeocode.GroupBy(g => g.ReverseGeocodes?.ElementAtOrDefault(index));
+
+						if (groupedBySpecificReverseGeocodeItemOnIndex.Count() == 1)
+							allSameIndexStartsWith ??= reverseGeocodeIndex;
+						else
+							allSameIndexStartsWith = null;
+					}
+
+					if (allSameIndexStartsWith == null)
+						return orderedPhotos;
+					var allMatchingReverseGeocodes = photosHasReverseGeocode.First().ReverseGeocodes!.GetRange(0, allSameIndexStartsWith.Value + 1);
+					appendValue = string.Join(_options.AddressSeparator, allMatchingReverseGeocodes);
+					break;
+				}
 			default:
 				throw new PhotoCliException($"Not defined {nameof(FolderAppendType)}: {folderAppendType}");
 		}

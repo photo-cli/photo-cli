@@ -6,16 +6,17 @@
   </picture>
 </p>
 
-[![Nuget release](https://img.shields.io/nuget/v/photo-cli)](https://www.nuget.org/packages/photo-cli/) [![.github/workflows/stable.yml](https://github.com/photo-cli/photo-cli/actions/workflows/stable.yml/badge.svg)](https://github.com/photo-cli/photo-cli/actions/workflows/stable.yml) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=coverage)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Nuget pre-release](https://img.shields.io/nuget/vpre/photo-cli)](https://www.nuget.org/packages/photo-cli/#versions-body-tab) [![.github/workflows/preview.yml](https://github.com/photo-cli/photo-cli/actions/workflows/preview.yml/badge.svg)](https://github.com/photo-cli/photo-cli/actions/workflows/preview.yml) [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://github.com/photo-cli/photo-cli/blob/main/LICENSE)
+[![Nuget release](https://img.shields.io/nuget/v/photo-cli?label=stable&color=blue)](https-://www.nuget.org/packages/photo-cli/) [![Nuget download count](https://img.shields.io/nuget/dt/photo-cli)](https://www.nuget.org/packages/photo-cli/) [![Docker Image Version](https://img.shields.io/docker/v/photocli/photocli?label=docker&logo=docker&logoColor=white)](https://hub.docker.com/r/photocli/photocli) [![Homebrew](https://img.shields.io/nuget/v/photo-cli?label=homebrew&color=yellow)](https://github.com/photo-cli/homebrew-photo-cli) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=coverage)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![.github/workflows/CI.yml](https://github.com/photo-cli/photo-cli/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/photo-cli/photo-cli/actions/workflows/CI.yml) [![.github/workflows/stable.yml](https://github.com/photo-cli/photo-cli/actions/workflows/stable.yml/badge.svg)](https://github.com/photo-cli/photo-cli/actions/workflows/stable.yml)
 
-[![Docs](https://img.shields.io/badge/docs-photocli.com-red)](https://photocli.com) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=bugs)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![.github/workflows/CI.yml](https://github.com/photo-cli/photo-cli/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/photo-cli/photo-cli/actions/workflows/CI.yml)
+[![Docs](https://img.shields.io/badge/docs-photocli.com-red)](https://photocli.com) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=photo-cli_photo-cli&metric=bugs)](https://sonarcloud.io/summary/new_code?id=photo-cli_photo-cli) [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://github.com/photo-cli/photo-cli/blob/main/LICENSE) [![Nuget pre-release](https://img.shields.io/nuget/vpre/photo-cli?label=preview&color=red)](https://www.nuget.org/packages/photo-cli/#versions-body-tab) [![.github/workflows/preview.yml](https://github.com/photo-cli/photo-cli/actions/workflows/preview.yml/badge.svg)](https://github.com/photo-cli/photo-cli/actions/workflows/preview.yml)
 
-`photo-cli` is [CLI](https://en.wikipedia.org/wiki/Command-line_interface) tool (works on Linux & macOS & Windows) that extracts when and where ([reverse geocode](https://en.wikipedia.org/wiki/Reverse_geocoding)) your photographs are taken, copy into a new organized folder (not modifying source folder) with various [folder](#folder-append-type---a---folder-append-) & [file naming](#naming-style---s---naming-style-) strategies or export all data into [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) (can view on Microsoft Excel, Libre/OpenOffice Calc, Apple Numbers, Google Sheets) files. With this exported CSV file you can [navigate your photo locations on Google Maps & Earth with your custom label and pin style](#3-navigate-your-photo-locations-on-google-maps--earth).
+`photo-cli` is [CLI](https://en.wikipedia.org/wiki/Command-line_interface) tool (works on Linux & macOS & Windows) that extracts when and where ([reverse geocode](https://en.wikipedia.org/wiki/Reverse_geocoding)) your photographs are taken, copy or archive into a new organized folder (not modifying source folder) with various [folder](#folder-append-type---a---folder-append-) & [file naming](#naming-style---s---naming-style-) strategies with an album support to categorize & view easily. All photo metadata is stored on local SQLite for archive operation and CSV for others. On [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file (can view on Microsoft Excel, Libre/OpenOffice Calc, Apple Numbers, Google Sheets), you can [navigate your photo locations on Google Maps & Earth with your custom label and pin style](#3-navigate-your-photo-locations-on-google-maps--earth).
 
 ## Contents
 
 - [Features Explained With An Example](#features-explained-with-examples)
 - [Installation](#installation)
+- [Sample Usage Screenshots](#sample-usage-screenshots)
 - [How It's Done?](#how-its-done)
 - [Supported Photo Types](#supported-photo-types)
 - [Processing Companion Files](#processing-companion-files)
@@ -25,7 +26,6 @@
 - [Command Line Options/Arguments](#command-line-options--arguments)
 - [Settings](#settings)
 - [Exit Codes](#exit-codes)
-- [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [Code of Conduct](#code-of-conduct)
 - [Changelog - Release History](#changelog---release-history)
@@ -36,14 +36,15 @@
 
 ## Features Explained With Examples
 
-There is three main feature that can be explained better with examples.
+There is five main feature that can be explained better with examples.
 
-1. [Copy into a new organized folder example with `photo-cli copy` command](#1-copy-into-a-new-organized-folder-example-with-photo-cli-copy-command)
-2. [Archive & index into local SQLite incrementally in a specific folder with `photo-cli archive` command](#2-archive--index-into-local-sqlite-incrementally-in-a-specific-folder-with-photo-cli-archive-command)
-3. [Export all extracted information into a CSV Report With `photo-cli info` Command](#3-export-all-extracted-information-into-a-csv-report-with-photo-cli-info-command)
-4. [Navigate Your Photo Locations on Google Maps & Earth](#4-navigate-your-photo-locations-on-google-maps--earth)
+1. [Archive & index with albums into a specific folder with metadata stored locally on SQLite with `photo-cli archive` command](#1-archive--index-with-albums-into-a-specific-folder-with-metadata-stored-locally-on-sqlite-with-photo-cli-archive-command)
+2. [Copy into a new organized folder example with `photo-cli copy` command](#2-copy-into-a-new-organized-folder-example-with-photo-cli-copy-command)
+3. [List/Open Photos by their metadata on Archived Folder](#3-listopen-photos-by-their-metadata-on-archived-folder)
+4. [Export all extracted information into a CSV Report With `photo-cli info` Command](#4-export-all-extracted-information-into-a-csv-report-with-photo-cli-info-command)
+5. [Navigate Your Photo Locations on Google Maps & Earth](#5-navigate-your-photo-locations-on-google-maps--earth)
 
-### 1. Copy Into a New Organized Folder Example With `photo-cli copy` Command
+### 1. Archive & index with albums into a specific folder with metadata stored locally on SQLite with `photo-cli archive` command
 
 #### Folder & File Hierarchy Before -> After
 
@@ -69,20 +70,285 @@ There is three main feature that can be explained better with examples.
 │   ├── GOPR7496.jpg
 │   ├── GOPR7497.jpg
 │   ├── IMG_0747.JPG
-│   └── IMG_2371.jpg
+│   ├── IMG_1979.HEIC
+│   ├── IMG_1979.mov
+│   ├── IMG_1979.xmp
+│   ├── IMG_2371.jpg
+│   └── IMG_O1979.aae
 └── Spain Journey
     ├── DSC_1807.jpg
     ├── DSC_1808.jpg
     └── IMG_5397.jpg
 
-2 directories, 17 files
+2 directories, 21 files
 </pre>
 </td>
 <td>
 <pre>
-├── 2005.08.13_09.47.23-Kenya.jpg
-├── 2005.12.14-2008.10.22-Italy album
-│   ├── 2005.12.14_14.39.47-Italia-Firenze-Quartiere 1.jpg
+├── 2005
+│   ├── 08
+│   │   └── 13
+│   │       └── 2005.08.13_09.47.23-5842c73cfdc5f347551bb6016e00c71bb1393169.jpg
+│   └── 12
+│       └── 14
+│           └── 2005.12.14_14.39.47-03cb14d5c68beed97cbe73164de9771d537fcd96.jpg
+├── 2008
+│   ├── 07
+│   │   └── 16
+│   │       └── 2008.07.16_11.33.20-90d835861e1aa3c829e3ab28a7f01ec3a090f664.jpg
+│   └── 10
+│       └── 22
+│           ├── 2008.10.22_16.28.39-5d66eec547469a1817bda4abe35c801359b2bb55.jpg
+│           ├── 2008.10.22_16.29.49-629b0b141634d6c0906e49af448bec8d755ba32c.jpg
+│           ├── 2008.10.22_16.38.20-620d23336a12ab54f9f0190fe93960a4dba2df59.jpg
+│           ├── 2008.10.22_16.43.21-3b0a3215b4f66d7ff4804dd223f192c21aee71bc.jpg
+│           ├── 2008.10.22_16.44.01-d470205a1d331a9d3765b3762b7c954bb8efc6ea.jpg
+│           ├── 2008.10.22_16.46.53-f670f2bb6c54898894b06b083185b05086bd4e6e.jpg
+│           ├── 2008.10.22_16.52.15-6b89a245809031ecc47789cdeaa332545330fc39.jpg
+│           ├── 2008.10.22_16.55.37-dd42edcde2433a7df4a3d67bf61944a20884da89.jpg
+│           └── 2008.10.22_17.00.07-a0ab699f5f99fce8ff49163e87c7590c2c9a66eb.jpg
+├── 2012
+│   └── 06
+│       └── 22
+│           └── 2012.06.22_19.52.31-bb649a18b3e7bb3df3701587a13f833749091817.jpg
+├── 2015
+│   └── 04
+│       └── 10
+│           ├── 2015.04.10_20.12.23-3907fc960f2873f40c8f35643dd444e0468be131.jpg
+│           └── 2015.04.10_20.12.23-9f4e6d352ec172e1059571250655e376769080fe.jpg
+├── 2025
+│   └── 06
+│       └── 03
+│           ├── 2025.06.03_13.53.36-8a45af72730474e22582afbe72f53685d705a72c.heic
+│           └── 2025.06.03_13.53.36-8a45af72730474e22582afbe72f53685d705a72c.mov
+├── no-photo-taken-date
+│   └── cf756397cc3ca81b2650c8801fd64e172504015a.jpg
+└── photo-cli.sqlite3
+
+20 directories, 19 files
+</pre>
+</td>
+</tr>
+</table>
+
+#### What Happened? / How It Is Processed?
+
+This archive process is done by running only the following single command;
+
+```
+photo-cli archive --input [relative|full folder path] --output [relative|full folder path] --album-type DateRange --album-name My-Album --auto-reverse-geocode-album --expected-day-range 7300 --delete-on-source --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city
+```
+
+Same command with shorter alias of all argument names & values
+
+```
+photo-cli archive -i [relative|full folder path] -o [relative|full folder path] -y 2 -a My-Album -s -w 7300 -f -e 2 -r country city
+```
+
+##### Console/terminal output (as progress may take time, for each operation completion status shown with progress)
+
+<details>
+  <summary>Click to expand</summary>
+
+```
+[17:07:27] Searching photo main files: started
+[17:07:27] Searching photo main files: finished. 18 photo(s) found.
+[17:07:27] Searching photo companion files: started
+[17:07:27] Searching photo companion files: finished. 1 companion file(s) found.
+[17:07:27] No coordinate found on `Gps` directory. Path:</test-photographs/Spain Journey/IMG_5397.jpg>
+[17:07:27] No coordinate found on `Gps` directory. Path:</test-photographs/Italy album/IMG_2371.jpg>
+[17:07:28] Calculating file hashes: started
+[17:07:28] Calculating file hashes: finished.
+[17:07:28] This OpenStreetMapFoundation provider is using rate limit of 1 second(s) between each request
+[17:07:28] Reverse Geocoding: started
+[17:07:31] Requested address types: City on index #2, not found on OpenStreetMap's response. Available types found:
+{"country_code":"gb","country":"United Kingdom","postcode":"SL4 2DR","suburb":"Sunninghill and Ascot","road":"Windsor Road"}
+. Path:</test-photographs/GOPR6742.jpg>
+[17:07:47] Reverse Geocoding: finished.
+[17:07:47] Directory grouping: started
+[17:07:47] Directory grouping: finished.
+[17:07:47] Processing target folder: started
+[17:07:47] Photo is skipped due to same photo has already been archived. Same photo paths: <test-photographs/Italy album/DSC_1770.JPG>, <
+/test-photographs/Italy album/DSC_1770_(same).jpg>
+[17:07:47] Processing target folder: finished.
+[17:07:47] Verified all photo files copied successfully by comparing file hashes from original photo files.
+[17:07:47] Archiving photos to SQLite: started
+[17:07:47] Archiving photos to SQLite: finished.
+[17:07:47] Saving new date range album: started
+[17:07:47] Saving new date range album: finished.
+[17:07:47] Saving reverse geocode albums: started
+[17:07:47] Saving reverse geocode albums: finished.
+[17:07:47] Deleting source files: started
+[17:07:47] Deleting source files: finished.
+[17:07:47] Deleting empty directories: started
+[17:07:47] Deleting empty directories: finished.
+                        Statistics
+┌────────────────────────────────────────────────┬───────┐
+│ Statistic                                      │ Count │
+├────────────────────────────────────────────────┼───────┤
+│ File System Error(s)                           │ 0     │
+│ Photo(s) found                                 │ 18    │
+│ Photo(s) copied                                │ 17    │
+│ Photo(s) existed on the output                 │ 0     │
+│ Photo(s) are skipped, they have the same photo │ 1     │
+│ Directory/directories created                  │ 8     │
+│                                                │       │
+│ Companion file(s) found                        │ 1     │
+│ Companion file(s) copied                       │ 1     │
+│ Companion file(s) existed on the output        │ 0     │
+│                                                │       │
+│ Source photo file(s) deleted                   │ 17    │
+│ Source companion file(s) deleted               │ 1     │
+│ Source empty directory(ies) deleted            │ 1     │
+│                                                │       │
+│ User defined album created                     │ 1     │
+│ User defined album updated                     │ 0     │
+│ Auto address album created                     │ 15    │
+│                                                │       │
+│ Reverse geocode request sent                   │ 14    │
+│ Reverse geocode evaluated from memory          │ 2     │
+│ Reverse geocode evaluated from database        │ 0     │
+│ Photo(s) has taken date and coordinate         │ 16    │
+│ Photo(s) has taken date but no coordinate      │ 1     │
+│ Photo(s) has coordinate but no taken date      │ 0     │
+│ Photo(s) has no taken date and coordinate      │ 1     │
+│                                                │       │
+│ Photo(s) has unknown/invalid format            │ 0     │
+│ Photo(s) caused unexpected error internally    │ 0     │
+└────────────────────────────────────────────────┴───────┘
+[17:07:47] Archive process completed successfully
+```
+</details>
+
+#### Step By Step `photo-cli archive` Process
+
+1. Gather all photo paths in the source folder within subfolders.
+2. Gather all photo companion files (if there is any) is which used but not limited for storing metadata, edits, RAW format files stored with same file name. For example Live Photos on iPhone storing short video clip of photo with a `mov` extension.
+3. Extract EXIF data of each photograph's taken date and coordinate. As [third-party reverse geocode](#address-building--reverse-geocoding) is selected, we are building address with `OpenStreetMap` by using [given administrative levels](#4-building-your-own-address-with-selected-properties) as `city town` for each photograph.
+4. As `expected-day-range` argument is given with, this is a validation between the photo taken date date range in days. If there is any photograph that has taken date outside the given day range, process won't start. This is optional argument to stop processing archive photos that are not within the expected given day range.
+5. Photos which doesn't have coordinate information or reverse geocode propery missing, would be listed on the output by their paths as warning.
+6. As `verify` argument is given, we are calculating file hashes of each photograph's file to verify that all photo files copied successfully by comparing file hashes from original photo files at the end of the process.
+7. On the output folder, photos will be placed on folder hierarchy by it's photo taken date's `/[year]/[month]/[day]`. For example: `/2008/07/16/`.
+8. Photo file names will be formatted as `yyyy.MM.dd_HH.mm.ss-{sha1-hash-of-file}.{extension}`. For example: `2008.07.16_11.33.20-90d835861e1aa3c829e3ab28a7f01ec3a090f664.jpg`. Input file name is: `IMG_2371.jpg`. Companion files are copied with the same name with their original file extension.
+9. Input folder has duplicate photos with different names `DSC_1770.JPG`, `DSC_1770_(same).JPG`. We are only archiving one of them by comparing file hashes to output `2008/10/22/2008.10.22_17.00.07-a0ab699f5f99fce8ff49163e87c7590c2c9a66eb.jpg` and logs warning to output with their paths.
+10. The photo that don't have any photo taken date `Spain Journey/IMG_5397.jpg`, copied into `no-photo-taken-date` folder with only a sha1-hash `cf756397cc3ca81b2650c8801fd64e172504015a.jpg`.
+11. After copying all photos, we are verifying that all photo files copied successfully by comparing file hashes. It guarantees that there won't be any corrupted photos that is caused by disk operation failures.
+12. All photo taken dates, address information is saved on local SQLite database on the output folder's top most folder `photo-cli.sqlite3` to able to open photos by their all metadata information.
+13. As `album-name` argument is given with value of `My-Album` with a given album type of `DateRange`. We are creating an album on the database with the earliest and latest photo taken date able to match photos by date range with the album name to open photographs later.
+14. As `auto-reverse-geocode-album` argument is given, we are creating albums on the database by each reverse geocode location property level to be able to open photos by the reverse geocode location. These are some of albums created regarding to sample photographs. `Firenze` , `Venezia`, `Italia`, `United Kingdom`.
+15. As `delete-on-source` argument is given, we are deleting all source photo files, companion files & empty directories after archiving process is completed successfully..
+16. Showing all the statistics of the process on the output.
+
+##### Using `photo-cli list` command to see the `Albums` metadata of the previous output folder
+
+```
+photo-cli list --input [relative|full folder path] --type Albums
+```
+
+Same command with shorter alias of all argument names & values
+```
+photo-cli list -i [relative|full folder path] -t 1
+```
+
+###### Console/terminal output, rendering as table.
+<details>
+  <summary>Click to expand</summary>
+
+```
+┌────┬──────────────────┬────────────────┬─────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────┐
+│ Id │ Name             │ Type           │ Created At          │ Configuration                                                                            │
+├────┼──────────────────┼────────────────┼─────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────┤
+│ 1  │ My-Album         │ UserDefined    │ 2025-07-27 17:07:47 │ {"PhotoIds":[3],"DateRange":{"Start":"2005-08-13T09:47:23","End":"2025-06-03T13:53:36"}} │
+│ 2  │ United Kingdom   │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"ReverseGeocodeFormatted":"United Kingdom"}}                          │
+│ 3  │ Kenya-Barut ward │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"ReverseGeocodeFormatted":"Kenya-Barut ward"}}                        │
+│ 4  │ España-Madrid    │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"ReverseGeocodeFormatted":"España-Madrid"}}                           │
+│ 5  │ Italia-Arezzo    │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"ReverseGeocodeFormatted":"Italia-Arezzo"}}                           │
+│ 6  │ Italia-Venezia   │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"ReverseGeocodeFormatted":"Italia-Venezia"}}                          │
+│ 7  │ Italia-Firenze   │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"ReverseGeocodeFormatted":"Italia-Firenze"}}                          │
+│ 8  │ United Kingdom   │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"Address1":"United Kingdom"}}                                         │
+│ 9  │ Kenya            │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"Address1":"Kenya"}}                                                  │
+│ 10 │ España           │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"Address1":"España"}}                                                 │
+│ 11 │ Italia           │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"Address1":"Italia"}}                                                 │
+│ 12 │ Barut ward       │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"Address2":"Barut ward"}}                                             │
+│ 13 │ Madrid           │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"Address2":"Madrid"}}                                                 │
+│ 14 │ Arezzo           │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"Address2":"Arezzo"}}                                                 │
+│ 15 │ Venezia          │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"Address2":"Venezia"}}                                                │
+│ 16 │ Firenze          │ ReverseGeocode │ 2025-07-27 17:07:47 │ {"ReverseGeocode":{"Address2":"Firenze"}}                                                │
+└────┴──────────────────┴────────────────┴─────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────┘
+```
+</details>
+
+##### Contents of the `Photos` table in `photo-cli.sqlite3` SQLite Database in Markdown Table (output of `archive` command)
+
+<details>
+  <summary>Click to expand</summary>
+
+| Id | Path | CreatedAt | DateTaken | ReverseGeocodeFormatted | Latitude | Longitude | Year | Month | Day | Hour | Minute | Seconds | Address1 | Address2 | Address3 | Address4 | Address5 | Address6 | Address7 | Address8 | Sha1Hash | IsDeleted | ModifiedAt |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | 2012/06/22/2012.06.22\_19.52.31-bb649a18b3e7bb3df3701587a13f833749091817.jpg | 2025-07-27 17:07:47.378073 | 2012-06-22 19:52:31 | United Kingdom | 51.4248 | -0.6736 | 2012 | 6 | 22 | 19 | 52 | 31 | United Kingdom | null | null | null | null | null | null | null | bb649a18b3e7bb3df3701587a13f833749091817 | 0 | null |
+| 2 | 2005/08/13/2005.08.13\_09.47.23-5842c73cfdc5f347551bb6016e00c71bb1393169.jpg | 2025-07-27 17:07:47.378273 | 2005-08-13 09:47:23 | Kenya-Barut ward | -0.3713 | 36.0564 | 2005 | 8 | 13 | 9 | 47 | 23 | Kenya | Barut ward | null | null | null | null | null | null | 5842c73cfdc5f347551bb6016e00c71bb1393169 | 0 | null |
+| 3 | no-photo-taken-date/cf756397cc3ca81b2650c8801fd64e172504015a.jpg | 2025-07-27 17:07:47.378275 | null | null | null | null | null | null | null | null | null | null | null | null | null | null | null | null | null | null | cf756397cc3ca81b2650c8801fd64e172504015a | 0 | null |
+| 4 | 2015/04/10/2015.04.10\_20.12.23-9f4e6d352ec172e1059571250655e376769080fe.jpg | 2025-07-27 17:07:47.378276 | 2015-04-10 20:12:23 | España-Madrid | 40.447 | -3.7248 | 2015 | 4 | 10 | 20 | 12 | 23 | España | Madrid | null | null | null | null | null | null | 9f4e6d352ec172e1059571250655e376769080fe | 0 | null |
+| 5 | 2015/04/10/2015.04.10\_20.12.23-3907fc960f2873f40c8f35643dd444e0468be131.jpg | 2025-07-27 17:07:47.378277 | 2015-04-10 20:12:23 | España-Madrid | 40.447 | -3.7248 | 2015 | 4 | 10 | 20 | 12 | 23 | España | Madrid | null | null | null | null | null | null | 3907fc960f2873f40c8f35643dd444e0468be131 | 0 | null |
+| 6 | 2008/07/16/2008.07.16\_11.33.20-90d835861e1aa3c829e3ab28a7f01ec3a090f664.jpg | 2025-07-27 17:07:47.378278 | 2008-07-16 11:33:20 | null | null | null | 2008 | 7 | 16 | 11 | 33 | 20 | null | null | null | null | null | null | null | null | 90d835861e1aa3c829e3ab28a7f01ec3a090f664 | 0 | null |
+| 7 | 2008/10/22/2008.10.22\_16.44.01-d470205a1d331a9d3765b3762b7c954bb8efc6ea.jpg | 2025-07-27 17:07:47.378278 | 2008-10-22 16:44:01 | Italia-Arezzo | 43.4684 | 11.8815 | 2008 | 10 | 22 | 16 | 44 | 1 | Italia | Arezzo | null | null | null | null | null | null | d470205a1d331a9d3765b3762b7c954bb8efc6ea | 0 | null |
+| 8 | 2008/10/22/2008.10.22\_17.00.07-a0ab699f5f99fce8ff49163e87c7590c2c9a66eb.jpg | 2025-07-27 17:07:47.378279 | 2008-10-22 17:00:07 | Italia-Arezzo | 43.4645 | 11.8815 | 2008 | 10 | 22 | 17 | 0 | 7 | Italia | Arezzo | null | null | null | null | null | null | a0ab699f5f99fce8ff49163e87c7590c2c9a66eb | 0 | null |
+| 9 | 2008/10/22/2008.10.22\_16.52.15-6b89a245809031ecc47789cdeaa332545330fc39.jpg | 2025-07-27 17:07:47.37828 | 2008-10-22 16:52:15 | Italia-Arezzo | 43.4673 | 11.8792 | 2008 | 10 | 22 | 16 | 52 | 15 | Italia | Arezzo | null | null | null | null | null | null | 6b89a245809031ecc47789cdeaa332545330fc39 | 0 | null |
+| 10 | 2008/10/22/2008.10.22\_16.55.37-dd42edcde2433a7df4a3d67bf61944a20884da89.jpg | 2025-07-27 17:07:47.378281 | 2008-10-22 16:55:37 | Italia-Arezzo | 43.466 | 11.8791 | 2008 | 10 | 22 | 16 | 55 | 37 | Italia | Arezzo | null | null | null | null | null | null | dd42edcde2433a7df4a3d67bf61944a20884da89 | 0 | null |
+| 11 | 2008/10/22/2008.10.22\_16.43.21-3b0a3215b4f66d7ff4804dd223f192c21aee71bc.jpg | 2025-07-27 17:07:47.378282 | 2008-10-22 16:43:21 | Italia-Arezzo | 43.4684 | 11.8816 | 2008 | 10 | 22 | 16 | 43 | 21 | Italia | Arezzo | null | null | null | null | null | null | 3b0a3215b4f66d7ff4804dd223f192c21aee71bc | 0 | null |
+| 12 | 2008/10/22/2008.10.22\_16.29.49-629b0b141634d6c0906e49af448bec8d755ba32c.jpg | 2025-07-27 17:07:47.378282 | 2008-10-22 16:29:49 | Italia-Arezzo | 43.4672 | 11.8854 | 2008 | 10 | 22 | 16 | 29 | 49 | Italia | Arezzo | null | null | null | null | null | null | 629b0b141634d6c0906e49af448bec8d755ba32c | 0 | null |
+| 13 | 2008/10/22/2008.10.22\_16.38.20-620d23336a12ab54f9f0190fe93960a4dba2df59.jpg | 2025-07-27 17:07:47.378283 | 2008-10-22 16:38:20 | Italia-Arezzo | 43.4671 | 11.8845 | 2008 | 10 | 22 | 16 | 38 | 20 | Italia | Arezzo | null | null | null | null | null | null | 620d23336a12ab54f9f0190fe93960a4dba2df59 | 0 | null |
+| 14 | 2008/10/22/2008.10.22\_16.28.39-5d66eec547469a1817bda4abe35c801359b2bb55.jpg | 2025-07-27 17:07:47.378284 | 2008-10-22 16:28:39 | Italia-Arezzo | 43.4674 | 11.8851 | 2008 | 10 | 22 | 16 | 28 | 39 | Italia | Arezzo | null | null | null | null | null | null | 5d66eec547469a1817bda4abe35c801359b2bb55 | 0 | null |
+| 15 | 2008/10/22/2008.10.22\_16.46.53-f670f2bb6c54898894b06b083185b05086bd4e6e.jpg | 2025-07-27 17:07:47.378284 | 2008-10-22 16:46:53 | Italia-Arezzo | 43.4682 | 11.8802 | 2008 | 10 | 22 | 16 | 46 | 53 | Italia | Arezzo | null | null | null | null | null | null | f670f2bb6c54898894b06b083185b05086bd4e6e | 0 | null |
+| 16 | 2025/06/03/2025.06.03\_13.53.36-8a45af72730474e22582afbe72f53685d705a72c.heic | 2025-07-27 17:07:47.378285 | 2025-06-03 13:53:36 | Italia-Venezia | 45.4332 | 12.3246 | 2025 | 6 | 3 | 13 | 53 | 36 | Italia | Venezia | null | null | null | null | null | null | 8a45af72730474e22582afbe72f53685d705a72c | 0 | null |
+| 17 | 2005/12/14/2005.12.14\_14.39.47-03cb14d5c68beed97cbe73164de9771d537fcd96.jpg | 2025-07-27 17:07:47.378286 | 2005-12-14 14:39:47 | Italia-Firenze | 43.7856 | 11.2346 | 2005 | 12 | 14 | 14 | 39 | 47 | Italia | Firenze | null | null | null | null | null | null | 03cb14d5c68beed97cbe73164de9771d537fcd96 | 0 | null |
+</details>
+
+### 2. Copy Into a New Organized Folder Example With `photo-cli copy` Command
+
+#### Folder & File Hierarchy Before -> After
+
+<table>
+<tr>
+    <th>Original Folder Hierarchy</th>
+    <th>After <b><i>photo-cli</i></b></th>
+</tr>
+<tr>
+<td>
+<pre>
+├── DSC_5727.jpg
+├── GOPR6742.jpg
+├── Italy album
+│   ├── DJI_01732.jpg
+│   ├── DJI_01733.jpg
+│   ├── DSC00001.JPG
+│   ├── DSC03467.jpg
+│   ├── DSC_1769.JPG
+│   ├── DSC_1770.JPG
+│   ├── DSC_1770_(same).jpg
+│   ├── DSC_1771.JPG
+│   ├── GOPR7496.jpg
+│   ├── GOPR7497.jpg
+│   ├── IMG_0747.JPG
+│   ├── IMG_1979.HEIC
+│   ├── IMG_1979.mov
+│   ├── IMG_1979.xmp
+│   ├── IMG_2371.jpg
+│   └── IMG_O1979.aae
+└── Spain Journey
+    ├── DSC_1807.jpg
+    ├── DSC_1808.jpg
+    └── IMG_5397.jpg
+
+2 directories, 21 files
+</pre>
+</td>
+<td>
+<pre>
+.
+├── 2005.08.13_09.47.23-Kenya-Barut ward.jpg
+├── 2005.12.14-2025.06.03-Italy album
+│   ├── 2005.12.14_14.39.47-Italia-Firenze.jpg
 │   ├── 2008.10.22_16.28.39-Italia-Arezzo.jpg
 │   ├── 2008.10.22_16.29.49-Italia-Arezzo.jpg
 │   ├── 2008.10.22_16.38.20-Italia-Arezzo.jpg
@@ -92,20 +358,23 @@ There is three main feature that can be explained better with examples.
 │   ├── 2008.10.22_16.52.15-Italia-Arezzo.jpg
 │   ├── 2008.10.22_16.55.37-Italia-Arezzo.jpg
 │   ├── 2008.10.22_17.00.07-Italia-Arezzo-1.jpg
-│   └── 2008.10.22_17.00.07-Italia-Arezzo-2.jpg
-├── 2012.06.22_19.52.31-United Kingdom-Ascot-Sunninghill and Ascot.jpg
+│   ├── 2008.10.22_17.00.07-Italia-Arezzo-2.jpg
+│   ├── 2025.06.03_13.53.36-Italia-Venezia.heic
+│   └── 2025.06.03_13.53.36-Italia-Venezia.mov
+├── 2012.06.22_19.52.31-United Kingdom.jpg
 ├── 2015.04.10-2015.04.10-Spain Journey
 │   ├── 2015.04.10_20.12.23-España-Madrid-1.jpg
 │   └── 2015.04.10_20.12.23-España-Madrid-2.jpg
 ├── Italy album
 │   └── no-address
 │       └── IMG_2371.jpg
+├── Spain Journey
+│   └── no-address-and-no-photo-taken-date
+│       └── IMG_5397.jpg
 ├── photo-cli-report.csv
-└── Spain Journey
-    └── no-address-and-no-photo-taken-date
-        └── IMG_5397.jpg
+└── sha1.lst
 
-6 directories, 18 files
+6 directories, 21 files
 </pre>
 </td>
 </tr>
@@ -117,31 +386,80 @@ There are lots of [transformation options](#usages) and [customization settings]
 
 Command with explicit argument names & values
 ```
-photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --naming-style DateTimeWithSecondsAddress --number-style PaddingZeroCharacter --folder-append DayRange --folder-append-location Prefix --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city town suburb --output photo-cli-test --no-coordinate InSubFolder --no-taken-date InSubFolder --verify
+photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --naming-style DateTimeWithSecondsAddress --number-style PaddingZeroCharacter --folder-append DayRange --folder-append-location Prefix --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city --output photo-cli-test --no-coordinate InSubFolder --no-taken-date InSubFolder --verify --expected-day-range 7300 --missing-reverse-geocode Continue
 ```
 
 Same command with shorter alias of all argument names & values
 ```
-photo-cli copy -f 2 -s 8 -n 2 -a 4 -p 1 -e 2 -r country city town suburb -o photo-cli-test -c 3 -t 3 -v
+photo-cli copy -f 2 -s 8 -n 2 -a 4 -p 1 -e 2 -r country city -o photo-cli-test -c 3 -t 3 -v -w 7300 -z 0
 ```
 
-Console/terminal output (as progress may take time, for each operation completion status shown with progress)
+##### Console/terminal output (as progress may take time, for each operation completion status shown with progress)
+
+<details>
+  <summary>Click to expand</summary>
+
 ```
-Searching photos: finished. 17 photos found.
-Parsing photo exif information: finished.
-This OpenStreetMapFoundation provider is using rate limit of 1 seconds between each request
-Reverse Geocoding: finished.
-Directory grouping: finished.
-Processing target folder: finished.
-Verified all photo files copied successfully by comparing file hashes from original photo files.
-All files SHA1 hashes written into file: sha1.lst. You may verify yourself with `sha1sum --check sha1.lst` tool in Linux/macOS.
-Writing csv report: finished.
-- 17 photos copied.
-- 4 directories created.
-- 15 photos has taken date and coordinate.
-- 1 photos has taken date but no coordinate.
-- 1 photos has no taken date and coordinate.
+[17:07:28] Searching photo main files: started
+[17:07:28] Searching photo main files: finished. 18 photo(s) found.
+[17:07:28] Searching photo companion files: started
+[17:07:28] Searching photo companion files: finished. 1 companion file(s) found.
+[17:07:28] No coordinate found on `Gps` directory. Path:<
+/Users/ac/src/photo-cli/docs/test-photographs/Spain Journey/IMG_5397.jpg>
+[17:07:28] No coordinate found on `Gps` directory. Path:<
+/Users/ac/src/photo-cli/docs/test-photographs/Italy album/IMG_2371.jpg>
+[17:07:28] This OpenStreetMapFoundation provider is using rate limit of 1
+second(s) between each request
+[17:07:28] Reverse Geocoding: started
+[17:07:29] Requested address types: City on index #2, not found on OpenStreetMap's response. Available types found:
+{"country_code":"gb","country":"United Kingdom","postcode":"SL4 2DR","suburb":"Sunninghill and Ascot","road":"Windsor Road"}
+. Path:</Users/ac/src/photo-cli/docs/test-photographs/GOPR6742.jpg>
+[17:07:44] Reverse Geocoding: finished.
+[17:07:44] Directory grouping: started
+[17:07:44] Directory grouping: finished.
+[17:07:44] Processing target folder: started
+[17:07:45] Processing target folder: finished.
+[17:07:45] Verified all photo files copied successfully by comparing file hashes from original photo files.
+[17:07:45] All files SHA1 hashes written into file: sha1.lst. You may verify yourself with `sha1sum --check sha1.lst` tool in Linux/macOS.
+[17:07:45] Writing csv report: started
+[17:07:45] Writing csv report: finished.
+                        Statistics
+┌────────────────────────────────────────────────┬───────┐ddress
+│ Statistic                                      │ Count │
+├────────────────────────────────────────────────┼───────┤
+│ File System Error(s)                           │ 0     │
+│ Photo(s) found                                 │ 18    │
+│ Photo(s) copied                                │ 18    │
+│ Photo(s) existed on the output                 │ 0     │
+│ Photo(s) are skipped, they have the same photo │ 0     │
+│ Directory/directories created                  │ 4     │
+│                                                │       │
+│ Companion file(s) found                        │ 1     │
+│ Companion file(s) copied                       │ 1     │
+│ Companion file(s) existed on the output        │ 0     │
+│                                                │       │
+│ Source photo file(s) deleted                   │ 0     │
+│ Source companion file(s) deleted               │ 0     │
+│ Source empty directory(ies) deleted            │ 0     │
+│                                                │       │
+│ User defined album created                     │ 0     │
+│ User defined album updated                     │ 0     │
+│ Auto address album created                     │ 0     │
+│                                                │       │
+│ Reverse geocode request sent                   │ 14    │
+│ Reverse geocode evaluated from memory          │ 2     │
+│ Reverse geocode evaluated from database        │ 0     │
+│ Photo(s) has taken date and coordinate         │ 16    │
+│ Photo(s) has taken date but no coordinate      │ 1     │
+│ Photo(s) has coordinate but no taken date      │ 0     │
+│ Photo(s) has no taken date and coordinate      │ 1     │
+│                                                │       │
+│ Photo(s) has unknown/invalid format            │ 0     │
+│ Photo(s) caused unexpected error internally    │ 0     │
+└────────────────────────────────────────────────┴───────┘
+[17:07:45] Copy process completed successfully
 ```
+</details>
 
 #### Step By Step `photo-cli copy` Process
 
@@ -210,155 +528,48 @@ PhotoPath,PhotoNewPath,PhotoDateTaken,ReverseGeocodeFormatted,Latitude,Longitude
 
 </details>
 
-### 2. Archive & index into local SQLite incrementally in a specific folder with `photo-cli archive` command
+### 3. List/Open Photos by their metadata on Archived Folder
 
-#### Folder & File Hierarchy Before -> After
+After archiving our photos like the [first example](#1-archive--index-with-albums-into-a-specific-folder-with-metadata-stored-locally-on-sqlite-with-photo-cli-archive-command), we can list all the photos metadata and open the photos (currently only macOS Preview App is supported) by some filters.
 
-<table>
-<tr>
-    <th>Original Folder Hierarchy</th>
-    <th>After <b><i>photo-cli</i></b></th>
-</tr>
-<tr>
-<td>
-<pre>
-├── DSC_5727.jpg
-├── GOPR6742.jpg
-├── Italy album
-│   ├── DJI_01732.jpg
-│   ├── DJI_01733.jpg
-│   ├── DSC00001.JPG
-│   ├── DSC03467.jpg
-│   ├── DSC_1769.JPG
-│   ├── DSC_1770.JPG
-│   ├── DSC_1770_(same).jpg
-│   ├── DSC_1771.JPG
-│   ├── GOPR7496.jpg
-│   ├── GOPR7497.jpg
-│   ├── IMG_0747.JPG
-│   └── IMG_2371.jpg
-└── Spain Journey
-    ├── DSC_1807.jpg
-    ├── DSC_1808.jpg
-    └── IMG_5397.jpg
+#### Viewing Photos Taken on Year 2008 October in macOS Preview App
 
-2 directories, 17 files
-</pre>
-</td>
-<td>
-<pre>
-├── 2005
-│   ├── 08
-│   │   └── 13
-│   │       └── 2005.08.13_09.47.23-5842c73cfdc5f347551bb6016e00c71bb1393169.jpg
-│   └── 12
-│       └── 14
-│           └── 2005.12.14_14.39.47-03cb14d5c68beed97cbe73164de9771d537fcd96.jpg
-├── 2008
-│   ├── 07
-│   │   └── 16
-│   │       └── 2008.07.16_11.33.20-90d835861e1aa3c829e3ab28a7f01ec3a090f664.jpg
-│   └── 10
-│       └── 22
-│           ├── 2008.10.22_16.28.39-5d66eec547469a1817bda4abe35c801359b2bb55.jpg
-│           ├── 2008.10.22_16.29.49-629b0b141634d6c0906e49af448bec8d755ba32c.jpg
-│           ├── 2008.10.22_16.38.20-620d23336a12ab54f9f0190fe93960a4dba2df59.jpg
-│           ├── 2008.10.22_16.43.21-3b0a3215b4f66d7ff4804dd223f192c21aee71bc.jpg
-│           ├── 2008.10.22_16.44.01-d470205a1d331a9d3765b3762b7c954bb8efc6ea.jpg
-│           ├── 2008.10.22_16.46.53-f670f2bb6c54898894b06b083185b05086bd4e6e.jpg
-│           ├── 2008.10.22_16.52.15-6b89a245809031ecc47789cdeaa332545330fc39.jpg
-│           ├── 2008.10.22_16.55.37-dd42edcde2433a7df4a3d67bf61944a20884da89.jpg
-│           └── 2008.10.22_17.00.07-a0ab699f5f99fce8ff49163e87c7590c2c9a66eb.jpg
-├── 2012
-│   └── 06
-│       └── 22
-│           └── 2012.06.22_19.52.31-bb649a18b3e7bb3df3701587a13f833749091817.jpg
-├── 2015
-│   └── 04
-│       └── 10
-│           ├── 2015.04.10_20.12.23-3907fc960f2873f40c8f35643dd444e0468be131.jpg
-│           └── 2015.04.10_20.12.23-9f4e6d352ec172e1059571250655e376769080fe.jpg
-├── no-photo-taken-date
-│   └── cf756397cc3ca81b2650c8801fd64e172504015a.jpg
-└── photo-cli.sqlite3
+![viewing-in-preview-app](docs/screenshots/macos/viewing-in-preview-app.png)
 
-17 directories, 17 files
-</pre>
-</td>
-</tr>
-</table>
-
-#### What Happened? / How It Is Processed?
-
-This archive process is done by running only the following single command;
+This viewing process is done by running the following single command;
 
 ```
-photo-cli archive --output archive-folder --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city town suburb
+photo-cli list --input [relative|full existing archive path] --type PhotosByDate --year 2008 --month 10
 ```
 
 Same command with shorter alias of all argument names & values
-
 ```
-photo-cli archive -o archive-folder -e 2 -r country city town suburb
-```
-
-Console/terminal output (as progress may take time, for each operation completion status shown with progress)
-```
-Searching photos: finished. 17 photo(s) found.
-warn: PhotoCli.Services.Implementations.ExifParserService[0]
-      No coordinate found on `Gps` directory for /Users/ac/dev/src/photo-cli/photo-cli/docs/test-photographs/Spain Journey/IMG_5397.jpg
-warn: PhotoCli.Services.Implementations.ExifParserService[0]
-      No coordinate found on `Gps` directory for /Users/ac/dev/src/photo-cli/photo-cli/docs/test-photographs/Italy album/IMG_2371.jpg
-Parsing photo exif information: finished.
-This OpenStreetMapFoundation provider is using rate limit of 1 second(s) between each request
-Reverse Geocoding: finished.
-Directory grouping: started.
-Directory grouping: finished.
-warn: PhotoCli.Services.Implementations.DuplicatePhotoRemoveService[0]
-      Photo is skipped due to same photo has already been archived. Same photo paths: /Users/ac/dev/src/photo-cli/photo-cli/docs/test-photographs/Italy album/DSC_1770.JPG, /Users/ac/dev/src/photo-cli/photo-cli/docs/test-photographs/Italy album/DSC_1770_(same).jpg
-Processing target folder: finished.
-Verified all photo files copied successfully by comparing file hashes from original photo files.
-- 16 photo(s) existed on the output.
-- 1 photo(s) are skipped, they have the same photo.
-- 15 photo(s) has taken date and coordinate.
-- 1 photo(s) has taken date but no coordinate.
-- 1 photo(s) has no taken date and coordinate.
+photo-cli list -i [relative|full existing archive path] -t 3 -y 2008 -m 10
 ```
 
-#### Step By Step `photo-cli archive` Process
+Note: You can also open the photos by geolocation name (if you have used the argument `auto-reverse-geocode-album` while archiving) or by album ID.
 
-1. Gather all photo paths in the source folder within subfolders.
-2. Extract EXIF data of each photograph's taken date and coordinate.
-3. As [third-party reverse geocode](#address-building--reverse-geocoding) is selected, we are building address with `OpenStreetMap` by using [given administrative levels](#4-building-your-own-address-with-selected-properties) as `city town suburb` for each photograph.
-4. On the output folder, photos will be placed on folder hierarchy by it's photo taken date's `/[year]/[month]/[day]`. For example: `/2008/07/16/`.
-5. Photo file names will be formatted as `yyyy.MM.dd_HH.mm.ss-{sha1-hash-of-file}.{extension}`. For example: `2008.07.16_11.33.20-90d835861e1aa3c829e3ab28a7f01ec3a090f664.jpg`. Input file name is: `IMG_2371.jpg`.
-6. Input folder has duplicate photos with different names `DSC_1770.JPG`, `DSC_1770_(same).JPG`. We are only archiving one of them by comparing file hashes to output `2008/10/22/2008.10.22_17.00.07-a0ab699f5f99fce8ff49163e87c7590c2c9a66eb.jpg` and logs warning on the console with a message `Photo is skipped due to same photo has already been archived. Same photo paths: /Users/ac/dev/src/photo-cli/photo-cli/docs/test-photographs/Italy album/DSC_1770.JPG, /Users/ac/dev/src/photo-cli/photo-cli/docs/test-photographs/Italy album/DSC_1770_(same).jpg`.
-7. The photo that don't have any photo taken date `Spain Journey/IMG_5397.jpg`, copied into `no-photo-taken-date` folder with only a sha1-hash `cf756397cc3ca81b2650c8801fd64e172504015a.jpg`.
-8. After copying all photos, we are verifying that all photo files copied successfully by comparing file hashes. It guarantees that there won't be any corrupted photos that is caused by disk operation failures.
-9. All photo taken dates, address information is saved on local SQLite database on the output folder's top most folder `photo-cli.sqlite3`. It's an extra feature for technical persons who has technical knowledge about databases who wants to query for personal purposes.
+**Important note**: If using Windows or Linux, you will get the list of full photo paths as output currently (like below) as there is no default photo viewer apps on these operating systems. If you want to open the photos on your photo viewer app of your, you can pipe this photo paths to your prefered photo viewer app.
 
-##### Contents of `photo-cli.sqlite3` SQLite Database in Markdown Table (output of `archive` command)
+##### Console Output of `list` command on Windows & Linux
 
-| Id   | Path                                                                         | CreatedAt                  | DateTaken           | ReverseGeocodeFormatted                    | Latitude             | Longitude           | Year | Month | Day  | Hour | Minute | Seconds | Address1       | Address2   | Address3              | Address4 | Address5 | Address6 | Address7 | Address8 | Sha1Hash                                 |
-|------|------------------------------------------------------------------------------|----------------------------|---------------------|--------------------------------------------|----------------------|---------------------|------|-------|------|------|--------|---------|----------------|------------|-----------------------|----------|----------|----------|----------|----------|------------------------------------------|
-| 1    | 2012/06/22/2012.06.22\_19.52.31-bb649a18b3e7bb3df3701587a13f833749091817.jpg | 2023-11-17 00:44:18.942182 | 2012-06-22 19:52:31 | United Kingdom-Ascot-Sunninghill and Ascot | 51.424838333333334   | -0.6735616666666666 | 2012 | 6     | 22   | 19   | 52     | 31      | United Kingdom | Ascot      | Sunninghill and Ascot | null     | null     | null     | null     | null     | bb649a18b3e7bb3df3701587a13f833749091817 |
-| 2    | 2005/08/13/2005.08.13\_09.47.23-5842c73cfdc5f347551bb6016e00c71bb1393169.jpg | 2023-11-17 00:44:18.942391 | 2005-08-13 09:47:23 | Kenya-Barut ward                           | -0.37129999999999996 | 36.056416666666664  | 2005 | 8     | 13   | 9    | 47     | 23      | Kenya          | Barut ward | null                  | null     | null     | null     | null     | null     | 5842c73cfdc5f347551bb6016e00c71bb1393169 |
-| 3    | no-photo-taken-date/cf756397cc3ca81b2650c8801fd64e172504015a.jpg             | 2023-11-17 00:44:18.942393 | null                | null                                       | null                 | null                | null | null  | null | null | null   | null    | null           | null       | null                  | null     | null     | null     | null     | null     | cf756397cc3ca81b2650c8801fd64e172504015a |
-| 4    | 2015/04/10/2015.04.10\_20.12.23-9f4e6d352ec172e1059571250655e376769080fe.jpg | 2023-11-17 00:44:18.942394 | 2015-04-10 20:12:23 | España-Madrid                              | 40.44697222222222    | -3.724752777777778  | 2015 | 4     | 10   | 20   | 12     | 23      | España         | Madrid     | null                  | null     | null     | null     | null     | null     | 9f4e6d352ec172e1059571250655e376769080fe |
-| 5    | 2015/04/10/2015.04.10\_20.12.23-3907fc960f2873f40c8f35643dd444e0468be131.jpg | 2023-11-17 00:44:18.942395 | 2015-04-10 20:12:23 | España-Madrid                              | 40.44697222222222    | -3.724752777777778  | 2015 | 4     | 10   | 20   | 12     | 23      | España         | Madrid     | null                  | null     | null     | null     | null     | null     | 3907fc960f2873f40c8f35643dd444e0468be131 |
-| 6    | 2008/07/16/2008.07.16\_11.33.20-90d835861e1aa3c829e3ab28a7f01ec3a090f664.jpg | 2023-11-17 00:44:18.942396 | 2008-07-16 11:33:20 | null                                       | null                 | null                | 2008 | 7     | 16   | 11   | 33     | 20      | null           | null       | null                  | null     | null     | null     | null     | null     | 90d835861e1aa3c829e3ab28a7f01ec3a090f664 |
-| 7    | 2008/10/22/2008.10.22\_16.44.01-d470205a1d331a9d3765b3762b7c954bb8efc6ea.jpg | 2023-11-17 00:44:18.942398 | 2008-10-22 16:44:01 | Italia-Arezzo                              | 43.46844166666667    | 11.881515           | 2008 | 10    | 22   | 16   | 44     | 1       | Italia         | Arezzo     | null                  | null     | null     | null     | null     | null     | d470205a1d331a9d3765b3762b7c954bb8efc6ea |
-| 8    | 2008/10/22/2008.10.22\_17.00.07-a0ab699f5f99fce8ff49163e87c7590c2c9a66eb.jpg | 2023-11-17 00:44:18.942401 | 2008-10-22 17:00:07 | Italia-Arezzo                              | 43.464455            | 11.881478333333334  | 2008 | 10    | 22   | 17   | 0      | 7       | Italia         | Arezzo     | null                  | null     | null     | null     | null     | null     | a0ab699f5f99fce8ff49163e87c7590c2c9a66eb |
-| 9    | 2008/10/22/2008.10.22\_16.52.15-6b89a245809031ecc47789cdeaa332545330fc39.jpg | 2023-11-17 00:44:18.942401 | 2008-10-22 16:52:15 | Italia-Arezzo                              | 43.46725499999722    | 11.879213333333334  | 2008 | 10    | 22   | 16   | 52     | 15      | Italia         | Arezzo     | null                  | null     | null     | null     | null     | null     | 6b89a245809031ecc47789cdeaa332545330fc39 |
-| 10   | 2008/10/22/2008.10.22\_16.55.37-dd42edcde2433a7df4a3d67bf61944a20884da89.jpg | 2023-11-17 00:44:18.942402 | 2008-10-22 16:55:37 | Italia-Arezzo                              | 43.46601166663889    | 11.87911166663889   | 2008 | 10    | 22   | 16   | 55     | 37      | Italia         | Arezzo     | null                  | null     | null     | null     | null     | null     | dd42edcde2433a7df4a3d67bf61944a20884da89 |
-| 11   | 2008/10/22/2008.10.22\_16.43.21-3b0a3215b4f66d7ff4804dd223f192c21aee71bc.jpg | 2023-11-17 00:44:18.942403 | 2008-10-22 16:43:21 | Italia-Arezzo                              | 43.468365            | 11.881634999972222  | 2008 | 10    | 22   | 16   | 43     | 21      | Italia         | Arezzo     | null                  | null     | null     | null     | null     | null     | 3b0a3215b4f66d7ff4804dd223f192c21aee71bc |
-| 12   | 2008/10/22/2008.10.22\_16.29.49-629b0b141634d6c0906e49af448bec8d755ba32c.jpg | 2023-11-17 00:44:18.942403 | 2008-10-22 16:29:49 | Italia-Arezzo                              | 43.46715666666389    | 11.885394999997223  | 2008 | 10    | 22   | 16   | 29     | 49      | Italia         | Arezzo     | null                  | null     | null     | null     | null     | null     | 629b0b141634d6c0906e49af448bec8d755ba32c |
-| 13   | 2008/10/22/2008.10.22\_16.38.20-620d23336a12ab54f9f0190fe93960a4dba2df59.jpg | 2023-11-17 00:44:18.942404 | 2008-10-22 16:38:20 | Italia-Arezzo                              | 43.467081666663894   | 11.884538333330555  | 2008 | 10    | 22   | 16   | 38     | 20      | Italia         | Arezzo     | null                  | null     | null     | null     | null     | null     | 620d23336a12ab54f9f0190fe93960a4dba2df59 |
-| 14   | 2008/10/22/2008.10.22\_16.28.39-5d66eec547469a1817bda4abe35c801359b2bb55.jpg | 2023-11-17 00:44:18.942405 | 2008-10-22 16:28:39 | Italia-Arezzo                              | 43.46744833333334    | 11.885126666663888  | 2008 | 10    | 22   | 16   | 28     | 39      | Italia         | Arezzo     | null                  | null     | null     | null     | null     | null     | 5d66eec547469a1817bda4abe35c801359b2bb55 |
-| 15   | 2008/10/22/2008.10.22\_16.46.53-f670f2bb6c54898894b06b083185b05086bd4e6e.jpg | 2023-11-17 00:44:18.942406 | 2008-10-22 16:46:53 | Italia-Arezzo                              | 43.468243333330555   | 11.880171666638889  | 2008 | 10    | 22   | 16   | 46     | 53      | Italia         | Arezzo     | null                  | null     | null     | null     | null     | null     | f670f2bb6c54898894b06b083185b05086bd4e6e |
-| 16   | 2005/12/14/2005.12.14\_14.39.47-03cb14d5c68beed97cbe73164de9771d537fcd96.jpg | 2023-11-17 00:44:18.942407 | 2005-12-14 14:39:47 | Italia-Firenze-Quartiere 1                 | 43.78559443333333    | 11.234619433333334  | 2005 | 12    | 14   | 14   | 39     | 47      | Italia         | Firenze    | Quartiere 1           | null     | null     | null     | null     | null     | 03cb14d5c68beed97cbe73164de9771d537fcd96 |
+<details>
+  <summary>Click to expand</summary>
 
-### 3. Export all extracted information into a CSV Report With `photo-cli info` Command
+```
+/[archive-full-folder-path]/2008/10/22/2008.10.22_16.29.49-629b0b141634d6c0906e49af448bec8d755ba32c.jpg
+/[archive-full-folder-path]/2008/10/22/2008.10.22_16.55.37-dd42edcde2433a7df4a3d67bf61944a20884da89.jpg
+/[archive-full-folder-path]/2008/10/22/2008.10.22_17.00.07-a0ab699f5f99fce8ff49163e87c7590c2c9a66eb.jpg
+/[archive-full-folder-path]/2008/10/22/2008.10.22_16.46.53-f670f2bb6c54898894b06b083185b05086bd4e6e.jpg
+/[archive-full-folder-path]/2008/10/22/2008.10.22_16.44.01-d470205a1d331a9d3765b3762b7c954bb8efc6ea.jpg
+/[archive-full-folder-path]/2008/10/22/2008.10.22_16.52.15-6b89a245809031ecc47789cdeaa332545330fc39.jpg
+/[archive-full-folder-path]/2008/10/22/2008.10.22_16.28.39-5d66eec547469a1817bda4abe35c801359b2bb55.jpg
+/[archive-full-folder-path]/2008/10/22/2008.10.22_16.38.20-620d23336a12ab54f9f0190fe93960a4dba2df59.jpg
+/[archive-full-folder-path]/2008/10/22/2008.10.22_16.43.21-3b0a3215b4f66d7ff4804dd223f192c21aee71bc.jpg
+```
+</details>
+
+### 4. Export all extracted information into a CSV Report With `photo-cli info` Command
 
 #### Contents of photo-info.csv File in Markdown Table (output of `info` command)
 
@@ -421,24 +632,67 @@ There is [some options](#info) and [lots of customization settings](#listing-all
 
 Command with explicit argument names & values
 ```
-photo-cli info --all-folders --output photo-info.csv --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city town suburb --no-taken-date Continue --no-coordinate Continue
+photo-cli info --all-folders --output photo-info.csv --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city --no-taken-date Continue --no-coordinate Continue --missing-reverse-geocode Continue
 ```
 
 Same command with shorter alias of all argument names & values
 ```
-photo-cli info -a -o photo-info.csv -e 2 -r country city town suburb -t Continue -c Continue
+photo-cli info -a -o photo-info.csv -e 2 -r country city -t 0 -c 0 -z 0
 ```
 
-Console/terminal output (as progress may take time, for each operation completion status shown as percentage)
+##### Console/terminal output (as progress may take time, for each operation completion status shown as percentage)
+
+<details>
+  <summary>Click to expand</summary>
+
 ```
-Searching photos: finished. 17 photos found.
-Parsing photo exif information: finished.
-Reverse Geocoding: finished.
-Writing csv report: finished.
-- 15 photos has taken date and coordinate.
-- 1 photos has taken date but no coordinate.
-- 1 photos has no taken date and coordinate.
+[17:07:33] Searching photo main files: started
+[17:07:33] Searching photo main files: finished. 18 photo(s) found.
+[17:07:33] No coordinate found on `Gps` directory. Path:</Users/ac/src/photo-cli/docs/test-photographs/Spain Journey/IMG_5397.jpg>
+[17:07:33] No coordinate found on `Gps` directory. Path:</Users/ac/src/photo-cli/docs/test-photographs/Italy album/IMG_2371.jpg>
+[17:07:33] Reverse Geocoding: started
+[17:07:33] Requested address types: City on index #2, not found on OpenStreetMap's response. Available types found:
+{"country_code":"gb","country":"United Kingdom","postcode":"SL4 2DR","suburb":"Sunninghill and Ascot","road":"Windsor Road"}
+. Path:</Users/ac/src/photo-cli/docs/test-photographs/GOPR6742.jpg>
+[17:07:49] Reverse Geocoding: finished.
+[17:07:49] Writing csv report: started
+[17:07:49] Writing csv report: finished.
+                        Statistics
+┌────────────────────────────────────────────────┬───────┐
+│ Statistic                                      │ Count │
+├────────────────────────────────────────────────┼───────┤
+│ File System Error(s)                           │ 0     │
+│ Photo(s) found                                 │ 18    │
+│ Photo(s) copied                                │ 0     │
+│ Photo(s) existed on the output                 │ 0     │
+│ Photo(s) are skipped, they have the same photo │ 0     │
+│ Directory/directories created                  │ 0     │
+│                                                │       │
+│ Companion file(s) found                        │ 0     │
+│ Companion file(s) copied                       │ 0     │
+│ Companion file(s) existed on the output        │ 0     │
+│                                                │       │
+│ Source photo file(s) deleted                   │ 0     │
+│ Source companion file(s) deleted               │ 0     │
+│ Source empty directory(ies) deleted            │ 0     │
+│                                                │       │
+│ User defined album created                     │ 0     │
+│ User defined album updated                     │ 0     │
+│ Auto address album created                     │ 0     │
+│                                                │       │
+│ Reverse geocode request sent                   │ 14    │
+│ Reverse geocode evaluated from memory          │ 2     │
+│ Reverse geocode evaluated from database        │ 0     │
+│ Photo(s) has taken date and coordinate         │ 16    │
+│ Photo(s) has taken date but no coordinate      │ 1     │
+│ Photo(s) has coordinate but no taken date      │ 0     │
+│ Photo(s) has no taken date and coordinate      │ 1     │
+│                                                │       │
+│ Photo(s) has unknown/invalid format            │ 0     │
+│ Photo(s) caused unexpected error internally    │ 0     │
+└────────────────────────────────────────────────┴───────┘
 ```
+</details>
 
 #### Step By Step `photo-cli info` Process
 
@@ -447,7 +701,7 @@ Writing csv report: finished.
 3. As [third-party reverse geocode](#address-building--reverse-geocoding) is selected, we are building address with `OpenStreetMap` by using [given administrative levels](#4-building-your-own-address-with-selected-properties) as `city town suburb` for each photograph.
 4. As [no photograph taken date action](#no-photograph-taken-date-action-for-info-command----t---no-taken-date-) is selected as `Continue` and [no coordinate action](#no-coordinate-action-for-info-command----c---no-coordinate-) is selected as `Continue`, they are listing in report with empty data.
 
-### 4. Navigate Your Photo Locations on Google Maps & Earth
+### 5. Navigate Your Photo Locations on Google Maps & Earth
 
 If you want to discover your photographs interactively in the world, you may do it by importing your CSV output (whether [photo-cli copy](#copy) or [photo-cli info](#info) command) to [Google Maps](https://maps.google.com) and [Google Earth](https://earth.google.com), you can interactively navigate through your photographs.
 
@@ -470,30 +724,61 @@ To navigate your photographs on [Google Earth Web](https://earth.google.com/web/
 
 ## Installation
 
-This application can be installed by Homebrew (macOS & Linux), standalone executable (without dependency and SDK) or as .NET tool.
+This application can be installed by Homebrew (macOS & Linux), container (Docker, Podman), standalone executable (without dependency and SDK) or as .NET tool.
 
 See the [installation](INSTALL.md) for details.
 
-Installing the application globally provides access to the `photo-cli` command in your terminal.
-
-```
-photo-cli [command]
-
-photo-cli help [command]
-```
-
 Note: You may test commands on [test photographs](docs/test-photographs) which has coordinates and photograph taken dates in it.
 
-### Sample Usage Screenshots
+## Sample Usage Screenshots
 
 The following command used in all samples with [test photographs](docs/test-photographs)
 ```
-photo-cli copy -i photos -f 2 -s 8 -n 2 -a 4 -p 1 -e 2 -r country city town suburb -o organized-albums -c 3 -t 3
+photo-cli archive --input [relative|full folder path] --output [relative|full folder path] --album-type DateRange --album-name My-Album --auto-reverse-geocode-album --expected-day-range 7300 --delete-on-source --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city
 ```
 
-- [Windows](#windows)
 - [macOS](#macos)
+- [Windows](#windows)
 - [Linux](#linux)
+- [Container - Docker / Podman](#container---docker--podman)
+
+### macOS
+
+#### Executing
+
+![mac-os-execute](docs/screenshots/macos/execute.png)
+
+#### Opening Photos By Some Metadata Filter on Preview App
+
+```
+photo-cli list --input [relative|full existing archive path] --type PhotosByDate --year 2008 --month 10
+```
+
+
+<details>
+  <summary>Click to expand</summary>
+
+![mac-os-execute](docs/screenshots/macos/viewing-in-preview-app.png)
+
+</details>
+
+##### Finder
+
+<details>
+  <summary>Click to expand</summary>
+
+![mac-os-finder](docs/screenshots/macos/finder.png)
+
+</details>
+
+##### Tree Command
+
+<details>
+  <summary>Click to expand</summary>
+
+![mac-os-tree-command](docs/screenshots/macos/tree-command.png)
+
+</details>
 
 ### Windows
 
@@ -510,15 +795,6 @@ photo-cli copy -i photos -f 2 -s 8 -n 2 -a 4 -p 1 -e 2 -r country city town subu
 
 </details>
 
-#### Microsoft Excel
-
-<details>
-  <summary>Click to expand</summary>
-
-![windows-excel](docs/screenshots/windows/excel.png)
-
-</details>
-
 #### Tree Command
 
 <details>
@@ -528,69 +804,55 @@ photo-cli copy -i photos -f 2 -s 8 -n 2 -a 4 -p 1 -e 2 -r country city town subu
 
 </details>
 
-### macOS
-
-##### Executing
-
-![mac-os-execute](docs/screenshots/macos/execute.png)
-
-##### Finder
-
-<details>
-  <summary>Click to expand</summary>
-
-![mac-os-finder](docs/screenshots/macos/finder.png)
-
-</details>
-
-##### Apple Numbers
-
-<details>
-  <summary>Click to expand</summary>
-
-![mac-os-numbers](docs/screenshots/macos/numbers.png)
-
-</details>
-
-##### Tree Command
-
-<details>
-  <summary>Click to expand</summary>
-
-![mac-os-tree-command](docs/screenshots/macos/tree-command.png)
-
-</details>
-
 ### Linux
 
-##### Executing
+#### Executing
 
 ![linux-execute](docs/screenshots/linux/execute.png)
 
-##### File Manager
+#### File Manager
 
 <details>
   <summary>Click to expand</summary>
 
-![linux-file-manager](docs/screenshots/linux/file-manager.png)
+![linux-file-manager](docs/screenshots/linux/files.png)
 
 </details>
 
-##### Libre Office Calc
+#### Tree Command
 
 <details>
   <summary>Click to expand</summary>
 
-![linux-calc](docs/screenshots/linux/calc.png)
+![linux-tree-command](docs/screenshots/linux/tree-command.png)
 
 </details>
 
-##### Tree Command
+### Container - Docker / Podman
+
+```shell
+docker run --rm --volume ./test-photographs:/photos/input --volume ./archive:/photos/output photocli/photocli archive --input /photos/input --output /photos/output --album-type DateRange --album-name My-Album --auto-reverse-geocode-album --expected-day-range 7300 --delete-on-source --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city
+```
+
+#### Executing
+
+![container-execute](docs/screenshots/container/execute.png)
+
+#### File Manager
 
 <details>
   <summary>Click to expand</summary>
 
-![mac-os-tree-command](docs/screenshots/linux/tree-command.png)
+![container-file-system](docs/screenshots/container/file-system.png)
+
+</details>
+
+#### Tree Command
+
+<details>
+  <summary>Click to expand</summary>
+
+![conatiner-tree-command](docs/screenshots/container/tree-command.png)
 
 </details>
 
@@ -1328,76 +1590,217 @@ photo-cli copy --process-type FlattenAllSubFolders --group-by AddressHierarchy -
 
 ## Commands / Verbs
 
-| Subcommand              | description                                                                                                                          |
-|-------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| [`info`](#info)         | Creates a report (CSV file) listing all photo taken date and address (reverse geocode).                                              |
-| [`copy`](#copy)         | Copies photos into new folder hierarchy with given arguments using photograph's taken date and coordinate address (reverse geocode). |
-| [`archive`](#archive)   | Archives photos into specific folder and indexing photo taken date, address (reverse geocode) information into SQLite database.      |
-| [`address`](#address)   | Get address (reverse geocode) of single photo.                                                                                       |
-| [`settings`](#settings) | Lists, saves and get settings.                                                                                                       |
+| Subcommand              | description                                                                                                                                                                                                        |
+|-------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`archive`](#archive)   | Archives photos into same specific folder, optionally groups them by albums (date range, reverse geocode or individual), and indexes photo taken date, address (reverse geocode) information into SQLite database. |
+| [`copy`](#copy)         | Copies photos into new folder hierarchy with given arguments using photograph's taken date and coordinate address (reverse geocode).                                                                               |
+| [`list`](#list)         | List & open photos from archive folders.                                                                                                                                                                           |
+| [`info`](#info)         | Creates a report (CSV file) listing all photo taken date and address (reverse geocode).                                                                                                                            |
+| [`address`](#address)   | Get address (reverse geocode) of single photo.                                                                                                                                                                     |
+| [`settings`](#settings) | Lists, saves and get settings.                                                                                                                                                                                     |
 
-### Info
+### Archive
 
-Creates a report (CSV file) listing all photo taken date and address (reverse geocode).
-
-```
-photo-cli help info
-```
+Archives photos into same specific folder, optionally groups them by albums (date range, reverse geocode or individual), and indexes photo taken date, address (reverse geocode) information into SQLite database.
 
 ```
-  -o, --output                      (MUST) File system path to write report file.
+photo-cli help archive
+```
 
-  -i, --input                       (Default current executing folder) File system path to read & copy photos from. ( there will be no modification on input path )
+<details>
+  <summary>Click to expand</summary>
 
-  -a, --all-folders                 (Optional) Read & list all photos in all sub folders (no extra parameter needed)
+```
+  -o, --output                        (MUST) File system path to create new
+                                      organized folder. A new folder hierarchy
+                                      will be created on that location with new
+                                      file names. (will create folder if not
+                                      exist)
 
-  -t, --no-taken-date               (Optional) Action to do when a photo with a no taken date. ( Continue: 0, PreventProcess: 1 )
+  -i, --input                         (Default current executing folder) File
+                                      system path to read & copy photos from. (
+                                      there will be no modification on the input
+                                      path )
 
-  -c, --no-coordinate               (Optional) Action to do when a photo with a no coordinate. ( Continue: 0, PreventProcess: 1 )
+  -d, --dry-run                       (Optional) Simulate the same process
+                                      without writing to the output folder. (no
+                                      extra parameter needed)
 
-  -e, --reverse-geocode             (Optional) Third-party provider to resolve photo taken address by photo's coordinates. ( Disabled: 0 [default], BigDataCloud: 1, OpenStreetMapFoundation: 2, GoogleMaps: 3, LocationIq: 5 )
+  -x, --invalid-format                (Optional) Action to do when a photo
+                                      format is invalid. ( Continue: 0
+                                      [default], PreventProcess: 1 )
 
-  -b, --bigdatacloud-key            (Optional) API key needed to use BigDataCloud. https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/ (Instead of using this option, environment name: PHOTO_CLI_BIG_DATA_CLOUD_API_KEY can be used. )
+  -t, --no-taken-date                 (Optional) Action to do when a photo with
+                                      a no taken date. ( Continue: 0 [default],
+                                      PreventProcess: 1 )
 
-  -u, --bigdatacloud-levels         (Optional) Admin levels separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from BigDataCloud. )
+  -c, --no-coordinate                 (Optional) Action to do when a photo with
+                                      a no coordinate. ( Continue: 0 [default],
+                                      PreventProcess: 1 )
 
-  -m, --googlemaps-types            (Optional) GoogleMaps address types separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from GoogleMaps. )
+  -w, --expected-day-range            (Optional) Provide a maximum expected day
+                                      difference as number for your photos to
+                                      prevent processing if it's exceeding the
+                                      range
 
-  -k, --googlemaps-key              (Optional) API key needed to use GoogleMaps. https://developers.google.com/maps/documentation/geocoding/overview/ (Instead of using this option, environment name: PHOTO_CLI_GOOGLE_MAPS_API_KEY can be used. )
+  -y, --album-type                    (Optional) Whether you want to link photos
+                                      as album by picking the album type( Unset:
+                                      0 [default - no album linking], Individual
+                                      = 1, DateRange = 2 )
 
-  -r, --openstreetmap-properties    (Optional) OpenStreetMap properties separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from OpenStreetMap provider. )
+  -a, --album-name                    (Optional) Album name to create a new one
+                                      for currently archiving photos[Can use
+                                      with `AlbumType` as `Individual` or
+                                      `DateRange`]
 
-  -q, --locationiq-key              (Optional) API key needed to use LocationIq. https://locationiq.com/docs/ (Instead of using this option, environment name: PHOTO_CLI_LOCATIONIQ_API_KEY can be used. )
+  -p, --update-album                  (Optional) Existing Album ID number value
+                                      to link currently archiving photos[Can use
+                                      with `AlbumType` as `Individual` or
+                                      `DateRange`][Album IDs can be listed by
+                                      `photo-cli list --type Albums`]
 
-  -h, --has-paid-license            (Optional) Bypass rate limit if you have paid license. ( For LocationIq )
+  -s, --auto-reverse-geocode-album    (Optional) Automatically linking photos to
+                                      an album (creating or using existing) for
+                                      each reverse geocode property
+                                      individuallyFor example if you use reverse
+                                      geocode properties are country, city each
+                                      archive operation, you could have albums
+                                      for each country and city variants
 
-  -l, --language                    (Optional) Language/culture value to get localized address result for BigDataCloud ( https://www.bigdatacloud.com/supported-languages/ ) and GoogleMaps (https://developers.google.com/maps/faq#languagesupport ).
+  -f, --delete-on-source              (Optional) [Dangerous parameter] Deleting
+                                      the source folder on successful archive
+                                      operation
 
-  --help                            Display this help screen.
+  -e, --reverse-geocode               (Optional) Third-party provider to resolve
+                                      photo taken address by photo's
+                                      coordinates. ( Disabled: 0 [default],
+                                      BigDataCloud: 1, OpenStreetMapFoundation:
+                                      2, GoogleMaps: 3, LocationIq: 5 )
 
-  --version                         Display version information.
+  -b, --bigdatacloud-key              (Optional) API key needed to use
+                                      BigDataCloud.
+                                      https://www.bigdatacloud.com/geocoding-api
+                                      s/reverse-geocode-to-city-api/ (Instead of
+                                      using this option, environment name:
+                                      PHOTO_CLI_BIG_DATA_CLOUD_API_KEY can be
+                                      used or `BigDataCloudApiKey` key can be
+                                      set via settings command. )
+
+  -u, --bigdatacloud-levels           (Optional) Admin levels separated with
+                                      space. ( To see which level correspond to
+                                      which address level, you may use
+                                      `photo-cli address` to see the full
+                                      response returned from BigDataCloud. )
+
+  -m, --googlemaps-types              (Optional) GoogleMaps address types
+                                      separated with space. ( To see which level
+                                      correspond to which address level, you may
+                                      use `photo-cli address` to see the full
+                                      response returned from GoogleMaps. )
+
+  -k, --googlemaps-key                (Optional) API key needed to use
+                                      GoogleMaps.
+                                      https://developers.google.com/maps/documen
+                                      tation/geocoding/overview/ (Instead of
+                                      using this option, environment name:
+                                      PHOTO_CLI_GOOGLE_MAPS_API_KEY can be used
+                                      or `GoogleMapsApiKey` key can be set via
+                                      settings command. )
+
+  -r, --openstreetmap-properties      (Optional) OpenStreetMap properties
+                                      separated with space. ( To see which level
+                                      correspond to which address level, you may
+                                      use `photo-cli address` to see the full
+                                      response returned from OpenStreetMap
+                                      provider. )
+
+  -q, --locationiq-key                (Optional) API key needed to use
+                                      LocationIq. https://locationiq.com/docs/
+                                      (Instead of using this option, environment
+                                      name: PHOTO_CLI_LOCATIONIQ_API_KEY can be
+                                      used or `LocationIqApiKey` key can be set
+                                      via settings command. )
+
+  -h, --has-paid-license              (Optional) Bypass the free rate limit if
+                                      you have paid license. ( For LocationIq. )
+
+  -l, --language                      (Optional) Language/culture value to get
+                                      localized address result for BigDataCloud
+                                      (
+                                      https://www.bigdatacloud.com/supported-lan
+                                      guages/ ) and GoogleMaps
+                                      (https://developers.google.com/maps/faq#la
+                                      nguagesupport ).
+
+  -z, --missing-reverse-geocode       (Optional) Action to do when any of the
+                                      photo has missing reserver geocode
+                                      information( Continue: 0 [default],
+                                      PreventProcess: 1 )
+
+  --help                              Display this help screen.
+
+  --version                           Display version information.
 
 NOTES:
-- Instead of option names (for ex: DateTimeWithMinutes), you may use options values too. (for ex: 3)
-- You can use relative folder paths. If you use the input folder as the working directory, you don't need to use the input argument.
+- Instead of option names (for ex: DateTimeWithMinutes), you may use options
+values too. (for ex: 3)
+- You can use relative folder paths. If you use the input folder as the working
+directory, you don't need to use the input argument.
 
 EXAMPLE USAGES:
-- Photos located on all subfolders will be processed and their photograph's taken date and address information will be saved on CSV file using BigDataCloud reverse geocode provider.
+- Archive all photos in current folder (and it's subfolders recursively) into
+output folder by (year)/(month)/(day) hierarchy with a file name photo taken
+date with seconds prefixed by file hash. Saves all photo taken information into
+local SQLite database.
 
 Example with long argument names;
-photo-cli info --all-folders --reverse-geocode OpenStreetMapFoundation --input [input-folder] --output [output-file].csv --openstreetmap-properties country city town suburb
+photo-cli archive --output (output-folder)
 
 Example with short argument names;
-photo-cli info -a -e OpenStreetMapFoundation -i [input-folder] -o [output-file].csv -r country city town suburb
+photo-cli archive -o (output-folder)
 
-- Using Google Maps reverse geocode provider (need api key) with an option to prevent processing if there is no coordinate or no photo taken date found on any photo.
+- Archive all photos in the input folder and its subfolders recursively by
+fetching each photo's reverse geocode information, copying them into the output
+folder organized by year/month/day hierarchy with filenames consisting of the
+photo-taken date with seconds prefixed by file hash, and saving all photo
+metadata and addresses into a local SQLite database.
 
 Example with long argument names;
-photo-cli info --no-coordinate PreventProcess --reverse-geocode GoogleMaps --input [input-folder] --googlemaps-key google-api-key --googlemaps-types administrative_area_level_1 administrative_area_level_2 --output [output-file].csv --no-taken-date PreventProcess
+photo-cli archive --no-coordinate PreventProcess --reverse-geocode
+OpenStreetMapFoundation --input (input-folder) --output (output-folder)
+--openstreetmap-properties country city town suburb --no-taken-date
+PreventProcess --invalid-format PreventProcess --album-type Unset
 
 Example with short argument names;
-photo-cli info -c PreventProcess -e GoogleMaps -i [input-folder] -k google-api-key -m administrative_area_level_1 administrative_area_level_2 -o [output-file].csv -t PreventProcess
+photo-cli archive -c PreventProcess -e OpenStreetMapFoundation -i (input-folder)
+-o (output-folder) -r country city town suburb -t PreventProcess -x
+PreventProcess -y Unset
+
+- Archive all photos in the input folder (and its subfolders recursively) by
+creating a date range album named 'album 1', fetching each photo's reverse
+geocode information using Google Maps with properties administrative area level
+1 and 2 to create location-based albums, and copying them into the output folder
+with a (year)/(month)/(day) hierarchy using filenames formatted as
+photo-taken-date-with-seconds prefixed by file hash but the process won't start
+if any photo has an invalid format, missing photo-taken date or coordinates, or
+if the photo-taken date span exceeds 30 days and upon successful operation, it
+would delete the input source folder.
+
+Example with long argument names;
+photo-cli archive --album-name "album 1" --no-coordinate PreventProcess
+--reverse-geocode GoogleMaps --delete-on-source --input (input-folder)
+--googlemaps-types administrative_area_level_1 administrative_area_level_2
+--output (output-folder) --auto-reverse-geocode-album --no-taken-date
+PreventProcess --expected-day-range 30 --invalid-format PreventProcess
+--album-type DateRange --missing-reverse-geocode PreventProcess
+
+Example with short argument names;
+photo-cli archive -a "album 1" -c PreventProcess -e GoogleMaps -f -i
+(input-folder) -m administrative_area_level_1 administrative_area_level_2 -o
+(output-folder) -s -t PreventProcess -w 30 -x PreventProcess -y DateRange -z
+PreventProcess
 ```
+</details>
 
 ### Copy
 
@@ -1407,173 +1810,485 @@ Copies photos into new folder hierarchy with given arguments using photograph's 
 photo-cli help copy
 ```
 
+<details>
+  <summary>Click to expand</summary>
+
 ```
-  -o, --output                      (MUST) File system path to create new organized folder. A new folder hierarchy will be created on that location with new file names. (will create folder if not exists)
+  -o, --output                      (MUST) File system path to create new
+                                    organized folder. A new folder hierarchy
+                                    will be created on that location with new
+                                    file names. (will create folder if not
+                                    exist)
 
-  -s, --naming-style                (MUST) Naming strategy of newly copied file name. ( Numeric: 1, Day: 2, DateTimeWithMinutes: 3, DateTimeWithSeconds: 4, Address: 5, DayAddress: 6, DateTimeWithMinutesAddress: 7, DateTimeWithSecondsAddress: 8, AddressDay: 9,
-                                    AddressDateTimeWithMinutes: 10, AddressDateTimeWithSeconds: 11 )
+  -s, --naming-style                (MUST) Naming strategy of newly copied file
+                                    name. ( Numeric: 1, Day: 2,
+                                    DateTimeWithMinutes: 3, DateTimeWithSeconds:
+                                    4, Address: 5, DayAddress: 6,
+                                    DateTimeWithMinutesAddress: 7,
+                                    DateTimeWithSecondsAddress: 8, AddressDay:
+                                    9, AddressDateTimeWithMinutes: 10,
+                                    AddressDateTimeWithSeconds: 11 )
 
-  -f, --process-type                (MUST) Reading photos strategy from input folder. ( Single: 1, SubFoldersPreserveFolderHierarchy: 2, FlattenAllSubFolders: 3 )
+  -f, --process-type                (MUST) Reading photos strategy from input
+                                    folder. ( Single: 1,
+                                    SubFoldersPreserveFolderHierarchy: 2,
+                                    FlattenAllSubFolders: 3 )
 
-  -n, --number-style                (MUST) Number naming strategy when using `NamingStyle` as `Numeric` or using to numbering the possible same names. ( AllNamesAreSameLength: 1, PaddingZeroCharacter: 2, OnlySequentialNumbers: 3 )
+  -n, --number-style                (MUST) Number naming strategy when using
+                                    `NamingStyle` as `Numeric` or using to
+                                    numbering the possible same names. (
+                                    AllNamesAreSameLength: 1,
+                                    PaddingZeroCharacter: 2,
+                                    OnlySequentialNumbers: 3 )
 
-  -t, --no-taken-date               (MUST) Action to do when a photo with a no taken date. ( Continue: 0, PreventProcess: 1, DontCopyToOutput: 2, InSubFolder: 3, AppendToEndOrderByFileName: 4, InsertToBeginningOrderByFileName: 5 )
+  -x, --invalid-format              (Optional) Action to do when a photo format
+                                    is invalid. ( Continue: 0 [default],
+                                    PreventProcess: 1, DontCopyToOutput: 2,
+                                    InSubFolder: 3 )
 
-  -c, --no-coordinate               (MUST) Action to do when a photo with a no coordinate. ( Continue: 0, PreventProcess: 1, DontCopyToOutput: 2, InSubFolder: 3 )
+  -t, --no-taken-date               (Optional) Action to do when a photo with a
+                                    no taken date. ( Continue: 0 [default],
+                                    PreventProcess: 1, DontCopyToOutput: 2,
+                                    InSubFolder: 3, AppendToEndOrderByFileName:
+                                    4, InsertToBeginningOrderByFileName: 5 )
 
-  -i, --input                       (Default current executing folder) File system path to read & copy photos from. ( there will be no modification on input path )
+  -c, --no-coordinate               (Optional) Action to do when a photo with a
+                                    no coordinate. ( Continue: 0 [default],
+                                    PreventProcess: 1, DontCopyToOutput: 2,
+                                    InSubFolder: 3 )
 
-  -d, --dry-run                     (Optional) Simulate the same process without writing to the output folder. (no extra parameter needed)
+  -i, --input                       (Default current executing folder) File
+                                    system path to read & copy photos from. (
+                                    there will be no modification on the input
+                                    path )
 
-  -g, --group-by                    (Optional) Strategy to group photos into folders. [Can't use with `FolderProcessType` is `SubFoldersPreserveFolderHierarchy`] ( YearMonthDay: 1, YearMonth: 2, Year: 3, Address: 4 )
+  -d, --dry-run                     (Optional) Simulate the same process without
+                                    writing to the output folder. (no extra
+                                    parameter needed)
 
-  -a, --folder-append               (Optional) Appending name strategy to folder names cloned from source folder hierarchy. [Can be with `FolderProcessType` is `SubFoldersPreserveFolderHierarchy`] ( FirstYearMonthDay: 1, FirstYearMonth: 2, FirstYear: 3, DayRange: 4,
+  -g, --group-by                    (Optional) Strategy to group photos into
+                                    folders. [Can't use with `FolderProcessType`
+                                    is `SubFoldersPreserveFolderHierarchy`] (
+                                    YearMonthDay: 1, YearMonth: 2, Year: 3,
+                                    AddressFlat: 4, AddressHierarchy: 5 )
+
+  -a, --folder-append               (Optional) Appending name strategy to folder
+                                    names cloned from source folder hierarchy.
+                                    [Can use with `FolderProcessType` as
+                                    `SubFoldersPreserveFolderHierarchy`] (
+                                    FirstYearMonthDay: 1, FirstYearMonth: 2,
+                                    FirstYear: 3, DayRange: 4,
                                     MatchingMinimumAddress: 5 )
 
-  -p, --folder-append-location      (Optional) Append location for `FolderAppendType`. [Can be use with `FolderProcessType` is `SubFoldersPreserveFolderHierarchy`] ( Prefix: 1, Suffix: 2 )
+  -p, --folder-append-location      (Optional) Append location for
+                                    `FolderAppendType`. [Can use with
+                                    `FolderProcessType` as
+                                    `SubFoldersPreserveFolderHierarchy`] (
+                                    Prefix: 1, Suffix: 2 )
 
-  -v, --verify                      (Optional) Verify that all photo files copied successfully by comparing file hashes. (no extra parameter needed)
+  -v, --verify                      (Optional) Verify that all photo files
+                                    copied successfully by comparing file
+                                    hashes. (no extra parameter needed)
 
-  -e, --reverse-geocode             (Optional) Third-party provider to resolve photo taken address by photo's coordinates. ( Disabled: 0 [default], BigDataCloud: 1, OpenStreetMapFoundation: 2, GoogleMaps: 3, LocationIq: 5 )
+  -w, --expected-day-range          (Optional) Provide a maximum expected day
+                                    difference as number for your photos to
+                                    prevent processing if it's exceeding the
+                                    range
 
-  -b, --bigdatacloud-key            (Optional) API key needed to use BigDataCloud. https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/ (Instead of using this option, environment name: PHOTO_CLI_BIG_DATA_CLOUD_API_KEY can be used. )
+  -e, --reverse-geocode             (Optional) Third-party provider to resolve
+                                    photo taken address by photo's coordinates.
+                                    ( Disabled: 0 [default], BigDataCloud: 1,
+                                    OpenStreetMapFoundation: 2, GoogleMaps: 3,
+                                    LocationIq: 5 )
 
-  -u, --bigdatacloud-levels         (Optional) Admin levels separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from BigDataCloud. )
+  -b, --bigdatacloud-key            (Optional) API key needed to use
+                                    BigDataCloud.
+                                    https://www.bigdatacloud.com/geocoding-apis/
+                                    reverse-geocode-to-city-api/ (Instead of
+                                    using this option, environment name:
+                                    PHOTO_CLI_BIG_DATA_CLOUD_API_KEY can be used
+                                    or `BigDataCloudApiKey` key can be set via
+                                    settings command. )
 
-  -m, --googlemaps-types            (Optional) GoogleMaps address types separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from GoogleMaps. )
-
-  -k, --googlemaps-key              (Optional) API key needed to use GoogleMaps. https://developers.google.com/maps/documentation/geocoding/overview/ (Instead of using this option, environment name: PHOTO_CLI_GOOGLE_MAPS_API_KEY can be used. )
-
-  -r, --openstreetmap-properties    (Optional) OpenStreetMap properties separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full response returned from OpenStreetMap provider. )
-
-  -q, --locationiq-key              (Optional) API key needed to use LocationIq. https://locationiq.com/docs/ (Instead of using this option, environment name: PHOTO_CLI_LOCATIONIQ_API_KEY can be used. )
-
-  -h, --has-paid-license            (Optional) Bypass rate limit if you have paid license. ( For LocationIq. )
-
-  -l, --language                    (Optional) Language/culture value to get localized address result for BigDataCloud ( https://www.bigdatacloud.com/supported-languages/ ) and GoogleMaps (https://developers.google.com/maps/faq#languagesupport ).
-
-  --help                            Display this help screen.
-
-  --version                         Display version information.
-
-NOTES:
-- Instead of option names (for ex: DateTimeWithMinutes), you may use options values too. (for ex: 3)
-- You can use relative folder paths. If you use the input folder as the working directory, you don't need to use the input argument.
-
-EXAMPLE USAGES:
-- By preserving existing folder hierarchy, photos copied with a file name as photo taken date and time. Photos taken on same date and time, will have a number suffix. Photos that don't have any coordinate or photo taken date will be copied in a relative sub folder.
-
-Example with long argument names;
-photo-cli copy --no-coordinate InSubFolder --process-type SubFoldersPreserveFolderHierarchy --input [input-folder] --number-style PaddingZeroCharacter --output [output-folder] --naming-style DateTimeWithMinutes --no-taken-date InSubFolder
-
-Example with short argument names;
-photo-cli copy -c InSubFolder -f SubFoldersPreserveFolderHierarchy -i [input-folder] -n PaddingZeroCharacter -o [output-folder] -s DateTimeWithMinutes -t InSubFolder
-
-- Preserving folder hierarchy, photos copied with a sequential file name. Photos that don't have any coordinate or photo taken date won't be copied to output.
-
-Example with long argument names;
-photo-cli copy --no-coordinate DontCopyToOutput --process-type SubFoldersPreserveFolderHierarchy --input [input-folder] --number-style AllNamesAreSameLength --output [output-folder] --naming-style Numeric --no-taken-date DontCopyToOutput
-
-Example with short argument names;
-photo-cli copy -c DontCopyToOutput -f SubFoldersPreserveFolderHierarchy -i [input-folder] -n AllNamesAreSameLength -o [output-folder] -s Numeric -t DontCopyToOutput
-
-- Grouping all photos in folders with a name photo taken year and month. Photos will be copied with a file name date, time, and address received from OpenStreetMap reverse geocode provider.
-
-Example with long argument names;
-photo-cli copy --reverse-geocode OpenStreetMapFoundation --process-type FlattenAllSubFolders --group-by YearMonth --input [input-folder] --number-style OnlySequentialNumbers --output [output-folder] --openstreetmap-properties country city town suburb --naming-style DateTimeWithSecondsAddress --no-taken-date AppendToEndOrderByFileName
-
-Example with short argument names;
-photo-cli copy -e OpenStreetMapFoundation -f FlattenAllSubFolders -g YearMonth -i [input-folder] -n OnlySequentialNumbers -o [output-folder] -r country city town suburb -s DateTimeWithSecondsAddress -t AppendToEndOrderByFileName
-
-- Process single folder and copy photos with file names as their address which will get from BigDataCloud
-
-Example with long argument names;
-photo-cli copy --no-coordinate PreventProcess --reverse-geocode BigDataCloud --process-type Single --input [input-folder] --number-style AllNamesAreSameLength --output [output-folder] --naming-style Address --no-taken-date DontCopyToOutput --bigdatacloud-levels 2 4 6 8
-
-Example with short argument names;
-photo-cli copy -c PreventProcess -e BigDataCloud -f Single -i [input-folder] -n AllNamesAreSameLength -o [output-folder] -s Address -t DontCopyToOutput -u 2 4 6 8
-
-- Adding year month day as a prefix to existing folder names and photos copied with a file name as day and address. The address will be built from Google Maps (need API key).
-
-Example with long argument names;
-photo-cli copy --folder-append FirstYearMonthDay --no-coordinate PreventProcess --reverse-geocode GoogleMaps --process-type SubFoldersPreserveFolderHierarchy --input [input-folder] --googlemaps-key google-api-key --googlemaps-types administrative_area_level_1 administrative_area_level_2 administrative_area_level_3 --number-style AllNamesAreSameLength --output [output-folder] --folder-append-location Prefix --naming-style DayAddress --no-taken-date PreventProcess
-
-Example with short argument names;
-photo-cli copy -a FirstYearMonthDay -c PreventProcess -e GoogleMaps -f SubFoldersPreserveFolderHierarchy -i [input-folder] -k google-api-key -m administrative_area_level_1 administrative_area_level_2 administrative_area_level_3 -n AllNamesAreSameLength -o [output-folder] -p Prefix -s DayAddress -t PreventProcess
-```
-
-### Archive
-
-Archives photos into specific folder and indexing photo taken date, address (reverse geocode) information into SQLite database.
-
-```
-photo-cli help archive
-```
-
-```
-  -o, --output                      (MUST) File system path to create new organized folder. A new folder hierarchy will be created on that location with new file names. (will create folder if not exist)
-
-  -i, --input                       (Default current executing folder) File system path to read & copy photos from. ( there will be no modification on the input path )
-
-  -d, --dry-run                     (Optional) Simulate the same process without writing to the output folder. (no extra parameter needed)
-
-  -x, --invalid-format              (Optional) Action to do when a photo format is invalid. ( Continue: 0 [default], PreventProcess: 1 )
-
-  -t, --no-taken-date               (Optional) Action to do when a photo with a no taken date. ( Continue: 0 [default], PreventProcess: 1 )
-
-  -c, --no-coordinate               (Optional) Action to do when a photo with a no coordinate. ( Continue: 0 [default], PreventProcess: 1 )
-
-  -e, --reverse-geocode             (Optional) Third-party provider to resolve photo taken address by photo's coordinates. ( Disabled: 0 [default], BigDataCloud: 1, OpenStreetMapFoundation: 2, GoogleMaps:
-                                    3, LocationIq: 5 )
-
-  -b, --bigdatacloud-key            (Optional) API key needed to use BigDataCloud. https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/ (Instead of using this option, environment name:
-                                    PHOTO_CLI_BIG_DATA_CLOUD_API_KEY can be used or `BigDataCloudApiKey` key can be set via settings command. )
-
-  -u, --bigdatacloud-levels         (Optional) Admin levels separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see the full response returned
+  -u, --bigdatacloud-levels         (Optional) Admin levels separated with
+                                    space. ( To see which level correspond to
+                                    which address level, you may use `photo-cli
+                                    address` to see the full response returned
                                     from BigDataCloud. )
 
-  -m, --googlemaps-types            (Optional) GoogleMaps address types separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see the full
+  -m, --googlemaps-types            (Optional) GoogleMaps address types
+                                    separated with space. ( To see which level
+                                    correspond to which address level, you may
+                                    use `photo-cli address` to see the full
                                     response returned from GoogleMaps. )
 
-  -k, --googlemaps-key              (Optional) API key needed to use GoogleMaps. https://developers.google.com/maps/documentation/geocoding/overview/ (Instead of using this option, environment name:
-                                    PHOTO_CLI_GOOGLE_MAPS_API_KEY can be used or `GoogleMapsApiKey` key can be set via settings command. )
+  -k, --googlemaps-key              (Optional) API key needed to use GoogleMaps.
+                                    https://developers.google.com/maps/documenta
+                                    tion/geocoding/overview/ (Instead of using
+                                    this option, environment name:
+                                    PHOTO_CLI_GOOGLE_MAPS_API_KEY can be used or
+                                    `GoogleMapsApiKey` key can be set via
+                                    settings command. )
 
-  -r, --openstreetmap-properties    (Optional) OpenStreetMap properties separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see the full
-                                    response returned from OpenStreetMap provider. )
+  -r, --openstreetmap-properties    (Optional) OpenStreetMap properties
+                                    separated with space. ( To see which level
+                                    correspond to which address level, you may
+                                    use `photo-cli address` to see the full
+                                    response returned from OpenStreetMap
+                                    provider. )
 
-  -q, --locationiq-key              (Optional) API key needed to use LocationIq. https://locationiq.com/docs/ (Instead of using this option, environment name: PHOTO_CLI_LOCATIONIQ_API_KEY can be used or
-                                    `LocationIqApiKey` key can be set via settings command. )
+  -q, --locationiq-key              (Optional) API key needed to use LocationIq.
+                                    https://locationiq.com/docs/ (Instead of
+                                    using this option, environment name:
+                                    PHOTO_CLI_LOCATIONIQ_API_KEY can be used or
+                                    `LocationIqApiKey` key can be set via
+                                    settings command. )
 
-  -h, --has-paid-license            (Optional) Bypass the free rate limit if you have paid license. ( For LocationIq. )
+  -h, --has-paid-license            (Optional) Bypass the free rate limit if you
+                                    have paid license. ( For LocationIq. )
 
-  -l, --language                    (Optional) Language/culture value to get localized address result for BigDataCloud ( https://www.bigdatacloud.com/supported-languages/ ) and GoogleMaps
-                                    (https://developers.google.com/maps/faq#languagesupport ).
+  -l, --language                    (Optional) Language/culture value to get
+                                    localized address result for BigDataCloud (
+                                    https://www.bigdatacloud.com/supported-langu
+                                    ages/ ) and GoogleMaps
+                                    (https://developers.google.com/maps/faq#lang
+                                    uagesupport ).
+
+  -z, --missing-reverse-geocode     (Optional) Action to do when any of the
+                                    photo has missing reserver geocode
+                                    information( Continue: 0 [default],
+                                    PreventProcess: 1 )
 
   --help                            Display this help screen.
 
   --version                         Display version information.
 
 NOTES:
-- Instead of option names (for ex: DateTimeWithMinutes), you may use options values too. (for ex: 3)
-- You can use relative folder paths. If you use the input folder as the working directory, you don't need to use the input argument.
+- Instead of option names (for ex: DateTimeWithMinutes), you may use options
+values too. (for ex: 3)
+- You can use relative folder paths. If you use the input folder as the working
+directory, you don't need to use the input argument.
 
 EXAMPLE USAGES:
-- Archive all photos in current folder (and it's subfolders recursively) into output folder by [year]/[month]/[day] hierarchy with a file name photo taken date with seconds prefixed by file hash. Saves all photo taken information into local SQLite database.
+- Preserve same folder hierarchy, copy photos with sequential number ordering by
+photo taken date.
 
 Example with long argument names;
-photo-cli archive --output [output-folder]
+photo-cli copy --process-type SubFoldersPreserveFolderHierarchy --input
+(input-folder) --number-style PaddingZeroCharacter --output (output-folder)
+--naming-style Numeric
 
 Example with short argument names;
-photo-cli archive -o [output-folder]
+photo-cli copy -f SubFoldersPreserveFolderHierarchy -i (input-folder) -n
+PaddingZeroCharacter -o (output-folder) -s Numeric
 
-- Archive all photos in input folder (and it's subfolders recursively), fetches all photo's reverse geocode information, copies into output folder by [year]/[month]/[day] hierarchy with a file name photo taken date with seconds prefixed by file hash. Saves all photo taken information and it's address (reverse geocode) into local SQLite database.
+- Groups photos by photo taken year, month, day than copy on
+(year)/(month)/(day) directory with a file name as photo taken date.
 
 Example with long argument names;
-photo-cli archive --no-coordinate PreventProcess --reverse-geocode OpenStreetMapFoundation --input [input-folder] --output [output-folder] --openstreetmap-properties country city town suburb --no-taken-date PreventProcess --invalid-format PreventProcess
+photo-cli copy --process-type FlattenAllSubFolders --group-by YearMonthDay
+--input (input-folder) --number-style OnlySequentialNumbers --output
+(output-folder) --naming-style DateTimeWithSeconds
 
 Example with short argument names;
-photo-cli archive -c PreventProcess -e OpenStreetMapFoundation -i [input-folder] -o [output-folder] -r country city town suburb -t PreventProcess -x PreventProcess
+photo-cli copy -f FlattenAllSubFolders -g YearMonthDay -i (input-folder) -n
+OnlySequentialNumbers -o (output-folder) -s DateTimeWithSeconds
+
+- Adding day range as a prefix to existing folder names and photos copied with a
+file name as address and day.
+
+Example with long argument names;
+photo-cli copy --folder-append DayRange --no-coordinate InSubFolder
+--reverse-geocode GoogleMaps --process-type SubFoldersPreserveFolderHierarchy
+--input (input-folder) --googlemaps-key google-api-key --googlemaps-types
+administrative_area_level_1 administrative_area_level_2
+administrative_area_level_3 --number-style AllNamesAreSameLength --output
+(output-folder) --folder-append-location Prefix --naming-style AddressDay
+--no-taken-date InSubFolder --invalid-format PreventProcess
+
+Example with short argument names;
+photo-cli copy -a DayRange -c InSubFolder -e GoogleMaps -f
+SubFoldersPreserveFolderHierarchy -i (input-folder) -k google-api-key -m
+administrative_area_level_1 administrative_area_level_2
+administrative_area_level_3 -n AllNamesAreSameLength -o (output-folder) -p
+Prefix -s AddressDay -t InSubFolder -x PreventProcess
+
+- Preserve the same folder hierarchy while copying photos with filenames
+consisting of the photo-taken date, time, and address (with possible number
+suffixes), and copy photos without coordinates or photo-taken dates into a
+relative subfolder.
+
+Example with long argument names;
+photo-cli copy --no-coordinate InSubFolder --reverse-geocode
+OpenStreetMapFoundation --process-type SubFoldersPreserveFolderHierarchy --input
+(input-folder) --number-style AllNamesAreSameLength --output (output-folder)
+--openstreetmap-properties country city town suburb --naming-style
+AddressDateTimeWithSeconds --no-taken-date InSubFolder --invalid-format
+PreventProcess
+
+Example with short argument names;
+photo-cli copy -c InSubFolder -e OpenStreetMapFoundation -f
+SubFoldersPreserveFolderHierarchy -i (input-folder) -n AllNamesAreSameLength -o
+(output-folder) -r country city town suburb -s AddressDateTimeWithSeconds -t
+InSubFolder -x PreventProcess
+
+- Groups photos by photo-taken year, month, and day, then copies them into a
+year/month/day directory structure with filenames as the photo-taken date, while
+photos without coordinates are copied into a relative subfolder.
+
+Example with long argument names;
+photo-cli copy --no-coordinate InSubFolder --reverse-geocode BigDataCloud
+--process-type FlattenAllSubFolders --group-by AddressHierarchy --input
+(input-folder) --number-style OnlySequentialNumbers --output (output-folder)
+--naming-style DayAddress --bigdatacloud-levels 2 4 6 8 --invalid-format
+PreventProcess
+
+Example with short argument names;
+photo-cli copy -c InSubFolder -e BigDataCloud -f FlattenAllSubFolders -g
+AddressHierarchy -i (input-folder) -n OnlySequentialNumbers -o (output-folder)
+-s DayAddress -u 2 4 6 8 -x PreventProcess
 ```
+</details>
+
+### List
+
+List & open photos from archive folders.
+
+```
+photo-cli help list
+```
+
+<details>
+  <summary>Click to expand</summary>
+
+```
+  -t, --type     (Optional) Listing type for archive folder( Summary: 0
+                 [default], Albums: 1, PhotosByAlbum: 2, PhotosByDate: 3 )
+
+  -i, --input    (Default current executing folder) Archive path to list & open
+                 photos from
+
+  -n, --id       (Optional) Album ID to be used while using the type of
+                 PhotosByAlbum
+
+  -y, --year     (Optional) Year as number to be used while using the type of
+                 PhotosByDate
+
+  -m, --month    (Optional) Month as number to be used while using the type of
+                 PhotosByDate
+
+  -d, --day      (Optional) Day as number to be used while using the type of
+                 PhotosByDate
+
+  -r, --raw      (Optional) Listing photo paths each on new line instead of
+                 trying to open the default OS app while using the type of
+                 PhotosByAlbum or PhotosByDate
+
+  --help         Display this help screen.
+
+  --version      Display version information.
+
+NOTES:
+- Instead of option names (for ex: DateTimeWithMinutes), you may use options
+values too. (for ex: 3)
+- You can use relative folder paths. If you use the input folder as the working
+directory, you don't need to use the input argument.
+
+EXAMPLE USAGES:
+- List statistics of the archive folder
+
+Example with long argument names;
+photo-cli list --input (input-folder)
+
+Example with short argument names;
+photo-cli list -i (input-folder)
+
+- List all the album information of the archive folder
+
+Example with long argument names;
+photo-cli list --input (input-folder) --type Albums
+
+Example with short argument names;
+photo-cli list -i (input-folder) -t Albums
+
+- List paths (to be send as process arguments to photo viewers) or open (only
+supporting in macOS , Preview app for now) for the given album id
+
+Example with long argument names;
+photo-cli list --input (input-folder) --id 1 --type PhotosByAlbum
+
+Example with short argument names;
+photo-cli list -i (input-folder) -n 1 -t PhotosByAlbum
+
+- List paths (to be send as process arguments to photo viewers) or open (only
+supporting in macOS , Preview app for now) for the given year
+
+Example with long argument names;
+photo-cli list --input (input-folder) --type PhotosByDate --year 2007
+
+Example with short argument names;
+photo-cli list -i (input-folder) -t PhotosByDate -y 2007
+
+- List paths (to be send as process arguments to photo viewers) or open (only
+supporting in macOS , Preview app for now) for the given year & month
+
+Example with long argument names;
+photo-cli list --input (input-folder) --month 8 --type PhotosByDate --year 2007
+
+Example with short argument names;
+photo-cli list -i (input-folder) -m 8 -t PhotosByDate -y 2007
+
+- List paths (to be send as process arguments to photo viewers) or open (only
+supporting in macOS , Preview app for now) for the given year, month & day
+
+Example with long argument names;
+photo-cli list --day 19 --input (input-folder) --month 8 --type PhotosByDate
+--year 2007
+
+Example with short argument names;
+photo-cli list -d 19 -i (input-folder) -m 8 -t PhotosByDate -y 2007
+```
+</details>
+
+### Info
+
+Creates a report (CSV file) listing all photo taken date and address (reverse geocode).
+
+```
+photo-cli help info
+```
+
+<details>
+  <summary>Click to expand</summary>
+
+```
+  -o, --output                      (MUST) File system path to write report
+                                    file.
+
+  -i, --input                       (Default current executing folder) File
+                                    system path to read & copy photos from. (
+                                    there will be no modification on the input
+                                    path )
+
+  -a, --all-folders                 (Optional) Read & list all photos in all
+                                    subfolders (no extra parameter needed)
+
+  -x, --invalid-format              (Optional) Action to do when a photo format
+                                    is invalid. ( Continue: 0 [default],
+                                    PreventProcess: 1 )
+
+  -t, --no-taken-date               (Optional) Action to do when a photo with a
+                                    no taken date. ( Continue: 0 [default],
+                                    PreventProcess: 1 )
+
+  -c, --no-coordinate               (Optional) Action to do when a photo with a
+                                    no coordinate. ( Continue: 0 [default],
+                                    PreventProcess: 1 )
+
+  -e, --reverse-geocode             (Optional) Third-party provider to resolve
+                                    photo taken address by photo's coordinates.
+                                    ( Disabled: 0 [default], BigDataCloud: 1,
+                                    OpenStreetMapFoundation: 2, GoogleMaps: 3,
+                                    LocationIq: 5 )
+
+  -b, --bigdatacloud-key            (Optional) API key needed to use
+                                    BigDataCloud.
+                                    https://www.bigdatacloud.com/geocoding-apis/
+                                    reverse-geocode-to-city-api/ (Instead of
+                                    using this option, environment name:
+                                    PHOTO_CLI_BIG_DATA_CLOUD_API_KEY can be used
+                                    or `BigDataCloudApiKey` key can be set via
+                                    settings command. )
+
+  -u, --bigdatacloud-levels         (Optional) Admin levels separated with
+                                    space. ( To see which level correspond to
+                                    which address level, you may use `photo-cli
+                                    address` to see the full response returned
+                                    from BigDataCloud. )
+
+  -m, --googlemaps-types            (Optional) GoogleMaps address types
+                                    separated with space. ( To see which level
+                                    correspond to which address level, you may
+                                    use `photo-cli address` to see the full
+                                    response returned from GoogleMaps. )
+
+  -k, --googlemaps-key              (Optional) API key needed to use GoogleMaps.
+                                    https://developers.google.com/maps/documenta
+                                    tion/geocoding/overview/ (Instead of using
+                                    this option, environment name:
+                                    PHOTO_CLI_GOOGLE_MAPS_API_KEY can be used or
+                                    `GoogleMapsApiKey` key can be set via
+                                    settings command. )
+
+  -r, --openstreetmap-properties    (Optional) OpenStreetMap properties
+                                    separated with space. ( To see which level
+                                    correspond to which address level, you may
+                                    use `photo-cli address` to see the full
+                                    response returned from OpenStreetMap
+                                    provider. )
+
+  -q, --locationiq-key              (Optional) API key needed to use LocationIq.
+                                    https://locationiq.com/docs/ (Instead of
+                                    using this option, environment name:
+                                    PHOTO_CLI_LOCATIONIQ_API_KEY can be used or
+                                    `LocationIqApiKey` key can be set via
+                                    settings command. )
+
+  -h, --has-paid-license            (Optional) Bypass the free rate limit if you
+                                    have paid license. ( For LocationIq. )
+
+  -l, --language                    (Optional) Language/culture value to get
+                                    localized address result for BigDataCloud (
+                                    https://www.bigdatacloud.com/supported-langu
+                                    ages/ ) and GoogleMaps
+                                    (https://developers.google.com/maps/faq#lang
+                                    uagesupport ).
+
+  -z, --missing-reverse-geocode     (Optional) Action to do when any of the
+                                    photo has missing reserver geocode
+                                    information( Continue: 0 [default],
+                                    PreventProcess: 1 )
+
+  --help                            Display this help screen.
+
+  --version                         Display version information.
+
+NOTES:
+- Instead of option names (for ex: DateTimeWithMinutes), you may use options
+values too. (for ex: 3)
+- You can use relative folder paths. If you use the input folder as the working
+directory, you don't need to use the input argument.
+
+EXAMPLE USAGES:
+- Photos located on all subfolders will be processed and their photograph's
+taken date and address information will be saved on CSV file using BigDataCloud
+reverse geocode provider.
+
+Example with long argument names;
+photo-cli info --all-folders --reverse-geocode OpenStreetMapFoundation --input
+(input-folder) --output (output-file).csv --openstreetmap-properties country
+city town suburb
+
+Example with short argument names;
+photo-cli info -a -e OpenStreetMapFoundation -i (input-folder) -o
+(output-file).csv -r country city town suburb
+
+- Using Google Maps reverse geocode provider (need api key) with an option to
+prevent processing if there is no coordinate or no photo taken date found on any
+photo.
+
+Example with long argument names;
+photo-cli info --no-coordinate PreventProcess --reverse-geocode GoogleMaps
+--input (input-folder) --googlemaps-key google-api-key --googlemaps-types
+administrative_area_level_1 administrative_area_level_2 --output
+(output-file).csv --no-taken-date PreventProcess
+
+Example with short argument names;
+photo-cli info -c PreventProcess -e GoogleMaps -i (input-folder) -k
+google-api-key -m administrative_area_level_1 administrative_area_level_2 -o
+(output-file).csv -t PreventProcess
+```
+</details>
 
 ### Address
 
@@ -1699,18 +2414,106 @@ photo-cli settings -r
 
 ## Command Line Options / Arguments
 
-### Input Path ( -i, --input )
+### Common Arguments Used Across Verbs (Command Type) in Same Purpose
+
+#### Input Path ( -i, --input )
 
 Optional use for `copy`, `archive`, `info` verb. Must be used on `address` verb. File system path to read & copy photos from. If not given, the current executing folder will be used. There will be no
 modification on input path.
 
-### Output Path ( -o, --output )
+#### Output Path ( -o, --output )
 
 Must be used on `copy`, `archive`, `info` verbs. File system path to write output. For `copy`, new folder hierarchy created on that location with new file names. It will create folder if not exists. For `info`, report csv file path to write.
 
-### Folder Process Type ( -f, --process-type )
+#### Is Dry Run ( -d, --dry-run )
 
-Must be used on `copy` verb. You must select folder process behavior to whether use original folder hierarchy or flatten into single folder/grouped folder by [Group By Folder](#group-by-folder---g---group-by-).
+Optional use for `copy`, `archive` verb. Simulate the same process without writing to output folder. No extra parameter needed.
+
+#### Reverse Geocode Provider ( -e, --reverse-geocode )
+
+Optional use for `copy`, `archive`, `info` verb. Must be used on `address` verb. Third-party provider to resolve photo taken address by photo's coordinates.
+
+| Option                  | Value |
+|-------------------------|-------|
+| BigDataCloud            | 1     |
+| OpenStreetMapFoundation | 2     |
+| GoogleMaps              | 3     |
+| LocationIq              | 5     |
+
+#### ( -z, --missing-reverse-geocode )
+
+Optional use for `copy`, `archive`, `info` verb.
+
+#### ( -w, --expected-day-range )
+
+#### Big Data Cloud API Key ( -b, --bigdatacloud-key )
+
+Sets [Big Data Cloud reverse geocode](https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/) API key. Alternatively, you may use the environment variable `PHOTO_CLI_BIG_DATA_CLOUD_API_KEY`.
+
+#### Google Maps API Key ( -k, --googlemaps-key )
+
+Sets [Google Maps reverse geocode](https://developers.google.com/maps/documentation/geocoding/overview/) API key. Alternatively, you may use the environment variable `PHOTO_CLI_GOOGLE_MAPS_API_KEY`.
+
+#### Location Iq API Key ( -q, --locationiq-key )
+
+Sets [Location Iq reverse geocode](https://locationiq.com/sandbox/geocoding/reverse/) API key. Alternatively, you may use the environment variable `PHOTO_CLI_LOCATIONIQ_API_KEY`.
+
+#### BigDataCloud Admin Levels ( -u, --bigdatacloud-levels )
+
+Must be used when `BigDataCloud` is selected as reverse geocode provider. Big Data Cloud admin levels are separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see the full response returned from BigDataCloud. )
+
+#### OpenStreetMap Properties ( -r, --openstreetmap-properties )
+
+Must be used when any of `OpenStreetMapFoundation`, `LocationIq` is selected as reverse geocode provider. OpenStreetMap properties separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see the full response returned from OpenStreetMap provider. )
+
+#### Google Maps Address Types ( -m, --googlemaps-types )
+
+Must be used when `GoogleMaps` selected as reverse geocode provider. Google Maps address types separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full the response returned from GoogleMaps. )
+
+#### Has Paid License ( -h, --has-paid-license )
+
+Bypass the free rate limit if you have paid license. (For `LocationIq` reverse geocode provider)
+
+### Archive Verb Arguments
+
+#### ( -y, --album-type )
+
+Whether you want to link photos as album by picking the album type.
+
+| Option                   | Value |
+|--------------------------|-------|
+| NoAlbumLinking (default) | 0 |
+| Individual               | 1 |
+| DateRange                | 2 |
+
+#### ( -a, --album-name )
+#### ( -p, --update-album )
+#### ( -s, --auto-reverse-geocode-album )
+#### ( -f, --delete-on-source )
+
+#### No Photograph Taken Date Action [for `archive` command ] ( -t, --no-taken-date )
+
+Optional action to do when a photograph with a no taken date. Default is `Continue`.
+
+| Option                           | Value       |
+|----------------------------------|-------------|
+| Continue (default)               | 0 (default) |
+| PreventProcess                   | 1           |
+
+#### No Coordinate Action [for `archive` command ] ( -c, --no-coordinate )
+
+Optional action to do when a photo with a no coordinate.
+
+| Option           | Value |
+|------------------|-------|
+| Continue         | 0     |
+| PreventProcess   | 1     |
+
+### Copy Verb Arguments
+
+#### Folder Process Type ( -f, --process-type )
+
+You must select folder process behavior to whether use original folder hierarchy or flatten into single folder/grouped folder by [Group By Folder](#group-by-folder---g---group-by-).
 
 | Option                            | Name |
 |-----------------------------------|------|
@@ -1718,9 +2521,9 @@ Must be used on `copy` verb. You must select folder process behavior to whether 
 | SubFoldersPreserveFolderHierarchy | 2    |
 | FlattenAllSubFolders              | 3    |
 
-### Naming Style ( -s, --naming-style )
+#### Naming Style ( -s, --naming-style )
 
-Must be used on `copy` verb. While copying to a new organized folder, you must select one of these file naming strategies for a newly copied photo file name.
+While copying to a new organized folder, you must select one of these file naming strategies for a newly copied photo file name.
 
 | Option                     | Value |
 |----------------------------|-------|
@@ -1736,7 +2539,7 @@ Must be used on `copy` verb. While copying to a new organized folder, you must s
 | AddressDateTimeWithMinutes | 10    |
 | AddressDateTimeWithSeconds | 11    |
 
-### Folder Append Type ( -a, --folder-append )
+#### Folder Append Type ( -a, --folder-append )
 
 Optional use for `copy` verb. While copying to a new organized folder (you should select [Folder Process Type](#folder-process-type---f---process-type-) as `SubFoldersPreserveFolderHierarchy` ), you may select one of these file folder naming strategies. Must used with [Folder Append Location Type](#folder-append-location-type---p---folder-append-location-)
 
@@ -1748,18 +2551,18 @@ Optional use for `copy` verb. While copying to a new organized folder (you shoul
 | DayRange               | 4     |
 | MatchingMinimumAddress | 5     |
 
-### Folder Append Location Type ( -p, --folder-append-location )
+#### Folder Append Location Type ( -p, --folder-append-location )
 
-Optional use for `copy` verb. While copying to a new organized folder (you should select [Folder Process Type](#folder-process-type---f---process-type-) as `SubFoldersPreserveFolderHierarchy` ), you may select one of these file folder naming strategies. Must used with [Folder Append Location](#folder-append-type---a---folder-append-)
+While copying to a new organized folder (you should select [Folder Process Type](#folder-process-type---f---process-type-) as `SubFoldersPreserveFolderHierarchy` ), you may select one of these file folder naming strategies. Must used with [Folder Append Location](#folder-append-type---a---folder-append-)
 
 | Option | Value |
 |--------|-------|
 | Prefix | 1     |
 | Suffix | 2     |
 
-### Group By Folder ( -g, --group-by )
+#### Group By Folder ( -g, --group-by )
 
-Optional use for `copy` verb. If you want to group photos by EXIF data, you may select one of these strategies.
+If you want to group photos by EXIF data, you may select one of these strategies.
 
 | Option       | Value |
 |--------------|-------|
@@ -1768,9 +2571,9 @@ Optional use for `copy` verb. If you want to group photos by EXIF data, you may 
 | Year         | 3     |
 | Address      | 4     |
 
-### Number Naming Text Style ( -n, --number-style )
+#### Number Naming Text Style ( -n, --number-style )
 
-Must be used on `copy` verb. Number naming strategy when using [Naming Style](#naming-style---s---naming-style-) as `Numeric` or using to numbering the possible same names.
+Number naming strategy must be selected when using [Naming Style](#naming-style---s---naming-style-) as `Numeric` or using to numbering the possible same names.
 
 | Option                | Value |
 |-----------------------|-------|
@@ -1778,56 +2581,13 @@ Must be used on `copy` verb. Number naming strategy when using [Naming Style](#n
 | PaddingZeroCharacter  | 2     |
 | OnlySequentialNumbers | 3     |
 
-### Verify ( -v, --verify)
+#### Verify ( -v, --verify)
 
-Optional use for `copy` verb. Verify that all photo files copied successfully by comparing file hashes. (no extra parameter needed)
+Verify that all photo files copied successfully by comparing file hashes. (no extra parameter needed)
 
-### Is Dry Run ( -d, --dry-run )
+#### No Photograph Taken Date Action [for `copy` command ] ( -t, --no-taken-date )
 
-Optional use for `copy`, `archive` verb. Simulate the same process without writing to output folder. No extra parameter needed.
-
-### Reverse Geocode Provider ( -e, --reverse-geocode )
-
-Optional use for `copy`, `archive`, `info` verb. Must be used on `address` verb. Third-party provider to resolve photo taken address by photo's coordinates.
-
-| Option                  | Value |
-|-------------------------|-------|
-| BigDataCloud            | 1     |
-| OpenStreetMapFoundation | 2     |
-| GoogleMaps              | 3     |
-| LocationIq              | 5     |
-
-### Big Data Cloud API Key ( -b, --bigdatacloud-key )
-
-Sets [Big Data Cloud reverse geocode](https://www.bigdatacloud.com/geocoding-apis/reverse-geocode-to-city-api/) API key. Alternatively, you may use the environment variable `PHOTO_CLI_BIG_DATA_CLOUD_API_KEY`.
-
-### Google Maps API Key ( -k, --googlemaps-key )
-
-Sets [Google Maps reverse geocode](https://developers.google.com/maps/documentation/geocoding/overview/) API key. Alternatively, you may use the environment variable `PHOTO_CLI_GOOGLE_MAPS_API_KEY`.
-
-### Location Iq API Key ( -q, --locationiq-key )
-
-Sets [Location Iq reverse geocode](https://locationiq.com/sandbox/geocoding/reverse/) API key. Alternatively, you may use the environment variable `PHOTO_CLI_LOCATIONIQ_API_KEY`.
-
-### BigDataCloud Admin Levels ( -u, --bigdatacloud-levels )
-
-Must be used when `BigDataCloud` is selected as reverse geocode provider. Big Data Cloud admin levels are separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see the full response returned from BigDataCloud. )
-
-### OpenStreetMapProperties ( -r, --openstreetmap-properties )
-
-Must be used when any of `OpenStreetMapFoundation`, `LocationIq` is selected as reverse geocode provider. OpenStreetMap properties separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see the full response returned from OpenStreetMap provider. )
-
-### Google Maps Address Types ( -m, --googlemaps-types )
-
-Must be used when `GoogleMaps` selected as reverse geocode provider. Google Maps address types separated with space. ( To see which level correspond to which address level, you may use `photo-cli address` to see full the response returned from GoogleMaps. )
-
-### Has Paid License ( -h, --has-paid-license )
-
-Bypass the free rate limit if you have paid license. (For `LocationIq` reverse geocode providers)
-
-### No Photograph Taken Date Action [for `copy` command ] ( -t, --no-taken-date )
-
-Optional use for `copy` verb. Action to do when a photograph with a no taken date. Default is `Continue`.
+Optional action to do when a photograph with a no taken date. Default is `Continue`.
 
 | Option                           | Value       |
 |----------------------------------|-------------|
@@ -1838,9 +2598,9 @@ Optional use for `copy` verb. Action to do when a photograph with a no taken dat
 | AppendToEndOrderByFileName       | 4           |
 | InsertToBeginningOrderByFileName | 5           |
 
-### No Coordinate Action [for `copy` command ] ( -c, --no-coordinate )
+#### No Coordinate Action [for `copy` command ] ( -c, --no-coordinate )
 
-Optional use for `copy` verb. Action to do when a photo with a no coordinate.
+Optional action to do when a photo with a no coordinate.
 
 | Option           | Value |
 |------------------|-------|
@@ -1849,40 +2609,24 @@ Optional use for `copy` verb. Action to do when a photo with a no coordinate.
 | DontCopyToOutput | 2     |
 | InSubFolder      | 3     |
 
-### All Folders ( -a, --all-folders )
+### Info Verb Arguments
 
-Optional use for `info` verb. Read & list all photos in all subfolders.
+#### All Folders ( -a, --all-folders )
 
-### No Photograph Taken Date Action [for `info` command ] ( -t, --no-taken-date )
+Optional behavior to read & list all photos in all subfolders. Default behavior is to read & list only photos in current working folder. (no extra parameter needed)
 
-Optional use for `info` verb. Action to do when a photograph with a no taken date. Default is `Continue`.
+#### No Photograph Taken Date Action [for `info` command ] ( -t, --no-taken-date )
 
-| Option                           | Value       |
-|----------------------------------|-------------|
-| Continue (default)               | 0 (default) |
-| PreventProcess                   | 1           |
-
-### No Coordinate Action [for `info` command ] ( -c, --no-coordinate )
-
-Optional use for `info` verb. Action to do when a photo with a no coordinate.
-
-| Option           | Value |
-|------------------|-------|
-| Continue         | 0     |
-| PreventProcess   | 1     |
-
-### No Photograph Taken Date Action [for `archive` command ] ( -t, --no-taken-date )
-
-Optional use for `archive` verb. Action to do when a photograph with a no taken date. Default is `Continue`.
+Optional action to do when a photograph with a no taken date. Default is `Continue`.
 
 | Option                           | Value       |
 |----------------------------------|-------------|
 | Continue (default)               | 0 (default) |
 | PreventProcess                   | 1           |
 
-### No Coordinate Action [for `archive` command ] ( -c, --no-coordinate )
+#### No Coordinate Action [for `info` command ] ( -c, --no-coordinate )
 
-Optional use for `archive` verb. Action to do when a photo with a no coordinate.
+Optional action to do when a photo with a no coordinate.
 
 | Option           | Value |
 |------------------|-------|
@@ -1908,32 +2652,40 @@ photo-cli settings
 ```
 
 ```
-LogLevel=Warning
-CompanionExtensions=mov
-SupportedExtensions=jpg,jpeg,heic,png
-AddressSeparator=-
-ArchivePhotoTakenDateHashSeparator=-
-BigDataCloudApiKey=
-ConnectionLimit=4
-CoordinatePrecision=4
-CsvReportFileName=photo-cli-report.csv
-DateFormatWithDay=yyyy.MM.dd
+LogLevel.Default=Error
+LogLevel.Microsoft=Warning
+LogLevel.PhotoCli=Warning
+LogLevel.PhotoCli.Services.Implementations.ReverseGeocodes=Warning
+LogLevel.Polly=Warning
+LogLevel.System.Net.Http.HttpClient=Warning
+YearFormat=yyyy
+MonthFormat=MM
+DayFormat=dd
 DateFormatWithMonth=yyyy.MM
+DateFormatWithDay=yyyy.MM.dd
 DateTimeFormatWithMinutes=yyyy.MM.dd_HH.mm
 DateTimeFormatWithSeconds=yyyy.MM.dd_HH.mm.ss
-DayFormat=dd
-DayRangeSeparator=-
-DryRunCsvReportFileName=photo-cli-dry-run.csv
+AddressSeparator=-
 FolderAppendSeparator=-
+DayRangeSeparator=-
+SameNameNumberSeparator=-
+PhotoFormatInvalidFolderName=invalid-photo-format
+NoPhotoTakenDateFolderName=no-photo-taken-date
+NoAddressFolderName=no-address
+NoAddressAndPhotoTakenDateFolderName=no-address-and-no-photo-taken-date
+CsvReportFileName=photo-cli-report.csv
+DryRunCsvReportFileName=photo-cli-dry-run.csv
+ConnectionLimit=4
+BigDataCloudApiKey=
 GoogleMapsApiKey=
 LocationIqApiKey=
-MonthFormat=MM
-NoAddressAndPhotoTakenDateFolderName=no-address-and-no-photo-taken-date
-NoAddressFolderName=no-address
-NoPhotoTakenDateFolderName=no-photo-taken-date
-PhotoFormatInvalidFolderName=invalid-photo-format
-SameNameNumberSeparator=-
-YearFormat=yyyy
+CoordinatePrecision=4
+ArchivePhotoTakenDateHashSeparator=-
+SupportedExtensions=jpg,jpeg,heic,png,hif
+CompanionExtensions=mov
+LogCategoryNameOutput=False
+MacOsCommand=open
+MacOsArgumentPrefix=-a Preview
 ```
 
 ### Getting a Single Value
@@ -1975,6 +2727,7 @@ Process exit codes listed below;
 | Success                                         | 0     |
 | ParseArgsFailed                                 | 1     |
 | AppSettingsInvalidFile                          | 2     |
+| UnexpectedError                                 | 3     |
 | ApiKeyStoreValidationFailed                     | 10    |
 | AddressOptionsValidationFailed                  | 11    |
 | InfoOptionsValidationFailed                     | 12    |
@@ -1988,15 +2741,27 @@ Process exit codes listed below;
 | OutputPathDontHaveWriteFilePermission           | 24    |
 | OutputPathDontHaveCreateDirectoryPermission     | 25    |
 | InputFileNotExists                              | 26    |
+| FileVerifyErrors                                | 27    |
 | PhotosWithNoDatePreventedProcess                | 30    |
 | PhotosWithNoCoordinatePreventedProcess          | 31    |
 | PhotosWithNoCoordinateAndNoDatePreventedProcess | 32    |
+| PhotosWithInvalidFileFormatPreventedProcess     | 33    |
+| PhotosWithMissingReverseGeocodeInfoAsRequested  | 34    |
+| PhotosWithUnexpectedDateRangePreventedProcess   | 35    |
 | PropertyNotFound                                | 40    |
 | InvalidSettingsValue                            | 41    |
-
-## Roadmap
-
-See the [roadmap](ROADMAP.md).
+| InvalidSettingsLogLevelChange                   | 42    |
+| AlbumExist                                      | 50    |
+| InvalidSettingsLogLevelChange                   | 50    |
+| InconsistencyOnSavingPhotosToDatabase           | 51    |
+| InconsistencyOnSavingUserDefinedAlbumToDatabase | 52    |
+| AlbumNameMustBeUniqueWhileAddingOrUseUpdate     | 53    |
+| AlbumNotFoundById                               | 54    |
+| NoPhotosToAddInAlbum                            | 55    |
+| NoDataRangeFoundOnPhotos                        | 56    |
+| ExistingAlbumConfigurationNotValid              | 57    |
+| NoArchiveDatabaseFound                          | 60    |
+| NoPhotoFoundToList                              | 61    |
 
 ## Contributing
 
@@ -2040,4 +2805,3 @@ dotnet tool uninstall -g photo-cli
 ## Credits
 
 This tool is currently developed by [Alp Coker](https://github.com/alpcoker/) and is open for contributors.
-

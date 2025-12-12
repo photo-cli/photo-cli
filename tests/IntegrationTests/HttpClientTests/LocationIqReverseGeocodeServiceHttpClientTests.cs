@@ -9,8 +9,13 @@ public class LocationIqReverseGeocodeServiceHttpClientTests : IClassFixture<SetE
 		var apiKey = Environment.GetEnvironmentVariable(apiKeyEnvironmentVariableName);
 		apiKey.Should().NotBeNull("{0} environment variable not set", apiKeyEnvironmentVariableName);
 		var apiKeyStore = new ApiKeyStore { LocationIq = apiKey };
-		var coordinateCacheMock = new Mock<CoordinateCache<OpenStreetMapResponse>>();
-		var sut = new LocationIqReverseGeocodeService(CreateHttpClient(), NullLogger<LocationIqReverseGeocodeService>.Instance, apiKeyStore, coordinateCacheMock.Object);
+		var reverseGeocodeCacheMock = new Mock<IReverseGeocodeCache<OpenStreetMapResponse>>();
+
+		reverseGeocodeCacheMock.Setup(s => s
+			.TryGet(It.IsAny<ReverseGeocodeRequest>(), ReverseGeocodeProvider.OpenStreetMapFoundation))
+			.ReturnsAsync(new ReverseGeocodeCacheResult<OpenStreetMapResponse>(false, null));
+
+		var sut = new LocationIqReverseGeocodeService(CreateHttpClient(), NullLogger<LocationIqReverseGeocodeService>.Instance, apiKeyStore, reverseGeocodeCacheMock.Object, StatisticsFakes.Empty());
 		var coordinate = CoordinateFakes.Ankara();
 		var openStreetMapRequest = new ReverseGeocodeRequest(coordinate);
 		var openStreetMapResponse = await sut.SerializeFullResponse(openStreetMapRequest);

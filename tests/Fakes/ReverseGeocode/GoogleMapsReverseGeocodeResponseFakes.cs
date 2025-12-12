@@ -610,4 +610,22 @@ public static class GoogleMapsReverseGeocodeResponseFakes
     ""status"": ""OK""
 }";
 	}
+
+	public static string AnkaraAvailableTypesLogOutput()
+	{
+		var names = new Dictionary<string, GoogleMapsNames>
+		{
+			{ "route", new GoogleMapsNames("Anıtkabir", "Anıtkabir") },
+			{ "administrative_area_level_4", new GoogleMapsNames("Mebusevleri", "Mebusevleri") },
+			{ "administrative_area_level_2", new GoogleMapsNames("Çankaya", "Çankaya") },
+			{ "administrative_area_level_1", new GoogleMapsNames("Ankara", "Ankara") },
+			{ "country", new GoogleMapsNames("Turkey", "TR") },
+			{ "postal_code", new GoogleMapsNames("06570", "06570") },
+			{ "street_number", new GoogleMapsNames("108", "108") },
+			{ "locality", new GoogleMapsNames("Ankara", "Ankara") },
+			{ "plus_code", new GoogleMapsNames("WRGM+2W", "WRGM+2W") },
+		};
+		var log = string.Join(", ", names.Select(s => "[" + s.Key + ", GoogleMapsNames { LongName = " + s.Value.LongName + ", ShortName = " + s.Value.ShortName + " }]"));
+		return log;
+	}
 }

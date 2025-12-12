@@ -1,11 +1,15 @@
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 
 namespace PhotoCli.Options.Validators;
 
 public class ToolOptionsValidator : AbstractValidator<ToolOptions>
 {
-	public ToolOptionsValidator()
+	private readonly ILogger<ToolOptionsValidator> _logger;
+
+	public ToolOptionsValidator(ILogger<ToolOptionsValidator> logger)
 	{
+		_logger = logger;
 		RuleFor(r => r.YearFormat).Must(DateTimeFormatIsValid).WithMessage(DateTimeFormatMessage(nameof(ToolOptions.YearFormat), ToolOptions.YearFormatDefault));
 		RuleFor(r => r.MonthFormat).Must(DateTimeFormatIsValid).WithMessage(DateTimeFormatMessage(nameof(ToolOptions.MonthFormat), ToolOptions.MonthFormatDefault));
 		RuleFor(r => r.DayFormat).Must(DateTimeFormatIsValid).WithMessage(DateTimeFormatMessage(nameof(ToolOptions.DayFormat), ToolOptions.DayFormatDefault));
@@ -28,20 +32,43 @@ public class ToolOptionsValidator : AbstractValidator<ToolOptions>
 		RuleFor(r => r.CsvReportFileName).RequiredString().Matches(Constants.CsvExtensionRegex);
 		RuleFor(r => r.DryRunCsvReportFileName).RequiredString().Matches(Constants.CsvExtensionRegex);
 
-		RuleFor(r => r.LogLevel.Default).Must(m => Enum.TryParse(typeof(Microsoft.Extensions.Logging.LogLevel), m, out _)).WithMessage(LogLevels());
+		RuleFor(r => r.LogLevel).Must(ValidateLogLevels).WithMessage("One or more log levels are invalid. Log level should be one of these values: " + LogLevels());
 	}
 
-	private string LogLevels()
+	private bool ValidateLogLevels(Dictionary<string, string>? logLevels)
 	{
-		var levels = string.Join(", ", Enum.GetNames<Microsoft.Extensions.Logging.LogLevel>());
-		return $"Log level should be on of these values: {levels}";
+		if (logLevels == null)
+			return true;
+
+		foreach (var (logCategoryNamespaceValue, logLevel) in logLevels)
+		{
+			if (Enum.TryParse<Microsoft.Extensions.Logging.LogLevel>(logLevel, true, out _))
+				continue;
+			_logger.LogError("Invalid log level '{LogLevel}' for category '{Category}'", logLevel, logCategoryNamespaceValue);
+			return false;
+		}
+
+		return true;
+	}
+
+	private static string LogLevels()
+	{
+		return string.Join(", ", Enum.GetNames<Microsoft.Extensions.Logging.LogLevel>());
 	}
 
 	private bool DateTimeFormatIsValid(string newFormat)
 	{
-		var value = DateTime.Now.ToString(newFormat);
-		var hasAnyAffect = value != newFormat;
-		return hasAnyAffect;
+		try
+		{
+			var value = DateTime.Now.ToString(newFormat);
+			var hasAnyAffect = value != newFormat;
+			return hasAnyAffect;
+		}
+		catch (FormatException formatException)
+		{
+			_logger.LogInformation(formatException, "DateTime format exception for {Format}", newFormat);
+			return false;
+		}
 	}
 
 	private string DateTimeFormatMessage(string property, string example)

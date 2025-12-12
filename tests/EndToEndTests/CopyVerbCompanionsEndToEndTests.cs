@@ -1,13 +1,9 @@
 namespace PhotoCli.Tests.EndToEndTests;
 
-[Collection(XunitSharedCollectionsToDisableParallelExecution.EndToEndTests)]
 public class CopyVerbCompanionsEndToEndTests : BaseCopyVerbEndToEndTests
 {
-	public CopyVerbCompanionsEndToEndTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-	{
-	}
 
-	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues, List<string>> SingleFolderWithNumericNamingUsingOnlySequentialNumbersCompanions = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, Statistics, List<string>> SingleFolderWithNumericNamingUsingOnlySequentialNumbersCompanions = new()
 	{
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SingleFolderCompanions(), NamingStyle.Numeric, FolderProcessType.Single,
@@ -19,7 +15,7 @@ public class CopyVerbCompanionsEndToEndTests : BaseCopyVerbEndToEndTests
 				SingleCompanionsLeiden("4"),
 				SingleCompanionsChios("5"),
 			],
-			new ConsoleOutputValues(5, 5, 5, CompanionsFound: 15, CompanionsCopied: 15),
+			StatisticsFakes.Companions(5, 5, 0, 5, 0, 0, 0, 15, 15),
 			[
 				"1.aae", "1.mov", "1.xmp",
 				"2.aae", "2.mov", "2.xmp",
@@ -30,7 +26,7 @@ public class CopyVerbCompanionsEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues, List<string>> FlattenAllSubFoldersWithNumericNamingUsingOnlySequentialNumbersCompanions = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, Statistics, List<string>> FlattenAllSubFoldersWithNumericNamingUsingOnlySequentialNumbersCompanions = new()
 	{
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFoldersCompanions(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
@@ -42,7 +38,7 @@ public class CopyVerbCompanionsEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersCompanionsLeiden("4"),
 				SubFoldersCompanionsChios("5"),
 			],
-			new ConsoleOutputValues(5, 5, 5, CompanionsFound: 15, CompanionsCopied: 15),
+			StatisticsFakes.Companions(5, 5, 0, 5, 0, 0, 0, 15, 15),
 			[
 				"1.aae", "1.mov", "1.xmp",
 				"2.aae", "2.mov", "2.xmp",
@@ -53,7 +49,7 @@ public class CopyVerbCompanionsEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues, List<string>> FlattenAllSubFoldersAndGroupByYearMonthDayWithNumericNamingUsingOnlySequentialNumbersCompanions = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, Statistics, List<string>> FlattenAllSubFoldersAndGroupByYearMonthDayWithNumericNamingUsingOnlySequentialNumbersCompanions = new()
 	{
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFoldersCompanions(), NamingStyle.Numeric, FolderProcessType.FlattenAllSubFolders,
@@ -65,7 +61,7 @@ public class CopyVerbCompanionsEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersCompanionsLeiden("2024/03/02/1"),
 				SubFoldersCompanionsChios("2024/05/29/1"),
 			],
-			new ConsoleOutputValues(5, 5, 5, DirectoriesCreated: 5, CompanionsFound: 15, CompanionsCopied: 15),
+			StatisticsFakes.Companions(5, 5, 0, 5, 0, 0, 5, 15, 15),
 			[
 				"2023/10/01/1.aae", "2023/10/01/1.mov", "2023/10/01/1.xmp",
 				"2023/10/28/1.aae", "2023/10/28/1.mov", "2023/10/28/1.xmp",
@@ -76,7 +72,7 @@ public class CopyVerbCompanionsEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues, List<string>> SubFoldersPreserveFolderHierarchyWithNumericNamingUsingOnlySequentialNumbersCompanions = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, Statistics, List<string>> SubFoldersPreserveFolderHierarchyWithNumericNamingUsingOnlySequentialNumbersCompanions = new()
 	{
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFoldersCompanions(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
@@ -89,7 +85,7 @@ public class CopyVerbCompanionsEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersCompanionsCopenhagen("Winter/2"),
 
 			],
-			new ConsoleOutputValues(5, 5, 5, DirectoriesCreated: 3, CompanionsFound: 15, CompanionsCopied: 15),
+			StatisticsFakes.Companions(5, 5, 0, 5, 0, 0, 3, 15, 15),
 			[
 				"Netherlands/1.aae", "Netherlands/1.mov", "Netherlands/1.xmp",
 				"Netherlands/2.aae", "Netherlands/2.mov", "Netherlands/2.xmp",
@@ -100,7 +96,7 @@ public class CopyVerbCompanionsEndToEndTests : BaseCopyVerbEndToEndTests
 		}
 	};
 
-	public static TheoryData<ICollection<string>, List<PhotoCsv>, ConsoleOutputValues, List<string>> SubFoldersPreserveFolderHierarchyByAppendingFirstYearMonthAsPrefixToFolderNameWithNumericNamingUsingOnlySequentialNumbersCompanions = new()
+	public static TheoryData<ICollection<string>, List<PhotoCsv>, Statistics, List<string>> SubFoldersPreserveFolderHierarchyByAppendingFirstYearMonthAsPrefixToFolderNameWithNumericNamingUsingOnlySequentialNumbersCompanions = new()
 	{
 		{
 			CommandLineArgumentsFakes.CopyBuildCommandLineOptions(TestImagesPathHelper.SubFoldersCompanions(), NamingStyle.Numeric, FolderProcessType.SubFoldersPreserveFolderHierarchy,
@@ -113,7 +109,7 @@ public class CopyVerbCompanionsEndToEndTests : BaseCopyVerbEndToEndTests
 				SubFoldersCompanionsCopenhagen("2023.10-Winter/2"),
 				SubFoldersCompanionsChios("2024.05-Summer/1"),
 			],
-			new ConsoleOutputValues(5, 5, 5, DirectoriesCreated: 3, CompanionsFound: 15, CompanionsCopied: 15),
+			StatisticsFakes.Companions(5, 5, 0, 5, 0, 0, 3, 15, 15),
 			[
 				"2023.10-Netherlands/1.aae", "2023.10-Netherlands/1.mov", "2023.10-Netherlands/1.xmp",
 				"2023.10-Netherlands/2.aae", "2023.10-Netherlands/2.mov", "2023.10-Netherlands/2.xmp",
@@ -131,16 +127,16 @@ public class CopyVerbCompanionsEndToEndTests : BaseCopyVerbEndToEndTests
 	[MemberData(nameof(SubFoldersPreserveFolderHierarchyWithNumericNamingUsingOnlySequentialNumbersCompanions))]
 	[MemberData(nameof(SubFoldersPreserveFolderHierarchyByAppendingFirstYearMonthAsPrefixToFolderNameWithNumericNamingUsingOnlySequentialNumbersCompanions))]
 	public async Task Companions_Running_With_Copy_Verb_Arguments_Should_Create_And_Verify_Photos_And_Report_Csv_On_File_System(ICollection<string> args, List<PhotoCsv> expectedPhotoCsvModels,
-		ConsoleOutputValues expectedConsoleOutput, List<string> expectedCompanionFiles)
+		Statistics expectedStatistics, List<string> expectedCompanionFiles)
 	{
 		var outputFolder = OutputFolderForE2ETestPrivateToEachTest();
 		CommandLineArgumentsFakes.AddOutputPathOptions(outputFolder, args);
 		var csvReportFile = new FileInfo(Path.Combine(outputFolder, ToolOptionFakes.CsvReportFileName));
-		var (actualConsoleOutput, actualPhotoCsvModels) = await ExecuteCopy(args.ToArray(), csvReportFile);
+		var (actualStatistics, actualPhotoCsvModels) = await ExecuteCopy(args.ToArray(), csvReportFile);
 		using (new AssertionScope())
 		{
 			actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModels);
-			actualConsoleOutput.Should().Be(expectedConsoleOutput);
+			actualStatistics.Should().BeEquivalentTo(expectedStatistics);
 			VerifyCsvModelsNewPathExists(actualPhotoCsvModels, outputFolder);
 			VerifyExpectedFilesOnOutput(expectedCompanionFiles, outputFolder);
 		}

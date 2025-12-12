@@ -6,11 +6,16 @@ public class ArchiveDbContextProvider : IArchiveDbContextProvider
 {
 	private ArchiveDbContext? _value;
 	private readonly ISQLiteConnectionStringProvider _connectionStringProvider;
+	private readonly IFileService _fileService;
+	private readonly ArchiveDatabaseOptions _archiveDatabaseOptions;
 	private readonly ILogger<ArchiveDbContextProvider> _logger;
 
-	public ArchiveDbContextProvider(ISQLiteConnectionStringProvider connectionStringProvider, ILogger<ArchiveDbContextProvider> logger)
+	public ArchiveDbContextProvider(ISQLiteConnectionStringProvider connectionStringProvider, IFileService fileService,
+		ArchiveDatabaseOptions archiveDatabaseOptions, ILogger<ArchiveDbContextProvider> logger)
 	{
 		_connectionStringProvider = connectionStringProvider;
+		_fileService = fileService;
+		_archiveDatabaseOptions = archiveDatabaseOptions;
 		_logger = logger;
 	}
 
@@ -18,15 +23,15 @@ public class ArchiveDbContextProvider : IArchiveDbContextProvider
 	{
 		if (_value != null)
 		{
-			_logger.LogDebug("Using existing DbContext - {@ContextId}", _value.ContextId);
+			_logger.LogInformation("Using existing DbContext - {@ContextId}", _value.ContextId);
 			return _value;
 		}
-
+		_fileService.CreateOutputFolderIfNotExists(_archiveDatabaseOptions.Path);
 		var optionsBuilder = new DbContextOptionsBuilder<ArchiveDbContext>();
 		var connectionString = _connectionStringProvider.Value;
 		optionsBuilder.UseSqlite(connectionString);
 		_value = new ArchiveDbContext(optionsBuilder.Options);
-		_logger.LogDebug("Creating DbContext with connection string: {ConnectionString}", connectionString);
+		_logger.LogInformation("Creating DbContext with connection string: {ConnectionString}", connectionString);
 		_value.Database.Migrate();
 		_logger.LogInformation("Created DbContext with connection string: {ConnectionString}", connectionString);
 		return _value;

@@ -1,4 +1,8 @@
+using System.ComponentModel.DataAnnotations;
 using System.IO.Abstractions;
+using System.Linq.Expressions;
+using System.Reflection;
+using Spectre.Console;
 
 namespace PhotoCli.Runners;
 
@@ -19,41 +23,77 @@ public abstract class BaseRunner
 
 	protected void WriteStatistics()
 	{
-		if (_statistics.FileIoErrors.Count > 0)
-		{
-			_consoleWriter.Write("- File IO Errors");
-			var fileErrorsJoined = string.Join(Environment.NewLine, _statistics.FileIoErrors.Select(s => $"- {s}"));
-			_consoleWriter.Write(fileErrorsJoined);
-		}
+		var table = new Table().Title("Statistics");
+		table.AddColumn(new TableColumn("Statistic"));
+		table.AddColumn(new TableColumn("Count"));
 
-		if (_statistics.PhotosCopied > 0)
-			_consoleWriter.Write($"- {_statistics.PhotosCopied} photo(s) copied.");
-		if (_statistics.PhotosExisted > 0)
-			_consoleWriter.Write($"- {_statistics.PhotosExisted} photo(s) existed on the output.");
-		if (_statistics.PhotosSame > 0)
-			_consoleWriter.Write($"- {_statistics.PhotosSame} photo(s) are skipped, they have the same photo.");
+		table.AddRow("File System Error(s)", _statistics.FileIoErrors.Count.ToString());
+		AddStatisticRow(s => s.PhotosFound, table);
+		AddStatisticRow(s => s.PhotosCopied, table);
+		AddStatisticRow(s => s.PhotosExisted, table);
+		AddStatisticRow(s => s.PhotosSame, table);
+		AddStatisticRow(s => s.DirectoriesCreated, table);
 
-		if (_statistics.DirectoriesCreated > 0)
-			_consoleWriter.Write($"- {_statistics.DirectoriesCreated} directory/directories created.");
+		table.AddEmptyRow();
 
-		if (_statistics.CompanionFilesCopied > 0)
-			_consoleWriter.Write($"- {_statistics.CompanionFilesCopied} companion file(s) copied.");
-		if (_statistics.CompanionFilesExisted > 0)
-			_consoleWriter.Write($"- {_statistics.CompanionFilesExisted} companion file(s) existed on the output.");
+		AddStatisticRow(s => s.CompanionFilesFound, table);
+		AddStatisticRow(s => s.CompanionFilesCopied, table);
+		AddStatisticRow(s => s.CompanionFilesExisted, table);
 
-		if (_statistics.PhotoThatHasTakenDateAndCoordinate > 0)
-			_consoleWriter.Write($"- {_statistics.PhotoThatHasTakenDateAndCoordinate} photo(s) has taken date and coordinate.");
-		if (_statistics.PhotoThatHasTakenDateButNoCoordinate > 0)
-			_consoleWriter.Write($"- {_statistics.PhotoThatHasTakenDateButNoCoordinate} photo(s) has taken date but no coordinate.");
-		if (_statistics.PhotoThatHasCoordinateButNoTakenDate > 0)
-			_consoleWriter.Write($"- {_statistics.PhotoThatHasCoordinateButNoTakenDate} photo(s) has coordinate but no taken date.");
-		if (_statistics.PhotoThatNoCoordinateAndNoTakenDate > 0)
-			_consoleWriter.Write($"- {_statistics.PhotoThatNoCoordinateAndNoTakenDate} photo(s) has no taken date and coordinate.");
+		table.AddEmptyRow();
 
-		if (_statistics.InvalidFormatError > 0)
-			_consoleWriter.Write($"- {_statistics.InvalidFormatError} photo(s) has unknown/invalid format..");
-		if (_statistics.InternalError > 0)
-			_consoleWriter.Write($"- {_statistics.InternalError} photo(s) caused unexpected error internally.");
+		AddStatisticRow(s => s.SourcePhotoFileDeleted, table);
+		AddStatisticRow(s => s.SourceCompanionFileDeleted, table);
+		AddStatisticRow(s => s.SourceEmptyDirectoryDeleted, table);
+
+		table.AddEmptyRow();
+
+		AddStatisticRow(s => s.UserDefinedAlbumCreated, table);
+		AddStatisticRow(s => s.UserDefinedAlbumUpdated, table);
+		AddStatisticRow(s => s.AutoAddressAlbumCreated, table);
+
+		table.AddEmptyRow();
+
+		AddStatisticRow(s => s.ReserveGeocodeRequestSent, table);
+		AddStatisticRow(s => s.ReserveGeocodeFromMemory, table);
+		AddStatisticRow(s => s.ReserveGeocodeFromDatabase, table);
+		AddStatisticRow(s => s.PhotoThatHasTakenDateAndCoordinate, table);
+		AddStatisticRow(s => s.PhotoThatHasTakenDateButNoCoordinate, table);
+		AddStatisticRow(s => s.PhotoThatHasCoordinateButNoTakenDate, table);
+		AddStatisticRow(s => s.PhotoThatNoCoordinateAndNoTakenDate, table);
+
+		table.AddEmptyRow();
+
+		AddStatisticRow(s => s.InvalidFormatError, table);
+		AddStatisticRow(s => s.InternalError, table);
+
+		_consoleWriter.WriteTable(table);
+
+		WriteFileIoTable();
+	}
+
+	private void WriteFileIoTable()
+	{
+		if (_statistics.FileIoErrors.Count == 0)
+			return;
+		var table = new Table().Title("File IO Errors").BorderColor(Color.Red);
+		table.AddColumn(new TableColumn("File Path"));
+		table.AddColumn(new TableColumn("Exception Message"));
+		table.AddColumn(new TableColumn("Exception Type"));
+		foreach (var fileIoError in _statistics.FileIoErrors)
+			table.AddRow(fileIoError.FilePath, fileIoError.ExceptionMessage, fileIoError.ExceptionType);
+		_consoleWriter.WriteTable(table);
+	}
+
+	private void AddStatisticRow<TValue>(Expression<Func<Statistics, TValue>> expression, Table table) where TValue : struct
+	{
+		AddKeyValueRowToTable(expression, _statistics, table);
+	}
+
+	protected void AddKeyValueRowToTable<T, TValue>(Expression<Func<T, TValue>> expression, T row, Table table) where T : DisplayableRecord where TValue : struct
+	{
+		var (name, value) = row.GetDisplayNameAndValue(expression);
+		table.AddRow(name, value.ToString() ?? string.Empty);
 	}
 
 	protected bool ValidatePhotoPaths(out ExitCode exitCode, IReadOnlyCollection<Photo> photoPaths, string path)
@@ -69,19 +109,18 @@ public abstract class BaseRunner
 		return true;
 	}
 
-	protected bool NoExifDataPreventActions(out ExitCode exitCode, bool allPhotosAreValid, bool allPhotosHasPhotoTaken, bool allPhotosHasCoordinate,
-		bool isInvalidFileFormatPreventProcessOptionSelected, bool isNoPhotoTakenDatePreventProcessOptionSelected, bool isNoCoordinatePreventProcessOptionSelected,
-		IReadOnlyCollection<Photo> exifDataByPhotoBundle)
+	protected bool ExifDataPreventActions(out ExitCode exitCode, ExifDataResult exifDataResult, bool isInvalidFileFormatPreventProcessOptionSelected,
+		bool isNoPhotoTakenDatePreventProcessOptionSelected, bool isNoCoordinatePreventProcessOptionSelected, short? expectedDayRange)
 	{
-		var invalidFileFormatPreventProcess = InvalidFileFormatActionPreventProcess(allPhotosAreValid, isInvalidFileFormatPreventProcessOptionSelected, exifDataByPhotoBundle);
+		var invalidFileFormatPreventProcess = InvalidFileFormatActionPreventProcess(exifDataResult.AllPhotosAreValid, isInvalidFileFormatPreventProcessOptionSelected, exifDataResult.Photos);
 		if (invalidFileFormatPreventProcess)
 		{
 			exitCode = ExitCode.PhotosWithInvalidFileFormatPreventedProcess;
 			return false;
 		}
 
-		var noPhotoDateTimeTakenActionPreventProcess = NoPhotoTakenDateActionPreventProcess(allPhotosHasPhotoTaken, isNoPhotoTakenDatePreventProcessOptionSelected, exifDataByPhotoBundle);
-		var noCoordinateActionPreventProcess = NoCoordinateActionPreventProcess(allPhotosHasCoordinate, isNoCoordinatePreventProcessOptionSelected, exifDataByPhotoBundle);
+		var noPhotoDateTimeTakenActionPreventProcess = NoPhotoTakenDateActionPreventProcess(exifDataResult.AllPhotosHasPhotoTaken, isNoPhotoTakenDatePreventProcessOptionSelected, exifDataResult.Photos);
+		var noCoordinateActionPreventProcess = NoCoordinateActionPreventProcess(exifDataResult.AllPhotosHasCoordinate, isNoCoordinatePreventProcessOptionSelected, exifDataResult.Photos);
 
 		if (noPhotoDateTimeTakenActionPreventProcess && noCoordinateActionPreventProcess)
 		{
@@ -101,6 +140,17 @@ public abstract class BaseRunner
 			return false;
 		}
 
+		if (expectedDayRange != null && exifDataResult.DateRange != null)
+		{
+			var range = exifDataResult.DateRange.End - exifDataResult.DateRange.Start;
+			var unexpectedRange = range.Days > expectedDayRange;
+			if (unexpectedRange)
+			{
+				_logger.LogCritical("{ExpectedDayRange} is exceeded with a {DateRange} of days", expectedDayRange, range.Days);
+				exitCode = ExitCode.PhotosWithUnexpectedDateRangePreventedProcess;
+				return false;
+			}
+		}
 		exitCode = ExitCode.Unset;
 		return true;
 	}

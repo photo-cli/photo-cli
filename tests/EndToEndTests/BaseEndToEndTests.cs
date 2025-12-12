@@ -1,14 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using Spectre.Console.Testing;
+using Match = System.Text.RegularExpressions.Match;
+
 namespace PhotoCli.Tests.EndToEndTests;
 
-public abstract class BaseEndToEndTests : IClassFixture<SetEnvironmentVariablesFromLaunchSettingsFixture>
+public abstract partial class BaseEndToEndTests : IClassFixture<SetEnvironmentVariablesFromLaunchSettingsFixture>
 {
-	private readonly ITestOutputHelper _testOutputHelper;
-
-	protected BaseEndToEndTests(ITestOutputHelper testOutputHelper)
-	{
-		_testOutputHelper = testOutputHelper;
-	}
-
 	#region Single Folder PhotoCsv
 
 	protected static PhotoCsv SingleKenya(string? newFileName = null)
@@ -312,6 +310,58 @@ public abstract class BaseEndToEndTests : IClassFixture<SetEnvironmentVariablesF
 			directoriesCreated, companionsFound, companionsCopied);
 	}
 
+	protected static T ParseKeyValueTableFromOutput<T>(string tableString) where T : new()
+	{
+		var spectreTableKeyValue = ParseSpectreConsoleTableAsKeyValue(tableString);
+		var propertyNamesByDisplayName = GetPropertyNamesByDisplayName<T>();
+		var tableOutput = new T();
+		var tableType = typeof(T);
+		foreach (var (displayName, propertyName) in propertyNamesByDisplayName)
+		{
+			if (!spectreTableKeyValue.TryGetValue(displayName, out var value))
+				throw new Exception();
+			var property = tableType.GetProperty(propertyName);
+			if (property == null)
+				throw new Exception();
+			property.SetValue(tableOutput, value);
+		}
+		return tableOutput;
+	}
+
+	private static Dictionary<string, int> ParseSpectreConsoleTableAsKeyValue(string tableString)
+	{
+		var result = new Dictionary<string, int>();
+		var pattern = @"│\s*([^│]+?)\s*│\s*(\d+)\s*│";
+		var matches = Regex.Matches(tableString, pattern);
+
+		foreach (Match match in matches)
+		{
+			if (!match.Success || match.Groups.Count != 3)
+				continue;
+			var key = match.Groups[1].Value.Trim();
+			var valueStr = match.Groups[2].Value.Trim();
+			if (key.IsMissing() || !int.TryParse(valueStr, out var value))
+				continue;
+			result[key] = value;
+		}
+
+		return result;
+	}
+
+	private static Dictionary<string, string> GetPropertyNamesByDisplayName<TType>()
+	{
+		var propertyNamesByDisplayName = new Dictionary<string, string>();
+		var properties = typeof(TType).GetProperties();
+		foreach (var property in properties)
+		{
+			var displayAttribute = property.GetCustomAttribute<DisplayAttribute>();
+			if (displayAttribute == null || displayAttribute.Name.IsMissing())
+				continue;
+			propertyNamesByDisplayName.Add(displayAttribute.Name, property.Name);
+		}
+		return propertyNamesByDisplayName;
+	}
+
 	private int GetRegexValue(string regex, string actualOutput)
 	{
 		var value = new Regex(regex).Match(actualOutput).Groups[1].Value;
@@ -323,35 +373,36 @@ public abstract class BaseEndToEndTests : IClassFixture<SetEnvironmentVariablesF
 		return Path.Combine(AppContext.BaseDirectory, filePath);
 	}
 
-	protected Task<string> RunMain(IEnumerable<string> args, ExitCode expectedExitCode = ExitCode.Success)
+	protected async Task<IEnumerable<string>> RunMainLines(IEnumerable<string> args, ExitCode expectedExitCode = ExitCode.Success)
 	{
-		return RunMain(args.ToArray(), expectedExitCode);
-	}
-
-	protected async Task<string> RunMain(string[] args, ExitCode expectedExitCode = ExitCode.Success)
-	{
-		var stringWriter = new StringWriter();
-		var exitCode = (ExitCode)await Program.MainStream(args, stringWriter);
-		_testOutputHelper.WriteLine(stringWriter.ToString());
-		var actualOutput = GetTrimmedConsoleOutput(stringWriter);
+		var testConsole = new TestConsole { Profile = { Width = 1000 } };
+		var exitCode = (ExitCode)await Program.Main(args.ToArray(), testConsole);
 		exitCode.Should().Be(expectedExitCode);
-		return actualOutput;
+		return LogUtilities.RemoveTimeStamps(testConsole.Lines);
 	}
 
-	private string GetTrimmedConsoleOutput(StringWriter stringWriter)
+	protected async Task<Statistics> RunMainOutputAsStatistics(IEnumerable<string> args, ExitCode expectedExitCode = ExitCode.Success)
 	{
-		var rawOutput = stringWriter.GetStringBuilder().ToString();
-		var lines = rawOutput.Split(Environment.NewLine);
-		var trimmedLines = lines.Select(s => s.Trim());
-		var mergedLines = string.Join(Environment.NewLine, trimmedLines.SkipLast(1));
-		return mergedLines;
+		var rawOutput = await RunMainRaw(args, expectedExitCode);
+		return ParseKeyValueTableFromOutput<Statistics>(rawOutput);
+	}
+
+	protected Task<string> RunMainRaw(IEnumerable<string> args, ExitCode expectedExitCode = ExitCode.Success)
+	{
+		return RunMainRaw(args.ToArray(), expectedExitCode);
+	}
+
+	protected async Task<string> RunMainRaw(string[] args, ExitCode expectedExitCode = ExitCode.Success)
+	{
+		var lines = await RunMainLines(args, expectedExitCode);
+		return string.Join(Environment.NewLine, lines);
 	}
 
 	protected void StringsShouldMatchDiscardingLineEndings(string actual, string expected)
 	{
 		var actualNormalized = actual.ReplaceLineEndings();
 		var expectedNormalized = expected.ReplaceLineEndings();
-		actualNormalized.ReplaceLineEndings().Should().Be(expectedNormalized);
+		actualNormalized.Should().Be(expectedNormalized);
 	}
 
 	protected static string OutputFolderForE2ETestPrivateToEachTest()

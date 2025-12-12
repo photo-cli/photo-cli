@@ -1,4 +1,4 @@
-﻿namespace PhotoCli.Tests.IntegrationTests.PackageTests.FluentValidation;
+namespace PhotoCli.Tests.IntegrationTests.PackageTests.FluentValidation;
 
 public class AddressOptionsFluentValidationTests : BaseFluentValidationTests<AddressOptions, AddressOptionsValidator>
 {
@@ -8,14 +8,15 @@ public class AddressOptionsFluentValidationTests : BaseFluentValidationTests<Add
 	public void Null_InputFolderPath_Should_Give_NotNullValidator_Error()
 	{
 		var options = new AddressOptions(null!, ReverseGeocodeProviderFakes.Valid(), AddressListTypeFakes.Valid());
-		CheckPropertyNotNull(options, nameof(AddressOptions.InputPath), Required(nameof(AddressOptions.InputPath), "input", 'i'));
+		CheckPropertyRequiredString(options, nameof(AddressOptions.InputPath), Required(nameof(AddressOptions.InputPath), "input", 'i'));
 	}
 
 	[Fact]
 	public void Using_InputPath_Without_Valid_Extension_Should_Give_RegularExpressionValidator_And_Verify_Error_Message()
 	{
 		var options = new AddressOptions(FileNameFakes.InvalidInputPhotoPath, ReverseGeocodeProviderFakes.Valid(), AddressListTypeFakes.Valid());
-		CheckPropertyRegularExpression(options, nameof(AddressOptions.InputPath), $"{nameof(AddressOptions.InputPath)} should have .jpg, .jpeg, or .heic extension");
+
+		CheckPropertyRegularExpression(options, nameof(AddressOptions.InputPath), $"{nameof(AddressOptions.InputPath)} should have .jpg, .jpeg, .heic or .hif extension");
 	}
 
 	#region AddressListType SelectedProperties Require Additional Vendor Specific Properties
@@ -24,8 +25,7 @@ public class AddressOptionsFluentValidationTests : BaseFluentValidationTests<Add
 	public void When_Using_BigDataCloud_With_AddressListType_As_SelectedProperties_Not_Using_BigDataCloudAdminLevels_Should_Give_NullValidator_And_Verify_Error_Message()
 	{
 		var options = AddressOptionsFakes.WithReverseGeocodeServiceAndAddressListType(ReverseGeocodeProvider.BigDataCloud, AddressListType.SelectedProperties);
-		CheckPropertyNotEmpty(options, nameof(AddressOptions.BigDataCloudAdminLevels), MustUseMessage(nameof(AddressOptions.BigDataCloudAdminLevels), nameof(ReverseGeocodeProvider.BigDataCloud),
-			"bigdatacloud-levels", 'u'));
+		CheckPropertyNotEmpty(options, nameof(AddressOptions.BigDataCloudAdminLevels), MustUseMessage(BigDataCloudAdminLevelInfo, ReverseGeocodeWithBigDataCloudInfo));
 	}
 
 	[Theory]
@@ -34,19 +34,24 @@ public class AddressOptionsFluentValidationTests : BaseFluentValidationTests<Add
 	public void When_Using_OpenStreetMap_With_AddressListType_As_SelectedProperties_Not_Using_OpenStreetMapProperties_Should_Give_NullValidator_And_Verify_Error_Message(ReverseGeocodeProvider reverseGeocodeProvider)
 	{
 		var options = AddressOptionsFakes.WithReverseGeocodeServiceAndAddressListType(reverseGeocodeProvider, AddressListType.SelectedProperties);
-		CheckPropertyNotEmpty(options, nameof(AddressOptions.OpenStreetMapProperties),
-			MustUseMessage(nameof(AddressOptions.OpenStreetMapProperties), reverseGeocodeProvider.ToString(), "openstreetmap-properties", 'r'));
+		CheckPropertyNotEmpty(options, nameof(AddressOptions.OpenStreetMapProperties), MustUseMessage(OpenStreetMapPropertiesInfo, ReverseGeocodeProviderInfoWithValue(reverseGeocodeProvider)));
 	}
 
 	[Fact]
 	public void When_Using_GoogleMaps_With_AddressListType_As_SelectedProperties_Not_Using_GoogleMapsAddressTypes_Should_Give_NullValidator_And_Verify_Error_Message()
 	{
 		var options = AddressOptionsFakes.WithReverseGeocodeServiceAndAddressListType(ReverseGeocodeProvider.GoogleMaps, AddressListType.SelectedProperties);
-		CheckPropertyNotEmpty(options, nameof(AddressOptions.GoogleMapsAddressTypes), MustUseMessage(nameof(AddressOptions.GoogleMapsAddressTypes), nameof(ReverseGeocodeProvider.GoogleMaps),
-			"googlemaps-types", 'm'));
+		CheckPropertyNotEmpty(options, nameof(AddressOptions.GoogleMapsAddressTypes), MustUseMessage(GoogleMapsAddressTypeInfo, ReverseGeocodeProviderWithGoogleMapsInfo));
 	}
 
 	#endregion
+
+	[Fact]
+	public void InvalidRangeForNamingStyle_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
+	{
+		var options = new AddressOptions(FileNameFakes.ValidJpegInputPhotoPath, ReverseGeocodeProviderFakes.Valid(), (AddressListType)byte.MaxValue);
+		CheckEnumInvalidRangeValue<AddressListType>(options, nameof(AddressOptions.AddressListType), false);
+	}
 
 	#endregion
 
@@ -105,4 +110,9 @@ public class AddressOptionsFluentValidationTests : BaseFluentValidationTests<Add
 	}
 
 	#endregion
+
+	protected override AddressOptionsValidator CreateValidator()
+	{
+		return new AddressOptionsValidator();
+	}
 }

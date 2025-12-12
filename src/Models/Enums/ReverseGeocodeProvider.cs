@@ -1,4 +1,4 @@
-﻿namespace PhotoCli.Models.Enums;
+namespace PhotoCli.Models.Enums;
 
 public enum ReverseGeocodeProvider : byte
 {

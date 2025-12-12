@@ -1,0 +1,42 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/PhotoCli.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "docker-build-debug",
+            "type": "shell",
+            "command": "docker build --target debug -t photocli:debug .",
+            "problemMatcher": []
+        },
+        {
+            "label": "docker-run-debug",
+            "type": "shell",
+            "command": "docker rm -f photocli-debug 2>/dev/null || true && docker run -d --name photocli-debug -p 7777:5000 -v ./docs/test-photographs:/photos/input -v ./docker-output:/photos/output photocli:debug",
+            "dependsOn": ["docker-build-debug"],
+            "problemMatcher": []
+        },
+        {
+            "label": "docker-stop-debug",
+            "type": "shell",
+            "command": "docker rm -f photocli-debug",
+            "problemMatcher": []
+        },
+        {
+            "label": "docker-build-runtime",
+            "type": "shell",
+            "command": "docker build --target runtime -t photocli:runtime .",
+            "problemMatcher": []
+        }
+    ]
+}

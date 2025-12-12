@@ -1,91 +1,88 @@
+using Spectre.Console;
+
 namespace PhotoCli.Services.Implementations;
 
 public class ConsoleWriter : IConsoleWriter
 {
-	private static readonly object PhotoInprogressLock = new();
-	private readonly TextWriter _textWriter;
-	private readonly ILogger<ConsoleWriter> _logger;
-	private string? _previousProgressName;
+	private readonly AnsiConsoleExtended _ansiConsoleExtended;
+	private static readonly object ProgressLock = new();
 	private int _progressCompletedCount;
 	private int _progressTotalCount;
+	private StatusContext? _spectreStatusContext;
 
-	public ConsoleWriter(TextWriter textWriter, ILogger<ConsoleWriter> logger)
+	public ConsoleWriter(AnsiConsoleExtended ansiConsoleExtended)
 	{
-		_textWriter = textWriter;
-		_logger = logger;
-		_logger.LogInformation("User interactive console: {IsUserInteractive}", UserInteractive());
+		_ansiConsoleExtended = ansiConsoleExtended;
 	}
 
-	public void Write(string value)
+	public void Write(string message)
 	{
-		_textWriter.WriteLine(value);
+		_ansiConsoleExtended.WriteLineWithTime(message);
+	}
+
+	public void WriteJson(string message)
+	{
+		var escaped = _ansiConsoleExtended.EscapeMarkup(message);
+		Write(escaped);
+	}
+
+	public void WriteSuccess(string message)
+	{
+		Write(message, Color.Green);
+	}
+
+	public void WriteError(string message)
+	{
+		Write(message, Color.Red);
 	}
 
 	public void ProgressStart(string name, int? totalCount = null)
 	{
-		_textWriter.WriteLine($"{name}: started.");
-		_logger.LogInformation("Progress {ProgressName} started", name);
-		_previousProgressName = name;
+		var value = $"{name}: started";
+		_ansiConsoleExtended.WriteLineWithTime(value);
 		if (totalCount != null)
 			_progressTotalCount = totalCount.Value;
 	}
 
-	public void InProgressItemComplete(string name)
+	public void InProgressItemComplete(string name, string? additionalInformation = null)
 	{
+		if (_spectreStatusContext == null)
+			throw new InvalidOperationException("Spectre status context is not initialized. Call InitializeSpectreContext first.");
+
 		Interlocked.Increment(ref _progressCompletedCount);
-		_logger.LogTrace("Progress name {ProgressName} count: {Current}/{Total}", name, _progressCompletedCount, _progressTotalCount);
-		lock (PhotoInprogressLock)
+		lock (ProgressLock)
 		{
-			TryToClearConsoleLastLine(name);
-			_textWriter.WriteLine($"{name}: {(float)_progressCompletedCount / _progressTotalCount:0%} - ({_progressCompletedCount}/{_progressTotalCount})");
-			_previousProgressName = name;
+			var percentage = (float)_progressCompletedCount / _progressTotalCount;
+			var progressInfo = $"{_progressCompletedCount}/{_progressTotalCount}";
+			var ending = additionalInformation != null ? $" - {additionalInformation}" : string.Empty;
+			_spectreStatusContext.Status($"{name}: {percentage:0%} - ({progressInfo}){ending}");
 		}
 	}
 
 	public void ProgressFinish(string name, string? additionalInformation = "")
 	{
 		_progressCompletedCount = 0;
-		TryToClearConsoleLastLine(name);
-		CoverAllLine($"{name}: finished. {additionalInformation}");
-		_logger.LogInformation("Progress {ProgressName} finished", name);
-		_previousProgressName = name;
+		var content = $"{name}: finished. {additionalInformation}";
+		_ansiConsoleExtended.WriteLineWithTime(content);
 	}
 
-	private void CoverAllLine(string toWrite)
+	public void InitializeSpectreContext(StatusContext specterStatusContext)
 	{
-		if (!UserInteractive())
-		{
-			_logger.LogTrace("Console is not user interactive, directly writing to console");
-			_textWriter.WriteLine(toWrite);
-			return;
-		}
-
-		if (Console.WindowWidth > 0)
-			_textWriter.WriteLine(toWrite + new string(' ', Console.WindowWidth - toWrite.Length));
-		else
-			_textWriter.WriteLine(toWrite);
+		_spectreStatusContext = specterStatusContext;
 	}
 
-	private void TryToClearConsoleLastLine(string name)
+	public void WriteTable(Table table)
 	{
-		if (!UserInteractive())
-		{
-			_logger.LogTrace("Console is not user interactive, skip clearing console");
-			return;
-		}
-
-		if (_previousProgressName != name)
-			return;
-		if (Console.CursorTop > 0)
-			Console.SetCursorPosition(0, Console.CursorTop);
-		if (Console.WindowWidth > 0)
-			_textWriter.Write(new string(' ', Console.WindowWidth));
-		if (Console.CursorTop > 0)
-			Console.SetCursorPosition(0, Console.CursorTop - 1);
+		_ansiConsoleExtended.WriteTable(table);
 	}
 
-	private bool UserInteractive()
+	public void RawWriteLine(string value)
 	{
-		return Environment.UserInteractive && !Environment.CurrentDirectory.Contains("tests");
+		_ansiConsoleExtended.RawWriteLine(value);
+	}
+
+	private void Write(string value, Color color)
+	{
+		_ansiConsoleExtended.WriteLineWithTime(value, color);
 	}
 }
