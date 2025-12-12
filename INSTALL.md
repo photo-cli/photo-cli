@@ -1,49 +1,62 @@
 Important note: This application is a command line tool which don't have any user interface. To use this application, basic knowledge of how to run and send arguments to CLI applications is a must.
 
-This application can run on macOS, Windows & Linux for Arm64, x64, x86 architectures. Executable types varies depending on OS.
+This application can run on locally macOS, Windows & Linux for Arm64, x64, x86 architectures and also in container(Docker, Podman) environment. Executable types varies depending on OS.
 
-## Dependency
-.NET SDK (8 or later) required for application to run and `dotnet` command should be available on your path variable.
+# Installation Types
 
-You can either download from https://dotnet.microsoft.com/en-us/download or using the following Brew cask for macOS / Linux.
-```
-brew install dotnet-sdk --cask
-```
+- [1. Running as Self Contained Executable](#1-running-as-self-contained-executable)
+- [2. Homebrew (macOS & Linux)](#2-homebrew-macos--linux)
+- [3. Installing as .NET Tool](#3-installing-as-net-tool)
+- [4. Running in Container (Docker, Podman)](#4-running-in-container-docker-podman)
 
-# macOS
+## 1. Running as Self Contained Executable
 
-You can install by Homebrew (preferred) or as .NET tool.
+Easiest way to run the application without installing any dependency (contains the .NET runtime also in a single file) [downloadable directly from releases page as assets](https://github.com/photo-cli/photo-cli/releases) differs by OS and architecture.
 
-#### Homebrew tap configuration & package installation
+## 2. Homebrew (macOS & Linux)
+
+Automated way to always use the updated version of this tool on macOS & Linux using [Homebrew](https://brew.sh/) package manager.
+
+Homebrew installation command:
 ```shell
 brew tap photo-cli/homebrew-photo-cli && brew install photo-cli
 ```
 
-Ref: https://github.com/photo-cli/homebrew-photo-cli
+More details on [homebrew tap repository](https://github.com/photo-cli/homebrew-photo-cli) source code.
 
-# Windows && Linux
+## 3. Installing as .NET Tool
 
-You can install as .NET tool (preferred) or standalone executable that can be found on assets.
+### Dependency
+.NET SDK (10 or later) required for application to run and `dotnet` command should be available on your path variable.
 
-# Install as .NET Tool
-
-.NET tool can be installed as .NET tool (preferred), could be downloaded manually from https://www.nuget.org/packages/photo-cli/ or directly from assets.
-
-#### .NET CLI
+.NET tool installation command:
 ```shell
 dotnet tool install photo-cli -g
 ```
+Published on [Nuget](https://www.nuget.org/packages/photo-cli/)
 
-# Accessing Application
+## 4. Running in Container (Docker, Podman)
+installing any dependency.
+Using the published Docker image on DockerHub, you can run the tool in your isolated environment just by mounting your photographs and output directory as bind mounts on an emphemeral container (container can be safetly discarded after execution).
+
+Here is the example command accomplish this. Binded mounts are just empty directories on container filesystem which is also needs to given as input and output directories to the application.
+
+```shell
+docker run --rm --volume ./test-photographs:/photos/input --volume ./archive:/photos/output photocli/photocli archive --input /photos/input --output /photos/output --album-type DateRange --album-name My-Album --auto-reverse-geocode-album --expected-day-range 7300 --delete-on-source --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city
+```
+
+## Accessing Application
 
 Installing the application globally provides access to the `photo-cli` command in your terminal.
-```
+```shell
 photo-cli [command]
 
 photo-cli help [command]
 ```
 
-## Command Not Found Issue Solution
+## Issues
+
+### Command Not Found Issue Solution for .NET Tool Installations
 
 For macOS and Linux You should add your `.dotnet/tools` (path may change for your installation choices) to your PATH environment variable.
 

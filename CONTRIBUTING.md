@@ -24,20 +24,19 @@ Development workflow is like the following;
 
 ### 0. Check Issues
 
-Check existing [issues](https://github.com/photo-cli/photo-cli/issues) to look if there is a related issue exists. If not, create issue first.
+Check existing [issues](https://github.com/photo-cli/photo-cli/issues) to look if there is a related issue exists. If not, create an issue first.
 
 If you are not certain about your request or bug, create a discussion first and let's discuss together on [discussions](https://github.com/photo-cli/photo-cli/discussions).
 
-No big pull/merge requests. If your changes requires a lot of change, start a discussion or issue first, so we can agree on direction.
+No big pull/merge requests. If your changes require a lot of change, start a discussion or issue first, so we can agree on a direction.
 
 ### 1. Deciding Version
 
-We are using release branch flow and actively develop on related release branch depending its' semantic version like `r/0.0.1`, `r/0.2.7`.
+We are using release branch flow and actively develop on related release branch depending on its semantic version like `r/0.1`, `r/1.7`. On branches, we are omitting patch versions.
 
-Target version should be:
-  - If it is a major change: `r/{{current-major+1}}.0.0`
-  - If it is a minor change: `r/{{current-major}}.{{current-minor+1}}.0`
-  - If it is a patch change: `r/{{current-major}}.{{current-minor}}.{{current-patch+1}}`
+The target version should be:
+  - If it is a major change: `r/{{current-major+1}}.0`
+  - If it is a minor change: `r/{{current-major}}.{{current-minor+1}}`
 
 ### 2. Is Version Still Developing?
 
@@ -51,14 +50,14 @@ Boards:
 
 Create a fork on your local repository and work on your related version branch.
 
-While developing consider the following items;
+While developing, consider the following items;
 
 - Follow our [code style](#code-style-rules).
 - For new features; write unit, integration, end-to-end tests.
-- For fixing bugs; Should add a tests that highlights current behavior is broken.
+- For fixing bugs, we should add tests that highlight current behavior is broken.
 - Keep your commits atomic and descriptive. It should revolve only one task.
 - For commit messages, use our [commit message formats](#commit-message-formats).
-- Not to large with unrelated things in same commit.
+- Not too large with unrelated things in the same commit.
 - Not so small changes applied on many commits.
 - No merge commits in your branch, use rebase on personal branches.
 
@@ -66,33 +65,34 @@ While developing consider the following items;
 
 Your changes should be targeted only on your related version branch. As a community we iteratively discuss and give feedbacks about these changes in a positive manner.
 
-After agreement about these changes and CI is not broken, we will merge your changes.
+After the agreement about these changes and CI is not broken, we will merge your changes.
 
 ### 4. Publishing Preview Version
 
-Tool deployment to Nuget, done via GitHub actions on tag push on release branch `r/{major}.{minor}.{patch}`.
+Tool deployment to Nuget, done via GitHub actions on tag push on release branch `r/{major}.{minor}`.
 
-After completing development on release branch, first we push preview version with this git tag. `v[0-9]+.[0-9]+.[0-9]+-preview[0-9]`
+After completing development on release branch, first we push a preview version with this git tag. `v[0-9]+.[0-9]+.[0-9]+-preview[0-9]`
 
-This preview version is for contributors and early adapters(who installs and love to use preview versions) to test.
+This preview version is for contributors and early adapters (who install and love to use preview versions) to test.
 
 ### 5. Publishing Stable Version
 
-If preview version is stable and passes our tests, we will push stable version via this tag. `v[0-9]+.[0-9]+.[0-9]+`
+If a preview version is stable and passes our tests, we will push a stable version via this tag. `v[0-9]+.[0-9]+.[0-9]+`
 
-After pushing stable version on release branch `r/{major}.{minor}.{patch}` , we will merge this changes to `main` branch.
+After pushing a stable version on release branch `r/{major}.{minor}` , we will merge this change to `main` branch.
 
-The `main` branch should matches with the current stable release on nuget.org.
+The `main` branch should match with the current stable release on nuget.org.
 
 ### 6. Merging Concurrent Changes on Different Branches
 
-If there is a changed on lower version emerged, these changes should be merged firstly into `main` and then active upper release branches.
+If there are changed on lower version emerged, these changes should be merged firstly into `main` and then active upper release branches.
 
 ### Code Style Rules
 
 - Project is using [Editor Config](https://editorconfig.org/). Make sure that your IDE is using our [`.editorconfig`](.editorconfig).
 - Code base follows usual .NET code conventions documented in [Framework Design Guidelines](https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/).
-- Should match with with current style of the project.
+- Should match with the current style of the project.
+- On tests we follow the AAA (Arrange-Act-Assert) naming pattern specifically using the format: MethodUnderTest_Scenario_ExpectedResult.
 
 ### Commit Message Formats
 
@@ -110,7 +110,7 @@ If there is a changed on lower version emerged, these changes should be merged f
 [optional footer(s)]
 ```
 
-If changes is linked to [GitHub issue(s)](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue), reference related issue by appending as the following format in your commit message.
+If changes are linked to [GitHub issue(s)](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue), reference the related issue by appending as the following format in your commit message.
 
 ```
 fix #{issue-no}
@@ -137,9 +137,15 @@ First line only as summary with a 50 chars or less.
 
 Optional body and footers to be wrap about 72 characters.
 
-### Local Building
+### Local Container Development
 
-Run these commands on repository root. The local package will be created on the `local-packages` folder.
+For debugging purposes use the `debug` stage on Dockerfile. Sample docker debugging launch configuration is defined in `.vscode/launch.json` with a name `docker-debug`.
+
+For testing runtime container, use the `runtime` stage on Dockerfile. Sample command on `.vscode/tasks.json` with a name `docker-build-runtime`.
+
+### Local .NET Tool Building
+
+Run these commands on the repository root. The local package will be created on the `local-packages` folder.
 
 - Build NuGet package
 
@@ -173,4 +179,4 @@ dotnet tool uninstall -g photo-cli
 
 ## Code of Conduct
 
-Finally when contributing please keep in mind [Code of Conduct](CODE_OF_CONDUCT.md).
+Finally, when contributing, please keep in mind [Code of Conduct](CODE_OF_CONDUCT.md).

@@ -1,6 +1,14 @@
 {
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
+    "archive": {
+      "commandLineArgs": "archive",
+      "commandName": "Project"
+    },
+    "list": {
+      "commandLineArgs": "list",
+      "commandName": "Project"
+    },
     "copy": {
       "commandLineArgs": "copy",
       "commandName": "Project"
@@ -11,10 +19,6 @@
     },
     "address": {
       "commandLineArgs": "address",
-      "commandName": "Project"
-    },
-    "archive": {
-      "commandLineArgs": "archive",
       "commandName": "Project"
     },
     "settings": {
