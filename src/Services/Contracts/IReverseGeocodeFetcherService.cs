@@ -1,7 +1,7 @@
-﻿namespace PhotoCli.Services.Contracts;
+namespace PhotoCli.Services.Contracts;
 
 public interface IReverseGeocodeFetcherService
 {
-	Task<IReadOnlyCollection<Photo>> Fetch(IReadOnlyCollection<Photo> photos);
+	Task<ReverseGeocodeResult> Fetch(IReadOnlyCollection<Photo> photos, bool parallelProcessing);
 	void RateLimitWarning();
 }

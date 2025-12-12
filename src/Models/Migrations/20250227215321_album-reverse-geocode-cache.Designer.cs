@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PhotoCli.Models;
 
@@ -10,9 +11,11 @@ using PhotoCli.Models;
 namespace PhotoCli.Migrations
 {
     [DbContext(typeof(ArchiveDbContext))]
-    partial class ArchiveDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250227215321_album-reverse-geocode-cache")]
+    partial class albumreversegeocodecache
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");

@@ -22,15 +22,15 @@ public class ReverseGeocodeService : IReverseGeocodeService
 		_logger = logger;
 	}
 
-	public Task<IEnumerable<string>> Get(Coordinate coordinate)
+	public Task<ReverseGeocodeAddressResult> Get(Coordinate coordinate, PhotoFile photoFile)
 	{
 		_logger.LogTrace("Getting reverse geocode list of coordinate {Coordinate} from provider: {ReverseGeocodeProvider}", coordinate, _options.ReverseGeocodeProvider);
 		return _options.ReverseGeocodeProvider switch
 		{
-			ReverseGeocodeProvider.BigDataCloud => _bigDataCloud.Get(coordinate, _options.Language, _options.BigDataCloudAdminLevels),
-			ReverseGeocodeProvider.OpenStreetMapFoundation => _openStreetMapFoundation.Get(coordinate, BuildPrepareOpenStreetMapProperties(_options)),
-			ReverseGeocodeProvider.GoogleMaps => _googleMaps.Get(coordinate, _options.Language, _options.GoogleMapsAddressTypes),
-			ReverseGeocodeProvider.LocationIq => _locationIq.Get(coordinate, BuildPrepareOpenStreetMapProperties(_options)),
+			ReverseGeocodeProvider.BigDataCloud => _bigDataCloud.Get(coordinate, photoFile, _options.Language, _options.BigDataCloudAdminLevels),
+			ReverseGeocodeProvider.OpenStreetMapFoundation => _openStreetMapFoundation.Get(coordinate, photoFile, BuildPrepareOpenStreetMapProperties(_options)),
+			ReverseGeocodeProvider.GoogleMaps => _googleMaps.Get(coordinate, photoFile, _options.Language, _options.GoogleMapsAddressTypes),
+			ReverseGeocodeProvider.LocationIq => _locationIq.Get(coordinate, photoFile, BuildPrepareOpenStreetMapProperties(_options)),
 			_ => throw new PhotoCliException($"{nameof(_options.ReverseGeocodeProvider)}, should have a valid value")
 		};
 	}

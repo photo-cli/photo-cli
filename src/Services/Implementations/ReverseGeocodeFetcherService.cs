@@ -1,4 +1,4 @@
-﻿namespace PhotoCli.Services.Implementations;
+namespace PhotoCli.Services.Implementations;
 
 public class ReverseGeocodeFetcherService : IReverseGeocodeFetcherService
 {
@@ -32,25 +32,26 @@ public class ReverseGeocodeFetcherService : IReverseGeocodeFetcherService
 		_logger = logger;
 	}
 
-	public async Task<IReadOnlyCollection<Photo>> Fetch(IReadOnlyCollection<Photo> photos)
+	public async Task<ReverseGeocodeResult> Fetch(IReadOnlyCollection<Photo> photos, bool parallelProcessing)
 	{
 		_consoleWriter.ProgressStart(ProgressName, _statistics.HasCoordinateCount);
 
 		var waitTimeBetweenEachRequest = RateLimit();
-		var semaphore = new SemaphoreSlim(waitTimeBetweenEachRequest != null ? 1 : _toolOptions.ConnectionLimit);
+		var useSingleThread = !parallelProcessing || waitTimeBetweenEachRequest != null;
+		var semaphore = new SemaphoreSlim(useSingleThread ? 1 : _toolOptions.ConnectionLimit);
 
-		var fileBasedReverseGeocodeRequests = new List<Tuple<Photo, Task<IEnumerable<string>>>>();
+		var photoReverseGeocodeRequests = new List<PhotoReverseGeocodeTask>();
 
 		foreach (var photo in photos)
 		{
-			if (!photo.HasCoordinate)
+			if (!photo.HasCoordinate || photo.Coordinate == null)
 			{
 				_logger.LogTrace("No coordinate found, skipping {FilePath}", photo.PhotoFile.SourcePath);
 				continue;
 			}
 
 			await semaphore.WaitAsync();
-			var reverseGeocodeRequest = _reverseGeocodeService.Get(photo.Coordinate!);
+			var reverseGeocodeRequest = _reverseGeocodeService.Get(photo.Coordinate!, photo.PhotoFile);
 #pragma warning disable CS4014
 			reverseGeocodeRequest.ContinueWith(_ =>
 #pragma warning restore CS4014
@@ -60,7 +61,7 @@ public class ReverseGeocodeFetcherService : IReverseGeocodeFetcherService
 				_logger.LogTrace("Completed reverse geocode request for {FilePath}", photo.PhotoFile.SourcePath);
 				_consoleWriter.InProgressItemComplete(ProgressName);
 			});
-			fileBasedReverseGeocodeRequests.Add(new Tuple<Photo, Task<IEnumerable<string>>>(photo, reverseGeocodeRequest));
+			photoReverseGeocodeRequests.Add(new PhotoReverseGeocodeTask(photo, reverseGeocodeRequest));
 			_logger.LogTrace("Queued reverse geocode request for {FilePath}", photo.PhotoFile.SourcePath);
 			if (waitTimeBetweenEachRequest != null)
 			{
@@ -70,18 +71,22 @@ public class ReverseGeocodeFetcherService : IReverseGeocodeFetcherService
 		}
 
 		_logger.LogDebug("Waiting for all queued reverse geocode requests to be finished");
-		var allRequestsTasks = fileBasedReverseGeocodeRequests.Select(s => s.Item2).ToArray();
+		var allRequestsTasks = photoReverseGeocodeRequests.Select(s => s.ReverseGeocodeTask).ToArray();
 		await Task.WhenAll(allRequestsTasks);
 		_logger.LogDebug("All queued reverse geocode requests have been finished");
 
-		foreach (var (photo, reverseGeocodeRequest) in fileBasedReverseGeocodeRequests)
+		var allPhotosHasReverseGeocodedAsRequested = true;
+		foreach (var (photo, reverseGeocodeRequest) in photoReverseGeocodeRequests)
 		{
-			if(photo.ExifData != null)
-				photo.ExifData.ReverseGeocodes = reverseGeocodeRequest.Result;
+			if (photo.ExifData == null)
+				continue;
+			if (!reverseGeocodeRequest.Result.AllPhotosHasReverseGeocodedAsRequested && allPhotosHasReverseGeocodedAsRequested)
+				allPhotosHasReverseGeocodedAsRequested = false;
+			photo.ExifData.ReverseGeocodes = reverseGeocodeRequest.Result.AddressList;
 		}
 
 		_consoleWriter.ProgressFinish(ProgressName);
-		return photos;
+		return new ReverseGeocodeResult(photos, allPhotosHasReverseGeocodedAsRequested);
 	}
 
 	/// <summary>
