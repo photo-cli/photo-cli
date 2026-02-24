@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**photo-cli** is a .NET 8 console application for organizing photos based on EXIF metadata (date/time, GPS coordinates) and reverse geocoding. It extracts photo metadata, organizes files with intelligent naming strategies, and provides CSV export capabilities for mapping/analysis.
+**photo-cli** is a .NET 10 console application for organizing photos based on EXIF metadata (date/time, GPS coordinates) and reverse geocoding. It extracts photo metadata, organizes files with intelligent naming strategies, and provides CSV export capabilities for mapping/analysis.
 
 ## Development Commands
 

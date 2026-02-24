@@ -1,6 +1,6 @@
-Important note: This application is a command line tool which don't have any user interface. To use this application, basic knowledge of how to run and send arguments to CLI applications is a must.
+Important note: This application is a command line tool that doesn't have any user interface. To use this application, basic knowledge of how to run and pass arguments to CLI applications is required.
 
-This application can run on locally macOS, Windows & Linux for Arm64, x64, x86 architectures and also in container(Docker, Podman) environment. Executable types varies depending on OS.
+This application can run locally on macOS, Windows & Linux for Arm64, x64, and x86 architectures, and also in a container (Docker, Podman) environment. Executable types vary depending on the OS.
 
 # Installation Types
 
@@ -36,10 +36,10 @@ dotnet tool install photo-cli -g
 Published on [Nuget](https://www.nuget.org/packages/photo-cli/)
 
 ## 4. Running in Container (Docker, Podman)
-installing any dependency.
-Using the published Docker image on DockerHub, you can run the tool in your isolated environment just by mounting your photographs and output directory as bind mounts on an emphemeral container (container can be safetly discarded after execution).
 
-Here is the example command accomplish this. Binded mounts are just empty directories on container filesystem which is also needs to given as input and output directories to the application.
+Using the published Docker [image on DockerHub](https://hub.docker.com/r/photocli/photocli), you can run the tool in your isolated environment by mounting your photographs and output directory as bind mounts on an ephemeral container (the container can be safely discarded after execution).
+
+Here is the example command to accomplish this. The bind-mounted directories appear as empty directories in the container filesystem and must be given as the input and output directories to the application.
 
 ```shell
 docker run --rm --volume ./test-photographs:/photos/input --volume ./archive:/photos/output photocli/photocli archive --input /photos/input --output /photos/output --album-type DateRange --album-name My-Album --auto-reverse-geocode-album --expected-day-range 7300 --delete-on-source --reverse-geocode OpenStreetMapFoundation --openstreetmap-properties country city
@@ -53,6 +53,14 @@ photo-cli [command]
 
 photo-cli help [command]
 ```
+
+## Uninstallation
+
+## For .NET Tool
+```
+dotnet tool uninstall -g photo-cli
+```
+
 
 ## Issues
 

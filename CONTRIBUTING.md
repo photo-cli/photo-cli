@@ -20,7 +20,7 @@ We are actively looking for contributors, if you like the tool and using it, let
 
 ## Development Flow
 
-Development workflow is like the following;
+The development workflow is as follows:
 
 ### 0. Check Issues
 
@@ -48,14 +48,14 @@ Boards:
 
 ### 3. Fork & Develop on Release Branch
 
-Create a fork on your local repository and work on your related version branch.
+Fork the repository and work on your related version branch.
 
 While developing, consider the following items;
 
 - Follow our [code style](#code-style-rules).
 - For new features; write unit, integration, end-to-end tests.
-- For fixing bugs, we should add tests that highlight current behavior is broken.
-- Keep your commits atomic and descriptive. It should revolve only one task.
+- For fixing bugs, add tests that highlight the broken behavior.
+- Keep your commits atomic and descriptive. Each commit should revolve around only one task.
 - For commit messages, use our [commit message formats](#commit-message-formats).
 - Not too large with unrelated things in the same commit.
 - Not so small changes applied on many commits.
@@ -63,7 +63,7 @@ While developing, consider the following items;
 
 ### 4. Create a Pull/Merge Request
 
-Your changes should be targeted only on your related version branch. As a community we iteratively discuss and give feedbacks about these changes in a positive manner.
+Your changes should target only your related version branch. As a community, we iteratively discuss and give feedback about these changes in a positive manner.
 
 After the agreement about these changes and CI is not broken, we will merge your changes.
 
@@ -73,7 +73,7 @@ Tool deployment to Nuget, done via GitHub actions on tag push on release branch 
 
 After completing development on release branch, first we push a preview version with this git tag. `v[0-9]+.[0-9]+.[0-9]+-preview[0-9]`
 
-This preview version is for contributors and early adapters (who install and love to use preview versions) to test.
+This preview version is for contributors and early adopters (who install and love to use preview versions) to test.
 
 ### 5. Publishing Stable Version
 
@@ -85,7 +85,7 @@ The `main` branch should match with the current stable release on nuget.org.
 
 ### 6. Merging Concurrent Changes on Different Branches
 
-If there are changed on lower version emerged, these changes should be merged firstly into `main` and then active upper release branches.
+If there are changes on a lower version that have emerged, these changes should be merged first into `main` and then into active upper release branches.
 
 ### Code Style Rules
 
@@ -133,9 +133,9 @@ fix #{issue-no}
 
 #### Character Limits
 
-First line only as summary with a 50 chars or less.
+First line as summary only, 50 characters or less.
 
-Optional body and footers to be wrap about 72 characters.
+Optional body and footers should wrap at about 72 characters.
 
 ### Local Container Development
 
