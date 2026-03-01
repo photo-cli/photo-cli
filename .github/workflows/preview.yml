@@ -30,7 +30,7 @@ jobs:
       run: dotnet tool install --global dotnet-sonarscanner
 
     - name: Begin SonarCloud scan
-      run: dotnet sonarscanner begin -d:sonar.qualitygate.wait=true /o:"photo-cli" /k:"photo-cli_photo-cli" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"  /d:sonar.login=${{secrets.SONAR_TOKEN}} /d:sonar.host.url="https://sonarcloud.io"
+      run: dotnet sonarscanner begin -d:sonar.qualitygate.wait=true /o:"photo-cli" /k:"photo-cli_photo-cli" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"  /d:sonar.token=${{secrets.SONAR_TOKEN}} /d:sonar.host.url="https://sonarcloud.io"
       env:
         SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
 
@@ -45,7 +45,7 @@ jobs:
       run: dotnet test --configuration Release /p:Version=${VERSION} --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
     - name: End SonarCloud scan
-      run: dotnet sonarscanner end /d:sonar.login=${{secrets.SONAR_TOKEN}}
+      run: dotnet sonarscanner end /d:sonar.token=${{secrets.SONAR_TOKEN}}
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
