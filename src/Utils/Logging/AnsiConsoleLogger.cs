@@ -104,6 +104,9 @@ public class AnsiConsoleLogger : ILogger
 		if (_logCategoryNameOutput)
 			logContent += $" on ({_ansiConsoleExtended.OutputTextByFormat(_categoryName, Color.Grey)})";
 
+		if (exception != null)
+			logContent += Environment.NewLine + _ansiConsoleExtended.EscapeMarkup(exception.ToString());
+
 		_ansiConsoleExtended.WriteLineWithTime(logContent, spectreFormat);
 	}
 	public bool IsEnabled(LogLevel logLevel)
