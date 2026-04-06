@@ -124,7 +124,7 @@ public static class HelpTextBuilder
 
 				WriteOptionArgumentsToConsole(ansiConsoleExtended,
 					"list --type PhotosByDateRange --start-date 2025-09-21 --end-date 2026-01-30 --input (input-folder)",
-					"list -t PhotosByDateRange -s 2025-09-21 -e 2026-01-30 -input (input-folder)",
+					"list -t PhotosByDateRange -s 2025-09-21 -e 2026-01-30 -i (input-folder)",
 					"List paths (to be send as process arguments to photo viewers) or " +
 					"open (only supporting in macOS , Preview app for now) for photos taken within the given date range");
 

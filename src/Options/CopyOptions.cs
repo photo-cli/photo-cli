@@ -5,7 +5,7 @@ namespace PhotoCli.Options;
 [Verb(OptionNames.CopyVerb, HelpText = "Copies photos into new folder hierarchy with given arguments using photograph's taken date and coordinate address (reverse geocode).")]
 public class CopyOptions : IActionableReverseGeocodeOptions
 {
-	// Notes: Constructor parameters and properties should be in same order for Immutable Options Type in CommandLineParser.
+	// Notes: Constructor parameters and properties should be in the same order for Immutable Options Type in CommandLineParser.
 	// ref: https://github.com/commandlineparser/commandline/wiki/Immutable-Options-Type
 	public CopyOptions(
 		// Required
