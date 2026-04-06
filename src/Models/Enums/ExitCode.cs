@@ -55,4 +55,5 @@ public enum ExitCode
 	// List
 	NoArchiveDatabaseFound = 60,
 	NoPhotoFoundToList = 61,
+	AlbumNotFoundByName = 62,
 }

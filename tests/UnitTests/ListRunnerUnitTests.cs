@@ -85,6 +85,35 @@ public class ListRunnerUnitTests
 		VerifyNoOtherCalls();
 	}
 
+	[Fact]
+	public async Task Execute_PhotosByAlbumNameValidWorkflow_ShouldExitWithSuccessWithVerifyingAllMockedServices()
+	{
+		const string albumName = "My Album";
+		var options = ListOptionsFakes.PhotosByAlbumName(albumName, ArchivePath);
+		var photos = new List<PhotoEntity>
+		{
+			PhotoEntityFakes.Sample(1),
+			PhotoEntityFakes.Sample(2),
+		};
+		var albumPhotoResult = new AlbumPhotoResult(AlbumPhotoResultStatus.Successful, photos);
+
+		_dbServiceMock.Setup(s => s.GetAlbumPhotosByName(albumName)).ReturnsAsync(albumPhotoResult);
+
+		if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+			_processLauncherMock.Setup(s => s.Launch(It.IsAny<IEnumerable<string>>())).Returns(Task.CompletedTask);
+
+		var sut = Initialize(options);
+		var exitCode = await sut.Execute();
+
+		exitCode.Should().Be(ExitCode.Success);
+		_dbServiceMock.Verify(v => v.GetAlbumPhotosByName(albumName), Times.Once);
+
+		if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+			_processLauncherMock.Verify(v => v.Launch(It.Is<IEnumerable<string>>(paths => paths.Count() == 2)), Times.Once);
+
+		VerifyNoOtherCalls();
+	}
+
 	public static TheoryData<int?, byte?, byte?> PhotoByDateYearMonthDays = new()
 	{
 		{ 2000, null, null },
@@ -197,16 +226,96 @@ public class ListRunnerUnitTests
 		VerifyNoOtherCalls();
 	}
 
+	[Fact]
+	public async Task Execute_PhotosByAlbumNameWithAlbumNotFound_ShouldReturnAlbumNotFoundByName()
+	{
+		const string albumName = "My Album";
+		var options = ListOptionsFakes.PhotosByAlbumName(albumName, ArchivePath);
+		var albumPhotoResult = new AlbumPhotoResult(AlbumPhotoResultStatus.AlbumNotFound, new List<PhotoEntity>());
+		_dbServiceMock.Setup(s => s.GetAlbumPhotosByName(albumName)).ReturnsAsync(albumPhotoResult);
+
+		var sut = Initialize(options);
+		var exitCode = await sut.Execute();
+
+		exitCode.Should().Be(ExitCode.AlbumNotFoundByName);
+		_dbServiceMock.Verify(v => v.GetAlbumPhotosByName(albumName), Times.Once);
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public async Task Execute_PhotosByAlbumNameWithInvalidConfiguration_ShouldReturnExistingAlbumConfigurationNotValid()
+	{
+		const string albumName = "My Album";
+		var options = ListOptionsFakes.PhotosByAlbumName(albumName, ArchivePath);
+		var albumPhotoResult = new AlbumPhotoResult(AlbumPhotoResultStatus.ExistingConfigurationNotInCorrectFormat, new List<PhotoEntity>());
+		_dbServiceMock.Setup(s => s.GetAlbumPhotosByName(albumName)).ReturnsAsync(albumPhotoResult);
+
+		var sut = Initialize(options);
+		var exitCode = await sut.Execute();
+
+		exitCode.Should().Be(ExitCode.ExistingAlbumConfigurationNotValid);
+		_dbServiceMock.Verify(v => v.GetAlbumPhotosByName(albumName), Times.Once);
+		VerifyNoOtherCalls();
+	}
+
 	#endregion
 
 	#region Archive Database Not Found
+
+	[Fact]
+	public async Task Execute_PhotosByDateRangeValidWorkflow_ShouldExitWithSuccessWithVerifyingAllMockedServices()
+	{
+		var startDate = new DateTime(2020, 1, 1);
+		var endDate = new DateTime(2020, 12, 31);
+		var options = ListOptionsFakes.PhotosByDateRange(startDate, endDate, ArchivePath);
+		var photos = new List<PhotoEntity>
+		{
+			PhotoEntityFakes.Sample(1),
+			PhotoEntityFakes.Sample(2),
+		};
+
+		_dbServiceMock.Setup(s => s.GetPhotosByDateRange(startDate, endDate)).ReturnsAsync(photos);
+
+		if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+			_processLauncherMock.Setup(s => s.Launch(It.IsAny<IEnumerable<string>>())).Returns(Task.CompletedTask);
+
+		var sut = Initialize(options);
+		var exitCode = await sut.Execute();
+
+		exitCode.Should().Be(ExitCode.Success);
+		_dbServiceMock.Verify(v => v.GetPhotosByDateRange(startDate, endDate), Times.Once);
+
+		if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+			_processLauncherMock.Verify(v => v.Launch(It.IsAny<IEnumerable<string>>()), Times.Once);
+
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public async Task Execute_PhotosByDateRangeWithNoPhotos_ShouldReturnNoPhotoFoundToList()
+	{
+		var startDate = new DateTime(2020, 1, 1);
+		var endDate = new DateTime(2020, 12, 31);
+		var options = ListOptionsFakes.PhotosByDateRange(startDate, endDate, ArchivePath);
+		_dbServiceMock.Setup(s => s.GetPhotosByDateRange(startDate, endDate)).ReturnsAsync(new List<PhotoEntity>());
+
+		var sut = Initialize(options);
+		var exitCode = await sut.Execute();
+
+		exitCode.Should().Be(ExitCode.NoPhotoFoundToList);
+		_dbServiceMock.Verify(v => v.GetPhotosByDateRange(startDate, endDate), Times.Once);
+		_consoleWriterMock.Verify(v => v.Write(It.Is<string>(s => s.Contains("No photo found"))), Times.Once);
+		VerifyNoOtherCalls();
+	}
 
 	public static TheoryData<ListOptions> ListOptionsAllDifferentTypes = new()
 	{
 		ListOptionsFakes.Summary(ArchivePath),
 		ListOptionsFakes.Albums(ArchivePath),
 		ListOptionsFakes.PhotosByAlbum(1, ArchivePath),
+		ListOptionsFakes.PhotosByAlbumName("My Album", ArchivePath),
 		ListOptionsFakes.PhotosByDate(year: 2020, archivePath: ArchivePath),
+		ListOptionsFakes.PhotosByDateRange(new DateTime(2020, 1, 1), new DateTime(2020, 12, 31), ArchivePath),
 	};
 
 	[Theory]

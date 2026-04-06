@@ -232,34 +232,42 @@ photo-cli list -i (input-folder) -t Albums
 - List paths (to be send as process arguments to photo viewers) or open (only supporting in macOS , Preview app for now) for the given album id
 
 Example with long argument names;
-photo-cli list --input (input-folder) --id 1 --type PhotosByAlbum
+photo-cli list --input (input-folder) --id 1 --type PhotosByAlbumId
 
 Example with short argument names;
-photo-cli list -i (input-folder) -n 1 -t PhotosByAlbum
+photo-cli list -i (input-folder) -n 1 -t PhotosByAlbumId
 
 - List paths (to be send as process arguments to photo viewers) or open (only supporting in macOS , Preview app for now) for the given year
 
 Example with long argument names;
-photo-cli list --input (input-folder) --type PhotosByDate --year 2007
+photo-cli list --input (input-folder) --type PhotosByExactDate --year 2007
 
 Example with short argument names;
-photo-cli list -i (input-folder) -t PhotosByDate -y 2007
+photo-cli list -i (input-folder) -t PhotosByExactDate -y 2007
 
 - List paths (to be send as process arguments to photo viewers) or open (only supporting in macOS , Preview app for now) for the given year & month
 
 Example with long argument names;
-photo-cli list --input (input-folder) --month 8 --type PhotosByDate --year 2007
+photo-cli list --input (input-folder) --month 8 --type PhotosByExactDate --year 2007
 
 Example with short argument names;
-photo-cli list -i (input-folder) -m 8 -t PhotosByDate -y 2007
+photo-cli list -i (input-folder) -m 8 -t PhotosByExactDate -y 2007
 
 - List paths (to be send as process arguments to photo viewers) or open (only supporting in macOS , Preview app for now) for the given year, month & day
 
 Example with long argument names;
-photo-cli list --day 19 --input (input-folder) --month 8 --type PhotosByDate --year 2007
+photo-cli list --day 19 --input (input-folder) --month 8 --type PhotosByExactDate --year 2007
 
 Example with short argument names;
-photo-cli list -d 19 -i (input-folder) -m 8 -t PhotosByDate -y 2007";
+photo-cli list -d 19 -i (input-folder) -m 8 -t PhotosByExactDate -y 2007
+
+- List paths (to be send as process arguments to photo viewers) or open (only supporting in macOS , Preview app for now) for photos taken within the given date range
+
+Example with long argument names;
+photo-cli list --type PhotosByDateRange --start-date 2025-09-21 --end-date 2026-01-30 --input (input-folder)
+
+Example with short argument names;
+photo-cli list -t PhotosByDateRange -s 2025-09-21 -e 2026-01-30 -i (input-folder)";
 		await RunHelpAndVerifyOutput("list", archiveExampleUsages);
 	}
 

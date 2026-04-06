@@ -452,16 +452,23 @@ public static class HelpTexts
 
 	                               Albums: 1 - Lists all albums with their id, name, type, creation date, and configuration
 
-	                               PhotosByAlbum: 2 - Lists or opens photos belonging to a specific album (requires `--album-id`)
+	                               PhotosByAlbumId: 2 - Lists or opens photos belonging to a specific album by the ID (requires `--id`)
 
-	                               PhotosByDate: 3 - Lists or opens photos filtered by date (optionally filtered by `--year`, `--month`, `--day`)
+	                               PhotosByAlbumName: 3 - Lists or opens photos belonging to a specific album by album name (requires `--name`)
+
+	                               PhotosByExactDate: 4 - Lists or opens photos filtered by date (optionally filtered by `--year`, `--month`, `--day`)
+
+	                               PhotosByDateRange: 5 - Lists or opens photos within a date range (requires `--start-date` and `--end-date`)
 	                               """;
 
-	public const string AlbumId = "(Optional) Album ID to be used while using the list type of `PhotosByAlbum`";
-	public const string Year = "(Optional) Year as number to be used while using the list type of `PhotosByDate`";
-	public const string Month = "(Optional) Month as number to be used while using the list type of `PhotosByDate`";
-	public const string Day = "(Optional) Day as number to be used while using the list type of `PhotosByDate`";
-	public const string RawOutput = "(Optional) Listing photo paths each on new line instead of trying to open the default OS app while using the list type of `PhotosByAlbum` or `PhotosByDate`.";
+	public const string AlbumId = "(Optional) Album ID to be used while using the list type of `PhotosByAlbumId`";
+	public const string AlbumName = "(Optional) Album name to be used while using the list type of `PhotosByAlbumName`";
+	public const string Year = "(Optional) Year as number to be used while using the list type of `PhotosByExactDate`";
+	public const string Month = "(Optional) Month as number to be used while using the list type of `PhotosByExactDate`";
+	public const string Day = "(Optional) Day as number to be used while using the list type of `PhotosByExactDate`";
+	public const string StartDate = "(Optional) Start date (inclusive) to be used while using the list type of `PhotosByDateRange`";
+	public const string EndDate = "(Optional) End date (inclusive) to be used while using the list type of `PhotosByDateRange`";
+	public const string RawOutput = "(Optional) Listing photo paths each on new line instead of trying to open the default OS app while using the list type of `PhotosByAlbum` or `PhotosByExactDate`.";
 
 	#endregion
 }

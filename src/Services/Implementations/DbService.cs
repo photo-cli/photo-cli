@@ -307,6 +307,18 @@ public class DbService : IDbService
 		return _archiveDbContext.ReverseGeocodeCache.LongCountAsync();
 	}
 
+	public async Task<AlbumPhotoResult> GetAlbumPhotosByName(string name)
+	{
+		var album = await GetAlbumByName(name);
+		if (album == null)
+		{
+			_logger.LogError("Album with name, {AlbumName} not found", name);
+			return new AlbumPhotoResult(AlbumPhotoResultStatus.AlbumNotFound, []);
+		}
+
+		return await GetAlbumPhotos(album);
+	}
+
 	public async Task<AlbumPhotoResult> GetAlbumPhotosById(int albumId)
 	{
 		var album = await GetAlbumById(albumId);
@@ -316,9 +328,14 @@ public class DbService : IDbService
 			return new AlbumPhotoResult(AlbumPhotoResultStatus.AlbumNotFound, []);
 		}
 
+		return await GetAlbumPhotos(album);
+	}
+
+	private async Task<AlbumPhotoResult> GetAlbumPhotos(AlbumEntity album)
+	{
 		if (!DeserializeConfiguration<AlbumConfiguration>(album.Configuration, out var configuration))
 		{
-			_logger.LogCritical("Album with id, {AlbumId} configuration is not a valid json, manually fix from history, configuration raw {Configuration}", albumId, album.Configuration);
+			_logger.LogCritical("Album {AlbumId} ({AlbumName}) configuration is not a valid json, manually fix from history, configuration raw {Configuration}", album.Id, album.Name, album.Configuration);
 			return new AlbumPhotoResult(AlbumPhotoResultStatus.ExistingConfigurationNotInCorrectFormat, []);
 		}
 
@@ -350,14 +367,26 @@ public class DbService : IDbService
 
 	public Task<List<PhotoEntity>> GetPhotosByDate(int? year, byte? month, byte? day)
 	{
-		var query = _archiveDbContext.Photos.Where(p => !p.IsDeleted);
+		var query = _archiveDbContext.Photos.Where(w => !w.IsDeleted);
 
 		if (year != null)
-			query = query.Where(p => p.Year == year.Value);
+			query = query.Where(w => w.Year == year.Value);
 		if (month != null)
-			query = query.Where(p => p.Month == month.Value);
+			query = query.Where(w => w.Month == month.Value);
 		if (day != null)
-			query = query.Where(p => p.Day == day.Value);
+			query = query.Where(w => w.Day == day.Value);
+
+		return query.ToListAsync();
+	}
+
+	public Task<List<PhotoEntity>> GetPhotosByDateRange(DateTime? start, DateTime? end)
+	{
+		var query = _archiveDbContext.Photos.Where(p => !p.IsDeleted);
+
+		if (start.HasValue)
+			query = query.Where(w => w.DateTaken >= start);
+		if (end.HasValue)
+			query = query.Where(w => w.DateTaken <= end.Value.AddDays(1).AddTicks(-1));
 
 		return query.ToListAsync();
 	}

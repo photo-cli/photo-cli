@@ -218,6 +218,102 @@ public class ListDbServiceIntegrationTests : DbServiceIntegrationTestsBase
 
 	#endregion
 
+	#region GetAlbumPhotosByName
+
+	#region Expected Flows
+
+	public static TheoryData<PhotoEntity[], AlbumEntity[], string, PhotoEntity[]> AlbumWithPhotoIdsConfigurationWithMatchingResultByName = new()
+	{
+		{
+			[
+				PhotoEntityFakes.WithId(1),
+			],
+			[AlbumEntityFakes.WithPhotoIdsAndName("Album A", [1])],
+			"Album A",
+			[
+				PhotoEntityFakes.WithId(1),
+			]
+		},
+		{
+			[
+				PhotoEntityFakes.WithId(2),
+				PhotoEntityFakes.WithId(3),
+				PhotoEntityFakes.WithId(4),
+				PhotoEntityFakes.WithId(5),
+			],
+			[AlbumEntityFakes.WithPhotoIdsAndName("Album B", [3, 4])],
+			"Album B",
+			[
+				PhotoEntityFakes.WithId(3),
+				PhotoEntityFakes.WithId(4),
+			]
+		},
+	};
+
+	[Theory]
+	[MemberData(nameof(AlbumWithPhotoIdsConfigurationWithMatchingResultByName))]
+	public async Task GetAlbumPhotosByName_GivenExistingAlbumName_ShouldMatchWithAlbumPhotoResult(PhotoEntity[] existingPhotos, AlbumEntity[] existingAlbums, string albumName,
+		PhotoEntity[] expectedPhotosResult)
+	{
+		var sut = await DbServiceSetupWithPhotosAndAlbums(existingPhotos, existingAlbums);
+		var (actualAlbumPhotoResultStatus, actualPhotosResult) = await sut.GetAlbumPhotosByName(albumName);
+
+		using (new AssertionScope())
+		{
+			actualAlbumPhotoResultStatus.Should().Be(AlbumPhotoResultStatus.Successful);
+
+			actualPhotosResult.Should().BeEquivalentTo(expectedPhotosResult, c => c
+				.Excluding(e => e.Id)
+			);
+		}
+	}
+
+	#endregion
+
+	#region Breaking Flows
+
+	public static TheoryData<AlbumEntity[], string> NonExistingAlbumNameTestData = new()
+	{
+		{
+			[],
+			"Ghost Album"
+		},
+		{
+			[AlbumEntityFakes.WithPhotoIdsAndName("Existing Album", [1])],
+			"Other Album"
+		},
+	};
+
+	[Theory]
+	[MemberData(nameof(NonExistingAlbumNameTestData))]
+	public async Task GetAlbumPhotosByName_GivenNotExistingAlbumName_ShouldReturnResultOfAlbumNotFound(AlbumEntity[] existingAlbums, string albumName)
+	{
+		var sut = await DbServiceSetupWithAlbums(existingAlbums);
+		var actualAlbumPhotoResult = await sut.GetAlbumPhotosByName(albumName);
+		actualAlbumPhotoResult.Should().BeEquivalentTo(new AlbumPhotoResult(AlbumPhotoResultStatus.AlbumNotFound, []));
+	}
+
+	public static TheoryData<AlbumEntity[], string> MisconfiguredAlbumNameTestData = new()
+	{
+		{
+			[AlbumEntityFakes.WithRawConfiguration("{")],
+			AlbumNameFakes.Valid()
+		},
+	};
+
+	[Theory]
+	[MemberData(nameof(MisconfiguredAlbumNameTestData))]
+	public async Task GetAlbumPhotosByName_GivenMisconfiguredAlbumName_ShouldReturnResultOfExistingConfigurationNotInCorrectFormat(AlbumEntity[] existingAlbums, string albumName)
+	{
+		var sut = await DbServiceSetupWithAlbums(existingAlbums);
+		var actualAlbumPhotoResult = await sut.GetAlbumPhotosByName(albumName);
+		actualAlbumPhotoResult.Should().BeEquivalentTo(new AlbumPhotoResult(AlbumPhotoResultStatus.ExistingConfigurationNotInCorrectFormat, []));
+	}
+
+	#endregion
+
+	#endregion
+
 	#region GetPhotosByDate
 
 	public static TheoryData<PhotoEntity[], int?, byte?, byte?, PhotoEntity[]> PhotosWithYearMatching = new()
@@ -297,6 +393,56 @@ public class ListDbServiceIntegrationTests : DbServiceIntegrationTestsBase
 	{
 		var sut = await DbServiceSetupWithPhotos(existingPhotos);
 		var actualPhotosResult = await sut.GetPhotosByDate(yearRequested, monthRequested, dayRequested);
+
+		actualPhotosResult.Should().BeEquivalentTo(expectedPhotosResult);
+	}
+
+	#endregion
+
+	#region GetPhotosByDateRange
+
+	public static TheoryData<PhotoEntity[], DateTime, DateTime, PhotoEntity[]> PhotosWithDateRangeMatching = new()
+	{
+		{
+			[
+				PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 3, 17, 10, 0, 0), 1),
+				PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 3, 18, 10, 0, 0), 2),
+				PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 3, 19, 10, 0, 0), 3),
+				PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 3, 20, 10, 0, 0), 4),
+			],
+			new DateTime(2020, 3, 17), new DateTime(2020, 3, 19),
+			[
+				PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 3, 17, 10, 0, 0), 1),
+				PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 3, 18, 10, 0, 0), 2),
+				PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 3, 19, 10, 0, 0), 3),
+			]
+		},
+	};
+
+	public static TheoryData<PhotoEntity[], DateTime, DateTime, PhotoEntity[]> PhotosWithDateRangeExcludesDeleted = new()
+	{
+		{
+			[
+				PhotoEntityFakes.WithPhotoTakenDateAndIdAdIsDeleted(new DateTime(2020, 3, 17, 10, 0, 0), 1, false),
+				PhotoEntityFakes.WithPhotoTakenDateAndIdAdIsDeleted(new DateTime(2020, 3, 17, 10, 0, 0), 2, true),
+				PhotoEntityFakes.WithPhotoTakenDateAndIdAdIsDeleted(new DateTime(2020, 3, 18, 10, 0, 0), 3, false),
+			],
+			new DateTime(2020, 3, 17), new DateTime(2020, 3, 18),
+			[
+				PhotoEntityFakes.WithPhotoTakenDateAndIdAdIsDeleted(new DateTime(2020, 3, 17, 10, 0, 0), 1, false),
+				PhotoEntityFakes.WithPhotoTakenDateAndIdAdIsDeleted(new DateTime(2020, 3, 18, 10, 0, 0), 3, false),
+			]
+		},
+	};
+
+	[Theory]
+	[MemberData(nameof(PhotosWithDateRangeMatching))]
+	[MemberData(nameof(PhotosWithDateRangeExcludesDeleted))]
+	public async Task GetPhotosByDateRange_GivenDateRangeParameters_ShouldReturnMatchingPhotos(PhotoEntity[] existingPhotos, DateTime start, DateTime end,
+		PhotoEntity[] expectedPhotosResult)
+	{
+		var sut = await DbServiceSetupWithPhotos(existingPhotos);
+		var actualPhotosResult = await sut.GetPhotosByDateRange(start, end);
 
 		actualPhotosResult.Should().BeEquivalentTo(expectedPhotosResult);
 	}

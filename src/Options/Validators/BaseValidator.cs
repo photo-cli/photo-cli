@@ -26,6 +26,11 @@ public abstract class BaseValidator<T> : AbstractValidator<T>
 		return $"Can't find {reverseGeocodeProvider} API key at environment variable with key {environmentVariableKey} or application arguments -{longOptionName} or -{shortOptionName}";
 	}
 
+	protected string MustProvideAtLeastOneOfWhen(string when, params string[] options)
+	{
+		return $"Must provide at least one of {string.Join(" or ", options)} when using {when}";
+	}
+
 	protected string MustAlsoUseOnlyOneOfTheOptions(params string[] options)
 	{
 		return $"Must use only one of the options {string.Join(", ", options)}";

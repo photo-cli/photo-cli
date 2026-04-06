@@ -11,7 +11,11 @@ public class ListOptions
 		// Required
 		ListType listType,
 		// Optional
-		string? archivePath, int? albumId = null, int? year = null, byte? month = null, byte? day = null, bool rawOutput = false)
+		string? archivePath,
+		int? albumId = null, string? albumName = null,
+		int? year = null, byte? month = null, byte? day = null,
+		DateTime? startDate = null, DateTime? endDate = null,
+		bool rawOutput = false)
 	{
 		// Required
 		ListType = listType;
@@ -19,9 +23,12 @@ public class ListOptions
 		// Optional
 		ArchivePath = archivePath ?? Environment.CurrentDirectory;
 		AlbumId = albumId;
+		AlbumName = albumName;
 		Year = year;
 		Month = month;
 		Day = day;
+		StartDate = startDate;
+		EndDate = endDate;
 		RawOutput = rawOutput;
 	}
 
@@ -40,6 +47,9 @@ public class ListOptions
 	[Option(OptionNames.AlbumIdShort, OptionNames.AlbumIdLong, HelpText = HelpTexts.AlbumId)]
 	public int? AlbumId { get; }
 
+	[Option(OptionNames.AlbumNameShort, OptionNames.AlbumNameLong, HelpText = HelpTexts.AlbumName)]
+	public string? AlbumName { get; }
+
 	[Option(OptionNames.YearShort, OptionNames.YearLong, HelpText = HelpTexts.Year)]
 	public int? Year { get; }
 
@@ -48,6 +58,12 @@ public class ListOptions
 
 	[Option(OptionNames.DayShort, OptionNames.DayLong, HelpText = HelpTexts.Day)]
 	public byte? Day { get; }
+
+	[Option(OptionNames.StartDateShort, OptionNames.StartDateLong, HelpText = HelpTexts.StartDate)]
+	public DateTime? StartDate { get; }
+
+	[Option(OptionNames.EndDateShort, OptionNames.EndDateLong, HelpText = HelpTexts.EndDate)]
+	public DateTime? EndDate { get; }
 
 	[Option(OptionNames.RawOutputShort, OptionNames.RawOutputLong, HelpText = HelpTexts.RawOutput)]
 	public bool RawOutput { get; }
