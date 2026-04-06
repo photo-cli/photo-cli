@@ -2,7 +2,7 @@ namespace PhotoCli.Tests.EndToEndTests;
 
 public class HelpVerbEndToEndTests : BaseEndToEndTests
 {
-	private const string DefaultHelpText = "Type `photo-cli help (copy|info|address|settings)` for detailed option list and example usages";
+	private const string DefaultHelpText = "Type `photo-cli help (copy|info|address|settings|mcp)` for detailed option list and example usages";
 
 	[Fact]
 	public async Task Running_Without_Arguments_Should_Output_Custom_Help_Text()

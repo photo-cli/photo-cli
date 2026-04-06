@@ -19,4 +19,9 @@ public static class StaticOptions
 	{
 		DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 	};
+
+	public static readonly JsonSerializerOptions McpToolOptions = new()
+	{
+		DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+	};
 }

@@ -427,6 +427,17 @@ public static class HelpTexts
 
 	#endregion
 
+	#region Mcp
+
+	public const string McpVerbHelpText = "Start an MCP (Model Context Protocol) stdio server to query the photo archive database.";
+
+	public const string McpArchivePath = """
+	                                        Archive folder path containing the photo-cli database to expose via MCP.
+	                                        Default: current executing folder.
+	                                        """;
+
+	#endregion
+
 	#region List
 
 	public const string ArchivePath = """

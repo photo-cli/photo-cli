@@ -460,6 +460,115 @@ public class DbService : IDbService
 			.ToList()!;
 	}
 
+	public async Task<List<PhotoEntity>> SearchPhotos(DateTime? start, DateTime? end, string? location, int limit)
+	{
+		var query = _archiveDbContext.Photos.Where(p => !p.IsDeleted);
+
+		if (start.HasValue)
+			query = query.Where(p => p.DateTaken >= start);
+
+		if (end.HasValue)
+			query = query.Where(p => p.DateTaken <= end.Value.AddDays(1).AddTicks(-1));
+
+		if (!string.IsNullOrWhiteSpace(location))
+			query = query.Where(p => p.ReverseGeocodeFormatted != null && EF.Functions.Like(p.ReverseGeocodeFormatted, $"%{location}%"));
+
+		return await query
+			.OrderByDescending(p => p.DateTaken)
+			.Take(limit)
+			.ToListAsync();
+	}
+
+	public async Task<PhotoEntity?> GetPhotoByPath(string filePath)
+	{
+		return await _archiveDbContext.Photos
+			.Where(p => p.Path == filePath && !p.IsDeleted)
+			.FirstOrDefaultAsync();
+	}
+
+	public async Task<List<PhotoStatisticsRow>> GetPhotoStatistics(string groupBy)
+	{
+		var lowerGroup = groupBy.Trim().ToLowerInvariant();
+
+		if (lowerGroup == "year")
+		{
+			var rows = await _archiveDbContext.Photos
+				.Where(p => !p.IsDeleted && p.Year != null)
+				.GroupBy(p => p.Year)
+				.Select(g => new { Year = g.Key, Count = g.Count() })
+				.OrderBy(r => r.Year)
+				.ToListAsync();
+			return rows.Select(r => new PhotoStatisticsRow(r.Year, null, null, r.Count)).ToList();
+		}
+
+		if (lowerGroup == "month")
+		{
+			var rows = await _archiveDbContext.Photos
+				.Where(p => !p.IsDeleted && p.Year != null && p.Month != null)
+				.GroupBy(p => new { p.Year, p.Month })
+				.Select(g => new { g.Key.Year, g.Key.Month, Count = g.Count() })
+				.OrderBy(r => r.Year).ThenBy(r => r.Month)
+				.ToListAsync();
+			return rows.Select(r => new PhotoStatisticsRow(r.Year, r.Month, null, r.Count)).ToList();
+		}
+
+		Func<PhotoEntity, string?> addressSelector = lowerGroup switch
+		{
+			"location" or "address1" => p => p.Address1,
+			"address2" => p => p.Address2,
+			"address3" => p => p.Address3,
+			"address4" => p => p.Address4,
+			_ => null!,
+		};
+
+		if (addressSelector != null)
+		{
+			var photos = await _archiveDbContext.Photos
+				.Where(p => !p.IsDeleted)
+				.ToListAsync();
+			return photos
+				.GroupBy(addressSelector)
+				.Where(g => !string.IsNullOrEmpty(g.Key))
+				.OrderByDescending(g => g.Count())
+				.Select(g => new PhotoStatisticsRow(null, null, g.Key, g.Count()))
+				.ToList();
+		}
+
+		return [];
+	}
+
+	public async Task<List<PhotoNearLocationResult>> FindPhotosNearLocation(double latitude, double longitude, double radiusKm, int limit)
+	{
+		var photos = await _archiveDbContext.Photos
+			.Where(p => !p.IsDeleted && p.Latitude != null && p.Longitude != null)
+			.Select(p => new { p.Path, p.DateTaken, p.Latitude, p.Longitude, p.ReverseGeocodeFormatted })
+			.ToListAsync();
+
+		return photos
+			.Select(p => new PhotoNearLocationResult(
+				p.Path,
+				p.DateTaken,
+				p.ReverseGeocodeFormatted,
+				Math.Round(HaversineKm(latitude, longitude, p.Latitude!.Value, p.Longitude!.Value), 3)))
+			.Where(p => p.DistanceKm <= radiusKm)
+			.OrderBy(p => p.DistanceKm)
+			.Take(limit)
+			.ToList();
+	}
+
+	private static double HaversineKm(double lat1, double lon1, double lat2, double lon2)
+	{
+		const double earthRadiusKm = 6371.0;
+		var dLat = ToRad(lat2 - lat1);
+		var dLon = ToRad(lon2 - lon1);
+		var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2)
+		        + Math.Cos(ToRad(lat1)) * Math.Cos(ToRad(lat2))
+		        * Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+		return earthRadiusKm * 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+	}
+
+	private static double ToRad(double degrees) => degrees * Math.PI / 180.0;
+
 	private static string? GetPropertyStringValueOrDefault(PhotoEntity photo, string propertyName)
 	{
 		var property = typeof(PhotoEntity).GetProperty(propertyName);

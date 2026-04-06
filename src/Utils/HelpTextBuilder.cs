@@ -141,7 +141,7 @@ public static class HelpTextBuilder
 	public static void ExtendedHelpWritingToConsole(IAnsiConsole ansiConsole)
 	{
 		var ansiConsoleExtended = new AnsiConsoleExtended(ansiConsole);
-		var verbs = new[] { OptionNames.CopyVerb, OptionNames.InfoVerb, OptionNames.AddressVerb, OptionNames.SettingsVerb };
+		var verbs = new[] { OptionNames.CopyVerb, OptionNames.InfoVerb, OptionNames.AddressVerb, OptionNames.SettingsVerb, OptionNames.McpVerb };
 		ansiConsoleExtended.WriteLine($"Type `{OptionNames.ApplicationAlias} help ({string.Join('|', verbs)})` for detailed option list and example usages");
 	}
 }

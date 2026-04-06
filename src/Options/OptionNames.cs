@@ -39,6 +39,7 @@ internal static class OptionNames
 	internal const string SettingsVerb = "settings";
 	internal const string ArchiveVerb = "archive";
 	internal const string ListVerb = "list";
+	internal const string McpVerb = "mcp";
 
 	#region Copy
 

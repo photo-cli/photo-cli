@@ -18,4 +18,8 @@ public interface IDbService
 	Task<int> TotalAlbumCount();
 	Task<long> TotalPhotoCount();
 	Task<long> TotalReverseGeocodeCacheCount();
+	Task<List<PhotoEntity>> SearchPhotos(DateTime? start, DateTime? end, string? location, int limit);
+	Task<PhotoEntity?> GetPhotoByPath(string filePath);
+	Task<List<PhotoStatisticsRow>> GetPhotoStatistics(string groupBy);
+	Task<List<PhotoNearLocationResult>> FindPhotosNearLocation(double latitude, double longitude, double radiusKm, int limit);
 }
