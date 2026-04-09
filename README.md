@@ -16,6 +16,7 @@
 
 - [Features Explained With An Example](#features-explained-with-examples)
 - [Installation](#installation)
+- [MCP (Model Context Protocol) Server](#mcp-model-context-protocol-server)
 - [Sample Usage Screenshots](#sample-usage-screenshots)
 - [How It's Done?](#how-its-done)
 - [Supported Photo Types](#supported-photo-types)
@@ -729,6 +730,101 @@ This application can be installed by Homebrew (macOS & Linux), container (Docker
 See the [installation](INSTALL.md) for details.
 
 Note: You may test commands on [test photographs](docs/test-photographs) which has coordinates and photograph taken dates in it.
+
+## MCP (Model Context Protocol) Server
+
+`photo-cli` can act as an [MCP](https://modelcontextprotocol.io/) stdio server, exposing your archived photo database to AI assistants (Claude, Visual Studio Code, etc.) so they can query your photos conversationally.
+
+### Prerequisites
+
+- A photo archive folder created with `photo-cli archive` (must contain the `photo-cli.db` SQLite database).
+- .NET runtime available (or use the self-contained executable).
+
+### MCP Tools Exposed
+
+| Tool                        | Description                                                                                     |
+|-----------------------------|-----------------------------------------------------------------------------------------------------|
+| `search_photos`             | Search photos by date range, location text, or limit. Returns paths, dates, and location info.      |
+| `get_photo`                 | Get full metadata for a specific photo by its archive file path.                                    |
+| `list_albums`               | List all albums with id, name, type, creation date, and configuration.                              |
+| `get_statistics`            | Get photo counts grouped by year, month, country, city, or camera model.                            |
+| `find_near_location`        | Find photos taken near a GPS coordinate within a given radius (Haversine formula).                  |
+| `list_photos_by_album_id`   | List photos belonging to an album by its numeric ID. Returns paths, dates, and location info.       |
+| `list_photos_by_album_name` | List photos belonging to an album by its name. Returns paths, dates, and location info.             |
+| `list_photos_by_exact_date` | List photos matching an exact date (year, month, day). All parameters are optional.                 |
+| `list_photos_by_date_range` | List photos within a date range. Both start and end dates are inclusive.                             |
+| `open_photos_by_album_id`   | Open photos belonging to an album by its numeric ID in the default viewer (macOS Preview).          |
+| `open_photos_by_album_name` | Open photos belonging to an album by its name in the default viewer (macOS Preview).                |
+| `open_photos_by_exact_date` | Open photos matching an exact date in the default viewer (macOS Preview). All parameters optional.  |
+| `open_photos_by_date_range` | Open photos within a date range in the default viewer (macOS Preview). Dates are inclusive.          |
+
+### Setup
+
+#### Claude Code (CLI)
+
+```shell
+claude mcp add photo-cli --scope user -- photo-cli mcp --input /path/to/archive-folder
+```
+
+#### Claude Code Config (`~/.claude.json`)
+
+```json
+"mcpServers": {
+  "photo-cli": {
+    "command": "photo-cli",
+    "args": [
+      "mcp",
+      "--input",
+      "/path/to/archive-folder"
+    ]
+  }
+}
+```
+
+#### Claude Desktop (`claude_desktop_config.json`)
+
+```json
+"mcpServers": {
+  "photo-cli": {
+    "command": "photo-cli",
+    "args": [
+      "mcp",
+      "--input",
+      "/path/to/archive-folder"
+    ]
+  }
+}
+```
+
+#### VS Code (`.vscode/mcp.json` or user settings)
+
+```json
+"photo-cli": {
+  "type": "stdio",
+  "command": "photo-cli",
+  "args": [
+    "mcp",
+    "--input",
+    "/path/to/archive-folder"
+  ]
+}
+```
+
+#### MCP Inspector (for debugging/testing)
+
+```shell
+npx @modelcontextprotocol/inspector photo-cli mcp --input /path/to/archive-folder
+```
+
+### `mcp` Command Arguments
+
+```
+photo-cli help mcp
+```
+
+| Argument           | Short | Description                                                                                             |
+|--------------------|-------|---------------------------------------------------------------------------------------------------------|
+| `--input`          | `-i`  | Archive folder path containing the photo-cli database to expose via MCP. Defaults to current directory. |
 
 ## Sample Usage Screenshots
 
@@ -1597,6 +1693,7 @@ photo-cli copy --process-type FlattenAllSubFolders --group-by AddressHierarchy -
 | [`info`](#info)         | Creates a report (CSV file) listing all photo taken date and address (reverse geocode).                                                                                                                            |
 | [`address`](#address)   | Get address (reverse geocode) of single photo.                                                                                                                                                                     |
 | [`settings`](#settings) | Lists, saves and get settings.                                                                                                                                                                                     |
+| [`mcp`](#mcp-model-context-protocol-server) | Start an MCP (Model Context Protocol) stdio server to query the photo archive database.                                                                    |
 
 ### Archive
 
