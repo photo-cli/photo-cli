@@ -38,6 +38,7 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.3" />
         <PackageReference Include="Spectre.Console" Version="0.54.0" />
         <PackageReference Include="System.IO.Abstractions" Version="22.1.0" />
+        <PackageReference Include="ModelContextProtocol" Version="1.0.0" />
         <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="22.1.0" />
     </ItemGroup>
 

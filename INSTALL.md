@@ -61,6 +61,11 @@ photo-cli help [command]
 dotnet tool uninstall -g photo-cli
 ```
 
+## MCP Server Setup
+
+The `mcp` command is built into `photo-cli` and requires no additional installation. It starts an [MCP](https://modelcontextprotocol.io/) stdio server on top of an existing archive folder (one previously created with `photo-cli archive`).
+
+See the [MCP section in README](README.md#mcp-model-context-protocol-server) for setup instructions for Claude Code, Claude Desktop, VS Code, and MCP Inspector.
 
 ## Issues
 

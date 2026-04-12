@@ -106,21 +106,27 @@ public static class HelpTextBuilder
 				WriteOptionArgumentsToConsole(ansiConsoleExtended, new ListOptions(ListType.Summary, inputFolder), "List statistics of the archive folder");
 				WriteOptionArgumentsToConsole(ansiConsoleExtended, new ListOptions(ListType.Albums, inputFolder), "List all the album information of the archive folder");
 
-				WriteOptionArgumentsToConsole(ansiConsoleExtended, new ListOptions(ListType.PhotosByAlbum, inputFolder, 1),
+				WriteOptionArgumentsToConsole(ansiConsoleExtended, new ListOptions(ListType.PhotosByAlbumId, inputFolder, 1),
 					"List paths (to be send as process arguments to photo viewers) or " +
 					"open (only supporting in macOS , Preview app for now) for the given album id");
 
-				WriteOptionArgumentsToConsole(ansiConsoleExtended, new ListOptions(ListType.PhotosByDate, inputFolder, year: 2007),
+				WriteOptionArgumentsToConsole(ansiConsoleExtended, new ListOptions(ListType.PhotosByExactDate, inputFolder, year: 2007),
 					"List paths (to be send as process arguments to photo viewers) or " +
 					"open (only supporting in macOS , Preview app for now) for the given year");
 
-				WriteOptionArgumentsToConsole(ansiConsoleExtended, new ListOptions(ListType.PhotosByDate, inputFolder, year: 2007, month: 8),
+				WriteOptionArgumentsToConsole(ansiConsoleExtended, new ListOptions(ListType.PhotosByExactDate, inputFolder, year: 2007, month: 8),
 					"List paths (to be send as process arguments to photo viewers) or " +
 					"open (only supporting in macOS , Preview app for now) for the given year & month");
 
-				WriteOptionArgumentsToConsole(ansiConsoleExtended, new ListOptions(ListType.PhotosByDate, inputFolder, year: 2007, month: 8, day: 19),
+				WriteOptionArgumentsToConsole(ansiConsoleExtended, new ListOptions(ListType.PhotosByExactDate, inputFolder, year: 2007, month: 8, day: 19),
 					"List paths (to be send as process arguments to photo viewers) or " +
 					"open (only supporting in macOS , Preview app for now) for the given year, month & day");
+
+				WriteOptionArgumentsToConsole(ansiConsoleExtended,
+					"list --type PhotosByDateRange --start-date 2025-09-21 --end-date 2026-01-30 --input (input-folder)",
+					"list -t PhotosByDateRange -s 2025-09-21 -e 2026-01-30 -i (input-folder)",
+					"List paths (to be send as process arguments to photo viewers) or " +
+					"open (only supporting in macOS , Preview app for now) for photos taken within the given date range");
 
 				break;
 		}
@@ -128,20 +134,28 @@ public static class HelpTextBuilder
 
 	private static void WriteOptionArgumentsToConsole<TOptions>(AnsiConsoleExtended ansiConsoleExtended, TOptions options, string description)
 	{
+		WriteOptionArgumentsToConsole(ansiConsoleExtended,
+			Parser.Default.FormatCommandLine(options),
+			Parser.Default.FormatCommandLine(options, settings => settings.PreferShortName = true),
+			description);
+	}
+
+	private static void WriteOptionArgumentsToConsole(AnsiConsoleExtended ansiConsoleExtended, string commandWithLongArguments, string commandWithShortArguments, string description)
+	{
 		ansiConsoleExtended.WriteLine($"- {description}");
 		ansiConsoleExtended.EmptyLine();
 		ansiConsoleExtended.WriteLine("Example with long argument names;");
-		ansiConsoleExtended.WriteLine($"{OptionNames.ApplicationAlias} {Parser.Default.FormatCommandLine(options)}");
+		ansiConsoleExtended.WriteLine($"{OptionNames.ApplicationAlias} {commandWithLongArguments}");
 		ansiConsoleExtended.EmptyLine();
 		ansiConsoleExtended.WriteLine("Example with short argument names;");
-		ansiConsoleExtended.WriteLine($"{OptionNames.ApplicationAlias} {Parser.Default.FormatCommandLine(options, settings => settings.PreferShortName = true)}");
+		ansiConsoleExtended.WriteLine($"{OptionNames.ApplicationAlias} {commandWithShortArguments}");
 		ansiConsoleExtended.EmptyLine();
 	}
 
 	public static void ExtendedHelpWritingToConsole(IAnsiConsole ansiConsole)
 	{
 		var ansiConsoleExtended = new AnsiConsoleExtended(ansiConsole);
-		var verbs = new[] { OptionNames.CopyVerb, OptionNames.InfoVerb, OptionNames.AddressVerb, OptionNames.SettingsVerb };
+		var verbs = new[] { OptionNames.CopyVerb, OptionNames.InfoVerb, OptionNames.AddressVerb, OptionNames.SettingsVerb, OptionNames.McpVerb };
 		ansiConsoleExtended.WriteLine($"Type `{OptionNames.ApplicationAlias} help ({string.Join('|', verbs)})` for detailed option list and example usages");
 	}
 }

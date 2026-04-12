@@ -28,7 +28,9 @@ global using PhotoCli.Models.ReverseGeocode;
 using System.IO.Abstractions;
 using CommandLine;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Http.Resilience;
+using PhotoCli.McpTools;
 using PhotoCli.Utils.Logging;
 using Polly;
 using Spectre.Console;
@@ -117,6 +119,16 @@ public static class Program
 					}
 					host = BuildHost<ListRunner, ListOptions>(listOptions, ansiConsole, new ArchiveDatabaseOptions(listOptions.ArchivePath));
 					break;
+				}
+			case McpOptions mcpOptions:
+				{
+					var validationResultMcp = new McpOptionsValidator().Validate(mcpOptions);
+					if (!validationResultMcp.IsValid)
+					{
+						WriteErrorOutputValidationErrors(validationResultMcp);
+						return ReturnExitCode(ExitCode.McpOptionsValidationFailed);
+					}
+					return RunMcpServer(mcpOptions);
 				}
 			default:
 				throw new PhotoCliException($"Not defined: {baseOptions}");
@@ -325,7 +337,7 @@ public static class Program
 
 	private static bool ParseArgs(IReadOnlyList<string> args, out object parsedObject, out ExitCode exitCode, IAnsiConsole ansiConsole)
 	{
-		var commandLineArgsParsed = Parser.Default.ParseArguments<CopyOptions, InfoOptions, ArchiveOptions, AddressOptions, SettingsOptions, ListOptions>(args);
+		var commandLineArgsParsed = Parser.Default.ParseArguments<CopyOptions, InfoOptions, ArchiveOptions, AddressOptions, SettingsOptions, ListOptions, McpOptions>(args);
 		if (commandLineArgsParsed.Tag == ParserResultType.NotParsed)
 		{
 			var notParsedResult = (NotParsed<object>)commandLineArgsParsed;
@@ -363,5 +375,28 @@ public static class Program
 	private static Task<int> ReturnExitCode(ExitCode exitCode)
 	{
 		return Task.FromResult((int)exitCode);
+	}
+
+	private static async Task<int> RunMcpServer(McpOptions options)
+	{
+		var dbPath = Path.Combine(options.ArchivePath, Constants.ArchiveSQLiteDatabaseFileName);
+		var builder = Host.CreateApplicationBuilder();
+		builder.Logging.ClearProviders();
+		builder.Services.AddDbContext<ArchiveDbContext>(o => o.UseSqlite($"Data Source={dbPath}"));
+		builder.Services.AddScoped<IArchiveDbContextProvider, McpArchiveDbContextProvider>();
+		builder.Services.AddSingleton(ToolOptions.Default());
+		builder.Services.AddSingleton(options);
+		builder.Services.AddSingleton(new Statistics());
+		builder.Services.AddSingleton<IConsoleWriter, NullConsoleWriter>();
+		builder.Services.AddSingleton<IProcessLauncher, ProcessLauncher>();
+		builder.Services.AddScoped<IDbService, DbService>();
+
+		builder.Services
+			.AddMcpServer()
+			.WithStdioServerTransport()
+			.WithTools<ArchiveMcpTools>();
+
+		await builder.Build().RunAsync();
+		return (int)ExitCode.Success;
 	}
 }

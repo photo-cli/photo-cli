@@ -17,6 +17,7 @@ public enum ExitCode
 	CopyOptionsValidationFailed = 13,
 	SettingsOptionsValidationFailed = 14,
 	ArchiveOptionsValidationFailed = 15,
+	McpOptionsValidationFailed = 16,
 
 	// File system
 	InputFolderNotExists = 20,
@@ -54,4 +55,5 @@ public enum ExitCode
 	// List
 	NoArchiveDatabaseFound = 60,
 	NoPhotoFoundToList = 61,
+	AlbumNotFoundByName = 62,
 }

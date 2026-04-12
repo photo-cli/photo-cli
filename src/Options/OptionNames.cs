@@ -3,11 +3,11 @@ namespace PhotoCli.Options;
 internal static class OptionNames
 {
 	/* Short Option Name Usages
-		a - copy, info, archive
+		a - copy, info, archive, list
 		b - copy, info, address, archive
 		c - copy, info, archive
 		d - copy, archive
-		e - copy, info, address, archive
+		e - copy, info, address, archive, list
 		f - copy, archive
 		g - copy
 		h - copy, info, archive
@@ -16,12 +16,12 @@ internal static class OptionNames
 		k - copy, info, address, settings, archive
 		l - copy, info, address, archive
 		m - copy, info, address, archive
-		n - copy
+		n - copy, list
 		o - copy, info, archive
 		p - copy, archive
 		q - copy, info, address, archive
 		r - copy, info, address, settings, archive
-		s - copy, archive
+		s - copy, archive, list
 		t - copy, info, address, archive, list
 		u - copy, info, address, archive
 		v - copy, settings
@@ -39,6 +39,7 @@ internal static class OptionNames
 	internal const string SettingsVerb = "settings";
 	internal const string ArchiveVerb = "archive";
 	internal const string ListVerb = "list";
+	internal const string McpVerb = "mcp";
 
 	#region Copy
 
@@ -214,6 +215,9 @@ internal static class OptionNames
 	internal const char AlbumIdShort = 'n';
 	internal const string AlbumIdLong = "id";
 
+	internal const char AlbumNameShort = 'a';
+	internal const string AlbumNameLong = "name";
+
 	internal const char YearShort = 'y';
 	internal const string YearLong = "year";
 
@@ -225,6 +229,12 @@ internal static class OptionNames
 
 	internal const char RawOutputShort = 'r';
 	internal const string RawOutputLong = "raw";
+
+	internal const char StartDateShort = 's';
+	internal const string StartDateLong = "start-date";
+
+	internal const char EndDateShort = 'e';
+	internal const string EndDateLong = "end-date";
 
 	#endregion
 }

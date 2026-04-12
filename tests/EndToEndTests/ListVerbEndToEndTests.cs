@@ -128,7 +128,7 @@ public class ListVerbEndToEndTests : BaseEndToEndTests
 	public static TheoryData<ICollection<string>, string[]> DateRangeAlbumPhotosWithExpectedFilePaths = new()
 	{
 		{
-			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByAlbum, TestImagesPathHelper.ArchiveFolder(), 1, rawOutput: true),
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByAlbumId, TestImagesPathHelper.ArchiveFolder(), 1, rawOutput: true),
 			ItalyArezzoPhotos
 		}
 	};
@@ -136,19 +136,19 @@ public class ListVerbEndToEndTests : BaseEndToEndTests
 	public static TheoryData<ICollection<string>, string[]> ReverseGeocodeAlbumPhotosWithExpectedFilePaths = new()
 	{
 		{
-			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByAlbum, TestImagesPathHelper.ArchiveFolder(), 2, rawOutput: true),
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByAlbumId, TestImagesPathHelper.ArchiveFolder(), 2, rawOutput: true),
 			ItalyArezzoPhotos
 		},
 		{
-			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByAlbum, TestImagesPathHelper.ArchiveFolder(), 3, rawOutput: true),
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByAlbumId, TestImagesPathHelper.ArchiveFolder(), 3, rawOutput: true),
 			MergeList(ItalyArezzoPhotos, ItalyFirenzePhotos)
 		},
 		{
-			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByAlbum, TestImagesPathHelper.ArchiveFolder(), 4, rawOutput: true),
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByAlbumId, TestImagesPathHelper.ArchiveFolder(), 4, rawOutput: true),
 			ItalyArezzoPhotos
 		},
 		{
-			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByAlbum, TestImagesPathHelper.ArchiveFolder(), 16, rawOutput: true),
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByAlbumId, TestImagesPathHelper.ArchiveFolder(), 16, rawOutput: true),
 			ItalyFirenzePhotos
 		},
 	};
@@ -156,7 +156,7 @@ public class ListVerbEndToEndTests : BaseEndToEndTests
 	public static TheoryData<ICollection<string>, string[]> PhotoIdsAlbumPhotosWithExpectedFilePaths = new()
 	{
 		{
-			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByAlbum, TestImagesPathHelper.ArchiveFolder(), 5, rawOutput: true),
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByAlbumId, TestImagesPathHelper.ArchiveFolder(), 5, rawOutput: true),
 			MergeList(SpainPhotosWithPhotoTakenDate, SpainPhotosWitNoPhotoTakenDate)
 		},
 	};
@@ -179,11 +179,11 @@ public class ListVerbEndToEndTests : BaseEndToEndTests
 	public static TheoryData<ICollection<string>, string[]> YearPhotosWithExpectedFilePaths = new()
 	{
 		{
-			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByDate, TestImagesPathHelper.ArchiveFolder(), year: 2015, rawOutput: true),
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByExactDate, TestImagesPathHelper.ArchiveFolder(), year: 2015, rawOutput: true),
 			SpainPhotosWithPhotoTakenDate
 		},
 		{
-			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByDate, TestImagesPathHelper.ArchiveFolder(), year: 2005, rawOutput: true),
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByExactDate, TestImagesPathHelper.ArchiveFolder(), year: 2005, rawOutput: true),
 			MergeList(KenyaPhotos, ItalyFirenzePhotos)
 		}
 	};
@@ -191,11 +191,11 @@ public class ListVerbEndToEndTests : BaseEndToEndTests
 	public static TheoryData<ICollection<string>, string[]> YearMonthPhotosWithExpectedFilePaths = new()
 	{
 		{
-			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByDate, TestImagesPathHelper.ArchiveFolder(), year: 2008, month: 10, rawOutput: true),
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByExactDate, TestImagesPathHelper.ArchiveFolder(), year: 2008, month: 10, rawOutput: true),
 			ItalyArezzoPhotos
 		},
 		{
-			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByDate, TestImagesPathHelper.ArchiveFolder(), year: 2005, month: 8, rawOutput: true),
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByExactDate, TestImagesPathHelper.ArchiveFolder(), year: 2005, month: 8, rawOutput: true),
 			KenyaPhotos
 		}
 	};
@@ -203,11 +203,11 @@ public class ListVerbEndToEndTests : BaseEndToEndTests
 	public static TheoryData<ICollection<string>, string[]> YearMonthDayPhotosWithExpectedFilePaths = new()
 	{
 		{
-			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByDate, TestImagesPathHelper.ArchiveFolder(), year: 2008, month: 10, day: 22, rawOutput: true),
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByExactDate, TestImagesPathHelper.ArchiveFolder(), year: 2008, month: 10, day: 22, rawOutput: true),
 			ItalyArezzoPhotos
 		},
 		{
-			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByDate, TestImagesPathHelper.ArchiveFolder(), year: 2015, month: 4, day: 10, rawOutput: true),
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByExactDate, TestImagesPathHelper.ArchiveFolder(), year: 2015, month: 4, day: 10, rawOutput: true),
 			SpainPhotosWithPhotoTakenDate
 		}
 	};
@@ -217,6 +217,31 @@ public class ListVerbEndToEndTests : BaseEndToEndTests
 	[MemberData(nameof(YearMonthPhotosWithExpectedFilePaths))]
 	[MemberData(nameof(YearMonthDayPhotosWithExpectedFilePaths))]
 	public async Task Run_WithPhotosByDateCommand_ReturnsExpectedPhotoPaths(ICollection<string> args, string[] expectedPhotoPaths)
+	{
+		await RunAndVerifyOutputPaths(args, expectedPhotoPaths);
+	}
+
+	#endregion
+
+	#region PhotosByDateRange
+
+	public static TheoryData<ICollection<string>, string[]> DateRangePhotosWithExpectedFilePaths = new()
+	{
+		{
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByDateRange, TestImagesPathHelper.ArchiveFolder(),
+				startDate: new DateTime(2008, 10, 22, 0, 0, 0), endDate: new DateTime(2008, 10, 22, 23, 59, 59), rawOutput: true),
+			ItalyArezzoPhotos
+		},
+		{
+			CommandLineArgumentsFakes.ListBuildCommandLineOptions(ListType.PhotosByDateRange, TestImagesPathHelper.ArchiveFolder(),
+				startDate: new DateTime(2005, 1, 1), endDate: new DateTime(2005, 12, 31, 23, 59, 59), rawOutput: true),
+			MergeList(KenyaPhotos, ItalyFirenzePhotos)
+		},
+	};
+
+	[Theory]
+	[MemberData(nameof(DateRangePhotosWithExpectedFilePaths))]
+	public async Task Run_WithPhotosByDateRangeCommand_ReturnsExpectedPhotoPaths(ICollection<string> args, string[] expectedPhotoPaths)
 	{
 		await RunAndVerifyOutputPaths(args, expectedPhotoPaths);
 	}

@@ -16,6 +16,7 @@
 
 - [Features Explained With An Example](#features-explained-with-examples)
 - [Installation](#installation)
+- [MCP (Model Context Protocol) Server](#mcp-model-context-protocol-server)
 - [Sample Usage Screenshots](#sample-usage-screenshots)
 - [How It's Done?](#how-its-done)
 - [Supported Photo Types](#supported-photo-types)
@@ -729,6 +730,101 @@ This application can be installed by Homebrew (macOS & Linux), container (Docker
 See the [installation](INSTALL.md) for details.
 
 Note: You may test commands on [test photographs](docs/test-photographs) which has coordinates and photograph taken dates in it.
+
+## MCP (Model Context Protocol) Server
+
+`photo-cli` can act as an [MCP](https://modelcontextprotocol.io/) stdio server, exposing your archived photo database to AI assistants (Claude, Visual Studio Code, etc.) so they can query your photos conversationally.
+
+### Prerequisites
+
+- A photo archive folder created with `photo-cli archive` (must contain the `photo-cli.db` SQLite database).
+- .NET runtime available (or use the self-contained executable).
+
+### MCP Tools Exposed
+
+| Tool                        | Description                                                                                     |
+|-----------------------------|-----------------------------------------------------------------------------------------------------|
+| `search_photos`             | Search photos by date range, location text, or limit. Returns paths, dates, and location info.      |
+| `get_photo`                 | Get full metadata for a specific photo by its archive file path.                                    |
+| `list_albums`               | List all albums with id, name, type, creation date, and configuration.                              |
+| `get_statistics`            | Get photo counts grouped by year, month, country, city, or camera model.                            |
+| `find_near_location`        | Find photos taken near a GPS coordinate within a given radius (Haversine formula).                  |
+| `list_photos_by_album_id`   | List photos belonging to an album by its numeric ID. Returns paths, dates, and location info.       |
+| `list_photos_by_album_name` | List photos belonging to an album by its name. Returns paths, dates, and location info.             |
+| `list_photos_by_exact_date` | List photos matching an exact date (year, month, day). All parameters are optional.                 |
+| `list_photos_by_date_range` | List photos within a date range. Both start and end dates are inclusive.                             |
+| `open_photos_by_album_id`   | Open photos belonging to an album by its numeric ID in the default viewer (macOS Preview).          |
+| `open_photos_by_album_name` | Open photos belonging to an album by its name in the default viewer (macOS Preview).                |
+| `open_photos_by_exact_date` | Open photos matching an exact date in the default viewer (macOS Preview). All parameters optional.  |
+| `open_photos_by_date_range` | Open photos within a date range in the default viewer (macOS Preview). Dates are inclusive.          |
+
+### Setup
+
+#### Claude Code (CLI)
+
+```shell
+claude mcp add photo-cli --scope user -- photo-cli mcp --input /path/to/archive-folder
+```
+
+#### Claude Code Config (`~/.claude.json`)
+
+```json
+"mcpServers": {
+  "photo-cli": {
+    "command": "photo-cli",
+    "args": [
+      "mcp",
+      "--input",
+      "/path/to/archive-folder"
+    ]
+  }
+}
+```
+
+#### Claude Desktop (`claude_desktop_config.json`)
+
+```json
+"mcpServers": {
+  "photo-cli": {
+    "command": "photo-cli",
+    "args": [
+      "mcp",
+      "--input",
+      "/path/to/archive-folder"
+    ]
+  }
+}
+```
+
+#### VS Code (`.vscode/mcp.json` or user settings)
+
+```json
+"photo-cli": {
+  "type": "stdio",
+  "command": "photo-cli",
+  "args": [
+    "mcp",
+    "--input",
+    "/path/to/archive-folder"
+  ]
+}
+```
+
+#### MCP Inspector (for debugging/testing)
+
+```shell
+npx @modelcontextprotocol/inspector photo-cli mcp --input /path/to/archive-folder
+```
+
+### `mcp` Command Arguments
+
+```
+photo-cli help mcp
+```
+
+| Argument           | Short | Description                                                                                             |
+|--------------------|-------|---------------------------------------------------------------------------------------------------------|
+| `--input`          | `-i`  | Archive folder path containing the photo-cli database to expose via MCP. Defaults to current directory. |
 
 ## Sample Usage Screenshots
 
@@ -1597,6 +1693,7 @@ photo-cli copy --process-type FlattenAllSubFolders --group-by AddressHierarchy -
 | [`info`](#info)         | Creates a report (CSV file) listing all photo taken date and address (reverse geocode).                                                                                                                            |
 | [`address`](#address)   | Get address (reverse geocode) of single photo.                                                                                                                                                                     |
 | [`settings`](#settings) | Lists, saves and get settings.                                                                                                                                                                                     |
+| [`mcp`](#mcp-model-context-protocol-server) | Start an MCP (Model Context Protocol) stdio server to query the photo archive database.                                                                    |
 
 ### Archive
 
@@ -2202,38 +2299,130 @@ photo-cli help list
   <summary>Click to expand</summary>
 
 ```
-  -t, --type     (Optional) Listing type for archive folder
+  -t, --type          (Optional) Listing type for archive folder
 
-                 Summary: 0 [default] - Shows total counts of albums, photos,
-                 and reverse geocode cache entries
+                      Summary: 0 [default] - Shows total counts of albums,
+                      photos, and reverse geocode cache entries
 
-                 Albums: 1 - Lists all albums with their id, name, type,
-                 creation date, and configuration
+                      Albums: 1 - Lists all albums with their id, name, type,
+                      creation date, and configuration
 
-                 PhotosByAlbum: 2 - Lists or opens photos belonging to a
-                 specific album (requires `--album-id`)
+                      PhotosByAlbumId: 2 - Lists or opens photos belonging to a
+                      specific album by the ID (requires `--id`)
 
-                 PhotosByDate: 3 - Lists or opens photos filtered by date
-                 (optionally filtered by `--year`, `--month`, `--day`)
+                      PhotosByAlbumName: 3 - Lists or opens photos belonging to
+                      a specific album by album name (requires `--name`)
 
-  -i, --input    Archive path to list & open photos from.
-                 Default current executing folder)
+                      PhotosByExactDate: 4 - Lists or opens photos filtered by
+                      date (optionally filtered by `--year`, `--month`, `--day`)
 
-  -n, --id       (Optional) Album ID to be used while using the list type of
-                 `PhotosByAlbum`
+                      PhotosByDateRange: 5 - Lists or opens photos within a date
+                      range (requires `--start-date` and `--end-date`)
 
-  -y, --year     (Optional) Year as number to be used while using the list type
-                 of `PhotosByDate`
+  -i, --input         Archive path to list & open photos from.
+                      Default current executing folder)
 
-  -m, --month    (Optional) Month as number to be used while using the list type
-                 of `PhotosByDate`
+  -n, --id            (Optional) Album ID to be used while using the list type
+                      of `PhotosByAlbumId`
 
-  -d, --day      (Optional) Day as number to be used while using the list type
-                 of `PhotosByDate`
+  -a, --name          (Optional) Album name to be used while using the list type
+                      of `PhotosByAlbumName`
 
-  -r, --raw      (Optional) Listing photo paths each on new line instead of
-                 trying to open the default OS app while using the list type of
-                 `PhotosByAlbum` or `PhotosByDate`.
+  -y, --year          (Optional) Year as number to be used while using the list
+                      type of `PhotosByExactDate`
+
+  -m, --month         (Optional) Month as number to be used while using the list
+                      type of `PhotosByExactDate`
+
+  -d, --day           (Optional) Day as number to be used while using the list
+                      type of `PhotosByExactDate`
+
+  -s, --start-date    (Optional) Start date (inclusive) to be used while using
+                      the list type of `PhotosByDateRange`
+
+  -e, --end-date      (Optional) End date (inclusive) to be used while using the
+                      list type of `PhotosByDateRange`
+
+  -r, --raw           (Optional) Listing photo paths each on new line instead of
+                      trying to open the default OS app while using the list
+                      type of `PhotosByAlbum` or `PhotosByExactDate`.
+
+  --help              Display this help screen.
+
+  --version           Display version information.
+
+NOTES:
+- Instead of option names (for ex: DateTimeWithMinutes), you may use options
+values too. (for ex: 3)
+- You can use relative folder paths. If you use the input folder as the working
+directory, you don't need to use the input argument.
+
+EXAMPLE USAGES:
+- List statistics of the archive folder
+
+Example with long argument names;
+photo-cli list --input (input-folder)
+
+Example with short argument names;
+photo-cli list -i (input-folder)
+
+- List all the album information of the archive folder
+
+Example with long argument names;
+photo-cli list --input (input-folder) --type Albums
+
+Example with short argument names;
+photo-cli list -i (input-folder) -t Albums
+
+- List paths (to be send as process arguments to photo viewers) or open (only
+supporting in macOS , Preview app for now) for the given album id
+
+Example with long argument names;
+photo-cli list --input (input-folder) --id 1 --type PhotosByAlbumId
+
+Example with short argument names;
+photo-cli list -i (input-folder) -n 1 -t PhotosByAlbumId
+
+- List paths (to be send as process arguments to photo viewers) or open (only
+supporting in macOS , Preview app for now) for the given year
+
+Example with long argument names;
+photo-cli list --input (input-folder) --type PhotosByExactDate --year 2007
+
+Example with short argument names;
+photo-cli list -i (input-folder) -t PhotosByExactDate -y 2007
+
+- List paths (to be send as process arguments to photo viewers) or open (only
+supporting in macOS , Preview app for now) for the given year & month
+
+Example with long argument names;
+photo-cli list --input (input-folder) --month 8 --type PhotosByExactDate --year
+2007
+
+Example with short argument names;
+photo-cli list -i (input-folder) -m 8 -t PhotosByExactDate -y 2007
+
+- List paths (to be send as process arguments to photo viewers) or open (only
+supporting in macOS , Preview app for now) for the given year, month & day
+
+Example with long argument names;
+photo-cli list --day 19 --input (input-folder) --month 8 --type
+PhotosByExactDate --year 2007
+
+Example with short argument names;
+photo-cli list -d 19 -i (input-folder) -m 8 -t PhotosByExactDate -y 2007
+
+- List paths (to be send as process arguments to photo viewers) or open (only
+supporting in macOS , Preview app for now) for photos taken within the given
+date range
+
+Example with long argument names;
+photo-cli list --type PhotosByDateRange --start-date 2025-09-21 --end-date
+2026-01-30 --input (input-folder)
+
+Example with short argument names;
+photo-cli list -t PhotosByDateRange -s 2025-09-21 -e 2026-01-30 -i
+(input-folder)
 ```
 </details>
 
@@ -2584,7 +2773,7 @@ photo-cli help settings
 
 ## Command Line Options / Arguments
 
-### Common Arguments Used Across Verbs (Command Type) in Same Purpose
+### Common Arguments Used Across Verbs (Command Type) in the Same Purpose
 
 #### Input Path ( -i, --input ) [optional]
 
@@ -2623,7 +2812,7 @@ Third-party provider to resolve photo taken address by photo's coordinates.
 | GoogleMaps              | 3     | Google's reverse geocoding API offering accurate global address resolution with support for multiple address component types. |
 | LocationIq              | 5     | A location data platform providing reverse geocoding based on OpenStreetMap data with both free and paid tiers.               |
 
-#### ( -z, --missing-reverse-geocode ) [optional]
+#### Missing Reverse Geocode  ( -z, --missing-reverse-geocode ) [optional]
 
 Used in: `archive`, `copy`, `info` verbs.
 
@@ -2634,11 +2823,11 @@ Action to take when any photo has missing reverse geocode information.
 | Continue (default) | 0 (default) | Ignores missing reverse geocode data and continues processing.  |
 | PreventProcess     | 1           | Stops the process if any photo is missing reverse geocode data. |
 
-#### ( -w, --expected-day-range ) [optional]
+#### Expected Day Range ( -w, --expected-day-range ) [optional]
 
 Used in: `archive`, `copy` verbs.
 
-Provide a maximum expected day difference as number for your photos to prevent processing if it's exceeding the range.
+Provide a maximum expected day difference as a number for your photos to prevent processing if it's exceeding the range.
 
 #### Big Data Cloud API Key ( -b, --bigdatacloud-key ) [optional]
 
@@ -2720,7 +2909,7 @@ Action to take when a photo has no coordinate.
 
 Strategy for reading photos from the input folder. You can read only a single folder (not reading any subfolders), keep your input folder hierarchy on the output, or flatten all subfolders into a single folder.
 
-You must select folder process behavior to whether use original folder hierarchy or flatten into single folder/grouped folder by [Group By Folder](#group-by-folder---g---group-by-).
+You must select folder process behavior to whether to use the original folder hierarchy or flatten into single folder/grouped folder by [Group By Folder](#group-by-folder---g---group-by-).
 
 | Option                            | Value | Description                                                                                                                                    |
 |-----------------------------------|-------|------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -2728,9 +2917,9 @@ You must select folder process behavior to whether use original folder hierarchy
 | SubFoldersPreserveFolderHierarchy | 2     | Creates input folder hierarchy on output.                                                                                                      |
 | FlattenAllSubFolders              | 3     | Flatten all subfolders into single folder.                                                                                                     |
 
-#### Naming Style ( -s, --naming-style )
+#### Naming Style ( -s, --naming-style ) [required]
 
-While copying to a new organized folder, you must select one of these file naming strategies for a newly copied photo file name.
+While copying to a new-organized folder, you must select one of these file naming strategies for a newly copied photo file name.
 
 | Option                     | Value | Description                                                                                                                                |
 |----------------------------|-------|--------------------------------------------------------------------------------------------------------------------------------------------|
@@ -2758,7 +2947,7 @@ Optional use for `copy` verb. While copying to a new organized folder (you shoul
 | DayRange               | 4     | Appends a date range spanning from the first to the last photo's date in the folder to the folder name.             |
 | MatchingMinimumAddress | 5     | Appends the common address prefix shared by all photos in the folder, based on matching reverse geocode properties. |
 
-#### Folder Append Location Type ( -p, --folder-append-location )
+#### Folder Append Location Type ( -p, --folder-append-location ) [optional]
 
 While copying to a new organized folder (you should select [Folder Process Type](#folder-process-type---f---process-type-) as `SubFoldersPreserveFolderHierarchy`), you may select one of these folder naming strategies. Must be used with [Folder Append Location](#folder-append-type---a---folder-append-)
 
@@ -2767,18 +2956,19 @@ While copying to a new organized folder (you should select [Folder Process Type]
 | Prefix | 1     | Prepends the appended name before the original folder name. |
 | Suffix | 2     | Appends the appended name after the original folder name.   |
 
-#### Group By Folder ( -g, --group-by )
+#### Group By Folder ( -g, --group-by ) [optional]
 
 Groups photos into directories in the file system by EXIF data.
 
-| Option       | Value | Description |
-|--------------|-------|-------------|
-| YearMonthDay | 1     |             |
-| YearMonth    | 2     |             |
-| Year         | 3     |             |
-| Address      | 4     |             |
+| Option           | Value | Description                                                                                                |
+|------------------|-------|------------------------------------------------------------------------------------------------------------|
+| YearMonthDay     | 1     | Groups photos into a `year/month/day` directory hierarchy based on the photo taken date.                   |
+| YearMonth        | 2     | Groups photos into a `year/month` directory hierarchy based on the photo taken date.                       |
+| Year             | 3     | Groups photos into a `year` directory based on the photo taken date.                                       |
+| AddressFlat      | 4     | Groups photos into a single flat directory named after the formatted reverse geocode address.              |
+| AddressHierarchy | 5     | Groups photos into a hierarchical directory structure with one folder level per reverse geocode component. |
 
-#### Number Naming Text Style ( -n, --number-style )
+#### Number Naming Text Style ( -n, --number-style ) [required]
 
 Number naming strategy must be selected when using [Naming Style](#naming-style---s---naming-style-) as `Numeric` or when numbering photos that would otherwise share the same name.
 
@@ -2788,11 +2978,11 @@ Number naming strategy must be selected when using [Naming Style](#naming-style-
 | PaddingZeroCharacter  | 2     | Generates sequential numbers starting from 1 with leading zeros padded to match the maximum digit length needed (e.g., 001, 002, 003 for a total count requiring three digits).                                  |
 | OnlySequentialNumbers | 3     | Generates plain sequential numbers starting from 1 without any padding or length constraints (e.g., 1, 2, 3, 10, 100).                                                                                           |
 
-#### Verify ( -v, --verify)
+#### Verify ( -v, --verify) [optional]
 
 Verify that all photo files copied successfully by comparing file hashes. (no extra parameter needed)
 
-#### No Photograph Taken Date Action [for `copy` command ] ( -t, --no-taken-date )
+#### No Photograph Taken Date Action [for `copy` command ] ( -t, --no-taken-date ) [optional]
 
 Optional action to take when a photograph has no taken date. Default is `Continue`.
 
@@ -2805,7 +2995,7 @@ Optional action to take when a photograph has no taken date. Default is `Continu
 | AppendToEndOrderByFileName       | 4           | Places photos without a taken date at the end of the sequence, ordered by filename, after all photos with taken dates.           |
 | InsertToBeginningOrderByFileName | 5           | Places photos without a taken date at the beginning of the sequence, ordered by filename, before all photos with taken dates.    |
 
-#### No Coordinate Action [for `copy` command ] ( -c, --no-coordinate )
+#### No Coordinate Action [for `copy` command ] ( -c, --no-coordinate ) [optional]
 
 Optional action to take when a photo has no coordinate.
 
@@ -2816,13 +3006,60 @@ Optional action to take when a photo has no coordinate.
 | DontCopyToOutput | 2     | Excludes photos without GPS coordinates from the output, only copying photos that have valid coordinate information.                |
 | InSubFolder      | 3     | Groups photos without GPS coordinates into a separate subfolder while copying photos with coordinates to their normal destinations. |
 
+### List Verb Arguments
+
+#### List Type ( -t, --type ) [required]
+
+Optional listing type that determines what data to display from the archive.
+
+| Option             | Value       | Description                                                                                                        |
+|--------------------|-------------|--------------------------------------------------------------------------------------------------------------------|
+| Summary            | 0 (default) | Shows total counts of albums, photos, and reverse geocode cache entries.                                           |
+| Albums             | 1           | Lists all albums with their id, name, type, creation date, and configuration.                                      |
+| PhotosByAlbumId    | 2           | Lists or opens photos belonging to a specific album by the ID (requires `--id`).                                   |
+| PhotosByAlbumName  | 3           | Lists or opens photos belonging to a specific album by album name (requires `--name`).                             |
+| PhotosByExactDate  | 4           | Lists or opens photos filtered by date (optionally filtered by `--year`, `--month`, `--day`).                      |
+| PhotosByDateRange  | 5           | Lists or opens photos within a date range (requires `--start-date` and `--end-date`).                              |
+
+#### Album Id ( -n, --id ) [optional]
+
+Album ID to filter photos when using list type `PhotosByAlbumId`.
+
+#### Album Name ( -a, --name ) [optional]
+
+Album name to filter photos when using list type `PhotosByAlbumName`.
+
+#### Year ( -y, --year ) [optional]
+
+Year as a number to filter photos when using list type `PhotosByExactDate`.
+
+#### Month ( -m, --month ) [optional]
+
+Month as a number to filter photos when using list type `PhotosByExactDate`.
+
+#### Day ( -d, --day ) [optional]
+
+Day as a number to filter photos when using list type `PhotosByExactDate`.
+
+#### Start Date ( -s, --start-date ) [optional]
+
+Start date (inclusive) to filter photos when using list type `PhotosByDateRange`.
+
+#### End Date ( -e, --end-date ) [optional]
+
+End date (inclusive) to filter photos when using list type `PhotosByDateRange`.
+
+#### Raw Output ( -r, --raw ) [optional]
+
+Lists photo paths each on a new line instead of trying to open the default OS app. Applicable when using list type `PhotosByAlbumId`, `PhotosByAlbumName`, or `PhotosByExactDate`. (no extra parameter needed)
+
 ### Info Verb Arguments
 
-#### All Folders ( -a, --all-folders )
+#### All Folders ( -a, --all-folders ) [optional]
 
 Optional behavior to read & list all photos in all subfolders. Default behavior is to read & list only photos in current working folder. (no extra parameter needed)
 
-#### No Photograph Taken Date Action [for `info` command ] ( -t, --no-taken-date )
+#### No Photograph Taken Date Action [for `info` command ] ( -t, --no-taken-date ) [optional]
 
 Optional action to take when a photograph has no taken date. Default is `Continue`.
 
@@ -2831,7 +3068,7 @@ Optional action to take when a photograph has no taken date. Default is `Continu
 | Continue (default)               | 0 (default) | Processes and creates output including those without a taken date without any special handling or filtering. |
 | PreventProcess                   | 1           | Stops the entire info operation if any photos without a taken date are found, returning an error exit code.  |
 
-#### No Coordinate Action [for `info` command ] ( -c, --no-coordinate )
+#### No Coordinate Action [for `info` command ] ( -c, --no-coordinate ) [optional]
 
 Optional action to take when a photo has no coordinate.
 
@@ -2968,6 +3205,7 @@ Process exit codes listed below;
 | ExistingAlbumConfigurationNotValid              | 57    | The existing album configuration in the database is corrupted or invalid.                       |
 | NoArchiveDatabaseFound                          | 60    | The archive database file was not found at the expected location.                               |
 | NoPhotoFoundToList                              | 61    | No photos matched the specified query filters.                                                  |
+| AlbumNotFoundByName                             | 62    | No album with the specified name was found in the database.                                     |
 
 ## Contributing
 

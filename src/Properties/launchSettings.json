@@ -9,6 +9,10 @@
       "commandLineArgs": "list",
       "commandName": "Project"
     },
+    "mcp": {
+      "commandLineArgs": "mcp",
+      "commandName": "Project"
+    },
     "copy": {
       "commandLineArgs": "copy",
       "commandName": "Project"

@@ -40,10 +40,14 @@ public class ListRunner : BaseRunner, IConsoleRunner
 				return await Summary();
 			case ListType.Albums:
 				return await Albums();
-			case ListType.PhotosByAlbum:
-				return await PhotoByAlbums(archivePath);
-			case ListType.PhotosByDate:
-				return await PhotoByDate(archivePath);
+			case ListType.PhotosByAlbumId:
+				return await PhotoByAlbumId(archivePath);
+			case ListType.PhotosByAlbumName:
+				return await PhotoByAlbumName(archivePath);
+			case ListType.PhotosByExactDate:
+				return await PhotoByExactDate(archivePath);
+			case ListType.PhotosByDateRange:
+				return await PhotoByDateRange(archivePath);
 			default:
 				throw new PhotoCliException();
 		}
@@ -94,33 +98,52 @@ public class ListRunner : BaseRunner, IConsoleRunner
 		return ExitCode.Success;
 	}
 
-	private async Task<ExitCode> PhotoByAlbums(string inputArchivePath)
+	private async Task<ExitCode> PhotoByAlbumId(string inputArchivePath)
 	{
 		if (!_options.AlbumId.HasValue)
 			throw new PhotoCliException("Album id is required to list photos by albums");
 
 		var albumPhotoResult = await _dbService.GetAlbumPhotosById(_options.AlbumId.Value);
-
 		if (albumPhotoResult.Status == AlbumPhotoResultStatus.Successful)
-		{
-			return await Run(albumPhotoResult.Photos, inputArchivePath);
-		}
-		var exitCode = albumPhotoResult.Status switch
+			return await ListPhotos(albumPhotoResult.Photos, inputArchivePath);
+		return albumPhotoResult.Status switch
 		{
 			AlbumPhotoResultStatus.AlbumNotFound => ExitCode.AlbumNotFoundById,
 			AlbumPhotoResultStatus.ExistingConfigurationNotInCorrectFormat => ExitCode.ExistingAlbumConfigurationNotValid,
-			_ => throw new PhotoCliException($"Not defined album photo result on {nameof(PhotoByAlbums)} for {nameof(AlbumPhotoResultStatus)}: {albumPhotoResult.Status}")
+			_ => throw new PhotoCliException($"Not defined album photo result on {nameof(PhotoByAlbumId)} for {nameof(AlbumPhotoResultStatus)}: {albumPhotoResult.Status}")
 		};
-		return exitCode;
 	}
 
-	private async Task<ExitCode> PhotoByDate(string inputArchivePath)
+	private async Task<ExitCode> PhotoByAlbumName(string inputArchivePath)
+	{
+		if (_options.AlbumName == null)
+			throw new PhotoCliException("Album id or album name is required to list photos by albums");
+
+		var albumPhotoResult = await _dbService.GetAlbumPhotosByName(_options.AlbumName);
+		if (albumPhotoResult.Status == AlbumPhotoResultStatus.Successful)
+			return await ListPhotos(albumPhotoResult.Photos, inputArchivePath);
+		return albumPhotoResult.Status switch
+		{
+			AlbumPhotoResultStatus.AlbumNotFound => ExitCode.AlbumNotFoundByName,
+			AlbumPhotoResultStatus.ExistingConfigurationNotInCorrectFormat => ExitCode.ExistingAlbumConfigurationNotValid,
+			_ => throw new PhotoCliException($"Not defined album photo result on {nameof(PhotoByAlbumId)} for {nameof(AlbumPhotoResultStatus)}: {albumPhotoResult.Status}")
+		};
+
+	}
+
+	private async Task<ExitCode> PhotoByExactDate(string inputArchivePath)
 	{
 		var photos = await _dbService.GetPhotosByDate(_options.Year, _options.Month, _options.Day);
-		return await Run(photos, inputArchivePath);
+		return await ListPhotos(photos, inputArchivePath);
 	}
 
-	private async Task<ExitCode> Run(List<PhotoEntity> photos, string inputArchivePath)
+	private async Task<ExitCode> PhotoByDateRange(string inputArchivePath)
+	{
+		var photos = await _dbService.GetPhotosByDateRange(_options.StartDate, _options.EndDate);
+		return await ListPhotos(photos, inputArchivePath);
+	}
+
+	private async Task<ExitCode> ListPhotos(List<PhotoEntity> photos, string inputArchivePath)
 	{
 		if (photos.Count == 0)
 		{

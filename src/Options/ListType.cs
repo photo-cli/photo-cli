@@ -4,6 +4,8 @@ public enum ListType : byte
 {
 	Summary = 0,
 	Albums = 1,
-	PhotosByAlbum = 2,
-	PhotosByDate = 3,
+	PhotosByAlbumId = 2,
+	PhotosByAlbumName = 3,
+	PhotosByExactDate = 4,
+	PhotosByDateRange = 5,
 }

@@ -199,7 +199,7 @@ public static class CommandLineArgumentsFakes
 	}
 
 	public static ICollection<string> ListBuildCommandLineOptions(ListType listType, string inputPath, int? albumId = null, int? year = null, byte? month = null, byte? day = null,
-		bool rawOutput = false)
+		DateTime? startDate = null, DateTime? endDate = null, bool rawOutput = false)
 	{
 		var args = new List<string> { "list" };
 
@@ -214,6 +214,10 @@ public static class CommandLineArgumentsFakes
 			AddArgumentWithParameter('m', month.Value.ToString(), args);
 		if (day != null)
 			AddArgumentWithParameter('d', day.Value.ToString(), args);
+		if (startDate != null)
+			AddArgumentWithParameter('s', startDate.Value.ToString("yyyy-MM-ddTHH:mm:ss"), args);
+		if (endDate != null)
+			AddArgumentWithParameter('e', endDate.Value.ToString("yyyy-MM-ddTHH:mm:ss"), args);
 		if (rawOutput)
 			AddArgumentWithoutParameter('r', args);
 
