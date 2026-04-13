@@ -766,31 +766,33 @@ Note: You may test commands on [test photographs](docs/test-photographs) which h
 claude mcp add photo-cli --scope user -- photo-cli mcp --input /path/to/archive-folder
 ```
 
-#### Claude Code Config (`~/.claude.json`)
+#### Claude Desktop, Claude Code Config
+
+Claude Desktop (`claude_desktop_config.json`) & Claude Code (`~/.claude.json`) has same structure as the following section.
 
 ```json
 "mcpServers": {
   "photo-cli": {
-    "command": "photo-cli",
+    "command": "{photo-cli-standalone-executable-or-dotnet-tool-path-or-docker-command}",
     "args": [
       "mcp",
       "--input",
-      "/path/to/archive-folder"
+      "{archive-folder-path}"
     ]
   }
 }
 ```
 
-#### Claude Desktop (`claude_desktop_config.json`)
+##### Example for macOS with dotnet tool installation
 
 ```json
 "mcpServers": {
   "photo-cli": {
-    "command": "photo-cli",
+    "command": "/Users/{your-user-home-folder}/.dotnet/tools/photo-cli",
     "args": [
       "mcp",
       "--input",
-      "/path/to/archive-folder"
+      "/Users/{your-user-home-folder}/{archive-folder}"
     ]
   }
 }
@@ -801,11 +803,25 @@ claude mcp add photo-cli --scope user -- photo-cli mcp --input /path/to/archive-
 ```json
 "photo-cli": {
   "type": "stdio",
-  "command": "photo-cli",
+  "command": "{photo-cli-standalone-executable-or-dotnet-tool-path-or-docker-command}",
   "args": [
     "mcp",
     "--input",
-    "/path/to/archive-folder"
+    "{archive-folder-path}"
+  ]
+}
+```
+
+##### Example for macOS with dotnet tool installation
+
+```json
+"photo-cli": {
+  "type": "stdio",
+  "command": "/Users/{your-user-home-folder}/.dotnet/tools/photo-cli",
+  "args": [
+    "mcp",
+    "--input",
+    "/Users/{your-user-home-folder}/{archive-folder}"
   ]
 }
 ```
@@ -813,7 +829,13 @@ claude mcp add photo-cli --scope user -- photo-cli mcp --input /path/to/archive-
 #### MCP Inspector (for debugging/testing)
 
 ```shell
-npx @modelcontextprotocol/inspector photo-cli mcp --input /path/to/archive-folder
+npx @modelcontextprotocol/inspector {photo-cli-standalone-executable-or-dotnet-tool-path-or-docker-command} mcp --input {archive-folder-path}
+```
+
+##### Example for macOS with dotnet global tool installation
+
+```shell
+npx @modelcontextprotocol/inspector photo-cli mcp --input {archive-folder-path}
 ```
 
 ### `mcp` Command Arguments
