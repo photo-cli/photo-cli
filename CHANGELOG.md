@@ -1,6 +1,7 @@
-# 0.4.0
+# 0.4.0 (2026-04-13)
 - archive verb now supports named & address album metadata linking to photos
-- introducing list verb to view photos on archived folders base on metadata
+- MCP server support for the archive folder to ask your language model about your photos
+- introducing list verb to view/output photos on archived folders base on metadata
 - refactored console output to be more interactive with colors and table support
 - introducing container (docker,podman) support
 - reverse geocode caching persists between each archive runs
