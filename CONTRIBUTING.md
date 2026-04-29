@@ -137,6 +137,19 @@ First line as summary only, 50 characters or less.
 
 Optional body and footers should wrap at about 72 characters.
 
+### Pre-commit Hooks
+
+This repo uses [pre-commit](https://pre-commit.com/) to keep AI agent instruction files in sync. The hook automatically copies `AGENTS.md` (the canonical source) to `CLAUDE.md`, `.github/copilot-instructions.md`, `.cursor/rules/rules.mdc`, and `.windsurfrules` whenever you commit a change to `AGENTS.md`.
+
+Install pre-commit and activate the hooks once after cloning:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+The sync also runs manually via `scripts/sync-agent-files.sh`. Edit only `AGENTS.md` — the other files are generated.
+
 ### Local Container Development
 
 For debugging purposes use the `debug` stage on Dockerfile. Sample docker debugging launch configuration is defined in `.vscode/launch.json` with a name `docker-debug`.
