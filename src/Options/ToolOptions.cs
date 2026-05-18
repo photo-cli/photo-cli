@@ -20,14 +20,25 @@ public class ToolOptions
 	internal const string PhotoOrganizerReportCsvDefault = "photo-cli-report.csv";
 	internal const string DryRunCsvReportFileNameDefault = "photo-cli-dry-run.csv";
 	internal const string ArchivePhotoTakenDateHashSeparatorDefault = "-";
-	internal const int ConnectionLimitDefault = 4;
-	internal const int CoordinatePrecisionDefault = 4;
-	internal static readonly string[] SupportedExtensionsDefault = [ "jpg", "jpeg", "heic", "png" ];
-	public static readonly string[] CompanionExtensionsDefault = [ "mov" ];
+	internal const byte ConnectionLimitDefault = 4;
+	internal const byte CoordinatePrecisionDefault = 4;
+	internal static readonly string[] SupportedExtensionsDefault = ["jpg", "jpeg", "heic", "png"];
+	public static readonly string[] CompanionExtensionsDefault = ["mov"];
+	internal const bool LogCategoryNameOutputDefault = false;
+	internal const string MacOsCommandDefault = "open";
+	internal const string MacOsArgumentPrefixDefault = "-a Preview";
+	internal static readonly Dictionary<string, string> LogLevelDefault = new()
+	{
+		{ "Default", nameof(Microsoft.Extensions.Logging.LogLevel.Error) },
+		{ "PhotoCli", nameof(Microsoft.Extensions.Logging.LogLevel.Warning) },
+		{ "PhotoCli.Services.Implementations.ReverseGeocodes", nameof(Microsoft.Extensions.Logging.LogLevel.Warning) },
+		{ "Polly", nameof(Microsoft.Extensions.Logging.LogLevel.Warning) },
+		{ "Microsoft", nameof(Microsoft.Extensions.Logging.LogLevel.Warning) },
+		{ "System.Net.Http.HttpClient", nameof(Microsoft.Extensions.Logging.LogLevel.Warning) },
+	};
 
 	public ToolOptions(ToolOptionsRaw options)
 	{
-		LogLevel = options.LogLevel ?? new LogLevel { Default = Microsoft.Extensions.Logging.LogLevel.Warning.ToString() };
 		YearFormat = options.YearFormat ?? YearFormatDefault;
 		MonthFormat = options.MonthFormat ?? MonthFormatDefault;
 		DayFormat = options.DayFormat ?? DayFormatDefault;
@@ -53,9 +64,13 @@ public class ToolOptions
 		CoordinatePrecision = options.CoordinatePrecision ?? CoordinatePrecisionDefault;
 		SupportedExtensions = options.SupportedExtensions ?? SupportedExtensionsDefault;
 		CompanionExtensions = options.CompanionExtensions ?? CompanionExtensionsDefault;
+		LogCategoryNameOutput = options.LogCategoryNameOutput ?? LogCategoryNameOutputDefault;
+		MacOsCommand = options.MacOsCommand ?? MacOsCommandDefault;
+		MacOsArgumentPrefix = options.MacOsArgumentPrefix ?? MacOsArgumentPrefixDefault;
+		LogLevel = options.LogLevel ?? LogLevelDefault;
 	}
 
-	public LogLevel LogLevel { get; set; }
+	public Dictionary<string, string>? LogLevel { get; set; }
 	public string YearFormat { get; set; }
 	public string MonthFormat { get; set; }
 	public string DayFormat { get; set; }
@@ -76,14 +91,17 @@ public class ToolOptions
 	public string CsvReportFileName { get; set; }
 	public string DryRunCsvReportFileName { get; set; }
 
-	public int ConnectionLimit { get; set; }
+	public byte ConnectionLimit { get; set; }
 	public string? BigDataCloudApiKey { get; set; }
 	public string? GoogleMapsApiKey { get; set; }
 	public string? LocationIqApiKey { get; set; }
-	public int CoordinatePrecision { get; set; }
+	public byte CoordinatePrecision { get; set; }
 	public string ArchivePhotoTakenDateHashSeparator { get; set; }
 	public string[] SupportedExtensions { get; set; }
 	public string[] CompanionExtensions { get; set; }
+	public bool LogCategoryNameOutput { get; set; }
+	public string MacOsCommand { get; set; }
+	public string MacOsArgumentPrefix { get; set; }
 
 	public static ToolOptions Default()
 	{

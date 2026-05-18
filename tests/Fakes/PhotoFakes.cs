@@ -4,38 +4,38 @@ namespace PhotoCli.Tests.Fakes;
 
 public static class PhotoFakes
 {
-	public static Photo WithNewFileNameDay(int day, int hourForSorting, string filePostFix)
+	public static Photo WithNewFileNameDay(byte day, byte hourForSorting, string filePostFix)
 	{
 		var photoTakenDateTime = DateTimeFakes.WithDayHour(day, hourForSorting);
 		var dateTimeFormat = DateTimeFakes.FormatDay(day);
 		return Create(takenDate: photoTakenDateTime, newName: dateTimeFormat + filePostFix);
 	}
 
-	public static Photo WithNewFileNameMinute(int minute, int secondForSorting, string filePostFix)
+	public static Photo WithNewFileNameMinute(byte minute, byte secondForSorting, string filePostFix)
 	{
 		var photoTakenDateTime = DateTimeFakes.WithMinuteSecond(minute, secondForSorting);
 		var dateTimeFormat = DateTimeFakes.FormatMinute(minute);
 		return Create(takenDate: photoTakenDateTime, newName: dateTimeFormat + filePostFix);
 	}
 
-	public static Photo WithNewFileNameSecond(int second, string filePostFix)
+	public static Photo WithNewFileNameSecond(byte second, string filePostFix)
 	{
 		var photoTakenDateTime = DateTimeFakes.WithSecond(second);
 		var dateTimeFormat = DateTimeFakes.FormatSecond(second);
 		return Create(takenDate: photoTakenDateTime, newName: dateTimeFormat + filePostFix);
 	}
 
-	public static Photo WithDayHour(int day, int hour)
+	public static Photo WithDayHour(byte day, byte hour)
 	{
 		return Create(takenDate: DateTimeFakes.WithDayHour(day, hour));
 	}
 
-	public static Photo WithDay(int day)
+	public static Photo WithDay(byte day)
 	{
 		return Create(takenDate: DateTimeFakes.WithDay(day));
 	}
 
-	public static Photo WithMonth(int month)
+	public static Photo WithMonth(byte month)
 	{
 		return Create(takenDate: DateTimeFakes.WithMonth(month));
 	}
@@ -43,6 +43,11 @@ public static class PhotoFakes
 	public static Photo WithYear(int year)
 	{
 		return Create(takenDate: DateTimeFakes.WithYear(year));
+	}
+
+	public static Photo WithExifData(ExifData exifData)
+	{
+		return CreateWithExifData(exifData);
 	}
 
 	public static Photo NoPhotoTakenDate()
@@ -55,27 +60,27 @@ public static class PhotoFakes
 		return Create();
 	}
 
-	public static Photo Valid(int sampleId = 1)
+	public static Photo Valid(byte sampleId = 1)
 	{
 		return ValidFileWithDay(sampleId);
 	}
 
-	public static Photo ValidFileWithDay(int day)
+	public static Photo ValidFileWithDay(byte day)
 	{
 		return Create(takenDate: DateTimeFakes.WithDay(day));
 	}
 
-	public static Photo WithMinuteSecond(int minute, int second)
+	public static Photo WithMinuteSecond(byte minute, byte second)
 	{
 		return Create(takenDate: DateTimeFakes.WithMinuteSecond(minute, second));
 	}
 
-	public static Photo WithMinute(int minute)
+	public static Photo WithMinute(byte minute)
 	{
 		return Create(takenDate: DateTimeFakes.WithMinute(minute));
 	}
 
-	public static Photo WithSecond(int second)
+	public static Photo WithSecond(byte second)
 	{
 		return Create(takenDate: DateTimeFakes.WithSecond(second));
 	}
@@ -90,17 +95,17 @@ public static class PhotoFakes
 		return CreatePhotoWithReverseGeocodeAndDateTime(sampleId);
 	}
 
-	public static Photo WithReverseGeocodeAndDay(int reverseGeocodeSampleId, int day)
+	public static Photo WithReverseGeocodeAndDay(int reverseGeocodeSampleId, byte day)
 	{
 		return CreatePhotoWithReverseGeocodeAndDateTime(reverseGeocodeSampleId, DateTimeFakes.WithDay(day));
 	}
 
-	public static Photo WithReverseGeocodeAndMinute(int reverseGeocodeSampleId, int minute)
+	public static Photo WithReverseGeocodeAndMinute(int reverseGeocodeSampleId, byte minute)
 	{
 		return CreatePhotoWithReverseGeocodeAndDateTime(reverseGeocodeSampleId, DateTimeFakes.WithMinute(minute));
 	}
 
-	public static Photo WithReverseGeocodeAndSecond(int reverseGeocodeSampleId, int second)
+	public static Photo WithReverseGeocodeAndSecond(int reverseGeocodeSampleId, byte second)
 	{
 		return CreatePhotoWithReverseGeocodeAndDateTime(reverseGeocodeSampleId, DateTimeFakes.WithSecond(second));
 	}
@@ -110,15 +115,15 @@ public static class PhotoFakes
 		return Create(takenDate: photoTakenDate, coordinate: CoordinateFakes.Valid(), reverseGeocodes: ReverseGeocodeFakes.Sample(reverseGeocodeSampleId));
 	}
 
-	public static IReadOnlyCollection<Photo> DummyOrderedListWithCount(int count)
+	public static IReadOnlyCollection<Photo> DummyOrderedListWithCount(byte count)
 	{
 		var list = new List<Photo>();
-		for (var i = 1; i <= count; i++)
+		for (byte i = 1; i <= count; i++)
 			list.Add(WithDay(i));
 		return list;
 	}
 
-	public static Photo WithArchiveFileName(int second, string sha1Hash)
+	public static Photo WithArchiveFileName(byte second, string sha1Hash)
 	{
 		var newName = DateTimeFakes.FormatSecond(second) + ToolOptionFakes.ArchivePhotoTakenDateHashSeparator + sha1Hash;
 		return Create(newName: newName, takenDate: DateTimeFakes.WithSecond(second), sha1Hash: sha1Hash);
@@ -152,7 +157,7 @@ public static class PhotoFakes
 		return Create(fileNameWithExtension, targetRelativeDirectoryPath: targetRelativeDirectoryPath, sha1Hash: sha1Hash);
 	}
 
-	public static Photo WithSecondAndSha1Hash(int second, string sha1Hash)
+	public static Photo WithSecondAndSha1Hash(byte second, string sha1Hash)
 	{
 		return Create(takenDate: DateTimeFakes.WithSecond(second), sha1Hash: sha1Hash);
 	}
@@ -211,9 +216,9 @@ public static class PhotoFakes
 		var photo = new Photo(mainPhotoMockFileInfo, companionFileInfos?.ToArray());
 		if (exifData != null)
 			photo.SetExifData(exifData);
-		if(newName.IsPresent())
+		if (newName.IsPresent())
 			photo.SetNewName(newName);
-		if(targetRelativeDirectoryPath != null)
+		if (targetRelativeDirectoryPath != null)
 			photo.SetTargetRelativePath(targetRelativeDirectoryPath);
 		if (outputFolder.IsPresent())
 			photo.SetTarget(outputFolder);
@@ -223,4 +228,9 @@ public static class PhotoFakes
 	}
 
 	public const string DefaultSourcePath = "/source-path";
+
+	public static Photo WithSourcePathAndWithoutExifData(string fileNameWithExtension)
+	{
+		return CreateWithExifData(null, fileNameWithExtension);
+	}
 }

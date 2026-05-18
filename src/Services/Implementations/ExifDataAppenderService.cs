@@ -2,24 +2,21 @@ namespace PhotoCli.Services.Implementations;
 
 public class ExifDataAppenderService : IExifDataAppenderService
 {
-	private const string ProgressName = "Parsing photo exif information";
-	private readonly IConsoleWriter _consoleWriter;
 	private readonly IExifParserService _exifParserService;
-	private readonly Statistics _statistics;
 
-	public ExifDataAppenderService(IExifParserService exifParserService, Statistics statistics, IConsoleWriter consoleWriter)
+	public ExifDataAppenderService(IExifParserService exifParserService)
 	{
 		_exifParserService = exifParserService;
-		_statistics = statistics;
-		_consoleWriter = consoleWriter;
 	}
 
-	public IReadOnlyCollection<Photo> ExtractExifData(IReadOnlyCollection<Photo> photos, out bool allPhotosAreValid, out bool allPhotosHasPhotoTaken, out bool allPhotosHasCoordinate)
+	public ExifDataResult ExtractExifData(IReadOnlyCollection<Photo> photos)
 	{
-		_consoleWriter.ProgressStart(ProgressName, _statistics.PhotosFound);
 		var photosAreValid = true;
 		var photosHasPhotoTaken = true;
 		var photosHasCoordinate = true;
+
+		var minimumDate = DateTime.MaxValue;
+		var maximumDate = DateTime.MinValue;
 
 		foreach (var photo in photos)
 		{
@@ -30,15 +27,27 @@ public class ExifDataAppenderService : IExifDataAppenderService
 				photosHasPhotoTaken = false;
 			if (photosHasCoordinate && exifData?.Coordinate == null)
 				photosHasCoordinate = false;
-			if(exifData != null)
+
+			if (exifData != null)
+			{
 				photo.SetExifData(exifData);
-			_consoleWriter.InProgressItemComplete(ProgressName);
+
+				if (exifData.TakenDate != null)
+				{
+					if (exifData.TakenDate < minimumDate)
+						minimumDate = exifData.TakenDate.Value;
+					if (exifData.TakenDate > maximumDate)
+						maximumDate = exifData.TakenDate.Value;
+				}
+			}
 		}
 
-		_consoleWriter.ProgressFinish(ProgressName);
-		allPhotosAreValid = photosAreValid;
-		allPhotosHasPhotoTaken = photosHasPhotoTaken;
-		allPhotosHasCoordinate = photosHasCoordinate;
-		return photos;
+		AlbumDateRange? dateRange;
+		if (minimumDate != DateTime.MaxValue && maximumDate != DateTime.MinValue)
+			dateRange = new AlbumDateRange(minimumDate, maximumDate);
+		else
+			dateRange = null;
+
+		return new ExifDataResult(photos, photosAreValid, photosHasPhotoTaken, photosHasCoordinate, dateRange);
 	}
 }

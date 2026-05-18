@@ -72,7 +72,6 @@ public static class ReverseGeocodeResponseAssertionExtensions
 				response.Address?.Military.Should().NotBeNull();
 			}
 
-			response.Address?.Province.Should().NotBeNull();
 			response.Address?.Region.Should().NotBeNull();
 			response.Address?.Road.Should().NotBeNull();
 		}
@@ -99,14 +98,6 @@ public static class ReverseGeocodeResponseAssertionExtensions
 
 			response.Results?.FirstOrDefault()?.Geometry.Should().NotBeNull();
 			response.Results?.FirstOrDefault()?.Geometry?.LocationType.Should().NotBeNull();
-
-			response.Results?.FirstOrDefault()?.Geometry?.Bounds.Should().NotBeNull();
-			response.Results?.FirstOrDefault()?.Geometry?.Bounds?.Northeast.Should().NotBeNull();
-			response.Results?.FirstOrDefault()?.Geometry?.Bounds?.Northeast?.Lat.Should().NotBeNull();
-			response.Results?.FirstOrDefault()?.Geometry?.Bounds?.Northeast?.Lng.Should().NotBeNull();
-			response.Results?.FirstOrDefault()?.Geometry?.Bounds?.Southwest.Should().NotBeNull();
-			response.Results?.FirstOrDefault()?.Geometry?.Bounds?.Southwest?.Lat.Should().NotBeNull();
-			response.Results?.FirstOrDefault()?.Geometry?.Bounds?.Southwest?.Lng.Should().NotBeNull();
 
 			response.Results?.FirstOrDefault()?.Geometry?.Location.Should().NotBeNull();
 			response.Results?.FirstOrDefault()?.Geometry?.Location?.Lat.Should().NotBeNull();

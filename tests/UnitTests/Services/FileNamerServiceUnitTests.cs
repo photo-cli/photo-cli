@@ -27,7 +27,7 @@ public class FileNamerServiceUnitTests
 	[MemberData(nameof(NumericNamingStyleAssignNewNameFromISequentialNumberEnumeratorShouldBeEqualData))]
 	public void Numeric_NamingStyle_Assign_New_Name_From_ISequentialNumberEnumerator_Should_Be_Equal(List<string> fileNames)
 	{
-		var orderedPhotoInfos = PhotoFakes.DummyOrderedListWithCount(fileNames.Count);
+		var orderedPhotoInfos = PhotoFakes.DummyOrderedListWithCount((byte)fileNames.Count);
 
 		_sequentialNumberEnumerator.Setup(s => s.NumberIterator(orderedPhotoInfos.Count, It.IsAny<NumberNamingTextStyle>()))
 			.Returns(() => fileNames);

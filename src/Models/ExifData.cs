@@ -1,4 +1,4 @@
-﻿namespace PhotoCli.Models;
+namespace PhotoCli.Models;
 
 public record ExifData
 {

@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
+using PhotoCli.Utils.Logging;
 using Directory = MetadataExtractor.Directory;
 
 namespace PhotoCli.Services.Implementations;
@@ -69,10 +70,10 @@ public class ExifParserService : IExifParserService
 	private Coordinate? ParseCoordinate(IEnumerable<Directory> fileDataDirectories, string filePath)
 	{
 		var gpsDirectory = fileDataDirectories.OfType<GpsDirectory>().SingleOrDefault();
-		var geoLocation = gpsDirectory?.GetGeoLocation();
-		if (geoLocation != null)
+		if (gpsDirectory != null && gpsDirectory.TryGetGeoLocation(out var geoLocation))
 			return new Coordinate(Math.Round(geoLocation.Latitude, _coordinatePrecision), Math.Round(geoLocation.Longitude, _coordinatePrecision));
-		_logger.LogWarning("No coordinate found on `Gps` directory for {FilePath}", filePath);
+
+		_logger.LogWarningWithPath("No coordinate found on `Gps` directory", filePath);
 		return null;
 	}
 

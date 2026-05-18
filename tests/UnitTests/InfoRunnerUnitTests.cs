@@ -39,12 +39,16 @@ public class InfoRunnerUnitTests
 	{
 		AddSourceDirectory();
 		_photoCollectorMock.Setup(s => s.Collect(options.InputPath!, It.IsAny<bool>(), It.IsAny<bool>())).Returns(() => photos);
-		_exifDataAppenderMock.Setup(s => s.ExtractExifData(photos, out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue)).Returns(() =>  photos);
+
+		_exifDataAppenderMock.Setup(s => s
+			.ExtractExifData(photos))
+			.Returns(() => new ExifDataResult(photos, allPhotosAreValidMockOutValue, allPhotosHasPhotoTakenMockOutValue, allPhotosHasCoordinateMockOutValue, new AlbumDateRange(DateTime.Now, DateTime.Today)));
 
 		if (setupReverseGeocodeFetcher)
 		{
-			_reverseGeocodeFetcherMock.Setup(s => s.Fetch(photos))
-				.Returns(() => Task.FromResult(photos));
+			_reverseGeocodeFetcherMock.Setup(s => s
+				.Fetch(photos, It.IsAny<bool>()))
+				.Returns(() => Task.FromResult(new ReverseGeocodeResult(photos, true)));
 		}
 		_csvServiceMock.Setup(s => s.CreateInfoReport(photos, OutputPath)).Returns(Task.CompletedTask);
 	}
@@ -52,9 +56,9 @@ public class InfoRunnerUnitTests
 	private void VerifyValid(IReadOnlyList<Photo> photos, bool allPhotosAreValidMockOutValue, bool allPhotosHasPhotoTakenMockOutValue, bool allPhotosHasCoordinateMockOutValue, bool verifyReverseGeocodeFetcher)
 	{
 		_photoCollectorMock.Verify(v => v.Collect(SourceFolderPath, It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
-		_exifDataAppenderMock.Verify(v => v.ExtractExifData(photos, out allPhotosAreValidMockOutValue, out allPhotosHasPhotoTakenMockOutValue, out allPhotosHasCoordinateMockOutValue), Times.Once);
+		_exifDataAppenderMock.Verify(v => v.ExtractExifData(photos), Times.Once);
 		if (verifyReverseGeocodeFetcher)
-			_reverseGeocodeFetcherMock.Verify(v => v.Fetch(photos), Times.Once);
+			_reverseGeocodeFetcherMock.Verify(v => v.Fetch(photos, It.IsAny<bool>()), Times.Once);
 		_csvServiceMock.Verify(s => s.CreateInfoReport(photos, OutputPath), Times.Once);
 		VerifyNoOtherCalls();
 	}
@@ -101,32 +105,32 @@ public class InfoRunnerUnitTests
 	#region Prevent Process Actions
 
 	[Theory]
-	[InlineData(InfoNoPhotoTakenDateAction.PreventProcess, true, InfoNoCoordinateAction.PreventProcess,true)]
-	[InlineData(InfoNoPhotoTakenDateAction.PreventProcess, true, InfoNoCoordinateAction.PreventProcess,false)]
-	[InlineData(InfoNoPhotoTakenDateAction.PreventProcess, false, InfoNoCoordinateAction.PreventProcess,true)]
-	[InlineData(InfoNoPhotoTakenDateAction.PreventProcess, false, InfoNoCoordinateAction.PreventProcess,false)]
+	[InlineData(InfoNoPhotoTakenDateAction.PreventProcess, true, InfoNoCoordinateAction.PreventProcess, true)]
+	[InlineData(InfoNoPhotoTakenDateAction.PreventProcess, true, InfoNoCoordinateAction.PreventProcess, false)]
+	[InlineData(InfoNoPhotoTakenDateAction.PreventProcess, false, InfoNoCoordinateAction.PreventProcess, true)]
+	[InlineData(InfoNoPhotoTakenDateAction.PreventProcess, false, InfoNoCoordinateAction.PreventProcess, false)]
 	public async Task When_InvalidFormatAction_PreventProcess_And_AllPhotosAreValid_Is_False_Runner_Should_Exit_With_PhotosWithInvalidFileFormatPreventedProcess(
 		InfoNoPhotoTakenDateAction noPhotoTakenDateAction, bool allPhotosHasPhotoTaken, InfoNoCoordinateAction noCoordinateAction, bool allPhotosHasCoordinate)
 	{
-		var options = InfoOptionsFakes.WithPreventAction(SourceFolderPath, InfoInvalidFormatAction.PreventProcess, noPhotoTakenDateAction, noCoordinateAction);
+		var options = InfoOptionsFakes.WithInputPathAndPreventAction(SourceFolderPath, InfoInvalidFormatAction.PreventProcess, noPhotoTakenDateAction, noCoordinateAction);
 		await CheckPreventActions(false, allPhotosHasPhotoTaken, allPhotosHasCoordinate, options, ExitCode.PhotosWithInvalidFileFormatPreventedProcess);
 	}
 
 	[Theory]
-	[InlineData(InfoInvalidFormatAction.PreventProcess, true, InfoNoCoordinateAction.PreventProcess,true)]
+	[InlineData(InfoInvalidFormatAction.PreventProcess, true, InfoNoCoordinateAction.PreventProcess, true)]
 	public async Task When_NoPhotoDateTimeTakenAction_PreventProcess_And_AllPhotosHasPhotoTaken_Is_False_Runner_Should_Exit_With_PhotosWithNoDatePreventedProcess(
 		InfoInvalidFormatAction invalidFormatAction, bool allPhotosAreValid, InfoNoCoordinateAction noCoordinateAction, bool allPhotosHasCoordinate)
 	{
-		var options = InfoOptionsFakes.WithPreventAction(SourceFolderPath, invalidFormatAction, InfoNoPhotoTakenDateAction.PreventProcess, noCoordinateAction);
+		var options = InfoOptionsFakes.WithInputPathAndPreventAction(SourceFolderPath, invalidFormatAction, InfoNoPhotoTakenDateAction.PreventProcess, noCoordinateAction);
 		await CheckPreventActions(allPhotosAreValid, false, allPhotosHasCoordinate, options, ExitCode.PhotosWithNoDatePreventedProcess);
 	}
 
 	[Theory]
-	[InlineData(InfoInvalidFormatAction.PreventProcess, true, InfoNoPhotoTakenDateAction.PreventProcess,true)]
+	[InlineData(InfoInvalidFormatAction.PreventProcess, true, InfoNoPhotoTakenDateAction.PreventProcess, true)]
 	public async Task When_NoPhotoCoordinateAction_PreventProcess_And_AllPhotosHasCoordinate_Is_False_Runner_Should_Exit_With_PhotosWithNoCoordinatePreventedProcess(
 		InfoInvalidFormatAction invalidFormatAction, bool allPhotosAreValid, InfoNoPhotoTakenDateAction noPhotoTakenDateAction, bool allPhotosHasPhotoTaken)
 	{
-		var options = InfoOptionsFakes.WithPreventAction(SourceFolderPath, invalidFormatAction, noPhotoTakenDateAction, InfoNoCoordinateAction.PreventProcess);
+		var options = InfoOptionsFakes.WithInputPathAndPreventAction(SourceFolderPath, invalidFormatAction, noPhotoTakenDateAction, InfoNoCoordinateAction.PreventProcess);
 		await CheckPreventActions(allPhotosAreValid, allPhotosHasPhotoTaken, false, options, ExitCode.PhotosWithNoCoordinatePreventedProcess);
 	}
 
@@ -135,7 +139,7 @@ public class InfoRunnerUnitTests
 	public async Task When_NoPhotoDateTimeAction_And_NoCoordinateAction_PreventProcess_And_Both_AllPhotosHasPhotoTaken_AllPhotosHasCoordinate_Are_False_Runner_Should_Exit_With_PhotosWithNoCoordinateAndNoDatePreventedProcess(
 		InfoInvalidFormatAction invalidFormatAction, bool allPhotosAreValid)
 	{
-		var options = InfoOptionsFakes.WithPreventAction(SourceFolderPath, invalidFormatAction, InfoNoPhotoTakenDateAction.PreventProcess, InfoNoCoordinateAction.PreventProcess);
+		var options = InfoOptionsFakes.WithInputPathAndPreventAction(SourceFolderPath, invalidFormatAction, InfoNoPhotoTakenDateAction.PreventProcess, InfoNoCoordinateAction.PreventProcess);
 		await CheckPreventActions(allPhotosAreValid, false, false, options, ExitCode.PhotosWithNoCoordinateAndNoDatePreventedProcess);
 	}
 
@@ -143,13 +147,16 @@ public class InfoRunnerUnitTests
 	{
 		AddSourceDirectory();
 		PhotoCollectorSetupNonEmptyList();
-		_exifDataAppenderMock.Setup(s => s.ExtractExifData(It.IsAny<IReadOnlyList<Photo>>(), out allPhotosAreValidOutValue, out allPhotosHasPhotoTakenOutValue, out allPhotosHasCoordinateOutValue))
-			.Returns(() =>  new[] { PhotoFakes.Valid() });
+
+		_exifDataAppenderMock.Setup(s => s
+			.ExtractExifData(It.IsAny<IReadOnlyList<Photo>>()))
+			.Returns(() => new ExifDataResult(new[] { PhotoFakes.Valid() }, allPhotosAreValidOutValue, allPhotosHasPhotoTakenOutValue, allPhotosHasCoordinateOutValue, null));
+
 		var sut = Initialize(options);
 		var exitCode = await sut.Execute();
 		exitCode.Should().Be(expectedExitCode);
 		PhotoCollectorVerify();
-		_exifDataAppenderMock.Verify(v => v.ExtractExifData(It.IsAny<IReadOnlyList<Photo>>(), out allPhotosAreValidOutValue, out allPhotosHasPhotoTakenOutValue, out allPhotosHasCoordinateOutValue));
+		_exifDataAppenderMock.Verify(v => v.ExtractExifData(It.IsAny<IReadOnlyList<Photo>>()));
 		VerifyNoOtherCalls();
 	}
 

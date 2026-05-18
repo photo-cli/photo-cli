@@ -1,6 +1,5 @@
 using System.IO.Abstractions;
 using FluentValidation;
-using LogLevel = PhotoCli.Options.LogLevel;
 
 namespace PhotoCli.Runners;
 
@@ -27,10 +26,19 @@ public class SettingsRunner : IConsoleRunner
 		{
 			if (_cliOptions.Key == nameof(ToolOptions.LogLevel))
 			{
-				_toolOptions.LogLevel = new LogLevel
+				if (_toolOptions.LogLevel == null)
+					throw new PhotoCliException("LogLevel dictionary should be already initialized or at least as with default values");
+
+				var valuesSplitByEqualSign = _cliOptions.Value.Split("=").Select(s => s.Trim()).ToArray();
+				if (valuesSplitByEqualSign.Length != 2)
 				{
-					Default = _cliOptions.Value
-				};
+					_consoleWriter.WriteError("LogLevel setting requires a value in the format of Namespace=LogLevel, e.g. Default=Information , System.Net.Http.HttpClient=Error");
+					return ExitCode.InvalidSettingsLogLevelChange;
+				}
+				var namespaceValue = valuesSplitByEqualSign[0];
+				var logLevelRaw = valuesSplitByEqualSign[1];
+
+				_toolOptions.LogLevel[namespaceValue] = logLevelRaw;
 			}
 			else
 			{
@@ -42,7 +50,7 @@ public class SettingsRunner : IConsoleRunner
 					var values = _cliOptions.Value.Split(",").Select(s => s.Trim()).ToArray();
 					property.SetValue(_toolOptions, values);
 				}
-				else if(property.PropertyType.BaseType == typeof(ValueType) || property.PropertyType == typeof(string))
+				else if (property.PropertyType.BaseType == typeof(ValueType) || property.PropertyType == typeof(string))
 				{
 					var propertyValue = Convert.ChangeType(_cliOptions.Value, property.PropertyType);
 					property.SetValue(_toolOptions, propertyValue);
@@ -56,6 +64,7 @@ public class SettingsRunner : IConsoleRunner
 			if (!Validate(_toolOptions))
 				return ExitCode.InvalidSettingsValue;
 			await PersistToSettingsFile(_toolOptions);
+			_consoleWriter.WriteSuccess("Settings have been saved");
 		}
 		else if (_cliOptions.Key != null)
 		{
@@ -64,6 +73,8 @@ public class SettingsRunner : IConsoleRunner
 				return ExitCode.PropertyNotFound;
 			if (property.PropertyType.BaseType == typeof(Array))
 				ConsoleWriteArrayProperty(property);
+			else if (property.PropertyType == typeof(Dictionary<string, string>))
+				ConsoleWriteStringDictionary(property, false);
 			else
 				ConsoleWriteBasicProperty(property);
 		}
@@ -71,14 +82,24 @@ public class SettingsRunner : IConsoleRunner
 		{
 			var defaultOptions = ToolOptions.Default();
 			await PersistToSettingsFile(defaultOptions);
+			_consoleWriter.WriteSuccess("Settings have been reset");
 		}
 		else
 		{
-			ConsoleWriteKeyValue(nameof(ToolOptions.LogLevel), _toolOptions.LogLevel.Default);
-			foreach (var property in GetArrayProperties())
+			foreach (var property in typeof(ToolOptions).GetProperties())
+			{
+				if (property.PropertyType.BaseType == typeof(Array))
+					ConsoleWriteArrayProperty(property);
+				else if (property.PropertyType == typeof(Dictionary<string, string>))
+					ConsoleWriteStringDictionary(property, true);
+				else
+					ConsoleWriteBasicProperty(property);
+			}
+
+			/*foreach (var property in GetArrayProperties())
 				ConsoleWriteArrayProperty(property);
 			foreach (var property in GetBasicProperties())
-				ConsoleWriteBasicProperty(property);
+				ConsoleWriteBasicProperty(property);*/
 		}
 
 		return ExitCode.Success;
@@ -87,14 +108,11 @@ public class SettingsRunner : IConsoleRunner
 	private bool Validate(ToolOptions options)
 	{
 		var validationResult = _toolOptionsValidator.Validate(options);
-		if (!validationResult.IsValid)
-		{
-			foreach (var validationResultError in validationResult.Errors)
-				_consoleWriter.Write(validationResultError.ErrorMessage);
-			return false;
-		}
-
-		return true;
+		if (validationResult.IsValid)
+			return true;
+		foreach (var validationResultError in validationResult.Errors)
+			_consoleWriter.WriteError(validationResultError.ToString());
+		return false;
 	}
 
 	private async Task PersistToSettingsFile(ToolOptions options)
@@ -119,20 +137,6 @@ public class SettingsRunner : IConsoleRunner
 		return _cliOptions.Key != null ? typeof(ToolOptions).GetProperty(_cliOptions.Key) : null;
 	}
 
-	private IEnumerable<PropertyInfo> GetBasicProperties()
-	{
-		return typeof(ToolOptions).GetProperties()
-			.Where(w => w.PropertyType.BaseType == typeof(ValueType) || w.PropertyType == typeof(string))
-			.OrderBy(o => o.Name);
-	}
-
-	private IEnumerable<PropertyInfo> GetArrayProperties()
-	{
-		return typeof(ToolOptions).GetProperties()
-			.Where(x => x.PropertyType.BaseType == typeof(Array))
-			.OrderBy(o => o.Name);
-	}
-
 	private void ConsoleWriteBasicProperty(PropertyInfo property)
 	{
 		ConsoleWriteKeyValue(property.Name, property.GetValue(_toolOptions)?.ToString());
@@ -145,8 +149,19 @@ public class SettingsRunner : IConsoleRunner
 		ConsoleWriteKeyValue(property.Name, values);
 	}
 
+	private void ConsoleWriteStringDictionary(PropertyInfo property, bool outputWithDictionaryName)
+	{
+		if (property.GetValue(_toolOptions) is not Dictionary<string, string> dictionary)
+			throw new PhotoCliException($"{property.Name} is not a string dictionary");
+		foreach (var (key, value) in dictionary)
+		{
+			var keyToOutput = outputWithDictionaryName ? $"{property.Name}.{key}" : key;
+			ConsoleWriteKeyValue(keyToOutput, value);
+		}
+	}
+
 	private void ConsoleWriteKeyValue(string key, string? value)
 	{
-		_consoleWriter.Write($"{key}={value}");
+		_consoleWriter.RawWriteLine($"{key}={value}");
 	}
 }

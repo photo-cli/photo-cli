@@ -35,7 +35,7 @@ public class AddressRunnerUnitTests
 				expectedConsoleOutput = validFullResponse;
 				break;
 			case AddressListType.SelectedProperties:
-				_reverseGeocodeServiceMock.Setup(s => s.Get(coordinate)).Returns(() => Task.FromResult(ReverseGeocodeFakes.Valid().AsEnumerable()));
+				_reverseGeocodeServiceMock.Setup(s => s.Get(coordinate, It.IsAny<PhotoFile>())).Returns(() => Task.FromResult(new ReverseGeocodeAddressResult(ReverseGeocodeFakes.Valid().AsEnumerable(), true)));
 				expectedConsoleOutput = $"Country{Environment.NewLine}City{Environment.NewLine}Neighbourhood";
 				break;
 			case AddressListType.AllAvailableProperties:
@@ -53,7 +53,10 @@ public class AddressRunnerUnitTests
 		var sut = new AddressRunner(_photoExifParserServiceMock.Object, _reverseGeocodeServiceMock.Object, options, consoleWriterMock.Object, _fileSystemMock.Object);
 		var exitCode = await sut.Execute();
 		exitCode.Should().Be(ExitCode.Success);
-		consoleWriterMock.Verify(v => v.Write(expectedConsoleOutput));
+		if (addressListType == AddressListType.FullResponse)
+			consoleWriterMock.Verify(v => v.WriteJson(expectedConsoleOutput));
+		else
+			consoleWriterMock.Verify(v => v.Write(expectedConsoleOutput));
 		VerifyAll();
 	}
 

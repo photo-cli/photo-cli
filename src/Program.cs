@@ -1,4 +1,4 @@
-﻿#region Global using
+#region Global using
 
 global using System.Globalization;
 global using System.Net;
@@ -28,9 +28,13 @@ global using PhotoCli.Models.ReverseGeocode;
 using System.IO.Abstractions;
 using CommandLine;
 using FluentValidation;
-using FluentValidation.Results;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Http.Resilience;
+using PhotoCli.McpTools;
+using PhotoCli.Utils.Logging;
 using Polly;
+using Spectre.Console;
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 #endregion
 
@@ -40,75 +44,92 @@ public static class Program
 {
 	public static Task<int> Main(string[] args)
 	{
-		return MainStream(args, Console.Out);
+		return Main(args, AnsiConsole.Console);
 	}
 
-	public static Task<int> MainStream(string[] args, TextWriter textWriter)
+	public static Task<int> Main(IReadOnlyList<string> args, IAnsiConsole ansiConsole)
 	{
-		if (!ParseArgs(args, textWriter, out var baseOptions, out var exitCode))
+		if (!ParseArgs(args, out var baseOptions, out var exitCode, ansiConsole))
 			return ReturnExitCode(exitCode);
 
 		IHost host;
 		switch (baseOptions)
 		{
 			case AddressOptions reverseGeocodeOptions:
-			{
-				var validationResultReverseGeocode = new AddressOptionsValidator().Validate(reverseGeocodeOptions);
-				if (!validationResultReverseGeocode.IsValid)
 				{
-					WriteErrorOutputValidationErrors(validationResultReverseGeocode, textWriter);
-					return ReturnExitCode(ExitCode.AddressOptionsValidationFailed);
-				}
+					var validationResultReverseGeocode = new AddressOptionsValidator().Validate(reverseGeocodeOptions);
+					if (!validationResultReverseGeocode.IsValid)
+					{
+						WriteErrorOutputValidationErrors(validationResultReverseGeocode);
+						return ReturnExitCode(ExitCode.AddressOptionsValidationFailed);
+					}
 
-				host = BuildHostWithReverseGeocode<AddressRunner, AddressOptions>(reverseGeocodeOptions, textWriter);
-				break;
-			}
+					host = BuildHostWithReverseGeocode<AddressRunner, AddressOptions>(reverseGeocodeOptions, false, ansiConsole);
+					break;
+				}
 			case InfoOptions infoOptions:
 				var validationResultInfo = new InfoOptionsValidator().Validate(infoOptions);
 				if (!validationResultInfo.IsValid)
 				{
-					WriteErrorOutputValidationErrors(validationResultInfo, textWriter);
+					WriteErrorOutputValidationErrors(validationResultInfo);
 					return ReturnExitCode(ExitCode.InfoOptionsValidationFailed);
 				}
-
-				host = BuildHostWithReverseGeocode<InfoRunner, InfoOptions>(infoOptions, textWriter);
+				host = BuildHostWithReverseGeocode<InfoRunner, InfoOptions>(infoOptions, false, ansiConsole);
 				break;
 			case CopyOptions copyOptions:
-			{
-				var validationResultCopy = new CopyOptionsValidator().Validate(copyOptions);
-				if (!validationResultCopy.IsValid)
 				{
-					WriteErrorOutputValidationErrors(validationResultCopy, textWriter);
-					return ReturnExitCode(ExitCode.CopyOptionsValidationFailed);
+					var validationResultCopy = new CopyOptionsValidator().Validate(copyOptions);
+					if (!validationResultCopy.IsValid)
+					{
+						WriteErrorOutputValidationErrors(validationResultCopy);
+						return ReturnExitCode(ExitCode.CopyOptionsValidationFailed);
+					}
+					host = BuildHostWithReverseGeocode<CopyRunner, CopyOptions>(copyOptions, false, ansiConsole);
+					break;
 				}
-
-				host = BuildHostWithReverseGeocode<CopyRunner, CopyOptions>(copyOptions, textWriter);
-				break;
-			}
 			case ArchiveOptions archiveOptions:
-			{
-				var validationResultCopy = new ArchiveOptionsValidator().Validate(archiveOptions);
-				if (!validationResultCopy.IsValid)
 				{
-					WriteErrorOutputValidationErrors(validationResultCopy, textWriter);
-					return ReturnExitCode(ExitCode.ArchiveOptionsValidationFailed);
+					var validationResultCopy = new ArchiveOptionsValidator().Validate(archiveOptions);
+					if (!validationResultCopy.IsValid)
+					{
+						WriteErrorOutputValidationErrors(validationResultCopy);
+						return ReturnExitCode(ExitCode.ArchiveOptionsValidationFailed);
+					}
+					host = BuildHostWithReverseGeocode<ArchiveRunner, ArchiveOptions>(archiveOptions, true, ansiConsole, new ArchiveDatabaseOptions(archiveOptions.OutputPath));
+					break;
 				}
-
-				host = BuildHostWithReverseGeocode<ArchiveRunner, ArchiveOptions>(archiveOptions, textWriter);
-				break;
-			}
 			case SettingsOptions settingsOptions:
-			{
-				var validationResultSettings = new SettingsOptionsValidator().Validate(settingsOptions);
-				if (!validationResultSettings.IsValid)
 				{
-					WriteErrorOutputValidationErrors(validationResultSettings, textWriter);
-					return ReturnExitCode(ExitCode.SettingsOptionsValidationFailed);
+					var validationResultSettings = new SettingsOptionsValidator().Validate(settingsOptions);
+					if (!validationResultSettings.IsValid)
+					{
+						WriteErrorOutputValidationErrors(validationResultSettings);
+						return ReturnExitCode(ExitCode.SettingsOptionsValidationFailed);
+					}
+					host = BuildHost<SettingsRunner, SettingsOptions>(settingsOptions, ansiConsole);
+					break;
 				}
-
-				host = BuildHost<SettingsRunner, SettingsOptions>(settingsOptions, textWriter);
-				break;
-			}
+			case ListOptions listOptions:
+				{
+					var validationResultSettings = new ListOptionsValidator().Validate(listOptions);
+					if (!validationResultSettings.IsValid)
+					{
+						WriteErrorOutputValidationErrors(validationResultSettings);
+						return ReturnExitCode(ExitCode.SettingsOptionsValidationFailed);
+					}
+					host = BuildHost<ListRunner, ListOptions>(listOptions, ansiConsole, new ArchiveDatabaseOptions(listOptions.ArchivePath));
+					break;
+				}
+			case McpOptions mcpOptions:
+				{
+					var validationResultMcp = new McpOptionsValidator().Validate(mcpOptions);
+					if (!validationResultMcp.IsValid)
+					{
+						WriteErrorOutputValidationErrors(validationResultMcp);
+						return ReturnExitCode(ExitCode.McpOptionsValidationFailed);
+					}
+					return RunMcpServer(mcpOptions);
+				}
 			default:
 				throw new PhotoCliException($"Not defined: {baseOptions}");
 		}
@@ -117,23 +138,25 @@ public static class Program
 		return MainWithServiceProvider(serviceScope.ServiceProvider);
 	}
 
-	private static void WriteErrorOutputValidationErrors(ValidationResult validationResult, TextWriter textWriter)
+	private static void WriteErrorOutputValidationErrors(ValidationResult validationResult)
 	{
+		var ansiConsoleExtended = new AnsiConsoleExtended(AnsiConsole.Console);
 		foreach (var validationResultError in validationResult.Errors)
-			textWriter.WriteLine(validationResultError);
+			ansiConsoleExtended.WriteLine(validationResultError.ErrorMessage, Color.Red);
 	}
 
 	public static async Task<int> MainWithServiceProvider(IServiceProvider serviceProvider)
 	{
+		var consoleWriter = serviceProvider.GetRequiredService<IConsoleWriter>();
 		var toolOptions = serviceProvider.GetRequiredService<ToolOptions>();
 		var toolOptionsValidator = serviceProvider.GetRequiredService<IValidator<ToolOptions>>();
 
 		var toolOptionsValidationResult = toolOptionsValidator.Validate(toolOptions);
 		if (!toolOptionsValidationResult.IsValid)
 		{
-			Console.Error.WriteLine($"{Constants.AppSettingsFileName} has some invalid settings. Undo or reset all settings via `{OptionNames.ApplicationAlias} {OptionNames.SettingsVerb} --{OptionNames.ResetOptionNameLong}`");
+			consoleWriter.WriteError($"{Constants.AppSettingsFileName} has some invalid settings. Undo or reset all settings via `{OptionNames.ApplicationAlias} {OptionNames.SettingsVerb} --{OptionNames.ResetOptionNameLong}`");
 			foreach (var validationResultError in toolOptionsValidationResult.Errors)
-				Console.Error.WriteLine(validationResultError);
+				consoleWriter.WriteError(validationResultError.ToString());
 			return (int)ExitCode.AppSettingsInvalidFile;
 		}
 
@@ -150,30 +173,46 @@ public static class Program
 
 		var consoleRunner = serviceProvider.GetRequiredService<IConsoleRunner>();
 		var logger = serviceProvider.GetRequiredService<ILogger<IConsoleRunner>>();
-		var consoleWriter = serviceProvider.GetRequiredService<IConsoleWriter>();
-		var exitCode = await consoleRunner.Execute();
+		ExitCode exitCode;
+		try
+		{
+			exitCode = await AnsiConsole.Status()
+				.Spinner(Spinner.Known.Dots2)
+				.SpinnerStyle(Style.Parse("blue"))
+				.StartAsync("-",
+					async spectreStatusContext =>
+					{
+						consoleWriter.InitializeSpectreContext(spectreStatusContext);
+						return await consoleRunner.Execute();
+					});
+		}
+		catch (Exception e)
+		{
+			logger.LogCritical(e, "Unhandled exception");
+			exitCode = ExitCode.UnexpectedError;
+		}
 		var exitCodeValue = (int)exitCode;
 		if (exitCode != ExitCode.Success)
-			consoleWriter.Write($"Process failed with a error code {exitCodeValue} ({exitCode})");
+			consoleWriter.WriteError($"Process failed with a error code {exitCodeValue} ({exitCode})");
 		else
 			logger.LogInformation("{Type}, exists with code {ProcessCode} ({ExitCodeEnum})", consoleRunner.GetType().Name, exitCodeValue, exitCode);
-
 		return exitCodeValue;
 	}
 
-	public static IHost BuildHost<TConsoleRunner, TOptions>(TOptions options, TextWriter textWriter) where TOptions : class where TConsoleRunner : IConsoleRunner
+	public static IHost BuildHost<TConsoleRunner, TOptions>(TOptions options, IAnsiConsole ansiConsole, ArchiveDatabaseOptions? archiveDatabaseOptions = null)
+		where TOptions : class where TConsoleRunner : IConsoleRunner
 	{
-		return BuildHostCore<TConsoleRunner>(textWriter, (services, _) =>
+		return BuildHostCore<TConsoleRunner>((services, _) =>
 		{
 			services.AddSingleton(options);
 			services.AddSingleton(new ApiKeyStore());
-		});
+		}, ansiConsole, archiveDatabaseOptions);
 	}
 
-	public static IHost BuildHostWithReverseGeocode<TConsoleRunner, TOptions>(TOptions options, TextWriter textWriter)
-		where TOptions : class, IReverseGeocodeOptions where TConsoleRunner : IConsoleRunner
+	public static IHost BuildHostWithReverseGeocode<TConsoleRunner, TOptions>(TOptions options, bool useDbReverseGeocodeCache, IAnsiConsole ansiConsole,
+		ArchiveDatabaseOptions? archiveDatabaseOptions = null) where TOptions : class, IReverseGeocodeOptions where TConsoleRunner : IConsoleRunner
 	{
-		return BuildHostCore<TConsoleRunner>(textWriter, (services, configuration) =>
+		return BuildHostCore<TConsoleRunner>((services, configuration) =>
 		{
 			services.AddSingleton<IReverseGeocodeOptions>(options);
 			services.AddSingleton(options);
@@ -183,9 +222,18 @@ public static class Program
 			var apiKeyStore = ApiKeyStore.Build(configuration, options);
 			services.AddSingleton(apiKeyStore);
 
-			services.AddSingleton<ICoordinateCache<BigDataCloudResponse>, CoordinateCache<BigDataCloudResponse>>();
-			services.AddSingleton<ICoordinateCache<GoogleMapsResponse>, CoordinateCache<GoogleMapsResponse>>();
-			services.AddSingleton<ICoordinateCache<OpenStreetMapResponse>, CoordinateCache<OpenStreetMapResponse>>();
+			if (useDbReverseGeocodeCache)
+			{
+				services.AddSingleton<IReverseGeocodeCache<BigDataCloudResponse>, ReverseGeocodeCacheDatabase<BigDataCloudResponse>>();
+				services.AddSingleton<IReverseGeocodeCache<GoogleMapsResponse>, ReverseGeocodeCacheDatabase<GoogleMapsResponse>>();
+				services.AddSingleton<IReverseGeocodeCache<OpenStreetMapResponse>, ReverseGeocodeCacheDatabase<OpenStreetMapResponse>>();
+			}
+			else
+			{
+				services.AddSingleton<IReverseGeocodeCache<BigDataCloudResponse>, ReverseGeocodeCacheMemory<BigDataCloudResponse>>();
+				services.AddSingleton<IReverseGeocodeCache<GoogleMapsResponse>, ReverseGeocodeCacheMemory<GoogleMapsResponse>>();
+				services.AddSingleton<IReverseGeocodeCache<OpenStreetMapResponse>, ReverseGeocodeCacheMemory<OpenStreetMapResponse>>();
+			}
 
 			var agent = UserAgent.Instance();
 
@@ -214,7 +262,7 @@ public static class Program
 			}).AddResilience();
 
 			#endregion
-		});
+		}, ansiConsole, archiveDatabaseOptions);
 	}
 
 	private static IHttpClientBuilder AddResilience(this IHttpClientBuilder httpClientBuilder)
@@ -232,7 +280,8 @@ public static class Program
 		return httpClientBuilder;
 	}
 
-	private static IHost BuildHostCore<TConsoleRunner>(TextWriter textWriter, Action<IServiceCollection, IConfigurationRoot>? additionalConfigureServices) where TConsoleRunner : IConsoleRunner
+	private static IHost BuildHostCore<TConsoleRunner>(Action<IServiceCollection, IConfigurationRoot>? additionalConfigureServices, IAnsiConsole ansiConsole,
+		ArchiveDatabaseOptions? archiveDatabaseOptions = null) where TConsoleRunner : IConsoleRunner
 	{
 		Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
 
@@ -245,17 +294,9 @@ public static class Program
 
 			services.Configure<ToolOptionsRaw>(configuration);
 
-			services.AddLogging(o =>
-			{
-				o.AddConsole();
-				o.AddDebug();
-				o.AddConfiguration(configuration);
-			});
-
-			services.AddSingleton(configuration);
 			var toolOptionsRaw = configuration.Get<ToolOptionsRaw>() ?? new ToolOptionsRaw();
 			var toolOptions = new ToolOptions(toolOptionsRaw);
-			services.AddSingleton(toolOptions);
+
 			services.AddTransient(typeof(IConsoleRunner), typeof(TConsoleRunner));
 			services.AddTransient<IFileSystem, FileSystem>();
 			services.AddTransient<IExifParserService, ExifParserService>();
@@ -274,21 +315,29 @@ public static class Program
 			services.AddTransient<IValidator<ToolOptions>, ToolOptionsValidator>();
 			services.AddTransient<IDuplicatePhotoRemoveService, DuplicatePhotoRemoveService>();
 			services.AddTransient<IDbService, DbService>();
+			services.AddTransient<IProcessLauncher, ProcessLauncher>();
+
+			services.AddSingleton(configuration);
+			services.AddSingleton(toolOptions);
 			services.AddSingleton<IArchiveDbContextProvider, ArchiveDbContextProvider>();
 			services.AddSingleton<ISQLiteConnectionStringProvider, ArchiveIsqLiteConnectionStringProvider>();
-
-			services.AddSingleton(textWriter);
 			services.AddSingleton<IConsoleWriter, ConsoleWriter>();
 			services.AddSingleton<Statistics>();
+			services.AddSingleton<ILoggerProvider, AnsiConsoleLoggerProvider>();
+			services.AddSingleton(ansiConsole);
+			services.AddSingleton<AnsiConsoleExtended>();
 
 			additionalConfigureServices?.Invoke(services, configuration);
+
+			if (archiveDatabaseOptions != null)
+				services.AddSingleton(archiveDatabaseOptions);
 		});
 		return builder.UseConsoleLifetime().Build();
 	}
 
-	private static bool ParseArgs(IReadOnlyList<string> args, TextWriter textWriter, out object parsedObject, out ExitCode exitCode)
+	private static bool ParseArgs(IReadOnlyList<string> args, out object parsedObject, out ExitCode exitCode, IAnsiConsole ansiConsole)
 	{
-		var commandLineArgsParsed = Parser.Default.ParseArguments<CopyOptions, InfoOptions, ArchiveOptions, AddressOptions, SettingsOptions>(args);
+		var commandLineArgsParsed = Parser.Default.ParseArguments<CopyOptions, InfoOptions, ArchiveOptions, AddressOptions, SettingsOptions, ListOptions, McpOptions>(args);
 		if (commandLineArgsParsed.Tag == ParserResultType.NotParsed)
 		{
 			var notParsedResult = (NotParsed<object>)commandLineArgsParsed;
@@ -297,12 +346,12 @@ public static class Program
 				switch (args.Count)
 				{
 					case 1:
-						HelpTextBuilder.ExtendedHelpWritingToConsole(textWriter);
+						HelpTextBuilder.ExtendedHelpWritingToConsole(ansiConsole);
 						break;
 					case 2:
 						var helpVerb = args[1];
 						// Can't use CommandLineParser's UsageExamples when using Nullable Reference Types. ref: https://github.com/commandlineparser/commandline/issues/714 , we are building on our own.
-						HelpTextBuilder.ExampleUsages(helpVerb, textWriter);
+						HelpTextBuilder.ExampleUsages(helpVerb, ansiConsole);
 						break;
 				}
 
@@ -311,7 +360,7 @@ public static class Program
 			else
 			{
 				if (args.Count == 0)
-					HelpTextBuilder.ExtendedHelpWritingToConsole(textWriter);
+					HelpTextBuilder.ExtendedHelpWritingToConsole(ansiConsole);
 				exitCode = ExitCode.ParseArgsFailed;
 			}
 			parsedObject = null!;
@@ -326,5 +375,28 @@ public static class Program
 	private static Task<int> ReturnExitCode(ExitCode exitCode)
 	{
 		return Task.FromResult((int)exitCode);
+	}
+
+	private static async Task<int> RunMcpServer(McpOptions options)
+	{
+		var dbPath = Path.Combine(options.ArchivePath, Constants.ArchiveSQLiteDatabaseFileName);
+		var builder = Host.CreateApplicationBuilder();
+		builder.Logging.ClearProviders();
+		builder.Services.AddDbContext<ArchiveDbContext>(o => o.UseSqlite($"Data Source={dbPath}"));
+		builder.Services.AddScoped<IArchiveDbContextProvider, McpArchiveDbContextProvider>();
+		builder.Services.AddSingleton(ToolOptions.Default());
+		builder.Services.AddSingleton(options);
+		builder.Services.AddSingleton(new Statistics());
+		builder.Services.AddSingleton<IConsoleWriter, NullConsoleWriter>();
+		builder.Services.AddSingleton<IProcessLauncher, ProcessLauncher>();
+		builder.Services.AddScoped<IDbService, DbService>();
+
+		builder.Services
+			.AddMcpServer()
+			.WithStdioServerTransport()
+			.WithTools<ArchiveMcpTools>();
+
+		await builder.Build().RunAsync();
+		return (int)ExitCode.Success;
 	}
 }

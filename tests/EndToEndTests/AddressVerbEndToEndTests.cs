@@ -2,10 +2,6 @@ namespace PhotoCli.Tests.EndToEndTests;
 
 public class AddressVerbEndToEndTests : BaseEndToEndTests
 {
-	public AddressVerbEndToEndTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-	{
-	}
-
 	public static TheoryData<string[]> FullResponse = new()
 	{
 		CommandLineArgumentsFakes.AddressBuildCommandLineOptions(TestImagesPathHelper.HasGpsCoordinate.FilePath, AddressListType.FullResponse, ReverseGeocodeProvider.BigDataCloud, BigDataCloudAdminLevelsFakes.Valid())
@@ -15,7 +11,7 @@ public class AddressVerbEndToEndTests : BaseEndToEndTests
 	[MemberData(nameof(FullResponse))]
 	public async Task Full_Response_Should_Be_Valid_BigDataCloud_Response(string[] args)
 	{
-		var actualOutput = await RunMain(args);
+		var actualOutput = await RunMainRaw(args);
 		var bigDataCloudResponse = JsonSerializer.Deserialize<BigDataCloudResponse>(actualOutput);
 		bigDataCloudResponse.Verify();
 	}
@@ -30,7 +26,7 @@ public class AddressVerbEndToEndTests : BaseEndToEndTests
 	[MemberData(nameof(SelectedProperties))]
 	public async Task Listing_Selected_Properties_Each_Line_Should_Be_Valid_Word(string[] args)
 	{
-		var actualOutput = await RunMain(args);
+		var actualOutput = await RunMainRaw(args);
 		OutputEachLineShouldMatchWithRegex(actualOutput, @"^[\w0-9- ]*$");
 	}
 
@@ -43,7 +39,7 @@ public class AddressVerbEndToEndTests : BaseEndToEndTests
 	[MemberData(nameof(AllProperties))]
 	public async Task Listing_All_Properties_Each_Line_Should_Match_With_AdminLevel_And_Its_Value(string[] args)
 	{
-		var actualOutput = await RunMain(args);
+		var actualOutput = await RunMainRaw(args);
 		OutputEachLineShouldMatchWithRegex(actualOutput, @"^AdminLevel\d: [\w0-9- ]*$");
 	}
 
@@ -70,7 +66,7 @@ public class AddressVerbEndToEndTests : BaseEndToEndTests
 	[MemberData(nameof(NotExistingImage))]
 	public async Task NotExistingImage_Should_Exit_With_InputFileNotExists_And_Output_Should_Match_With_Expected(string[] args, string expectedOutput)
 	{
-		var actualOutput = await RunMain(args, ExitCode.InputFileNotExists);
+		var actualOutput = await RunMainRaw(args, ExitCode.InputFileNotExists);
 		StringsShouldMatchDiscardingLineEndings(actualOutput, expectedOutput);
 	}
 }

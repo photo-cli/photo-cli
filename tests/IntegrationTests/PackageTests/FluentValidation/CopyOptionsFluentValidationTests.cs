@@ -2,6 +2,12 @@ namespace PhotoCli.Tests.IntegrationTests.PackageTests.FluentValidation;
 
 public class CopyOptionsFluentValidationTests : BaseFluentValidationTests<CopyOptions, CopyOptionsValidator>
 {
+	private const string FolderAppendTypeInfo = "FolderAppendType ( --folder-append or -a )";
+	private const string FolderAppendLocationTypeInfo = "FolderAppendLocationType ( --folder-append-location or -p )";
+	private const string ReverseGeocodeInfo = "ReverseGeocodeProvider ( --reverse-geocode or -e )";
+	private const string FolderAppendTypeWithMatchingMinimumAddressInfo = "FolderAppendType ( --folder-append or -a ) with value MatchingMinimumAddress";
+	private const string GroupByFolderTypeWithAddressFlatInfo = "GroupByFolderType ( --group-by or -g ) with value AddressFlat";
+
 	#region Valid
 
 	#region PhotoTakenDate
@@ -174,17 +180,15 @@ public class CopyOptionsFluentValidationTests : BaseFluentValidationTests<CopyOp
 	[Fact]
 	public void When_Using_FolderAppendType_Not_Using_FolderAppendLocationType_Should_Give_NullValidator_And_Verify_Error_Message()
 	{
-		var options = CopyOptionsFakes.Create(folderProcessTypeRequired: FolderProcessTypeFakes.OtherThanSingle(),
-			folderAppendTypeOptional: FolderAppendTypeFakes.Valid());
-		CheckPropertyNotNull(options, nameof(CopyOptions.FolderAppendLocationType), MustUseMessage(nameof(FolderAppendLocationType), nameof(FolderAppendType), "folder-append-location", 'p'));
+		var options = CopyOptionsFakes.Create(folderProcessTypeRequired: FolderProcessTypeFakes.OtherThanSingle(), folderAppendTypeOptional: FolderAppendTypeFakes.Valid());
+		CheckPropertyNotNull(options, nameof(CopyOptions.FolderAppendLocationType), MustUseMessage(FolderAppendLocationTypeInfo, FolderAppendTypeInfo));
 	}
 
 	[Fact]
 	public void When_Using_FolderAppendLocationType_Not_Using_FolderAppendType_Should_Give_NullValidator_And_Verify_Error_Message()
 	{
-		var options = CopyOptionsFakes.Create(folderProcessTypeRequired: FolderProcessTypeFakes.OtherThanSingle(),
-			folderAppendLocationTypeOptional: FolderAppendLocationTypeFakes.Valid());
-		CheckPropertyNotNull(options, nameof(CopyOptions.FolderAppendType), MustUseMessage(nameof(FolderAppendType), nameof(FolderAppendLocationType), "folder-append", 'a'));
+		var options = CopyOptionsFakes.Create(folderProcessTypeRequired: FolderProcessTypeFakes.OtherThanSingle(), folderAppendLocationTypeOptional: FolderAppendLocationTypeFakes.Valid());
+		CheckPropertyNotNull(options, nameof(CopyOptions.FolderAppendType), MustUseMessage(FolderAppendTypeInfo, FolderAppendLocationTypeInfo));
 	}
 
 	[Fact]
@@ -207,7 +211,7 @@ public class CopyOptionsFluentValidationTests : BaseFluentValidationTests<CopyOp
 	public void When_Using_GroupByFolderType_Address_NotUsing_ReverseGeocodeProvider_Should_Give_PredicateValidator_And_Verify_Error_Message()
 	{
 		var options = CopyOptionsFakes.Create(groupByFolderTypeOptional: GroupByFolderType.AddressFlat);
-		CheckPropertyInvalidValue(options, nameof(CopyOptions.ReverseGeocodeProvider), MustUseMessage(nameof(ReverseGeocodeProvider), nameof(GroupByFolderType.AddressFlat), "reverse-geocode", 'e'));
+		CheckPropertyInvalidValue(options, nameof(CopyOptions.ReverseGeocodeProvider), MustUseMessage(ReverseGeocodeInfo, GroupByFolderTypeWithAddressFlatInfo));
 	}
 
 	[Theory]
@@ -221,43 +225,47 @@ public class CopyOptionsFluentValidationTests : BaseFluentValidationTests<CopyOp
 	public void When_Using_NamingStyle_As_One_Of_Address_Options_NotUsing_ReverseGeocodeProvider_Should_Give_PredicateValidator_And_Verify_Error_Message(NamingStyle namingStyle)
 	{
 		var options = CopyOptionsFakes.Create(namingStyleRequired: namingStyle);
-		CheckPropertyInvalidValue(options, nameof(CopyOptions.ReverseGeocodeProvider), MustUseMessage(nameof(ReverseGeocodeProvider), nameof(NamingStyle.Address), "reverse-geocode", 'e'));
+		var namingStyleAsAddressInfo = "NamingStyle ( --naming-style or -s ) with value Address";
+		CheckPropertyInvalidValue(options, nameof(CopyOptions.ReverseGeocodeProvider), MustUseMessage(ReverseGeocodeInfo, namingStyleAsAddressInfo));
 	}
 
 	[Fact]
 	public void When_Using_FolderAppendType_MatchingMinimumAddress_NotUsing_ReverseGeocodeProvider_Should_Give_PredicateValidator_And_Verify_Error_Message()
 	{
 		var options = CopyOptionsFakes.Create(folderAppendTypeOptional: FolderAppendType.MatchingMinimumAddress);
-		CheckPropertyInvalidValue(options, nameof(CopyOptions.ReverseGeocodeProvider), MustUseMessage(nameof(ReverseGeocodeProvider), nameof(FolderAppendType.MatchingMinimumAddress),
-			"reverse-geocode", 'e'));
+		CheckPropertyInvalidValue(options, nameof(CopyOptions.ReverseGeocodeProvider), MustUseMessage(ReverseGeocodeInfo, FolderAppendTypeWithMatchingMinimumAddressInfo));
+	}
+
+	[Fact]
+	public void WhenUsingMissingReverseGeocodeActionOtherThanContinueNotUsingReverseGeocodeProvider_ShouldGivePredicateValidatorAndVerifyErrorMessage()
+	{
+		var options = CopyOptionsFakes.Create(missingReverseGeocodeAction: MissingReverseGeocodeAction.PreventProcess);
+		CheckPropertyInvalidValue(options, nameof(CopyOptions.ReverseGeocodeProvider), MustUseMessage(ReverseGeocodeProviderInfo, MissingReverseGeocodeActionInfo));
 	}
 
 	#region ReverseGeocode Providers
 
 	[Fact]
-	public void When_Using_BigDataCloud_Not_Using_BigDataCloudAdminLevels_Should_Give_NullValidator_And_Verify_Error_Message()
+	public void WhenUsingBigDataCloudWithoutBigDataCloudAdminLevels_ShouldGiveNullValidatorAndVerifyErrorMessage()
 	{
-		var options = CopyOptionsFakes.WithReverseGeocodeService();
-		CheckPropertyNotEmpty(options, nameof(CopyOptions.BigDataCloudAdminLevels), MustUseMessage(nameof(CopyOptions.BigDataCloudAdminLevels), nameof(ReverseGeocodeProvider.BigDataCloud),
-			"bigdatacloud-levels", 'u'));
+		var options = CopyOptionsFakes.WithReverseGeocodeService(ReverseGeocodeProvider.BigDataCloud);
+		CheckPropertyNotEmpty(options, nameof(CopyOptions.BigDataCloudAdminLevels), MustUseMessage(BigDataCloudAdminLevelInfo, ReverseGeocodeWithBigDataCloudInfo));
 	}
 
 	[Theory]
 	[InlineData(ReverseGeocodeProvider.OpenStreetMapFoundation)]
 	[InlineData(ReverseGeocodeProvider.LocationIq)]
-	public void When_Using_OpenStreetMap_Not_Using_OpenStreetMapProperties_Should_Give_NullValidator_And_Verify_Error_Message(ReverseGeocodeProvider reverseGeocodeProvider)
+	public void WhenUsingOpenStreetMapWithoutOpenStreetMapProperties_ShouldGiveNullValidatorAndVerifyErrorMessage(ReverseGeocodeProvider reverseGeocodeProvider)
 	{
-		var commandLineOptions = CopyOptionsFakes.WithReverseGeocodeService(reverseGeocodeProvider);
-		CheckPropertyNotEmpty(commandLineOptions, nameof(CopyOptions.OpenStreetMapProperties), MustUseMessage(nameof(CopyOptions.OpenStreetMapProperties), reverseGeocodeProvider.ToString(),
-			"openstreetmap-properties", 'r'));
+		var options = CopyOptionsFakes.WithReverseGeocodeService(reverseGeocodeProvider);
+		CheckPropertyNotEmpty(options, nameof(CopyOptions.OpenStreetMapProperties), MustUseMessage(OpenStreetMapPropertiesInfo, ReverseGeocodeProviderInfoWithValue(reverseGeocodeProvider)));
 	}
 
 	[Fact]
-	public void When_Using_GoogleMaps_Not_Using_GoogleMapsAddressTypes_Should_Give_NullValidator_And_Verify_Error_Message()
+	public void WhenUsingGoogleMapsWithoutGoogleMapsAddressTypes_ShouldGiveNullValidatorAndVerifyErrorMessage()
 	{
-		var commandLineOptions = CopyOptionsFakes.WithReverseGeocodeService(ReverseGeocodeProvider.GoogleMaps);
-		CheckPropertyNotEmpty(commandLineOptions, nameof(CopyOptions.GoogleMapsAddressTypes),
-			MustUseMessage(nameof(CopyOptions.GoogleMapsAddressTypes), nameof(ReverseGeocodeProvider.GoogleMaps), "googlemaps-types", 'm'));
+		var options = CopyOptionsFakes.WithReverseGeocodeService(ReverseGeocodeProvider.GoogleMaps);
+		CheckPropertyNotEmpty(options, nameof(CopyOptions.GoogleMapsAddressTypes), MustUseMessage(GoogleMapsAddressTypeInfo, ReverseGeocodeProviderWithGoogleMapsInfo));
 	}
 
 	#endregion
@@ -302,28 +310,7 @@ public class CopyOptionsFluentValidationTests : BaseFluentValidationTests<CopyOp
 	public void Null_OutputFolderPath_Should_Give_NotNullValidator_Error()
 	{
 		var commandLineOptions = CopyOptionsFakes.Create(null!);
-		CheckPropertyNotNull(commandLineOptions, nameof(CopyOptions.OutputPath),Required(nameof(CopyOptions.OutputPath), "output", 'o'));
-	}
-
-	[Fact]
-	public void Unset_NamingStyle_Should_Give_PredicateValidator_And_Verify_Error_Message()
-	{
-		var commandLineOptions = CopyOptionsFakes.Create(namingStyleRequired: NamingStyle.Unset);
-		CheckPropertyInvalidValue(commandLineOptions, nameof(CopyOptions.NamingStyle), Required(nameof(CopyOptions.NamingStyle), "naming-style", 's'));
-	}
-
-	[Fact]
-	public void Unset_FolderProcessType_Should_Give_PredicateValidator_And_Verify_Error_Message()
-	{
-		var commandLineOptions = CopyOptionsFakes.Create(folderProcessTypeRequired: FolderProcessType.Unset);
-		CheckPropertyInvalidValue(commandLineOptions, nameof(CopyOptions.FolderProcessType), Required(nameof(CopyOptions.FolderProcessType), "process-type", 'f'));
-	}
-
-	[Fact]
-	public void Unset_NumberNaming_Should_Give_PredicateValidator_And_Verify_Error_Message()
-	{
-		var commandLineOptions = CopyOptionsFakes.Create(numberNamingTextStyleRequired: NumberNamingTextStyle.Unset);
-		CheckPropertyInvalidValue(commandLineOptions, nameof(CopyOptions.NumberNamingTextStyle), Required(nameof(CopyOptions.NumberNamingTextStyle), "number-style", 'n'));
+		CheckPropertyRequiredString(commandLineOptions, nameof(CopyOptions.OutputPath), Required(nameof(CopyOptions.OutputPath), "output", 'o'));
 	}
 
 	#endregion
@@ -331,58 +318,126 @@ public class CopyOptionsFluentValidationTests : BaseFluentValidationTests<CopyOp
 	#region Enum Value Invalid Range
 
 	[Fact]
-	public void NamingStyle_Invalid_Range_Should_Give_EnumValidator_Error()
+	public void InvalidRangeForNamingStyle_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
 	{
-		var commandLineOptions = CopyOptionsFakes.Create(namingStyleRequired: (NamingStyle)byte.MaxValue);
-		CheckPropertyInvalidEnumValue(commandLineOptions, nameof(CopyOptions.NamingStyle));
+		var options = CopyOptionsFakes.Create(namingStyleRequired: (NamingStyle)byte.MaxValue);
+		CheckEnumInvalidRangeValue<NamingStyle>(options, nameof(CopyOptions.NamingStyle), true);
 	}
 
 	[Fact]
-	public void FolderProcessType_Invalid_Range_Should_Give_EnumValidator_Error()
+	public void InvalidRangeForFolderProcessType_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
 	{
-		var commandLineOptions = CopyOptionsFakes.Create(folderProcessTypeRequired: (FolderProcessType)byte.MaxValue);
-		CheckPropertyInvalidEnumValue(commandLineOptions, nameof(CopyOptions.FolderProcessType));
+		var options = CopyOptionsFakes.Create(folderProcessTypeRequired: (FolderProcessType)byte.MaxValue);
+		CheckEnumInvalidRangeValue<FolderProcessType>(options, nameof(CopyOptions.FolderProcessType), true);
 	}
 
 	[Fact]
-	public void NoPhotoDateTimeTakenAction_Invalid_Range_Should_Give_EnumValidator_Error()
+	public void InvalidRangeForNumberNamingTextStyle_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
 	{
-		var commandLineOptions = CopyOptionsFakes.Create(noPhotoTakenDateActionOptional: (CopyNoPhotoTakenDateAction)byte.MaxValue);
-		CheckPropertyInvalidEnumValue(commandLineOptions, nameof(CopyOptions.NoPhotoTakenDateAction));
+		var options = CopyOptionsFakes.Create(numberNamingTextStyleRequired: (NumberNamingTextStyle)byte.MaxValue);
+		CheckEnumInvalidRangeValue<NumberNamingTextStyle>(options, nameof(CopyOptions.NumberNamingTextStyle), true);
 	}
 
 	[Fact]
-	public void NumberNamingTextStyle_Invalid_Range_Should_Give_EnumValidator_Error()
+	public void InvalidRangeForCopyInvalidFormatAction_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
 	{
-		var commandLineOptions = CopyOptionsFakes.Create(numberNamingTextStyleRequired: (NumberNamingTextStyle)byte.MaxValue);
-		CheckPropertyInvalidEnumValue(commandLineOptions, nameof(CopyOptions.NumberNamingTextStyle));
+		var options = CopyOptionsFakes.Create(invalidFormatActionOptional: (CopyInvalidFormatAction)byte.MaxValue);
+		CheckEnumInvalidRangeValue<CopyInvalidFormatAction>(options, nameof(CopyOptions.InvalidFileFormatAction), false);
 	}
 
 	[Fact]
-	public void GroupByFolderType_Invalid_Range_Should_Give_EnumValidator_Error()
+	public void InvalidRangeForNoPhotoTakenDateAction_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
 	{
-		var commandLineOptions = CopyOptionsFakes.Create(
-			folderProcessTypeRequired: FolderProcessTypeFakes.OtherThanSubFoldersPreserveFolderHierarchy(), groupByFolderTypeOptional: (GroupByFolderType)byte.MaxValue);
-		CheckPropertyInvalidEnumValue(commandLineOptions, nameof(CopyOptions.GroupByFolderType));
+		var options = CopyOptionsFakes.Create(noPhotoTakenDateActionOptional: (CopyNoPhotoTakenDateAction)byte.MaxValue);
+		CheckEnumInvalidRangeValue<CopyNoPhotoTakenDateAction>(options, nameof(CopyOptions.NoPhotoTakenDateAction), false);
 	}
 
 	[Fact]
-	public void FolderAppendType_Invalid_Range_Should_Give_EnumValidator_Error()
+	public void InvalidRangeForNoCoordinateAction_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
 	{
-		var commandLineOptions = CopyOptionsFakes.Create(folderProcessTypeRequired: FolderProcessType.SubFoldersPreserveFolderHierarchy,
+		var options = CopyOptionsFakes.Create(noCoordinateActionOptional: (CopyNoCoordinateAction)byte.MaxValue);
+		CheckEnumInvalidRangeValue<CopyNoCoordinateAction>(options, nameof(CopyOptions.NoCoordinateAction), false);
+	}
+
+	[Fact]
+	public void InvalidRangeForGroupByFolderType_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
+	{
+		var options = CopyOptionsFakes.Create(folderProcessTypeRequired: FolderProcessTypeFakes.OtherThanSubFoldersPreserveFolderHierarchy(),
+			groupByFolderTypeOptional: (GroupByFolderType)byte.MaxValue);
+
+		CheckEnumInvalidRangeValue<GroupByFolderType>(options, nameof(CopyOptions.GroupByFolderType), true);
+	}
+
+	[Fact]
+	public void InvalidRangeForFolderAppendType_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
+	{
+		var options = CopyOptionsFakes.Create(folderProcessTypeRequired: FolderProcessType.SubFoldersPreserveFolderHierarchy,
 			folderAppendTypeOptional: (FolderAppendType)byte.MaxValue, folderAppendLocationTypeOptional: FolderAppendLocationTypeFakes.Valid());
-		CheckPropertyInvalidEnumValue(commandLineOptions, nameof(CopyOptions.FolderAppendType));
+
+		CheckEnumInvalidRangeValue<FolderAppendType>(options, nameof(CopyOptions.FolderAppendType), true);
 	}
 
 	[Fact]
-	public void FolderAppendLocationType_Invalid_Range_Should_Give_EnumValidator_Error()
+	public void InvalidRangeForFolderAppendLocationType_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
 	{
-		var commandLineOptions = CopyOptionsFakes.Create(folderProcessTypeRequired: FolderProcessType.SubFoldersPreserveFolderHierarchy,
+		var options = CopyOptionsFakes.Create(folderProcessTypeRequired: FolderProcessType.SubFoldersPreserveFolderHierarchy,
 			folderAppendLocationTypeOptional: (FolderAppendLocationType)byte.MaxValue, folderAppendTypeOptional: FolderAppendTypeFakes.Valid());
-		CheckPropertyInvalidEnumValue(commandLineOptions, nameof(CopyOptions.FolderAppendLocationType));
+
+		CheckEnumInvalidRangeValue<FolderAppendLocationType>(options, nameof(CopyOptions.FolderAppendLocationType), true);
+	}
+
+	#endregion
+
+	#region Enum Invalid Default Value
+
+	[Fact]
+	public void InvalidDefaultValueForAlbumType_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
+	{
+		var options = CopyOptionsFakes.Create(namingStyleRequired: 0);
+		CheckEnumInvalidRangeValue<NamingStyle>(options, nameof(CopyOptions.NamingStyle), true);
+	}
+
+	[Fact]
+	public void InvalidDefaultValueForFolderProcessType_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
+	{
+		var options = CopyOptionsFakes.Create(folderProcessTypeRequired: 0);
+		CheckEnumInvalidRangeValue<FolderProcessType>(options, nameof(CopyOptions.FolderProcessType), true);
+	}
+
+	[Fact]
+	public void InvalidDefaultValueForNumberNamingTextStyle_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
+	{
+		var options = CopyOptionsFakes.Create(numberNamingTextStyleRequired: 0);
+		CheckEnumInvalidRangeValue<NumberNamingTextStyle>(options, nameof(CopyOptions.NumberNamingTextStyle), true);
+	}
+
+	[Fact]
+	public void InvalidDefaultValueForGroupByFolderType_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
+	{
+		var options = CopyOptionsFakes.Create(groupByFolderTypeOptional: 0);
+		CheckEnumInvalidRangeValue<GroupByFolderType>(options, nameof(CopyOptions.GroupByFolderType), true);
+	}
+
+	[Fact]
+	public void InvalidDefaultValueForFolderAppendType_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
+	{
+		var options = CopyOptionsFakes.Create(folderAppendTypeOptional: 0);
+		CheckEnumInvalidRangeValue<FolderAppendType>(options, nameof(CopyOptions.FolderAppendType), true);
+	}
+
+	[Fact]
+	public void InvalidDefaultValueForFolderAppendLocationType_ShouldGiveValidEnumValidatorErrorWithExpectedErrorMessageDisplayingValidOptions()
+	{
+		var options = CopyOptionsFakes.Create(folderAppendLocationTypeOptional: 0);
+		CheckEnumInvalidRangeValue<FolderAppendLocationType>(options, nameof(CopyOptions.FolderAppendLocationType), true);
 	}
 
 	#endregion
 
 	#endregion
+
+	protected override CopyOptionsValidator CreateValidator()
+	{
+		return new CopyOptionsValidator();
+	}
 }

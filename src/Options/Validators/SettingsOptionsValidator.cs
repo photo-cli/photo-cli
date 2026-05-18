@@ -6,7 +6,12 @@ public class SettingsOptionsValidator : BaseValidator<SettingsOptions>
 {
 	public SettingsOptionsValidator()
 	{
-		When(p => p.Value.IsPresent(), () => { RuleFor(r => r.Key).RequiredString(Required(nameof(SettingsOptions.Key), OptionNames.KeyOptionNameLong, OptionNames.KeyOptionNameShort)); });
+		var keyInfo = GetOptionFormat(e => e.Key);
+
+		When(p => p.Value.IsPresent(), () =>
+		{
+			RuleFor(r => r.Key).RequiredString(keyInfo);
+		});
 
 		When(p => p.Reset, () =>
 		{

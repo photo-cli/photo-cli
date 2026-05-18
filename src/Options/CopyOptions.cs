@@ -3,9 +3,9 @@ using CommandLine;
 namespace PhotoCli.Options;
 
 [Verb(OptionNames.CopyVerb, HelpText = "Copies photos into new folder hierarchy with given arguments using photograph's taken date and coordinate address (reverse geocode).")]
-public class CopyOptions : IReverseGeocodeOptions
+public class CopyOptions : IActionableReverseGeocodeOptions
 {
-	// Notes: Constructor parameters and properties should be in same order for Immutable Options Type in CommandLineParser.
+	// Notes: Constructor parameters and properties should be in the same order for Immutable Options Type in CommandLineParser.
 	// ref: https://github.com/commandlineparser/commandline/wiki/Immutable-Options-Type
 	public CopyOptions(
 		// Required
@@ -13,11 +13,11 @@ public class CopyOptions : IReverseGeocodeOptions
 		// Optional
 		CopyInvalidFormatAction invalidFileFormatAction, CopyNoPhotoTakenDateAction noPhotoTakenDateAction, CopyNoCoordinateAction noCoordinateAction,
 		string? inputPath = null, bool isDryRun = false, GroupByFolderType? groupByFolderType = null, FolderAppendType? folderAppendType = null,
-		FolderAppendLocationType? folderAppendLocationType = null, bool verify = false,
+		FolderAppendLocationType? folderAppendLocationType = null, bool verify = false, short? expectedDayRange = null,
 		// ReverseGeocode - Shared
 		ReverseGeocodeProvider reverseGeoCodeProvider = ReverseGeocodeProvider.Disabled, string? bigDataCloudApiKey = null, IEnumerable<int>? bigDataCloudAdminLevels = null,
 		IEnumerable<string>? googleMapsAddressTypes = null, string? googleMapsApiKey = null, IEnumerable<string>? openStreetMapProperties = null,
-		string? locationIqApiKey = null, bool? hasPaidLicense = null, string? language = null)
+		string? locationIqApiKey = null, bool? hasPaidLicense = null, string? language = null, MissingReverseGeocodeAction missingReverseGeocodeAction = MissingReverseGeocodeAction.Continue)
 	{
 		// Required
 		OutputPath = outputPath;
@@ -35,6 +35,7 @@ public class CopyOptions : IReverseGeocodeOptions
 		FolderAppendType = folderAppendType;
 		FolderAppendLocationType = folderAppendLocationType;
 		Verify = verify;
+		ExpectedDayRange = expectedDayRange;
 
 		// ReverseGeocode
 		ReverseGeocodeProvider = reverseGeoCodeProvider;
@@ -46,6 +47,7 @@ public class CopyOptions : IReverseGeocodeOptions
 		LocationIqApiKey = locationIqApiKey;
 		HasPaidLicense = hasPaidLicense;
 		Language = language;
+		MissingReverseGeocodeAction = missingReverseGeocodeAction;
 	}
 
 	#region Required
@@ -75,7 +77,7 @@ public class CopyOptions : IReverseGeocodeOptions
 
 	#region Optional
 
-	[Option(OptionNames.InputPathOptionNameShort, OptionNames.InputPathOptionNameLong, HelpText = HelpTexts.InputPath)]
+	[Option(OptionNames.ArchivePathOptionNameShort, OptionNames.ArchivePathOptionNameLong, HelpText = HelpTexts.InputPath)]
 	public string? InputPath { get; }
 
 	[Option(OptionNames.IsDryRunOptionNameShort, OptionNames.IsDryRunOptionNameLong, HelpText = HelpTexts.IsDryRun)]
@@ -92,6 +94,9 @@ public class CopyOptions : IReverseGeocodeOptions
 
 	[Option(OptionNames.VerifyOptionNameShort, OptionNames.VerifyOptionNameLong, HelpText = HelpTexts.Verify)]
 	public bool Verify { get; }
+
+	[Option(OptionNames.CopyExpectedDayRangeShort, OptionNames.CopyExpectedDayRangeLong, HelpText = HelpTexts.ExpectedDayRange)]
+	public short? ExpectedDayRange { get; }
 
 	#endregion
 
@@ -123,6 +128,9 @@ public class CopyOptions : IReverseGeocodeOptions
 
 	[Option(OptionNames.LanguageOptionNameShort, OptionNames.LanguageOptionNameLong, HelpText = HelpTexts.Language)]
 	public string? Language { get; }
+
+	[Option(OptionNames.MissingReverseGeocodeActionShort, OptionNames.MissingReverseGeocodeActionLong, HelpText = HelpTexts.MissingReverseGeocodeAction)]
+	public MissingReverseGeocodeAction MissingReverseGeocodeAction { get; }
 
 	#endregion
 }

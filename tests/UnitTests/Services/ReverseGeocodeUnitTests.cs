@@ -39,36 +39,40 @@ public class ReverseGeocodeUnitTests
 		var bigDataCloudMock = new Mock<IBigDataCloudReverseGeocodeService>(MockBehavior.Strict);
 		if (reverseGeocodeProvider is ReverseGeocodeProvider.BigDataCloud)
 		{
-			bigDataCloudMock.Setup(s => s.Get(It.IsAny<Coordinate>(), It.IsAny<string>(), It.IsAny<List<int>>()))
-				.ReturnsAsync(ReverseGeocodeFakes.Valid);
+			bigDataCloudMock.Setup(s => s
+				.Get(It.IsAny<Coordinate>(), It.IsAny<PhotoFile>(), It.IsAny<string>(), It.IsAny<List<int>>()))
+				.ReturnsAsync(ReverseGeocodeResultFakes.Valid);
 		}
 
 		var openStreetMapFoundationMock = new Mock<IOpenStreetMapFoundationReverseGeocodeService>(MockBehavior.Strict);
 		if (reverseGeocodeProvider is ReverseGeocodeProvider.OpenStreetMapFoundation)
 		{
-			openStreetMapFoundationMock.Setup(s => s.Get(It.IsAny<Coordinate>(), It.IsAny<List<PropertyInfo>>()))
-				.ReturnsAsync(ReverseGeocodeFakes.Valid);
+			openStreetMapFoundationMock.Setup(s => s
+				.Get(It.IsAny<Coordinate>(), It.IsAny<PhotoFile>(), It.IsAny<List<PropertyInfo>>()))
+				.ReturnsAsync(ReverseGeocodeResultFakes.Valid);
 		}
 
 		var googleMapsMock = new Mock<IGoogleMapsReverseGeocodeService>(MockBehavior.Strict);
 		if (reverseGeocodeProvider is ReverseGeocodeProvider.GoogleMaps)
 		{
-			googleMapsMock.Setup(s => s.Get(It.IsAny<Coordinate>(), It.IsAny<string>(), It.IsAny<List<string>>()))
-				.ReturnsAsync(ReverseGeocodeFakes.Valid);
+			googleMapsMock.Setup(s => s
+				.Get(It.IsAny<Coordinate>(), It.IsAny<PhotoFile>(), It.IsAny<string>(), It.IsAny<List<string>>()))
+				.ReturnsAsync(ReverseGeocodeResultFakes.Valid);
 		}
 
 		var locationIqMock = new Mock<ILocationIqReverseGeocodeService>(MockBehavior.Strict);
 		if (reverseGeocodeProvider is ReverseGeocodeProvider.LocationIq)
 		{
-			locationIqMock.Setup(s => s.Get(It.IsAny<Coordinate>(), It.IsAny<List<PropertyInfo>>()))
-				.ReturnsAsync(ReverseGeocodeFakes.Valid);
+			locationIqMock.Setup(s => s
+				.Get(It.IsAny<Coordinate>(), It.IsAny<PhotoFile>(), It.IsAny<List<PropertyInfo>>()))
+				.ReturnsAsync(ReverseGeocodeResultFakes.Valid);
 		}
 
 		var sut = new ReverseGeocodeService(options, bigDataCloudMock.Object, openStreetMapFoundationMock.Object, googleMapsMock.Object, locationIqMock.Object,
 			NullLogger<ReverseGeocodeService>.Instance);
 
-		var reverseGeocodeResult = await sut.Get(CoordinateFakes.Valid());
-		reverseGeocodeResult.Should().BeEquivalentTo(ReverseGeocodeFakes.Valid());
+		var reverseGeocodeResult = await sut.Get(CoordinateFakes.Valid(), It.IsAny<PhotoFile>());
+		reverseGeocodeResult.Should().BeEquivalentTo(ReverseGeocodeResultFakes.Valid());
 
 		VerifyAll(bigDataCloudMock, openStreetMapFoundationMock, googleMapsMock, locationIqMock);
 	}
@@ -205,6 +209,6 @@ public class ReverseGeocodeUnitTests
 	public async Task CommandOptions_With_Disabled_Should_Throw_PhotoOrganizerToolException()
 	{
 		var sut = new ReverseGeocodeService(CopyOptionsFakes.WithReverseGeocodeService(ReverseGeocodeProvider.Disabled), null!, null!, null!, null!, NullLogger<ReverseGeocodeService>.Instance);
-		await Assert.ThrowsAsync<PhotoCliException>(async () => { await sut.Get(CoordinateFakes.Valid()); });
+		await Assert.ThrowsAsync<PhotoCliException>(async () => { await sut.Get(CoordinateFakes.Valid(), It.IsAny<PhotoFile>()); });
 	}
 }

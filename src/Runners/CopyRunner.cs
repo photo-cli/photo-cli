@@ -1,4 +1,5 @@
 using System.IO.Abstractions;
+using Spectre.Console;
 
 namespace PhotoCli.Runners;
 
@@ -64,10 +65,11 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 		var isNoPhotoTakenDatePreventProcessOptionSelected = _options.NoPhotoTakenDateAction == CopyNoPhotoTakenDateAction.PreventProcess;
 		var isNoCoordinatePreventProcessOptionSelected = _options.NoCoordinateAction == CopyNoCoordinateAction.PreventProcess;
 
-		var photosWithExif = _exifDataAppenderService.ExtractExifData(photosFound, out var allPhotosAreValid, out var allPhotosHasPhotoTaken, out var allPhotosHasCoordinate);
+		var exifDataResult = _exifDataAppenderService.ExtractExifData(photosFound);
 
-		if (!NoExifDataPreventActions(out var exitCodeNoExif, allPhotosAreValid, allPhotosHasPhotoTaken, allPhotosHasCoordinate,
-			    isInvalidFileFormatPreventProcessOptionSelected, isNoPhotoTakenDatePreventProcessOptionSelected, isNoCoordinatePreventProcessOptionSelected, photosWithExif))
+		var photosWithExif = exifDataResult.Photos;
+		if (!ExifDataPreventActions(out var exitCodeNoExif, exifDataResult,
+				isInvalidFileFormatPreventProcessOptionSelected, isNoPhotoTakenDatePreventProcessOptionSelected, isNoCoordinatePreventProcessOptionSelected, _options.ExpectedDayRange))
 		{
 			return exitCodeNoExif;
 		}
@@ -75,7 +77,9 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 		if (_options.ReverseGeocodeProvider != ReverseGeocodeProvider.Disabled)
 		{
 			_reverseGeocodeFetcherService.RateLimitWarning();
-			photosWithExif = await _reverseGeocodeFetcherService.Fetch(photosWithExif);
+			(photosWithExif, var allPhotosHasReverseGeocodedAsRequested) = await _reverseGeocodeFetcherService.Fetch(photosWithExif, true);
+			if (_options.MissingReverseGeocodeAction == MissingReverseGeocodeAction.PreventProcess && !allPhotosHasReverseGeocodedAsRequested)
+				return ExitCode.PhotosWithMissingReverseGeocodeInfoAsRequested;
 		}
 
 		var invalidFileFormatGroupedInSubFolder = _options.InvalidFileFormatAction == CopyInvalidFormatAction.InSubFolder;
@@ -113,7 +117,9 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 				if (!allFilesVerified)
 					return ExitCode.FileVerifyErrors;
 			}
-			_consoleWriter.InProgressItemComplete(TargetRelativeFolderProgressName);
+
+			var processingFolderInfo = targetRelativeDirectoryPath == "" ? "root" : targetRelativeDirectoryPath;
+			_consoleWriter.InProgressItemComplete(TargetRelativeFolderProgressName, processingFolderInfo);
 			_logger.LogTrace("Processed {TargetRelativeDirectory}", targetRelativeDirectoryPath);
 		}
 		_consoleWriter.ProgressFinish(TargetRelativeFolderProgressName);
@@ -122,12 +128,13 @@ public class CopyRunner : BaseRunner, IConsoleRunner
 		if (verifyFileIntegrity)
 		{
 			await _fileService.SaveGnuHashFileTree(filteredAllPhotos, _options.OutputPath);
-			_consoleWriter.Write("Verified all photo files copied successfully by comparing file hashes from original photo files.");
-			_consoleWriter.Write($"All files SHA1 hashes written into file: {Constants.VerifyFileHashFileName}. You may verify yourself with `sha1sum --check {Constants.VerifyFileHashFileName}` tool in Linux/macOS.");
+			_consoleWriter.WriteSuccess("Verified all photo files copied successfully by comparing file hashes from original photo files.");
+			_consoleWriter.WriteSuccess($"All files SHA1 hashes written into file: {Constants.VerifyFileHashFileName}. You may also verify yourself with `sha1sum --check {Constants.VerifyFileHashFileName}` tool in Linux/macOS.");
 		}
 
 		await _csvService.CreateCopyReport(filteredAllPhotos, _options.OutputPath, _options.IsDryRun);
 		WriteStatistics();
+		_consoleWriter.WriteSuccess("Copy process completed successfully");
 		return ExitCode.Success;
 	}
 

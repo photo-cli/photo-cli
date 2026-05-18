@@ -6,7 +6,7 @@ public class ReverseGeocodeFetcherServiceUnitTests
 {
 	#region Concurrent Fetch Semaphore Connection Limit
 
-	public static TheoryData<ReverseGeocodeProvider, int, TimeSpan, IReadOnlyList<Photo>> FetchQueueIsSmallerThanConnectionLimit = new()
+	public static TheoryData<ReverseGeocodeProvider, byte, TimeSpan, IReadOnlyList<Photo>> FetchQueueIsSmallerThanConnectionLimit = new()
 	{
 		{
 			ReverseGeocodeProviderFakes.NoWaitTime,
@@ -28,7 +28,7 @@ public class ReverseGeocodeFetcherServiceUnitTests
 		},
 	};
 
-	public static TheoryData<ReverseGeocodeProvider, int, TimeSpan, IReadOnlyList<Photo>> FetchQueueIsSameWithConnectionLimit = new()
+	public static TheoryData<ReverseGeocodeProvider, byte, TimeSpan, IReadOnlyList<Photo>> FetchQueueIsSameWithConnectionLimit = new()
 	{
 		{
 			ReverseGeocodeProviderFakes.NoWaitTime,
@@ -44,7 +44,7 @@ public class ReverseGeocodeFetcherServiceUnitTests
 		}
 	};
 
-	public static TheoryData<ReverseGeocodeProvider, int, TimeSpan, IReadOnlyList<Photo>> FetchQueueIsBiggerThanConnectionLimit = new()
+	public static TheoryData<ReverseGeocodeProvider, byte, TimeSpan, IReadOnlyList<Photo>> FetchQueueIsBiggerThanConnectionLimit = new()
 	{
 		{
 			ReverseGeocodeProviderFakes.NoWaitTime,
@@ -71,22 +71,24 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	[MemberData(nameof(FetchQueueIsSameWithConnectionLimit))]
 	[MemberData(nameof(FetchQueueIsBiggerThanConnectionLimit))]
 	public async Task Check_Concurrent_ReverseGeocode_Requests_Obeys_ConnectionLimit_By_Checking_Possible_Elapsed_Duration_Is_Between_Minimum_And_Maximum(ReverseGeocodeProvider reverseGeocodeProvider,
-		int connectionLimit, TimeSpan fetchDuration, IReadOnlyList<Photo> photos)
+		byte connectionLimit, TimeSpan fetchDuration, IReadOnlyList<Photo> photos)
 	{
 		var semaphoreMinimumCircuitCount = Math.Ceiling((float)photos.Count / connectionLimit);
 		var minimumFetchTime = fetchDuration * semaphoreMinimumCircuitCount;
 		var reverseGeocodeMock = new Mock<IReverseGeocodeService>(MockBehavior.Strict);
-		reverseGeocodeMock.Setup(s => s.Get(It.IsAny<Coordinate>())).Returns(async (Coordinate coordinate) =>
+		reverseGeocodeMock.Setup(s => s.Get(It.IsAny<Coordinate>(), It.IsAny<PhotoFile>())).Returns(async (Coordinate coordinate, PhotoFile _) =>
 		{
 			await Task.Delay(fetchDuration);
-			return ReverseGeocodeFakes.WithCoordinate(coordinate);
+			return ReverseGeocodeResultFakes.WithCoordinate(coordinate);
 		});
 		var toolOptions = ToolOptionsFakes.WithConnectionLimit(connectionLimit);
+
 		var sut = new ReverseGeocodeFetcherService(reverseGeocodeMock.Object, CopyOptionsFakes.ValidReverseGeocodeService(reverseGeocodeProvider), ConsoleWriterFakes.Valid(), StatisticsFakes.Empty(),
 			toolOptions, NullLogger<ReverseGeocodeFetcherService>.Instance);
+
 		var stopwatch = new Stopwatch();
 		stopwatch.Start();
-		await sut.Fetch(photos);
+		await sut.Fetch(photos, true);
 		stopwatch.Stop();
 		CheckElapsedTime(stopwatch, minimumFetchTime, photos.Count);
 	}
@@ -125,12 +127,16 @@ public class ReverseGeocodeFetcherServiceUnitTests
 	{
 		var minimumFetchTime = reverseGeocodeServiceRateLimitBetweenEachRequest * photos.Count;
 		var reverseGeocodeMock = new Mock<IReverseGeocodeService>(MockBehavior.Strict);
-		reverseGeocodeMock.Setup(s => s.Get(It.IsAny<Coordinate>())).ReturnsAsync((Coordinate coordinate) => ReverseGeocodeFakes.WithCoordinate(coordinate));
+
+		reverseGeocodeMock.Setup(s => s
+			.Get(It.IsAny<Coordinate>(), It.IsAny<PhotoFile>()))
+			.ReturnsAsync((Coordinate coordinate, PhotoFile _) => ReverseGeocodeResultFakes.WithCoordinate(coordinate));
+
 		var sut = new ReverseGeocodeFetcherService(reverseGeocodeMock.Object, CopyOptionsFakes.ValidReverseGeocodeService(reverseGeocodeProvider), ConsoleWriterFakes.Valid(), StatisticsFakes.Empty(),
 			ToolOptionsFakes.Valid(), NullLogger<ReverseGeocodeFetcherService>.Instance);
 		var stopwatch = new Stopwatch();
 		stopwatch.Start();
-		await sut.Fetch(photos);
+		await sut.Fetch(photos, true);
 		stopwatch.Stop();
 		CheckElapsedTime(stopwatch, minimumFetchTime, photos.Count);
 	}
@@ -196,17 +202,17 @@ public class ReverseGeocodeFetcherServiceUnitTests
 
 	#region Setting Exif Data
 
-	public static TheoryData<IReadOnlyList<Photo>, IReadOnlyList<Photo>> CoordinatesExifDataWithExpectedReverseGeocode = new()
+	public static TheoryData<IReadOnlyList<Photo>, ReverseGeocodeResult> CoordinatesExifDataWithExpectedReverseGeocode = new()
 	{
 		{
 			new List<Photo>
 			{
 				PhotoFakes.WithCoordinate(1,1),
 			},
-			new List<Photo>
+			new ReverseGeocodeResult(new List<Photo>
 			{
 				PhotoFakes.WithCoordinateAndReverseGeocode(1,1, ReverseGeocodeFakes.WithCoordinate(1, 1)),
-			}
+			}, true)
 		},
 		{
 			new List<Photo>
@@ -214,11 +220,11 @@ public class ReverseGeocodeFetcherServiceUnitTests
 				PhotoFakes.WithCoordinate(0,0),
 				PhotoFakes.WithCoordinate(1,1),
 			},
-			new List<Photo>
+			new ReverseGeocodeResult(new List<Photo>
 			{
 				PhotoFakes.WithCoordinateAndReverseGeocode(0,0, ReverseGeocodeFakes.WithCoordinate(0, 0)),
 				PhotoFakes.WithCoordinateAndReverseGeocode(1,1, ReverseGeocodeFakes.WithCoordinate(1, 1)),
-			}
+			}, true)
 		},
 		{
 			new List<Photo>
@@ -227,42 +233,45 @@ public class ReverseGeocodeFetcherServiceUnitTests
 				PhotoFakes.WithCoordinate(0,0),
 				PhotoFakes.WithCoordinate(1,1),
 			},
-			new List<Photo>
+			new ReverseGeocodeResult(new List<Photo>
 			{
 				PhotoFakes.WithNoCoordinate(),
 				PhotoFakes.WithCoordinateAndReverseGeocode(0,0, ReverseGeocodeFakes.WithCoordinate(0, 0)),
 				PhotoFakes.WithCoordinateAndReverseGeocode(1,1, ReverseGeocodeFakes.WithCoordinate(1, 1)),
-			}
+			},true)
 		}
 	};
 
-	public static TheoryData<IReadOnlyList<Photo>, IReadOnlyList<Photo>> NoCoordinateShouldReturnWithNoReverseGeocodeSet = new()
+	public static TheoryData<IReadOnlyList<Photo>, ReverseGeocodeResult> NoCoordinateShouldReturnWithNoReverseGeocodeSet = new()
 	{
 		{
 			new List<Photo>
 			{
 				PhotoFakes.WithNoCoordinate(),
 			},
-			new List<Photo>
+			new ReverseGeocodeResult(new List<Photo>
 			{
 				PhotoFakes.WithNoCoordinate(),
-			}
+			}, true)
 		}
 	};
 
 	[Theory]
 	[MemberData(nameof(CoordinatesExifDataWithExpectedReverseGeocode))]
 	[MemberData(nameof(NoCoordinateShouldReturnWithNoReverseGeocodeSet))]
-	public async Task Given_Source_Dictionary_Should_Return_With_ReverseGeocode_Property_Set_On_Each_ExifData_Value(IReadOnlyList<Photo> sourcePhotos,
-		IReadOnlyList<Photo> photosExpectedResult)
+	public async Task Given_Source_Dictionary_Should_Return_With_ReverseGeocode_Property_Set_On_Each_ExifData_Value(IReadOnlyList<Photo> sourcePhotos, ReverseGeocodeResult reverseGeocodeExpectedResult)
 	{
 		var reverseGeocodeMock = new Mock<IReverseGeocodeService>(MockBehavior.Strict);
-		reverseGeocodeMock.Setup(s => s.Get(It.IsAny<Coordinate>()))
-			.ReturnsAsync((Coordinate coordinate) => ReverseGeocodeFakes.WithCoordinate(coordinate));
+
+		reverseGeocodeMock.Setup(s => s
+			.Get(It.IsAny<Coordinate>(), It.IsAny<PhotoFile>()))
+			.ReturnsAsync((Coordinate coordinate, PhotoFile _) => ReverseGeocodeResultFakes.WithCoordinate(coordinate));
+
 		var sut = new ReverseGeocodeFetcherService(reverseGeocodeMock.Object, CopyOptionsFakes.ValidReverseGeocodeService(), ConsoleWriterFakes.Valid(), StatisticsFakes.Empty(),
 			ToolOptionsFakes.Valid(), NullLogger<ReverseGeocodeFetcherService>.Instance);
-		var actualExifDataByFilePath = await sut.Fetch(sourcePhotos);
-		actualExifDataByFilePath.Should().BeEquivalentTo(photosExpectedResult);
+
+		var actualExifDataByFilePath = await sut.Fetch(sourcePhotos, true);
+		actualExifDataByFilePath.Should().BeEquivalentTo(reverseGeocodeExpectedResult);
 	}
 
 	#endregion

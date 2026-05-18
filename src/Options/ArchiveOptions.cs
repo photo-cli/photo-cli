@@ -2,10 +2,10 @@ using CommandLine;
 
 namespace PhotoCli.Options;
 
-[Verb(OptionNames.ArchiveVerb, HelpText = "Archives photos into same specific folder and indexing photo taken date, address (reverse geocode) information into SQLite database.")]
-public class ArchiveOptions : IReverseGeocodeOptions
+[Verb(OptionNames.ArchiveVerb, HelpText = "Archives photos into same specific folder, optionally groups them by albums (date range, reverse geocode or individual), and indexes photo taken date, address (reverse geocode) information into SQLite database.")]
+public class ArchiveOptions : IActionableReverseGeocodeOptions
 {
-	// Notes: Constructor parameters and properties should be in same order for Immutable Options Type in CommandLineParser.
+	// Notes: Constructor parameters and properties should be in the same order for Immutable Options Type in CommandLineParser.
 	// ref: https://github.com/commandlineparser/commandline/wiki/Immutable-Options-Type
 	public ArchiveOptions(
 		// Required
@@ -14,10 +14,11 @@ public class ArchiveOptions : IReverseGeocodeOptions
 		string? inputPath = null,
 		bool isDryRun = false, ArchiveInvalidFormatAction invalidFileFormatAction = ArchiveInvalidFormatAction.Continue,
 		ArchiveNoPhotoTakenDateAction noPhotoTakenDateAction = ArchiveNoPhotoTakenDateAction.Continue, ArchiveNoCoordinateAction noCoordinateAction = ArchiveNoCoordinateAction.Continue,
+		short? expectedDayRange = null, ArchiveAlbumType? albumType = null, string? albumNameNew = null, int? albumIdUpdate = null, bool autoReverseGeocodeAlbum = false, bool deleteSource = false,
 		// ReverseGeocode - Shared
 		ReverseGeocodeProvider reverseGeoCodeProvider = ReverseGeocodeProvider.Disabled, string? bigDataCloudApiKey = null, IEnumerable<int>? bigDataCloudAdminLevels = null,
 		IEnumerable<string>? googleMapsAddressTypes = null, string? googleMapsApiKey = null, IEnumerable<string>? openStreetMapProperties = null,
-		string? locationIqApiKey = null, bool? hasPaidLicense = null, string? language = null)
+		string? locationIqApiKey = null, bool? hasPaidLicense = null, string? language = null, MissingReverseGeocodeAction missingReverseGeocodeAction = MissingReverseGeocodeAction.Continue)
 	{
 		// Required
 		OutputPath = outputPath;
@@ -28,6 +29,12 @@ public class ArchiveOptions : IReverseGeocodeOptions
 		InvalidFileFormatAction = invalidFileFormatAction;
 		NoPhotoTakenDateAction = noPhotoTakenDateAction;
 		NoCoordinateAction = noCoordinateAction;
+		ExpectedDayRange = expectedDayRange;
+		AlbumType = albumType;
+		AlbumNameNew = albumNameNew;
+		AlbumIdUpdate = albumIdUpdate;
+		AutoReverseGeocodeAlbum = autoReverseGeocodeAlbum;
+		DeleteSource = deleteSource;
 
 		// ReverseGeocode
 		ReverseGeocodeProvider = reverseGeoCodeProvider;
@@ -39,6 +46,7 @@ public class ArchiveOptions : IReverseGeocodeOptions
 		LocationIqApiKey = locationIqApiKey;
 		HasPaidLicense = hasPaidLicense;
 		Language = language;
+		MissingReverseGeocodeAction = missingReverseGeocodeAction;
 	}
 
 	#region Required
@@ -50,7 +58,7 @@ public class ArchiveOptions : IReverseGeocodeOptions
 
 	#region Optional
 
-	[Option(OptionNames.InputPathOptionNameShort, OptionNames.InputPathOptionNameLong, HelpText = HelpTexts.InputPath)]
+	[Option(OptionNames.ArchivePathOptionNameShort, OptionNames.ArchivePathOptionNameLong, HelpText = HelpTexts.InputPath)]
 	public string? InputPath { get; }
 
 	[Option(OptionNames.IsDryRunOptionNameShort, OptionNames.IsDryRunOptionNameLong, HelpText = HelpTexts.IsDryRun)]
@@ -64,6 +72,24 @@ public class ArchiveOptions : IReverseGeocodeOptions
 
 	[Option(OptionNames.ArchiveNoCoordinateActionOptionNameShort, OptionNames.ArchiveNoCoordinateActionOptionNameLong, HelpText = HelpTexts.ArchiveNoCoordinateAction)]
 	public ArchiveNoCoordinateAction NoCoordinateAction { get; }
+
+	[Option(OptionNames.ArchiveExpectedDayRangeShort, OptionNames.ArchiveExpectedDayRangeLong, HelpText = HelpTexts.ExpectedDayRange)]
+	public short? ExpectedDayRange { get; }
+
+	[Option(OptionNames.AlbumTypeShort, OptionNames.AlbumTypeLong, HelpText = HelpTexts.AlbumType)]
+	public ArchiveAlbumType? AlbumType { get; }
+
+	[Option(OptionNames.AlbumNameNewShort, OptionNames.AlbumNameNewLong, HelpText = HelpTexts.AlbumNameNew)]
+	public string? AlbumNameNew { get; }
+
+	[Option(OptionNames.AlbumIdUpdateShort, OptionNames.AlbumIdUpdateLong, HelpText = HelpTexts.AlbumIdUpdate)]
+	public int? AlbumIdUpdate { get; }
+
+	[Option(OptionNames.AutoReverseGeocodeAlbumShort, OptionNames.AutoReverseGeocodeAlbumLong, HelpText = HelpTexts.AutoReverseGeocodeAlbum)]
+	public bool AutoReverseGeocodeAlbum { get; }
+
+	[Option(OptionNames.AlbumDeleteSourceShort, OptionNames.AlbumDeleteSourceLong, HelpText = HelpTexts.AlbumDeleteSource)]
+	public bool DeleteSource { get; }
 
 	#endregion
 
@@ -95,6 +121,9 @@ public class ArchiveOptions : IReverseGeocodeOptions
 
 	[Option(OptionNames.LanguageOptionNameShort, OptionNames.LanguageOptionNameLong, HelpText = HelpTexts.Language)]
 	public string? Language { get; }
+
+	[Option(OptionNames.MissingReverseGeocodeActionShort, OptionNames.MissingReverseGeocodeActionLong, HelpText = HelpTexts.MissingReverseGeocodeAction)]
+	public MissingReverseGeocodeAction MissingReverseGeocodeAction { get; }
 
 	#endregion
 }

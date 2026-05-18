@@ -2,8 +2,9 @@ namespace PhotoCli.Services.Implementations.ReverseGeocodes;
 
 public class OpenStreetMapFoundationReverseGeocodeService : OpenStreetMapReverseGeocodeServiceBase, IOpenStreetMapFoundationReverseGeocodeService
 {
-	public OpenStreetMapFoundationReverseGeocodeService(HttpClient httpClient, ILogger<OpenStreetMapFoundationReverseGeocodeService> logger, ICoordinateCache<OpenStreetMapResponse> coordinateCache)
-		: base(httpClient, logger, coordinateCache)
+	public OpenStreetMapFoundationReverseGeocodeService(HttpClient httpClient, ILogger<OpenStreetMapFoundationReverseGeocodeService> logger, IReverseGeocodeCache<OpenStreetMapResponse>
+			reverseGeocodeCache, Statistics statistics)
+		: base(httpClient, logger, reverseGeocodeCache, statistics)
 	{
 	}
 

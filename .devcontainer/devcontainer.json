@@ -1,0 +1,48 @@
+{
+	"name": "PhotoCli Development",
+	"dockerFile": "Dockerfile",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+	// Configure tool-specific properties
+	"customizations": {
+		"vscode": {
+			// Set default container specific settings.json values on container create
+			"settings": {
+				"dotnet.defaultSolution": "PhotoCli.sln",
+				"omnisharp.useModernNet": true,
+				"terminal.integrated.defaultProfile.linux": "bash"
+			},
+
+			// Add the IDs of extensions you want installed when the container is created
+			"extensions": [
+				"ms-dotnettools.csdevkit",
+				"editorconfig.editorconfig"
+			]
+		}
+	},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally
+	"forwardPorts": [5000],
+
+	// Use 'postCreateCommand' to run commands after the container is created
+	"postCreateCommand": "dotnet restore",
+
+	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root
+	"remoteUser": "vscode",
+
+	// Configure container features
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installZsh": true,
+			"installOhMyZsh": true,
+			"upgradePackages": true,
+			"username": "vscode",
+			"userUid": "automatic",
+			"userGid": "automatic"
+		},
+		"ghcr.io/devcontainers/features/git:1": {
+			"version": "latest",
+			"ppa": true
+		}
+	}
+}

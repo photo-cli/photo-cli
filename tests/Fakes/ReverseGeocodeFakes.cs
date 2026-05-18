@@ -4,18 +4,22 @@ public static class ReverseGeocodeFakes
 {
 	public static List<string> Valid()
 	{
-		return new List<string>
-		{
-			"Country", "City", "Neighbourhood"
-		};
+		return ["Country", "City", "Neighbourhood"];
 	}
 
 	public static List<string> Sample(int sampleId)
 	{
-		return new List<string>
-		{
-			"Country", "City", "Neighbourhood", sampleId.ToString()
-		};
+		return ["Country", "City", "Neighbourhood", sampleId.ToString()];
+	}
+
+	public static string SampleSingleAddress(int sampleId)
+	{
+		return $"Neighbourhood - {sampleId}";
+	}
+
+	public static IEnumerable<string> Exact(params string[] reverseGeocodes)
+	{
+		return reverseGeocodes;
 	}
 
 	public static string Format(IEnumerable<string> reverseGeocodes)
@@ -35,14 +39,6 @@ public static class ReverseGeocodeFakes
 
 	public static List<string> WithCoordinate(double latitude, double longitude)
 	{
-		return new List<string>
-		{
-			"ReverseGeocode", latitude.ToString(CultureInfo.InvariantCulture), longitude.ToString(CultureInfo.InvariantCulture)
-		};
-	}
-
-	public static IEnumerable<string> WithCoordinate(Coordinate coordinate)
-	{
-		return WithCoordinate(coordinate.Latitude, coordinate.Longitude);
+		return ["ReverseGeocode", latitude.ToString(CultureInfo.InvariantCulture), longitude.ToString(CultureInfo.InvariantCulture)];
 	}
 }

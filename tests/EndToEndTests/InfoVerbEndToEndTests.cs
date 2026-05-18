@@ -1,16 +1,11 @@
 namespace PhotoCli.Tests.EndToEndTests;
 
-[Collection(XunitSharedCollectionsToDisableParallelExecution.EndToEndTests)]
 public class InfoVerbEndToEndTests : BaseEndToEndTests
 {
-	public InfoVerbEndToEndTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-	{
-	}
-
 	private const string ReportFileName = "report.csv";
 	private readonly FileInfo _reportFile = new(ReportFileName);
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SingleFolderOnlyPhotoTakenDate = new()
+	public static TheoryData<string[], List<PhotoCsv>, Statistics> SingleFolderOnlyPhotoTakenDate = new()
 	{
 		{
 			CommandLineArgumentsFakes.InfoBuildCommandLineOptions(ReportFileName, TestImagesPathHelper.SingleFolder(), true, InfoNoPhotoTakenDateAction.Continue,
@@ -35,15 +30,15 @@ public class InfoVerbEndToEndTests : BaseEndToEndTests
 				SingleNoGpsCoordinateAndNoPhotoTakenDate(),
 				SingleNoPhotoTakenDate()
 			],
-			new ConsoleOutputValues(18, HasTakenDateAndCoordinate: 15, HasNoTakenDateAndCoordinate: 2, HasTakenDateButNoCoordinate: 1)
+			StatisticsFakes.Basic(18, hasTakenDateAndCoordinate: 15, hasNoTakenDateAndCoordinate: 2, hasTakenDateButNoCoordinate: 1)
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SingleFolderPhotoTakenDateAndAddress = new()
+	public static TheoryData<string[], List<PhotoCsv>, Statistics> SingleFolderPhotoTakenDateAndAddress = new()
 	{
 		{
 			CommandLineArgumentsFakes.InfoBuildCommandLineOptions(ReportFileName, TestImagesPathHelper.SingleFolder(), true, InfoNoPhotoTakenDateAction.Continue,
-				InfoNoCoordinateAction.Continue, false, ReverseGeocodeProvider.BigDataCloud, new List<string> { "3", "4", "5", "6", "7" }),
+				InfoNoCoordinateAction.Continue, false, ReverseGeocodeProvider.BigDataCloud, ["3", "4", "5", "6", "7"]),
 			[
 				SingleKenya(),
 				SingleItalyFlorence(),
@@ -64,11 +59,11 @@ public class InfoVerbEndToEndTests : BaseEndToEndTests
 				SingleNoGpsCoordinateAndNoPhotoTakenDate(),
 				SingleNoPhotoTakenDate()
 			],
-			new ConsoleOutputValues(18, HasTakenDateAndCoordinate: 15, HasNoTakenDateAndCoordinate: 2, HasTakenDateButNoCoordinate: 1)
+			StatisticsFakes.Basic(18, hasTakenDateAndCoordinate: 15, hasNoTakenDateAndCoordinate: 2, hasTakenDateButNoCoordinate: 1)
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SubFoldersOnlyPhotoTakenDate = new()
+	public static TheoryData<string[], List<PhotoCsv>, Statistics> SubFoldersOnlyPhotoTakenDate = new()
 	{
 		{
 			CommandLineArgumentsFakes.InfoBuildCommandLineOptions(ReportFileName, TestImagesPathHelper.SubFolders(), true, InfoNoPhotoTakenDateAction.Continue,
@@ -93,15 +88,15 @@ public class InfoVerbEndToEndTests : BaseEndToEndTests
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate(),
 				SubFoldersNoPhotoTakenDate()
 			],
-			new ConsoleOutputValues(18, HasTakenDateAndCoordinate: 15, HasNoTakenDateAndCoordinate: 2, HasTakenDateButNoCoordinate: 1)
+			StatisticsFakes.Basic(18, hasTakenDateAndCoordinate: 15, hasNoTakenDateAndCoordinate: 2, hasTakenDateButNoCoordinate: 1)
 		}
 	};
 
-	public static TheoryData<string[], List<PhotoCsv>, ConsoleOutputValues> SubFoldersPhotoTakenDateAndAddress = new()
+	public static TheoryData<string[], List<PhotoCsv>, Statistics> SubFoldersPhotoTakenDateAndAddress = new()
 	{
 		{
 			CommandLineArgumentsFakes.InfoBuildCommandLineOptions(ReportFileName, TestImagesPathHelper.SubFolders(), true, InfoNoPhotoTakenDateAction.Continue,
-				InfoNoCoordinateAction.Continue, false, ReverseGeocodeProvider.BigDataCloud, new List<string> { "3", "4", "5", "6", "7" }),
+				InfoNoCoordinateAction.Continue, false, ReverseGeocodeProvider.BigDataCloud, ["3", "4", "5", "6", "7"]),
 			[
 				SubFoldersKenya(),
 				SubFoldersItalyFlorence(),
@@ -122,7 +117,7 @@ public class InfoVerbEndToEndTests : BaseEndToEndTests
 				SubFoldersNoGpsCoordinateAndNoPhotoTakenDate(),
 				SubFoldersNoPhotoTakenDate()
 			],
-			new ConsoleOutputValues(18, HasTakenDateAndCoordinate: 15, HasNoTakenDateAndCoordinate: 2, HasTakenDateButNoCoordinate: 1)
+			StatisticsFakes.Basic(18, hasTakenDateAndCoordinate: 15, hasNoTakenDateAndCoordinate: 2, hasTakenDateButNoCoordinate: 1)
 		}
 	};
 
@@ -131,16 +126,18 @@ public class InfoVerbEndToEndTests : BaseEndToEndTests
 	[MemberData(nameof(SingleFolderPhotoTakenDateAndAddress))]
 	[MemberData(nameof(SubFoldersOnlyPhotoTakenDate))]
 	[MemberData(nameof(SubFoldersPhotoTakenDateAndAddress))]
-	public async Task Running_InfoVerbArguments_ShouldCreateAndVerifyPhotosAndReportCsvOnFileSystem(string[] args, List<PhotoCsv> expectedPhotoCsvModels,
-		ConsoleOutputValues expectedConsoleOutput)
+	public async Task Running_InfoVerbArguments_ShouldCreateAndVerifyPhotosAndReportCsvOnFileSystem(string[] args, List<PhotoCsv> expectedPhotoCsvModels, Statistics expectedStatistics)
 	{
 		CleanArtifacts();
-		var actualOutput = await RunMain(args);
-		var actualConsoleOutput = ParseConsoleOutput(actualOutput);
+		var actualStatistics = await RunMainOutputAsStatistics(args);
 		var actualPhotoCsvModels = CsvFileHelper.ReadRecords(_reportFile);
 		using (new AssertionScope())
 		{
-			actualConsoleOutput.Should().Be(expectedConsoleOutput);
+			actualStatistics.Should().BeEquivalentTo(expectedStatistics, c => c
+				.Excluding(e => e.ReserveGeocodeFromMemory)
+				.Excluding(e => e.ReserveGeocodeRequestSent)
+			);
+
 			actualPhotoCsvModels.Should().BeEquivalentTo(expectedPhotoCsvModels, c => c
 				.Excluding(e => e.ReverseGeocodeFormatted)
 				.Excluding(e => e.Address1).Excluding(e => e.Address2).Excluding(e => e.Address3).Excluding(e => e.Address4)

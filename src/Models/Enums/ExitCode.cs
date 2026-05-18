@@ -5,9 +5,10 @@ public enum ExitCode
 	Unset = -1,
 	Success = 0,
 
-	// Initializing
+	// Initializing & Global
 	ParseArgsFailed = 1,
 	AppSettingsInvalidFile = 2,
+	UnexpectedError = 3,
 
 	// Validation
 	ApiKeyStoreValidationFailed = 10,
@@ -16,6 +17,7 @@ public enum ExitCode
 	CopyOptionsValidationFailed = 13,
 	SettingsOptionsValidationFailed = 14,
 	ArchiveOptionsValidationFailed = 15,
+	McpOptionsValidationFailed = 16,
 
 	// File system
 	InputFolderNotExists = 20,
@@ -32,8 +34,26 @@ public enum ExitCode
 	PhotosWithNoCoordinatePreventedProcess = 31,
 	PhotosWithNoCoordinateAndNoDatePreventedProcess = 32,
 	PhotosWithInvalidFileFormatPreventedProcess = 33,
+	PhotosWithMissingReverseGeocodeInfoAsRequested = 34,
+	PhotosWithUnexpectedDateRangePreventedProcess = 35,
 
 	// Settings
 	PropertyNotFound = 40,
 	InvalidSettingsValue = 41,
+	InvalidSettingsLogLevelChange = 42,
+
+	// Archive
+	AlbumExist = 50,
+	InconsistencyOnSavingPhotosToDatabase = 51,
+	InconsistencyOnSavingUserDefinedAlbumToDatabase = 52,
+	AlbumNameMustBeUniqueWhileAddingOrUseUpdate = 53,
+	AlbumNotFoundById = 54,
+	NoPhotosToAddInAlbum = 55,
+	NoDataRangeFoundOnPhotos = 56,
+	ExistingAlbumConfigurationNotValid = 57,
+
+	// List
+	NoArchiveDatabaseFound = 60,
+	NoPhotoFoundToList = 61,
+	AlbumNotFoundByName = 62,
 }

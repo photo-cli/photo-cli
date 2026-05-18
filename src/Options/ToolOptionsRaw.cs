@@ -2,7 +2,7 @@ namespace PhotoCli.Options;
 
 public class ToolOptionsRaw
 {
-	public LogLevel? LogLevel { get; set; }
+	public Dictionary<string, string>? LogLevel { get; set; }
 	public string? YearFormat { get; set; }
 	public string? MonthFormat { get; set; }
 	public string? DayFormat { get; set; }
@@ -24,13 +24,17 @@ public class ToolOptionsRaw
 	public string? CsvReportFileName { get; set; }
 	public string? DryRunCsvReportFileName { get; set; }
 
-	public int? ConnectionLimit { get; set; }
+	public byte? ConnectionLimit { get; set; }
 
 	public string? BigDataCloudApiKey { get; set; }
 	public string? GoogleMapsApiKey { get; set; }
 	public string? LocationIqApiKey { get; set; }
 	public string? ArchivePhotoTakenDateHashSeparator { get; set; }
-	public int? CoordinatePrecision { get; set; }
+	public byte? CoordinatePrecision { get; set; }
 	public string[]? SupportedExtensions { get; set; }
 	public string[]? CompanionExtensions { get; set; }
+	public short? ExpectedDayRange { get; set; }
+	public bool? LogCategoryNameOutput { get; set; }
+	public string? MacOsCommand { get; set; }
+	public string? MacOsArgumentPrefix { get; set; }
 }

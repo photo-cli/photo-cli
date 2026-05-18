@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
 
     - name: Checkout
@@ -17,10 +17,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup .NET 8.0
+    - name: Setup .NET 10.0
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 10.0.x
 
       # SonarScanner requires minimal version of 17, replacing the default 8 in ubuntu-latest
     - uses: actions/setup-java@v4
@@ -32,7 +32,7 @@ jobs:
       run: dotnet tool install --global dotnet-sonarscanner
 
     - name: Begin SonarCloud scan
-      run: dotnet sonarscanner begin /o:"photo-cli" /k:"photo-cli_photo-cli" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"  /d:sonar.login=${{secrets.SONAR_TOKEN}} /d:sonar.host.url="https://sonarcloud.io"
+      run: dotnet sonarscanner begin /o:"photo-cli" /k:"photo-cli_photo-cli" /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml"  /d:sonar.token=${{secrets.SONAR_TOKEN}} /d:sonar.host.url="https://sonarcloud.io"
       env:
         SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
 
@@ -47,7 +47,7 @@ jobs:
       run: dotnet test --configuration Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
     - name: End SonarCloud scan
-      run: dotnet sonarscanner end /d:sonar.login=${{secrets.SONAR_TOKEN}}
+      run: dotnet sonarscanner end /d:sonar.token=${{secrets.SONAR_TOKEN}}
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}

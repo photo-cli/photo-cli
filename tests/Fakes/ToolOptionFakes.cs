@@ -24,6 +24,7 @@ public static class ToolOptionFakes
 	public const string NoAddressFolderName = "no-address";
 	public const string NoAddressAndPhotoTakenDateFolderName = "no-address-and-no-photo-taken-date";
 	public const string ArchivePhotoTakenDateHashSeparator = "-";
+	public const byte CoordinatePrecisionDefault = 4;
 
 	public static ToolOptions Create()
 	{
@@ -50,7 +51,8 @@ public static class ToolOptionFakes
 			NoAddressFolderName = NoAddressFolderName,
 			NoAddressAndPhotoTakenDateFolderName = NoAddressAndPhotoTakenDateFolderName,
 
-			ArchivePhotoTakenDateHashSeparator = ArchivePhotoTakenDateHashSeparator
+			ArchivePhotoTakenDateHashSeparator = ArchivePhotoTakenDateHashSeparator,
+			CoordinatePrecision = CoordinatePrecisionDefault,
 		});
 	}
 }
