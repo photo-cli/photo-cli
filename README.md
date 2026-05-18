@@ -37,13 +37,14 @@
 
 ## Features Explained With Examples
 
-There are five main features that can be explained better with examples.
+There are six main features that can be explained better with examples.
 
 1. [Archive & index with albums into a specific folder with metadata stored locally on SQLite with `photo-cli archive` command](#1-archive--index-with-albums-into-a-specific-folder-with-metadata-stored-locally-on-sqlite-with-photo-cli-archive-command)
 2. [Copy into a new organized folder example with `photo-cli copy` command](#2-copy-into-a-new-organized-folder-example-with-photo-cli-copy-command)
 3. [List/Open Photos by their metadata on Archived Folder](#3-listopen-photos-by-their-metadata-on-archived-folder)
-4. [Export all extracted information into a CSV Report With `photo-cli info` Command](#4-export-all-extracted-information-into-a-csv-report-with-photo-cli-info-command)
-5. [Navigate Your Photo Locations on Google Maps & Earth](#5-navigate-your-photo-locations-on-google-maps--earth)
+4. [Query your photo archive with AI assistants over MCP](#4-query-your-photo-archive-with-ai-assistants-over-mcp)
+5. [Export all extracted information into a CSV Report With `photo-cli info` Command](#5-export-all-extracted-information-into-a-csv-report-with-photo-cli-info-command)
+6. [Navigate Your Photo Locations on Google Maps & Earth](#6-navigate-your-photo-locations-on-google-maps--earth)
 
 ### 1. Archive & index with albums into a specific folder with metadata stored locally on SQLite with `photo-cli archive` command
 
@@ -570,7 +571,37 @@ Note: You can also open the photos by geolocation name (if you have used the arg
 ```
 </details>
 
-### 4. Export all extracted information into a CSV Report With `photo-cli info` Command
+### 4. Query your photo archive with AI assistants over MCP
+
+The `mcp` command starts a [Model Context Protocol](https://modelcontextprotocol.io/) stdio server that exposes your archive's SQLite database to AI assistants. Once connected, tools like Claude Code, Claude Desktop, and VS Code can search by date, location, album, or proximity to a GPS coordinate — and on macOS, open matching photos directly in Preview.
+
+#### Run the command
+
+```
+photo-cli mcp --input /path/to/archive
+```
+
+This launches a stdio MCP server pointing at the archive's `photo-cli.sqlite3`. You usually don't run it by hand — your AI client launches it from its MCP config.
+
+#### Ask the assistant in plain language
+
+Once connected, ask questions like *"What cities and when did I go to Italy?"*, *"Show me everything taken within 5 km of 43.78, 11.23"*, or *"Open all photos in the Italia-Firenze album"*. The assistant picks the right MCP tool, fills in the parameters, and photo-cli answers from the SQLite index.
+
+![mcp-query](docs/screenshots/mcp/query.png)
+
+#### How tools map to the SQLite index
+
+Each exposed MCP tool is a typed query against the archive database — `list_photos_by_date_range`, `find_near_location`, `list_albums`, `open_photos_by_album_name`, and so on. The MCP Inspector view below shows the available tools and their input schemas, which is exactly what the assistant sees when deciding how to answer your question.
+
+![mcp-tools-inspect](docs/screenshots/mcp/tools-inspect.png)
+
+#### Open the matching photos from the assistant
+
+When you ask the assistant to *open* photos rather than just list them, the MCP server hands the matching files off to your OS image viewer. This is wired up for macOS today — matches open directly in Preview. On Linux and Windows the `open_photos_*` tools are not active yet; use the `list_photos_*` tools and pipe the returned paths to your viewer of choice.
+
+![mcp-view](docs/screenshots/mcp/view.png)
+
+### 5. Export all extracted information into a CSV Report With `photo-cli info` Command
 
 #### Contents of photo-info.csv File in Markdown Table (output of `info` command)
 
@@ -702,7 +733,7 @@ photo-cli info -a -o photo-info.csv -e 2 -r country city -t 0 -c 0 -z 0
 3. As a [third-party reverse geocode](#address-building--reverse-geocoding) is selected, the address is built using `OpenStreetMap` with [given administrative levels](#4-building-your-own-address-with-selected-properties) such as `city town suburb` for each photograph.
 4. As [no photograph taken date action](#no-photograph-taken-date-action-for-info-command----t---no-taken-date-) and [no coordinate action](#no-coordinate-action-for-info-command----c---no-coordinate-) are both selected as `Continue`, affected photos are listed in the report with empty data.
 
-### 5. Navigate Your Photo Locations on Google Maps & Earth
+### 6. Navigate Your Photo Locations on Google Maps & Earth
 
 If you want to discover your photographs interactively in the world, you may do it by importing your CSV output (whether [photo-cli copy](#copy) or [photo-cli info](#info) command) to [Google Maps](https://maps.google.com) and [Google Earth](https://earth.google.com), you can interactively navigate through your photographs.
 
