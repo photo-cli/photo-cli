@@ -9,12 +9,12 @@ public class McpOptions
 	// ref: https://github.com/commandlineparser/commandline/wiki/Immutable-Options-Type
 	public McpOptions(string? archivePath = null, string? customDatabasePath = null)
 	{
-		ArchivePath = archivePath ?? Environment.CurrentDirectory;
+		ArchivePath = archivePath;
 		CustomDatabasePath = customDatabasePath;
 	}
 
 	[Option(OptionNames.ArchivePathOptionNameShort, OptionNames.ArchivePathOptionNameLong, HelpText = HelpTexts.McpArchivePath)]
-	public string ArchivePath { get; }
+	public string? ArchivePath { get; }
 
 	[Option(OptionNames.CustomDatabasePathShort, OptionNames.CustomDatabasePathLong, HelpText = HelpTexts.CustomDatabasePath)]
 	public string? CustomDatabasePath { get; }

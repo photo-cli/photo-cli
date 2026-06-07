@@ -275,7 +275,7 @@ public class ListRunnerUnitTests
 		_dbServiceMock.Setup(s => s.TotalReverseGeocodeCacheCount()).ReturnsAsync(0);
 
 		var sut = new ListRunner(options, _dbServiceMock.Object, _fileSystemMock, StatisticsFakes.Empty(), _consoleWriterMock.Object, _ansiConsoleExtendedMock.Object, _processLauncherMock.Object,
-			NullLogger<ListRunner>.Instance);
+			new ArchiveDatabaseOptions(ArchivePath, customDbPath), NullLogger<ListRunner>.Instance);
 		var exitCode = await sut.Execute();
 
 		exitCode.Should().Be(ExitCode.Success);
@@ -293,7 +293,7 @@ public class ListRunnerUnitTests
 		var options = ListOptionsFakes.SummaryWithCustomDatabasePath(customDbPath);
 
 		var sut = new ListRunner(options, _dbServiceMock.Object, _fileSystemMock, StatisticsFakes.Empty(), _consoleWriterMock.Object, _ansiConsoleExtendedMock.Object, _processLauncherMock.Object,
-			NullLogger<ListRunner>.Instance);
+			new ArchiveDatabaseOptions(ArchivePath, customDbPath), NullLogger<ListRunner>.Instance);
 		var exitCode = await sut.Execute();
 
 		exitCode.Should().Be(ExitCode.NoArchiveDatabaseFound);
@@ -387,7 +387,7 @@ public class ListRunnerUnitTests
 		}
 
 		return new ListRunner(options, _dbServiceMock.Object, _fileSystemMock, StatisticsFakes.Empty(), _consoleWriterMock.Object, _ansiConsoleExtendedMock.Object, _processLauncherMock.Object,
-			NullLogger<ListRunner>.Instance);
+			new ArchiveDatabaseOptions(ArchivePath), NullLogger<ListRunner>.Instance);
 	}
 
 	private void VerifyNoOtherCalls()

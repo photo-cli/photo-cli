@@ -6,7 +6,6 @@ public class ArchiveOptionsValidator : BaseValidator<ArchiveOptions>
 {
 	public ArchiveOptionsValidator()
 	{
-		var outputPathInfo = GetOptionFormat(e => e.OutputPath);
 		var albumNameNewInfo = GetOptionFormat(e => e.AlbumNameNew);
 		var albumTypeInfo = GetOptionFormat(e => e.AlbumType);
 		var albumIdUpdateInfo = GetOptionFormat(e => e.AlbumIdUpdate);
@@ -17,7 +16,6 @@ public class ArchiveOptionsValidator : BaseValidator<ArchiveOptions>
 		Include(new SharedReverseGeocodeValidator(optionType));
 		Include(new ActionableReverseGeocodeValidator(optionType));
 
-		RuleFor(r => r.OutputPath).RequiredString(outputPathInfo);
 		RuleFor(r => r.InvalidFileFormatAction).ValidEnum(true);
 		RuleFor(r => r.NoPhotoTakenDateAction).ValidEnum(true);
 		RuleFor(r => r.NoCoordinateAction).ValidEnum(true);

@@ -21,7 +21,7 @@ public class ListOptions
 		ListType = listType;
 
 		// Optional
-		ArchivePath = archivePath ?? Environment.CurrentDirectory;
+		ArchivePath = archivePath;
 		AlbumId = albumId;
 		AlbumName = albumName;
 		Year = year;
@@ -43,7 +43,7 @@ public class ListOptions
 	#region Optional
 
 	[Option(OptionNames.ArchivePathOptionNameShort, OptionNames.ArchivePathOptionNameLong, HelpText = HelpTexts.ArchivePath)]
-	public string ArchivePath { get; }
+	public string? ArchivePath { get; }
 
 	[Option(OptionNames.AlbumIdShort, OptionNames.AlbumIdLong, HelpText = HelpTexts.AlbumId)]
 	public int? AlbumId { get; }

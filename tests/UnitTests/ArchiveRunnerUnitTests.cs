@@ -528,7 +528,7 @@ public class ArchiveRunnerUnitTests
 
 		return new ArchiveRunner(NullLogger<ArchiveRunner>.Instance, options, _photoCollectorMock.Object, _exifDataAppenderMock.Object,
 			_directoryGrouperServiceMock.Object, _fileNamerServiceMock.Object, _fileServiceMock.Object, _fileSystemMock, new Statistics(), _reverseGeocodeFetcherMock.Object,
-			_consoleWriterMock.Object, _duplicatePhotoRemoveServiceMock.Object, _dbServiceMock.Object);
+			_consoleWriterMock.Object, _duplicatePhotoRemoveServiceMock.Object, new ArchiveDatabaseOptions(options.OutputPath), _dbServiceMock.Object);
 	}
 
 	private void CreateSourcePathDirectory()

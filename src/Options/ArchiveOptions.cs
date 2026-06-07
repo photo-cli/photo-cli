@@ -9,8 +9,8 @@ public class ArchiveOptions : IActionableReverseGeocodeOptions
 	// ref: https://github.com/commandlineparser/commandline/wiki/Immutable-Options-Type
 	public ArchiveOptions(
 		// Required
-		string outputPath,
 		// Optional
+		string? outputPath = null,
 		string? inputPath = null,
 		bool isDryRun = false, ArchiveInvalidFormatAction invalidFileFormatAction = ArchiveInvalidFormatAction.Continue,
 		ArchiveNoPhotoTakenDateAction noPhotoTakenDateAction = ArchiveNoPhotoTakenDateAction.Continue, ArchiveNoCoordinateAction noCoordinateAction = ArchiveNoCoordinateAction.Continue,
@@ -22,9 +22,9 @@ public class ArchiveOptions : IActionableReverseGeocodeOptions
 		string? customDatabasePath = null)
 	{
 		// Required
-		OutputPath = outputPath;
 
 		// Optional
+		OutputPath = outputPath;
 		InputPath = inputPath;
 		IsDryRun = isDryRun;
 		InvalidFileFormatAction = invalidFileFormatAction;
@@ -52,13 +52,12 @@ public class ArchiveOptions : IActionableReverseGeocodeOptions
 	}
 
 	#region Required
-
-	[Option(OptionNames.OutputPathOptionNameShort, OptionNames.OutputPathOptionNameLong, HelpText = HelpTexts.OutputPathCopy)]
-	public string OutputPath { get; }
-
 	#endregion
 
 	#region Optional
+
+	[Option(OptionNames.OutputPathOptionNameShort, OptionNames.OutputPathOptionNameLong, HelpText = HelpTexts.OutputPathCopy)]
+	public string OutputPath { get; }
 
 	[Option(OptionNames.ArchivePathOptionNameShort, OptionNames.ArchivePathOptionNameLong, HelpText = HelpTexts.InputPath)]
 	public string? InputPath { get; }

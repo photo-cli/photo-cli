@@ -15,9 +15,10 @@ public class ListRunner : BaseRunner, IConsoleRunner
 	private readonly IConsoleWriter _consoleWriter;
 	private readonly AnsiConsoleExtended _ansiConsoleExtended;
 	private readonly IProcessLauncher _processLauncher;
+	private readonly ArchiveDatabaseOptions _archiveDatabaseOptions;
 
 	public ListRunner(ListOptions options, IDbService dbService, IFileSystem fileSystem, Statistics statistics, IConsoleWriter consoleWriter,
-		AnsiConsoleExtended ansiConsoleExtended, IProcessLauncher processLauncher, ILogger<ListRunner> logger) : base(logger, fileSystem, statistics, consoleWriter)
+		AnsiConsoleExtended ansiConsoleExtended, IProcessLauncher processLauncher, ArchiveDatabaseOptions archiveDatabaseOptions, ILogger<ListRunner> logger) : base(logger, fileSystem, statistics, consoleWriter)
 	{
 		_options = options;
 		_dbService = dbService;
@@ -25,12 +26,13 @@ public class ListRunner : BaseRunner, IConsoleRunner
 		_consoleWriter = consoleWriter;
 		_ansiConsoleExtended = ansiConsoleExtended;
 		_processLauncher = processLauncher;
+		_archiveDatabaseOptions = archiveDatabaseOptions;
 		_logger = logger;
 	}
 
 	public async Task<ExitCode> Execute()
 	{
-		var archivePath = _options.ArchivePath;
+		var archivePath = _archiveDatabaseOptions.Path;
 		if (!CheckArchiveDatabaseExists(archivePath, out var exitCodeInputFolder))
 			return exitCodeInputFolder;
 
@@ -171,7 +173,7 @@ public class ListRunner : BaseRunner, IConsoleRunner
 
 	private bool CheckArchiveDatabaseExists(string archivePath, out ExitCode exitCode)
 	{
-		var archiveDatabaseInputPathToCheck = _options.CustomDatabasePath ?? Path.Combine(archivePath, Constants.ArchiveSQLiteDatabaseFileName);
+		var archiveDatabaseInputPathToCheck = _archiveDatabaseOptions.CustomDatabasePath ?? Path.Combine(archivePath, Constants.ArchiveSQLiteDatabaseFileName);
 		if (!_fileSystem.File.Exists(archiveDatabaseInputPathToCheck))
 		{
 			_logger.LogCritical("Archive database not found at: {Path}", archiveDatabaseInputPathToCheck);
