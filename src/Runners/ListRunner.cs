@@ -171,7 +171,7 @@ public class ListRunner : BaseRunner, IConsoleRunner
 
 	private bool CheckArchiveDatabaseExists(string archivePath, out ExitCode exitCode)
 	{
-		var archiveDatabaseInputPathToCheck = Path.Combine(archivePath, Constants.ArchiveSQLiteDatabaseFileName);
+		var archiveDatabaseInputPathToCheck = _options.CustomDatabasePath ?? Path.Combine(archivePath, Constants.ArchiveSQLiteDatabaseFileName);
 		if (!_fileSystem.File.Exists(archiveDatabaseInputPathToCheck))
 		{
 			_logger.LogCritical("Archive database not found at: {Path}", archiveDatabaseInputPathToCheck);

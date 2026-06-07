@@ -95,7 +95,10 @@ public static class Program
 						WriteErrorOutputValidationErrors(validationResultCopy);
 						return ReturnExitCode(ExitCode.ArchiveOptionsValidationFailed);
 					}
-					host = BuildHostWithReverseGeocode<ArchiveRunner, ArchiveOptions>(archiveOptions, true, ansiConsole, new ArchiveDatabaseOptions(archiveOptions.OutputPath));
+
+					host = BuildHostWithReverseGeocode<ArchiveRunner, ArchiveOptions>(archiveOptions, true, ansiConsole, new ArchiveDatabaseOptions(archiveOptions.OutputPath,
+						archiveOptions.CustomDatabasePath));
+
 					break;
 				}
 			case SettingsOptions settingsOptions:
@@ -117,7 +120,7 @@ public static class Program
 						WriteErrorOutputValidationErrors(validationResultSettings);
 						return ReturnExitCode(ExitCode.SettingsOptionsValidationFailed);
 					}
-					host = BuildHost<ListRunner, ListOptions>(listOptions, ansiConsole, new ArchiveDatabaseOptions(listOptions.ArchivePath));
+					host = BuildHost<ListRunner, ListOptions>(listOptions, ansiConsole, new ArchiveDatabaseOptions(listOptions.ArchivePath, listOptions.CustomDatabasePath));
 					break;
 				}
 			case McpOptions mcpOptions:
@@ -379,7 +382,7 @@ public static class Program
 
 	private static async Task<int> RunMcpServer(McpOptions options)
 	{
-		var dbPath = Path.Combine(options.ArchivePath, Constants.ArchiveSQLiteDatabaseFileName);
+		var dbPath = options.CustomDatabasePath ?? Path.Combine(options.ArchivePath, Constants.ArchiveSQLiteDatabaseFileName);
 		var builder = Host.CreateApplicationBuilder();
 		builder.Logging.ClearProviders();
 		builder.Services.AddDbContext<ArchiveDbContext>(o => o.UseSqlite($"Data Source={dbPath}"));

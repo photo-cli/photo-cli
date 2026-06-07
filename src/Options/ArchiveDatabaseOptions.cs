@@ -1,3 +1,3 @@
 namespace PhotoCli.Options;
 
-public record ArchiveDatabaseOptions(string Path);
+public record ArchiveDatabaseOptions(string Path, string? CustomDatabasePath = null);

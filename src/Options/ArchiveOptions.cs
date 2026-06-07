@@ -18,7 +18,8 @@ public class ArchiveOptions : IActionableReverseGeocodeOptions
 		// ReverseGeocode - Shared
 		ReverseGeocodeProvider reverseGeoCodeProvider = ReverseGeocodeProvider.Disabled, string? bigDataCloudApiKey = null, IEnumerable<int>? bigDataCloudAdminLevels = null,
 		IEnumerable<string>? googleMapsAddressTypes = null, string? googleMapsApiKey = null, IEnumerable<string>? openStreetMapProperties = null,
-		string? locationIqApiKey = null, bool? hasPaidLicense = null, string? language = null, MissingReverseGeocodeAction missingReverseGeocodeAction = MissingReverseGeocodeAction.Continue)
+		string? locationIqApiKey = null, bool? hasPaidLicense = null, string? language = null, MissingReverseGeocodeAction missingReverseGeocodeAction = MissingReverseGeocodeAction.Continue,
+		string? customDatabasePath = null)
 	{
 		// Required
 		OutputPath = outputPath;
@@ -47,6 +48,7 @@ public class ArchiveOptions : IActionableReverseGeocodeOptions
 		HasPaidLicense = hasPaidLicense;
 		Language = language;
 		MissingReverseGeocodeAction = missingReverseGeocodeAction;
+		CustomDatabasePath = customDatabasePath;
 	}
 
 	#region Required
@@ -124,6 +126,9 @@ public class ArchiveOptions : IActionableReverseGeocodeOptions
 
 	[Option(OptionNames.MissingReverseGeocodeActionShort, OptionNames.MissingReverseGeocodeActionLong, HelpText = HelpTexts.MissingReverseGeocodeAction)]
 	public MissingReverseGeocodeAction MissingReverseGeocodeAction { get; }
+
+	[Option(OptionNames.CustomDatabasePathShort, OptionNames.CustomDatabasePathLong, HelpText = HelpTexts.CustomDatabasePath)]
+	public string? CustomDatabasePath { get; }
 
 	#endregion
 }

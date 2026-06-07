@@ -15,7 +15,7 @@ public class ListOptions
 		int? albumId = null, string? albumName = null,
 		int? year = null, byte? month = null, byte? day = null,
 		DateTime? startDate = null, DateTime? endDate = null,
-		bool rawOutput = false)
+		bool rawOutput = false, string? customDatabasePath = null)
 	{
 		// Required
 		ListType = listType;
@@ -30,6 +30,7 @@ public class ListOptions
 		StartDate = startDate;
 		EndDate = endDate;
 		RawOutput = rawOutput;
+		CustomDatabasePath = customDatabasePath;
 	}
 
 	#region Required
@@ -67,6 +68,9 @@ public class ListOptions
 
 	[Option(OptionNames.RawOutputShort, OptionNames.RawOutputLong, HelpText = HelpTexts.RawOutput)]
 	public bool RawOutput { get; }
+
+	[Option(OptionNames.CustomDatabasePathShort, OptionNames.CustomDatabasePathLong, HelpText = HelpTexts.CustomDatabasePath)]
+	public string? CustomDatabasePath { get; }
 
 	#endregion
 }

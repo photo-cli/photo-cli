@@ -9,5 +9,5 @@ public class ArchiveIsqLiteConnectionStringProvider : ISQLiteConnectionStringPro
 		_archiveDatabaseOptions = options;
 	}
 
-	public string Value => $"Filename={_archiveDatabaseOptions.Path}/{Constants.ArchiveSQLiteDatabaseFileName}";
+	public string Value => $"Filename={_archiveDatabaseOptions.CustomDatabasePath ?? $"{_archiveDatabaseOptions.Path}/{Constants.ArchiveSQLiteDatabaseFileName}"}";
 }
