@@ -257,6 +257,17 @@ public class FileService : IFileService
 		_consoleWriter.ProgressFinish(directoryProgressName);
 	}
 
+	public void CreateParentFolderIfNotExist(string filePath)
+	{
+		var fileInfo = _fileSystem.FileInfo.New(filePath);
+		if (fileInfo.Directory is { Exists: false })
+		{
+			_logger.LogDebug("Directory is creating: {Path}", fileInfo.Directory.FullName);
+			fileInfo.Directory.Create();
+			_logger.LogDebug("Directory created: {Path} ", fileInfo.Directory.FullName);
+		}
+	}
+
 	private string GnuHashFileTreeFormat(IEnumerable<Photo> photos)
 	{
 		var content = new StringBuilder();

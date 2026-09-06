@@ -875,9 +875,10 @@ npx @modelcontextprotocol/inspector photo-cli mcp --input {archive-folder-path}
 photo-cli help mcp
 ```
 
-| Argument           | Short | Description                                                                                             |
-|--------------------|-------|---------------------------------------------------------------------------------------------------------|
-| `--input`          | `-i`  | Archive folder path containing the photo-cli database to expose via MCP. Defaults to current directory. |
+| Argument                 | Short | Description                                                                                             |
+|--------------------------|-------|---------------------------------------------------------------------------------------------------------|
+| `--input`                | `-i`  | Archive folder path containing the photo-cli database to expose via MCP. Defaults to current directory. |
+| `--custom-database-path` | `-j`  | Custom file system path directly to the SQLite database file, bypassing the default location within the archive folder. |
 
 ## Sample Usage Screenshots
 
@@ -2956,6 +2957,10 @@ Action to take when a photo has no coordinate.
 | Continue         | 0     | Processes and archives all photos including those without a coordinate date without any special handling or filtering. |
 | PreventProcess   | 1     | Stops the entire archive operation if any photos without a coordinate are found, returning an error exit code.         |
 
+#### Custom Database Path ( -j, --custom-database-path ) [optional]
+
+Custom file system path directly to the SQLite database file, bypassing the default database location within the archive folder. When provided, the database is read from or written to this exact path instead of `[output-folder]/photo-cli.sqlite3`. The parent directory is created automatically if it does not exist.
+
 ### Copy Verb Arguments
 
 #### Folder Process Type ( -f, --process-type ) [required]
@@ -3105,6 +3110,10 @@ End date (inclusive) to filter photos when using list type `PhotosByDateRange`.
 #### Raw Output ( -r, --raw ) [optional]
 
 Lists photo paths each on a new line instead of trying to open the default OS app. Applicable when using list type `PhotosByAlbumId`, `PhotosByAlbumName`, or `PhotosByExactDate`. (no extra parameter needed)
+
+#### Custom Database Path ( -j, --custom-database-path ) [optional]
+
+Custom file system path directly to the SQLite database file, bypassing the default database location within the archive folder. When provided, the database is read from this exact path instead of `[archive-folder]/photo-cli.sqlite3`.
 
 ### Info Verb Arguments
 

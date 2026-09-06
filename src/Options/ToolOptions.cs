@@ -60,6 +60,8 @@ public class ToolOptions
 		BigDataCloudApiKey = options.BigDataCloudApiKey;
 		GoogleMapsApiKey = options.GoogleMapsApiKey;
 		LocationIqApiKey = options.LocationIqApiKey;
+		ArchivePath = options.ArchivePath;
+		ArchiveDatabasePath = options.ArchiveDatabasePath;
 		ArchivePhotoTakenDateHashSeparator = options.ArchivePhotoTakenDateHashSeparator ?? ArchivePhotoTakenDateHashSeparatorDefault;
 		CoordinatePrecision = options.CoordinatePrecision ?? CoordinatePrecisionDefault;
 		SupportedExtensions = options.SupportedExtensions ?? SupportedExtensionsDefault;
@@ -95,6 +97,8 @@ public class ToolOptions
 	public string? BigDataCloudApiKey { get; set; }
 	public string? GoogleMapsApiKey { get; set; }
 	public string? LocationIqApiKey { get; set; }
+	public string? ArchivePath { get; set; }
+	public string? ArchiveDatabasePath { get; set; }
 	public byte CoordinatePrecision { get; set; }
 	public string ArchivePhotoTakenDateHashSeparator { get; set; }
 	public string[] SupportedExtensions { get; set; }

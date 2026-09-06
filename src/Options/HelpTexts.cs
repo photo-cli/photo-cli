@@ -425,6 +425,8 @@ public static class HelpTexts
 
 	public const string ExpectedDayRange = "(Optional) Provide a maximum expected day difference as number for your photos to prevent processing if it's exceeding the range.";
 
+	public const string CustomDatabasePath = "(Optional) Custom file system path directly to the SQLite database file, bypassing the default database location within the archive folder.";
+
 	#endregion
 
 	#region Mcp

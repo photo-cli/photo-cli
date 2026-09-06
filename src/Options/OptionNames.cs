@@ -12,7 +12,7 @@ internal static class OptionNames
 		g - copy
 		h - copy, info, archive
 		i - copy, info, address, archive
-		j -
+		j - archive, list, mcp
 		k - copy, info, address, settings, archive
 		l - copy, info, address, archive
 		m - copy, info, address, archive
@@ -188,6 +188,9 @@ internal static class OptionNames
 
 	internal const char MissingReverseGeocodeActionShort = 'z';
 	internal const string MissingReverseGeocodeActionLong = "missing-reverse-geocode";
+
+	internal const char CustomDatabasePathShort = 'j';
+	internal const string CustomDatabasePathLong = "custom-database-path";
 
 	#endregion
 
