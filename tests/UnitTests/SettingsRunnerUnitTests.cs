@@ -112,6 +112,8 @@ public class SettingsRunnerUnitTests
 		VerifyBasicPropertyOutput(nameof(ToolOptions.BigDataCloudApiKey), toolOptions.BigDataCloudApiKey, consoleWriterMock);
 		VerifyBasicPropertyOutput(nameof(ToolOptions.GoogleMapsApiKey), toolOptions.GoogleMapsApiKey, consoleWriterMock);
 		VerifyBasicPropertyOutput(nameof(ToolOptions.LocationIqApiKey), toolOptions.LocationIqApiKey, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.ArchivePath), toolOptions.ArchivePath, consoleWriterMock);
+		VerifyBasicPropertyOutput(nameof(ToolOptions.ArchiveDatabasePath), toolOptions.ArchiveDatabasePath, consoleWriterMock);
 		VerifyBasicPropertyOutput(nameof(ToolOptions.CoordinatePrecision), toolOptions.CoordinatePrecision, consoleWriterMock);
 		VerifyBasicPropertyOutput(nameof(ToolOptions.ArchivePhotoTakenDateHashSeparator), toolOptions.ArchivePhotoTakenDateHashSeparator, consoleWriterMock);
 		VerifyBasicPropertyOutput(nameof(ToolOptions.LogCategoryNameOutput), toolOptions.LogCategoryNameOutput, consoleWriterMock);

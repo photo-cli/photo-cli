@@ -260,6 +260,48 @@ public class ListRunnerUnitTests
 
 	#endregion
 
+	#region Custom Database Path
+
+	[Fact]
+	public async Task Execute_SummaryWithCustomDatabasePath_ShouldCheckCustomPathForDatabaseExistence()
+	{
+		const string customDbPath = "/custom/path/archive.sqlite3";
+		var options = ListOptionsFakes.SummaryWithCustomDatabasePath(customDbPath);
+
+		_fileSystemMock.AddFile(customDbPath, new MockFileData(string.Empty));
+
+		_dbServiceMock.Setup(s => s.TotalAlbumCount()).ReturnsAsync(0);
+		_dbServiceMock.Setup(s => s.TotalPhotoCount()).ReturnsAsync(0);
+		_dbServiceMock.Setup(s => s.TotalReverseGeocodeCacheCount()).ReturnsAsync(0);
+
+		var sut = new ListRunner(options, _dbServiceMock.Object, _fileSystemMock, StatisticsFakes.Empty(), _consoleWriterMock.Object, _ansiConsoleExtendedMock.Object, _processLauncherMock.Object,
+			new ArchiveDatabaseOptions(ArchivePath, customDbPath), NullLogger<ListRunner>.Instance);
+		var exitCode = await sut.Execute();
+
+		exitCode.Should().Be(ExitCode.Success);
+		_dbServiceMock.Verify(v => v.TotalAlbumCount(), Times.Once);
+		_dbServiceMock.Verify(v => v.TotalPhotoCount(), Times.Once);
+		_dbServiceMock.Verify(v => v.TotalReverseGeocodeCacheCount(), Times.Once);
+		_consoleWriterMock.Verify(v => v.WriteTable(It.IsAny<Table>()), Times.Once);
+		VerifyNoOtherCalls();
+	}
+
+	[Fact]
+	public async Task Execute_SummaryWithCustomDatabasePathNotExisting_ShouldReturnNoArchiveDatabaseFound()
+	{
+		const string customDbPath = "/custom/path/archive.sqlite3";
+		var options = ListOptionsFakes.SummaryWithCustomDatabasePath(customDbPath);
+
+		var sut = new ListRunner(options, _dbServiceMock.Object, _fileSystemMock, StatisticsFakes.Empty(), _consoleWriterMock.Object, _ansiConsoleExtendedMock.Object, _processLauncherMock.Object,
+			new ArchiveDatabaseOptions(ArchivePath, customDbPath), NullLogger<ListRunner>.Instance);
+		var exitCode = await sut.Execute();
+
+		exitCode.Should().Be(ExitCode.NoArchiveDatabaseFound);
+		VerifyNoOtherCalls();
+	}
+
+	#endregion
+
 	#region Archive Database Not Found
 
 	[Fact]
@@ -345,7 +387,7 @@ public class ListRunnerUnitTests
 		}
 
 		return new ListRunner(options, _dbServiceMock.Object, _fileSystemMock, StatisticsFakes.Empty(), _consoleWriterMock.Object, _ansiConsoleExtendedMock.Object, _processLauncherMock.Object,
-			NullLogger<ListRunner>.Instance);
+			new ArchiveDatabaseOptions(ArchivePath), NullLogger<ListRunner>.Instance);
 	}
 
 	private void VerifyNoOtherCalls()

@@ -205,6 +205,9 @@ public class ArchiveMcpTools(IDbService dbService, IProcessLauncher processLaunc
 		if (photos.Count == 0)
 			return "No photos found to open.";
 
+		if (mcpOptions.ArchivePath.IsMissing())
+			return "Archive path is missing.";
+
 		var photoPaths = photos.Select(p => Path.Combine(mcpOptions.ArchivePath, p.Path)).ToList();
 		await processLauncher.Launch(photoPaths);
 		return $"Opened {photos.Count} photo(s) in the default viewer.";

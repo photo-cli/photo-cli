@@ -51,7 +51,7 @@ public abstract class BaseValidator<T> : AbstractValidator<T>
 		return OptionFormatWithValue(GetOptionFormatByType(actualOption, propertyName), value);
 	}
 
-	protected static string GetOptionFormatByType(Type actualOption, string propertyName)
+	public static string GetOptionFormatByType(Type actualOption, string propertyName)
 	{
 		var propertyInfo = actualOption.GetProperty(propertyName);
 		if (propertyInfo == null)

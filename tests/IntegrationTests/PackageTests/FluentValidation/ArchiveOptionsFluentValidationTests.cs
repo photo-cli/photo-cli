@@ -125,10 +125,10 @@ public class ArchiveOptionsFluentValidationTests : BaseFluentValidationTests<Arc
 	#region Required
 
 	[Fact]
-	public void NullOutputFolderPath_ShouldGiveNotNullValidatorError()
+	public void NullOutputFolderPath_ShouldBeValid()
 	{
 		var commandLineOptions = ArchiveOptionsFakes.Create(null!);
-		CheckPropertyRequiredString(commandLineOptions, nameof(ArchiveOptions.OutputPath), Required(nameof(ArchiveOptions.OutputPath), "output", 'o'));
+		ValidationShouldHaveNoError(commandLineOptions);
 	}
 
 	#endregion

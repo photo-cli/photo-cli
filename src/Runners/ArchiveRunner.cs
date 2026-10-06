@@ -17,11 +17,12 @@ public class ArchiveRunner : BaseRunner, IConsoleRunner
 	private readonly IConsoleWriter _consoleWriter;
 	private readonly IDuplicatePhotoRemoveService _duplicatePhotoRemoveService;
 	private readonly IDbService _dbService;
+	private readonly ArchiveDatabaseOptions _archiveDatabaseOptions;
 
 	public ArchiveRunner(ILogger<ArchiveRunner> logger, ArchiveOptions options, IPhotoCollectorService photoCollectorService, IExifDataAppenderService exifDataAppenderService,
 		IDirectoryGrouperService directoryGrouperService, IFileNamerService fileNamerService, IFileService fileService, IFileSystem fileSystem, Statistics statistics,
 		IReverseGeocodeFetcherService reverseGeocodeFetcherService, IConsoleWriter consoleWriter,
-		IDuplicatePhotoRemoveService duplicatePhotoRemoveService, IDbService dbService) : base(logger, fileSystem, statistics, consoleWriter)
+		IDuplicatePhotoRemoveService duplicatePhotoRemoveService, ArchiveDatabaseOptions archiveDatabaseOptions, IDbService dbService) : base(logger, fileSystem, statistics, consoleWriter)
 	{
 		_options = options;
 		_logger = logger;
@@ -33,6 +34,7 @@ public class ArchiveRunner : BaseRunner, IConsoleRunner
 		_reverseGeocodeFetcherService = reverseGeocodeFetcherService;
 		_consoleWriter = consoleWriter;
 		_duplicatePhotoRemoveService = duplicatePhotoRemoveService;
+		_archiveDatabaseOptions = archiveDatabaseOptions;
 		_dbService = dbService;
 	}
 
@@ -91,7 +93,7 @@ public class ArchiveRunner : BaseRunner, IConsoleRunner
 
 			var uniquePhotos = _duplicatePhotoRemoveService.GroupAndFilterByPhotoHash(photosInRelativeDirectory);
 			var renamedPhotos = _fileNamerService.SetArchiveFileName(uniquePhotos);
-			var newCopiedFiles = _fileService.CopyIfNotExists(renamedPhotos, _options.OutputPath, _options.IsDryRun);
+			var newCopiedFiles = _fileService.CopyIfNotExists(renamedPhotos, _archiveDatabaseOptions.Path, _options.IsDryRun);
 			newCopiedPhotosByRelativeDirectory.Add(targetRelativeDirectoryPath, newCopiedFiles);
 			if (isNotDryRun)
 			{

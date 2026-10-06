@@ -9,8 +9,8 @@ public class ArchiveOptions : IActionableReverseGeocodeOptions
 	// ref: https://github.com/commandlineparser/commandline/wiki/Immutable-Options-Type
 	public ArchiveOptions(
 		// Required
-		string outputPath,
 		// Optional
+		string? outputPath = null,
 		string? inputPath = null,
 		bool isDryRun = false, ArchiveInvalidFormatAction invalidFileFormatAction = ArchiveInvalidFormatAction.Continue,
 		ArchiveNoPhotoTakenDateAction noPhotoTakenDateAction = ArchiveNoPhotoTakenDateAction.Continue, ArchiveNoCoordinateAction noCoordinateAction = ArchiveNoCoordinateAction.Continue,
@@ -18,12 +18,13 @@ public class ArchiveOptions : IActionableReverseGeocodeOptions
 		// ReverseGeocode - Shared
 		ReverseGeocodeProvider reverseGeoCodeProvider = ReverseGeocodeProvider.Disabled, string? bigDataCloudApiKey = null, IEnumerable<int>? bigDataCloudAdminLevels = null,
 		IEnumerable<string>? googleMapsAddressTypes = null, string? googleMapsApiKey = null, IEnumerable<string>? openStreetMapProperties = null,
-		string? locationIqApiKey = null, bool? hasPaidLicense = null, string? language = null, MissingReverseGeocodeAction missingReverseGeocodeAction = MissingReverseGeocodeAction.Continue)
+		string? locationIqApiKey = null, bool? hasPaidLicense = null, string? language = null, MissingReverseGeocodeAction missingReverseGeocodeAction = MissingReverseGeocodeAction.Continue,
+		string? customDatabasePath = null)
 	{
 		// Required
-		OutputPath = outputPath;
 
 		// Optional
+		OutputPath = outputPath;
 		InputPath = inputPath;
 		IsDryRun = isDryRun;
 		InvalidFileFormatAction = invalidFileFormatAction;
@@ -47,16 +48,16 @@ public class ArchiveOptions : IActionableReverseGeocodeOptions
 		HasPaidLicense = hasPaidLicense;
 		Language = language;
 		MissingReverseGeocodeAction = missingReverseGeocodeAction;
+		CustomDatabasePath = customDatabasePath;
 	}
 
 	#region Required
-
-	[Option(OptionNames.OutputPathOptionNameShort, OptionNames.OutputPathOptionNameLong, HelpText = HelpTexts.OutputPathCopy)]
-	public string OutputPath { get; }
-
 	#endregion
 
 	#region Optional
+
+	[Option(OptionNames.OutputPathOptionNameShort, OptionNames.OutputPathOptionNameLong, HelpText = HelpTexts.OutputPathCopy)]
+	public string OutputPath { get; }
 
 	[Option(OptionNames.ArchivePathOptionNameShort, OptionNames.ArchivePathOptionNameLong, HelpText = HelpTexts.InputPath)]
 	public string? InputPath { get; }
@@ -124,6 +125,9 @@ public class ArchiveOptions : IActionableReverseGeocodeOptions
 
 	[Option(OptionNames.MissingReverseGeocodeActionShort, OptionNames.MissingReverseGeocodeActionLong, HelpText = HelpTexts.MissingReverseGeocodeAction)]
 	public MissingReverseGeocodeAction MissingReverseGeocodeAction { get; }
+
+	[Option(OptionNames.CustomDatabasePathShort, OptionNames.CustomDatabasePathLong, HelpText = HelpTexts.CustomDatabasePath)]
+	public string? CustomDatabasePath { get; }
 
 	#endregion
 }

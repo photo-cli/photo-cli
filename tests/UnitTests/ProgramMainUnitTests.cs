@@ -285,7 +285,8 @@ public class StartupTests
 	[InlineData(typeof(AnsiConsoleExtended))]
 	public void GetService_BuildingArchiveRunner_ShouldResolveService(Type type)
 	{
-		var host = Program.BuildHostWithReverseGeocode<ArchiveRunner, ArchiveOptions>(ArchiveOptionsFakes.Valid(), true, SpectreConsoleFakes.Actual, ArchiveDatabaseOptionsFakes.Valid());
+		var archiveDatabaseOptions = ArchiveDatabaseOptionsFakes.Valid();
+		var host = Program.BuildHostWithReverseGeocode<ArchiveRunner, ArchiveOptions>(ArchiveOptionsFakes.Valid(), true, SpectreConsoleFakes.Actual, _ => archiveDatabaseOptions);
 		var sut = host.Services.CreateScope().ServiceProvider;
 		var service = sut.GetService(type);
 		service.Should().NotBeNull();

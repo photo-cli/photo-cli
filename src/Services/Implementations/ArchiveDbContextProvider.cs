@@ -26,7 +26,17 @@ public class ArchiveDbContextProvider : IArchiveDbContextProvider
 			_logger.LogInformation("Using existing DbContext - {@ContextId}", _value.ContextId);
 			return _value;
 		}
-		_fileService.CreateOutputFolderIfNotExists(_archiveDatabaseOptions.Path);
+
+		if (_archiveDatabaseOptions.CustomDatabasePath.IsPresent())
+		{
+			_logger.LogDebug("Checking folder for custom database path: {CustomDatabasePath}", _archiveDatabaseOptions.CustomDatabasePath);
+			_fileService.CreateParentFolderIfNotExist(_archiveDatabaseOptions.CustomDatabasePath);
+		}
+		else
+		{
+			_logger.LogDebug("Checking folder for default output folder: {Path}", _archiveDatabaseOptions.Path);
+			_fileService.CreateOutputFolderIfNotExists(_archiveDatabaseOptions.Path);
+		}
 		var optionsBuilder = new DbContextOptionsBuilder<ArchiveDbContext>();
 		var connectionString = _connectionStringProvider.Value;
 		optionsBuilder.UseSqlite(connectionString);

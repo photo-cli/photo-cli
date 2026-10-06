@@ -12,6 +12,15 @@ public static class ListOptionsFakes
 		);
 	}
 
+	public static ListOptions SummaryWithCustomDatabasePath(string customDatabasePath)
+	{
+		return new ListOptions(
+			listType: ListType.Summary,
+			archivePath: ArchivePath,
+			customDatabasePath: customDatabasePath
+		);
+	}
+
 	public static ListOptions Albums(string? archivePath = null)
 	{
 		return new ListOptions(

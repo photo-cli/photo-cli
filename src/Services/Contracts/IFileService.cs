@@ -9,4 +9,5 @@ public interface IFileService
 	Task<IReadOnlyCollection<Photo>> CalculateFileHash(IReadOnlyCollection<Photo> photos);
 	void CreateOutputFolderIfNotExists(string outputFolder);
 	void DeletePhotoSources(IReadOnlyCollection<Photo> photos, bool isDryRun = false);
+	void CreateParentFolderIfNotExist(string filePath);
 }

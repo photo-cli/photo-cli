@@ -95,7 +95,10 @@ public static class Program
 						WriteErrorOutputValidationErrors(validationResultCopy);
 						return ReturnExitCode(ExitCode.ArchiveOptionsValidationFailed);
 					}
-					host = BuildHostWithReverseGeocode<ArchiveRunner, ArchiveOptions>(archiveOptions, true, ansiConsole, new ArchiveDatabaseOptions(archiveOptions.OutputPath));
+
+					host = BuildHostWithReverseGeocode<ArchiveRunner, ArchiveOptions>(archiveOptions, true, ansiConsole,
+						toolOptionsRaw => ArchiveDatabaseOptions.FromArchive(archiveOptions, toolOptionsRaw));
+
 					break;
 				}
 			case SettingsOptions settingsOptions:
@@ -117,7 +120,8 @@ public static class Program
 						WriteErrorOutputValidationErrors(validationResultSettings);
 						return ReturnExitCode(ExitCode.SettingsOptionsValidationFailed);
 					}
-					host = BuildHost<ListRunner, ListOptions>(listOptions, ansiConsole, new ArchiveDatabaseOptions(listOptions.ArchivePath));
+					host = BuildHost<ListRunner, ListOptions>(listOptions, ansiConsole,
+						toolOptionsRaw => ArchiveDatabaseOptions.FromList(listOptions, toolOptionsRaw));
 					break;
 				}
 			case McpOptions mcpOptions:
@@ -162,6 +166,10 @@ public static class Program
 
 		ServicePointManager.DefaultConnectionLimit = toolOptions.ConnectionLimit;
 
+		var validationRuntimeExitCode = ValidateRuntimeValidations(serviceProvider, consoleWriter);
+		if (validationRuntimeExitCode.HasValue)
+			return (int)validationRuntimeExitCode.Value;
+
 		var apiKeyStore = serviceProvider.GetRequiredService<ApiKeyStore>();
 		var apiKeyStoreValidationResult = new ApiKeyStoreValidator().Validate(apiKeyStore);
 		if (!apiKeyStoreValidationResult.IsValid)
@@ -199,18 +207,20 @@ public static class Program
 		return exitCodeValue;
 	}
 
-	public static IHost BuildHost<TConsoleRunner, TOptions>(TOptions options, IAnsiConsole ansiConsole, ArchiveDatabaseOptions? archiveDatabaseOptions = null)
+	public static IHost BuildHost<TConsoleRunner, TOptions>(TOptions options, IAnsiConsole ansiConsole,
+		Func<ToolOptionsRaw, ArchiveDatabaseOptions?>? archiveDatabaseOptionsFactory = null)
 		where TOptions : class where TConsoleRunner : IConsoleRunner
 	{
 		return BuildHostCore<TConsoleRunner>((services, _) =>
 		{
 			services.AddSingleton(options);
 			services.AddSingleton(new ApiKeyStore());
-		}, ansiConsole, archiveDatabaseOptions);
+		}, ansiConsole, archiveDatabaseOptionsFactory);
 	}
 
 	public static IHost BuildHostWithReverseGeocode<TConsoleRunner, TOptions>(TOptions options, bool useDbReverseGeocodeCache, IAnsiConsole ansiConsole,
-		ArchiveDatabaseOptions? archiveDatabaseOptions = null) where TOptions : class, IReverseGeocodeOptions where TConsoleRunner : IConsoleRunner
+		Func<ToolOptionsRaw, ArchiveDatabaseOptions?>? archiveDatabaseOptionsFactory = null)
+		where TOptions : class, IReverseGeocodeOptions where TConsoleRunner : IConsoleRunner
 	{
 		return BuildHostCore<TConsoleRunner>((services, configuration) =>
 		{
@@ -262,7 +272,7 @@ public static class Program
 			}).AddResilience();
 
 			#endregion
-		}, ansiConsole, archiveDatabaseOptions);
+		}, ansiConsole, archiveDatabaseOptionsFactory);
 	}
 
 	private static IHttpClientBuilder AddResilience(this IHttpClientBuilder httpClientBuilder)
@@ -281,7 +291,7 @@ public static class Program
 	}
 
 	private static IHost BuildHostCore<TConsoleRunner>(Action<IServiceCollection, IConfigurationRoot>? additionalConfigureServices, IAnsiConsole ansiConsole,
-		ArchiveDatabaseOptions? archiveDatabaseOptions = null) where TConsoleRunner : IConsoleRunner
+		Func<ToolOptionsRaw, ArchiveDatabaseOptions?>? archiveDatabaseOptionsFactory = null) where TConsoleRunner : IConsoleRunner
 	{
 		Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
 
@@ -329,8 +339,12 @@ public static class Program
 
 			additionalConfigureServices?.Invoke(services, configuration);
 
-			if (archiveDatabaseOptions != null)
-				services.AddSingleton(archiveDatabaseOptions);
+			if (archiveDatabaseOptionsFactory != null)
+			{
+				var archiveDatabaseOptions = archiveDatabaseOptionsFactory(toolOptionsRaw);
+				if (archiveDatabaseOptions != null)
+					services.AddSingleton(archiveDatabaseOptions);
+			}
 		});
 		return builder.UseConsoleLifetime().Build();
 	}
@@ -379,13 +393,18 @@ public static class Program
 
 	private static async Task<int> RunMcpServer(McpOptions options)
 	{
-		var dbPath = Path.Combine(options.ArchivePath, Constants.ArchiveSQLiteDatabaseFileName);
+		var config = new ConfigurationBuilder()
+			.AddJsonFile(Constants.AppSettingsFileName, true)
+			.Build();
+		var toolOptionsRaw = config.Get<ToolOptionsRaw>() ?? new ToolOptionsRaw();
+		var archiveDatabaseOptions = ArchiveDatabaseOptions.FromMcp(options, toolOptionsRaw);
+		var dbPath = archiveDatabaseOptions.CustomDatabasePath ?? Path.Combine(archiveDatabaseOptions.Path, Constants.ArchiveSQLiteDatabaseFileName);
 		var builder = Host.CreateApplicationBuilder();
 		builder.Logging.ClearProviders();
 		builder.Services.AddDbContext<ArchiveDbContext>(o => o.UseSqlite($"Data Source={dbPath}"));
 		builder.Services.AddScoped<IArchiveDbContextProvider, McpArchiveDbContextProvider>();
 		builder.Services.AddSingleton(ToolOptions.Default());
-		builder.Services.AddSingleton(options);
+		builder.Services.AddSingleton(new McpOptions(archivePath: archiveDatabaseOptions.Path, customDatabasePath: options.CustomDatabasePath));
 		builder.Services.AddSingleton(new Statistics());
 		builder.Services.AddSingleton<IConsoleWriter, NullConsoleWriter>();
 		builder.Services.AddSingleton<IProcessLauncher, ProcessLauncher>();
@@ -398,5 +417,25 @@ public static class Program
 
 		await builder.Build().RunAsync();
 		return (int)ExitCode.Success;
+	}
+
+	private static ExitCode? ValidateRuntimeValidations(IServiceProvider serviceProvider, IConsoleWriter consoleWriter)
+	{
+		var archiveOptions = serviceProvider.GetService<ArchiveOptions>();
+		if (archiveOptions != null)
+			return ValidateArchiveRuntimeValidations(serviceProvider, consoleWriter);
+		return null;
+	}
+
+	private static ExitCode? ValidateArchiveRuntimeValidations(IServiceProvider serviceProvider, IConsoleWriter consoleWriter)
+	{
+		var archiveDatabaseOptions = serviceProvider.GetService<ArchiveDatabaseOptions>();
+		if (archiveDatabaseOptions == null || archiveDatabaseOptions.Path.IsMissing())
+		{
+			var outputPathInfo = BaseValidator<ArchiveOptions>.GetOptionFormatByType(typeof(ArchiveOptions), nameof(ArchiveOptions.OutputPath));
+			consoleWriter.WriteError($"{outputPathInfo} is required");
+			return ExitCode.ArchiveOptionsValidationFailed;
+		}
+		return null;
 	}
 }
