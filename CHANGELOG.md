@@ -1,3 +1,6 @@
+# 0.4.1 (2026-08-07)
+- MCP `view_*` tools return photos as inline images in the chat (Claude Desktop / claude.ai), downscaled and JPEG-encoded server-side; `open_*` tools still open full-resolution originals in macOS Preview
+
 # 0.4.0 (2026-04-13)
 - archive verb now supports named & address album metadata linking to photos
 - MCP server support for the archive folder to ask your language model about your photos
