@@ -573,7 +573,7 @@ Note: You can also open the photos by geolocation name (if you have used the arg
 
 ### 4. Query your photo archive with AI assistants over MCP
 
-The `mcp` command starts a [Model Context Protocol](https://modelcontextprotocol.io/) stdio server that exposes your archive's SQLite database to AI assistants. Once connected, tools like Claude Code, Claude Desktop, and VS Code can search by date, location, album, or proximity to a GPS coordinate — and on macOS, open matching photos directly in Preview.
+The `mcp` command starts a [Model Context Protocol](https://modelcontextprotocol.io/) stdio server that exposes your archive's SQLite database to AI assistants. Once connected, tools like Claude Code, Claude Desktop, and VS Code can search by date, location, album, or proximity to a GPS coordinate, show matching photos inline in the chat as downscaled images, and — on macOS — open the full-resolution originals directly in Preview.
 
 #### Run the command
 
@@ -600,6 +600,10 @@ Each exposed MCP tool is a typed query against the archive database — `list_ph
 When you ask the assistant to *open* photos rather than just list them, the MCP server hands the matching files off to your OS image viewer. This is wired up for macOS today — matches open directly in Preview. On Linux and Windows the `open_photos_*` tools are not active yet; use the `list_photos_*` tools and pipe the returned paths to your viewer of choice.
 
 ![mcp-view](docs/screenshots/mcp/view.png)
+
+#### See the photos inline in the chat
+
+Ask the assistant to *show* or *view* photos and it reaches for the `view_*` tools instead. These load the matching files, downscale them (max 1280px long edge by default, JPEG quality 80), and return them as inline image blocks that Claude Desktop and claude.ai render right in the conversation — no Preview, and it works on any platform. Multi-photo `view_*` tools are capped (`maxCount`, default 6) so a broad match doesn't dump dozens of images into the model's context; the assistant is told how many matched and can ask for the rest. Use `open_*` when you want the full-resolution original open locally, `view_*` when you just want to see it in the chat.
 
 ### 5. Export all extracted information into a CSV Report With `photo-cli info` Command
 
@@ -788,6 +792,13 @@ Note: You may test commands on [test photographs](docs/test-photographs) which h
 | `open_photos_by_album_name` | Open photos belonging to an album by its name in the default viewer (macOS Preview).                |
 | `open_photos_by_exact_date` | Open photos matching an exact date in the default viewer (macOS Preview). All parameters optional.  |
 | `open_photos_by_date_range` | Open photos within a date range in the default viewer (macOS Preview). Dates are inclusive.          |
+| `view_photo`                | Show a single photo **inline in the chat** — full metadata plus a downscaled JPEG image block.      |
+| `view_photos_by_exact_date` | Show photos matching an exact date inline in the chat (downscaled). Capped at `maxCount` (default 6).|
+| `view_photos_by_date_range` | Show photos within a date range inline in the chat (downscaled). Capped at `maxCount` (default 6).   |
+| `view_photos_by_album_id`   | Show photos in an album (by numeric ID) inline in the chat (downscaled). Capped at `maxCount`.       |
+| `view_photos_by_album_name` | Show photos in an album (by name) inline in the chat (downscaled). Capped at `maxCount`.             |
+
+The `view_*` tools return [MCP image content blocks](https://modelcontextprotocol.io/), which Claude Desktop and claude.ai render directly in the conversation. Images are resized to a max long edge (`maxDimension`, default 1280px, max 2048px) and re-encoded as JPEG (quality 80) so each one stays around 100–200 KB in the response. The `open_*` tools remain for opening full-resolution originals locally in macOS Preview.
 
 ### Setup
 
