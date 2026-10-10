@@ -60,7 +60,7 @@ jobs:
       uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
       id: nuget-login
       with:
-        user: photo-cli
+        user: ${{ secrets.NUGET_USER }}
 
     - name: Publish
       run: dotnet nuget push ./output/nupkg/photo-cli.${{env.VERSION}}.nupkg --api-key ${{steps.nuget-login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
