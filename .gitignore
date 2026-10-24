@@ -356,3 +356,6 @@ MigrationBackup/
 
 # macOS
 .DS_Store
+
+# Claude Code skills are symlinked from a personal skills repo
+.claude/skills/*
