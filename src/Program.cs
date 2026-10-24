@@ -408,7 +408,9 @@ public static class Program
 		builder.Services.AddSingleton(new Statistics());
 		builder.Services.AddSingleton<IConsoleWriter, NullConsoleWriter>();
 		builder.Services.AddSingleton<IProcessLauncher, ProcessLauncher>();
+		builder.Services.AddSingleton<IFileSystem, FileSystem>();
 		builder.Services.AddScoped<IDbService, DbService>();
+		builder.Services.AddScoped<IPhotoImageService, PhotoImageService>();
 
 		builder.Services
 			.AddMcpServer()

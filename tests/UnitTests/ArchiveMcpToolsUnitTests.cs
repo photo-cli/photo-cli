@@ -1,3 +1,4 @@
+using ModelContextProtocol.Protocol;
 using PhotoCli.McpTools;
 
 namespace PhotoCli.Tests.UnitTests;
@@ -6,9 +7,17 @@ public class ArchiveMcpToolsUnitTests
 {
 	private readonly Mock<IDbService> _dbServiceMock = new(MockBehavior.Strict);
 	private readonly Mock<IProcessLauncher> _processLauncherMock = new(MockBehavior.Strict);
+	private readonly Mock<IPhotoImageService> _photoImageServiceMock = new(MockBehavior.Strict);
 	private readonly McpOptions _mcpOptions = new("/archive");
 
-	private ArchiveMcpTools Sut => new(_dbServiceMock.Object, _processLauncherMock.Object, _mcpOptions);
+	private ArchiveMcpTools Sut => new(_dbServiceMock.Object, _processLauncherMock.Object, _mcpOptions, _photoImageServiceMock.Object);
+
+	private void SetupImageServiceReturnsJpeg()
+	{
+		_photoImageServiceMock
+			.Setup(s => s.LoadAndResize(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(PhotoImageResult.Success([1, 2, 3], "image/jpeg"));
+	}
 
 	#region ListPhotosByAlbumId
 
@@ -345,6 +354,144 @@ public class ArchiveMcpToolsUnitTests
 		var result = await Sut.OpenPhotosByDateRange();
 
 		result.Should().Be("No photos found to open.");
+	}
+
+	#endregion
+
+	#region ViewPhoto
+
+	[Fact]
+	public async Task ViewPhoto_GivenExistingPhoto_ShouldReturnMetadataTextAndImageBlock()
+	{
+		var photo = PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 6, 15), 1);
+		_dbServiceMock.Setup(s => s.GetPhotoByPath("1.jpg")).ReturnsAsync(photo);
+		_photoImageServiceMock
+			.Setup(s => s.LoadAndResize("1.jpg", 1280, It.IsAny<int>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(PhotoImageResult.Success([1, 2, 3], "image/jpeg"));
+
+		var result = await Sut.ViewPhoto("1.jpg");
+
+		result.Content.Should().HaveCount(2);
+		result.Content[0].Should().BeOfType<TextContentBlock>();
+		result.Content[1].Should().BeOfType<ImageContentBlock>()
+			.Which.MimeType.Should().Be("image/jpeg");
+	}
+
+	[Fact]
+	public async Task ViewPhoto_GivenMaxDimensionAboveCap_ShouldClampToMax()
+	{
+		var photo = PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 6, 15), 1);
+		_dbServiceMock.Setup(s => s.GetPhotoByPath("1.jpg")).ReturnsAsync(photo);
+		_photoImageServiceMock
+			.Setup(s => s.LoadAndResize("1.jpg", 2048, It.IsAny<int>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(PhotoImageResult.Success([1], "image/jpeg"));
+
+		await Sut.ViewPhoto("1.jpg", 9999);
+
+		_photoImageServiceMock.Verify(s => s.LoadAndResize("1.jpg", 2048, It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+	}
+
+	[Fact]
+	public async Task ViewPhoto_GivenMissingPhoto_ShouldReturnTextOnly()
+	{
+		_dbServiceMock.Setup(s => s.GetPhotoByPath("missing.jpg")).ReturnsAsync((PhotoEntity?)null);
+
+		var result = await Sut.ViewPhoto("missing.jpg");
+
+		result.Content.Should().ContainSingle().Which.Should().BeOfType<TextContentBlock>()
+			.Which.Text.Should().Be("No photo found with path: missing.jpg");
+	}
+
+	[Fact]
+	public async Task ViewPhoto_GivenImageLoadFailure_ShouldReturnErrorTextInsteadOfImage()
+	{
+		var photo = PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 6, 15), 1);
+		_dbServiceMock.Setup(s => s.GetPhotoByPath("1.jpg")).ReturnsAsync(photo);
+		_photoImageServiceMock
+			.Setup(s => s.LoadAndResize("1.jpg", It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(PhotoImageResult.Failure(PhotoImageStatus.UnsupportedFormat, "Unsupported image format (cannot inline): 1.jpg"));
+
+		var result = await Sut.ViewPhoto("1.jpg");
+
+		result.Content.Should().HaveCount(2);
+		result.Content.Should().AllBeOfType<TextContentBlock>();
+	}
+
+	#endregion
+
+	#region ViewPhotosByExactDate
+
+	[Fact]
+	public async Task ViewPhotosByExactDate_GivenMatches_ShouldReturnHeaderListAndImagePerPhoto()
+	{
+		var photos = new List<PhotoEntity>
+		{
+			PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 3, 17), 1),
+			PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 3, 17), 2),
+		};
+		_dbServiceMock.Setup(s => s.GetPhotosByDate(2020, 3, 17)).ReturnsAsync(photos);
+		SetupImageServiceReturnsJpeg();
+
+		var result = await Sut.ViewPhotosByExactDate(2020, 3, 17);
+
+		// header + json list + (path text + image) per photo
+		result.Content.Should().HaveCount(2 + 2 * 2);
+		result.Content.OfType<ImageContentBlock>().Should().HaveCount(2);
+	}
+
+	[Fact]
+	public async Task ViewPhotosByExactDate_GivenMoreMatchesThanMaxCount_ShouldCapAndAnnounce()
+	{
+		var photos = Enumerable.Range(1, 10)
+			.Select(i => PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 3, 17).AddMinutes(i), i))
+			.ToList();
+		_dbServiceMock.Setup(s => s.GetPhotosByDate(2020, 3, 17)).ReturnsAsync(photos);
+		SetupImageServiceReturnsJpeg();
+
+		var result = await Sut.ViewPhotosByExactDate(2020, 3, 17, maxCount: 3);
+
+		result.Content.OfType<ImageContentBlock>().Should().HaveCount(3);
+		((TextContentBlock)result.Content[0]).Text.Should().Contain("10 photos matched");
+	}
+
+	[Fact]
+	public async Task ViewPhotosByExactDate_GivenNoMatches_ShouldReturnTextOnly()
+	{
+		_dbServiceMock.Setup(s => s.GetPhotosByDate(1999, null, null)).ReturnsAsync([]);
+
+		var result = await Sut.ViewPhotosByExactDate(1999);
+
+		result.Content.Should().ContainSingle().Which.Should().BeOfType<TextContentBlock>()
+			.Which.Text.Should().Be("No photos found to view.");
+	}
+
+	#endregion
+
+	#region ViewPhotosByAlbumName
+
+	[Fact]
+	public async Task ViewPhotosByAlbumName_GivenExistingAlbum_ShouldReturnImages()
+	{
+		var photos = new List<PhotoEntity> { PhotoEntityFakes.WithPhotoTakenDateAndId(new DateTime(2020, 6, 15), 1) };
+		_dbServiceMock.Setup(s => s.GetAlbumPhotosByName("Vacation"))
+			.ReturnsAsync(new AlbumPhotoResult(AlbumPhotoResultStatus.Successful, photos));
+		SetupImageServiceReturnsJpeg();
+
+		var result = await Sut.ViewPhotosByAlbumName("Vacation");
+
+		result.Content.OfType<ImageContentBlock>().Should().HaveCount(1);
+	}
+
+	[Fact]
+	public async Task ViewPhotosByAlbumName_GivenMissingAlbum_ShouldReturnNotFoundText()
+	{
+		_dbServiceMock.Setup(s => s.GetAlbumPhotosByName("Ghost"))
+			.ReturnsAsync(new AlbumPhotoResult(AlbumPhotoResultStatus.AlbumNotFound, []));
+
+		var result = await Sut.ViewPhotosByAlbumName("Ghost");
+
+		result.Content.Should().ContainSingle().Which.Should().BeOfType<TextContentBlock>()
+			.Which.Text.Should().Be("Album with name 'Ghost' not found.");
 	}
 
 	#endregion

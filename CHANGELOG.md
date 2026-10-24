@@ -1,5 +1,9 @@
-# 0.4.1 (2026-08-07)
+# 0.5.0 (unreleased)
 - MCP `view_*` tools return photos as inline images in the chat (Claude Desktop / claude.ai), downscaled and JPEG-encoded server-side; `open_*` tools still open full-resolution originals in macOS Preview
+
+# 0.4.1 (2026-08-07)
+- custom database path option on archive, list and mcp verbs to point directly at a SQLite database file instead of the default location inside the archive folder
+- archive folder path and database path can be saved as settings, so list and mcp verbs work without passing them each time
 
 # 0.4.0 (2026-04-13)
 - archive verb now supports named & address album metadata linking to photos
