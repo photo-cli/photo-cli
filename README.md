@@ -591,7 +591,7 @@ Once connected, ask questions like *"What cities and when did I go to Italy?"*, 
 
 #### How tools map to the SQLite index
 
-Each exposed MCP tool is a typed query against the archive database — `list_photos_by_date_range`, `find_near_location`, `list_albums`, `open_photos_by_album_name`, and so on. The MCP Inspector view below shows the available tools and their input schemas, which is exactly what the assistant sees when deciding how to answer your question.
+Each exposed MCP tool is a typed query against the archive database — `list_photos_by_date_range`, `find_near_location`, `list_albums`, `open_photos_by_album_name`, `view_photo`, and so on. The MCP Inspector view below shows the available tools and their input schemas, which is exactly what the assistant sees when deciding how to answer your question.
 
 ![mcp-tools-inspect](docs/screenshots/mcp/tools-inspect.png)
 
@@ -792,8 +792,8 @@ Note: You may test commands on [test photographs](docs/test-photographs) which h
 | `open_photos_by_album_name` | Open photos belonging to an album by its name in the default viewer (macOS Preview).                |
 | `open_photos_by_exact_date` | Open photos matching an exact date in the default viewer (macOS Preview). All parameters optional.  |
 | `open_photos_by_date_range` | Open photos within a date range in the default viewer (macOS Preview). Dates are inclusive.          |
-| `view_photo`                | Show a single photo **inline in the chat** — full metadata plus a downscaled JPEG image block.      |
-| `view_photos_by_exact_date` | Show photos matching an exact date inline in the chat (downscaled). Capped at `maxCount` (default 6).|
+| `view_photo`                | Show a single photo **inline in the chat** — full metadata plus a downscaled JPEG image block.       |
+| `view_photos_by_exact_date` | Show photos from an exact date inline in the chat (downscaled). Capped at `maxCount` (default 6).    |
 | `view_photos_by_date_range` | Show photos within a date range inline in the chat (downscaled). Capped at `maxCount` (default 6).   |
 | `view_photos_by_album_id`   | Show photos in an album (by numeric ID) inline in the chat (downscaled). Capped at `maxCount`.       |
 | `view_photos_by_album_name` | Show photos in an album (by name) inline in the chat (downscaled). Capped at `maxCount`.             |
