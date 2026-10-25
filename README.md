@@ -17,6 +17,7 @@
 - [Features Explained With An Example](#features-explained-with-examples)
 - [Installation](#installation)
 - [MCP (Model Context Protocol) Server](#mcp-model-context-protocol-server)
+- [Agent Skill](#agent-skill)
 - [Sample Usage Screenshots](#sample-usage-screenshots)
 - [How It's Done?](#how-its-done)
 - [Supported Photo Types](#supported-photo-types)
@@ -891,6 +892,34 @@ photo-cli help mcp
 | `--input`                | `-i`  | Archive folder path containing the photo-cli database to expose via MCP. Defaults to current directory. |
 | `--custom-database-path` | `-j`  | Custom file system path directly to the SQLite database file, bypassing the default location within the archive folder. |
 
+## Agent Skill
+
+Install the `photocli` skill so AI coding agents (Claude Code and other agents that read `.claude/skills`) can build `photo-cli` commands for you:
+
+```
+# current folder: ./.claude/skills/photocli
+photo-cli skill
+
+# every project: ~/.claude/skills/photocli (macOS, Linux & Windows user home)
+photo-cli skill --global
+```
+
+This writes `SKILL.md` and `references/options.md`. With `--global`, the `CLAUDE_CONFIG_DIR` environment variable overrides the `~/.claude` location, as in Claude Code. Running it again overwrites them with the version bundled in your installed `photo-cli`. Then ask in plain language, e.g. *"sort the photos in ~/Pictures/Trip into year/month/day folders named by date"*. The skill:
+
+- maps the request to the right verb, and asks step by step for any argument that is missing or ambiguous, offering only option combinations the CLI accepts
+- always shows the final command and what it will do, and waits for your confirmation before running it (suggesting `--dry-run` first for `copy` and `archive`)
+- when asked to run it, summarizes the exit code and the printed statistics (photos found and copied, missing dates or coordinates, reverse geocode requests, albums)
+
+### `skill` Command Arguments
+
+```
+photo-cli help skill
+```
+
+| Argument   | Short | Description                                                                                                                                                                  |
+|------------|-------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--global` | `-g`  | Install into the user's Claude folder (`~/.claude/skills/photocli`) instead of the current folder. `CLAUDE_CONFIG_DIR` environment variable overrides the `~/.claude` location. |
+
 ## Sample Usage Screenshots
 
 The following command used in all samples with [test photographs](docs/test-photographs)
@@ -1759,6 +1788,7 @@ photo-cli copy --process-type FlattenAllSubFolders --group-by AddressHierarchy -
 | [`address`](#address)   | Get address (reverse geocode) of single photo.                                                                                                                                                                     |
 | [`settings`](#settings) | Lists, saves and get settings.                                                                                                                                                                                     |
 | [`mcp`](#mcp-model-context-protocol-server) | Start an MCP (Model Context Protocol) stdio server to query the photo archive database.                                                                    |
+| [`skill`](#agent-skill)                     | Installs the photo-cli agent skill into the current folder, or into `~/.claude` with `--global`.                                                           |
 
 ### Archive
 
@@ -3251,6 +3281,8 @@ Process exit codes listed below;
 | CopyOptionsValidationFailed                     | 13    | The options provided to the `copy` command failed validation.                                   |
 | SettingsOptionsValidationFailed                 | 14    | The options provided to the `settings` command failed validation.                               |
 | ArchiveOptionsValidationFailed                  | 15    | The options provided to the `archive` command failed validation.                                |
+| McpOptionsValidationFailed                      | 16    | The options provided to the `mcp` command failed validation.                                    |
+| SkillOptionsValidationFailed                    | 17    | The options provided to the `skill` command failed validation.                                  |
 | InputFolderNotExists                            | 20    | The specified input folder does not exist.                                                      |
 | NoPhotoFoundOnDirectory                         | 21    | No photo files were found in the specified input folder.                                        |
 | OutputFolderIsNotEmpty                          | 22    | The specified output folder already contains files or subdirectories.                           |
@@ -3259,6 +3291,7 @@ Process exit codes listed below;
 | OutputPathDontHaveCreateDirectoryPermission     | 25    | The application lacks permission to create a directory at the output path.                      |
 | InputFileNotExists                              | 26    | The specified input file does not exist.                                                        |
 | FileVerifyErrors                                | 27    | File integrity verification failed after copying.                                               |
+| UserHomeDirectoryNotFound                       | 28    | The user home directory couldn't be resolved for `skill --global`; set `CLAUDE_CONFIG_DIR`.     |
 | PhotosWithNoDatePreventedProcess                | 30    | Processing was stopped because photos without a taken date were found.                          |
 | PhotosWithNoCoordinatePreventedProcess          | 31    | Processing was stopped because photos without GPS coordinates were found.                       |
 | PhotosWithNoCoordinateAndNoDatePreventedProcess | 32    | Processing was stopped because photos with neither GPS coordinates nor a taken date were found. |

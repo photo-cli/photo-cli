@@ -129,6 +129,12 @@ public static class HelpTextBuilder
 					"open (only supporting in macOS , Preview app for now) for photos taken within the given date range");
 
 				break;
+			case OptionNames.SkillVerb:
+				WriteOptionArgumentsToConsole(ansiConsoleExtended, new SkillOptions(),
+					"Install the photo-cli agent skill into `.claude/skills/photocli` of the current folder, so AI coding agents can build, verify and run photo-cli commands for you.");
+				WriteOptionArgumentsToConsole(ansiConsoleExtended, new SkillOptions(true),
+					"Install the photo-cli agent skill into the user's Claude folder (`~/.claude/skills/photocli`), so it is available in every project.");
+				break;
 		}
 	}
 
@@ -155,7 +161,7 @@ public static class HelpTextBuilder
 	public static void ExtendedHelpWritingToConsole(IAnsiConsole ansiConsole)
 	{
 		var ansiConsoleExtended = new AnsiConsoleExtended(ansiConsole);
-		var verbs = new[] { OptionNames.CopyVerb, OptionNames.InfoVerb, OptionNames.AddressVerb, OptionNames.SettingsVerb, OptionNames.McpVerb };
+		var verbs = new[] { OptionNames.CopyVerb, OptionNames.InfoVerb, OptionNames.AddressVerb, OptionNames.SettingsVerb, OptionNames.McpVerb, OptionNames.SkillVerb };
 		ansiConsoleExtended.WriteLine($"Type `{OptionNames.ApplicationAlias} help ({string.Join('|', verbs)})` for detailed option list and example usages");
 	}
 }

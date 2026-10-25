@@ -2,7 +2,7 @@ namespace PhotoCli.Tests.EndToEndTests;
 
 public class HelpVerbEndToEndTests : BaseEndToEndTests
 {
-	private const string DefaultHelpText = "Type `photo-cli help (copy|info|address|settings|mcp)` for detailed option list and example usages";
+	private const string DefaultHelpText = "Type `photo-cli help (copy|info|address|settings|mcp|skill)` for detailed option list and example usages";
 
 	[Fact]
 	public async Task Running_Without_Arguments_Should_Output_Custom_Help_Text()
@@ -269,6 +269,32 @@ photo-cli list --type PhotosByDateRange --start-date 2025-09-21 --end-date 2026-
 Example with short argument names;
 photo-cli list -t PhotosByDateRange -s 2025-09-21 -e 2026-01-30 -i (input-folder)";
 		await RunHelpAndVerifyOutput("list", archiveExampleUsages);
+	}
+
+	[Fact]
+	public async Task Running_Help_Verb_With_Skill_Verb_Should_Output_Custom_Help_Text()
+	{
+		var skillExampleUsages = @"NOTES:
+- Instead of option names (for ex: DateTimeWithMinutes), you may use options values too. (for ex: 3)
+- You can use relative folder paths. If you use the input folder as the working directory, you don't need to use the input argument.
+
+EXAMPLE USAGES:
+- Install the photo-cli agent skill into `.claude/skills/photocli` of the current folder, so AI coding agents can build, verify and run photo-cli commands for you.
+
+Example with long argument names;
+photo-cli skill
+
+Example with short argument names;
+photo-cli skill
+
+- Install the photo-cli agent skill into the user's Claude folder (`~/.claude/skills/photocli`), so it is available in every project.
+
+Example with long argument names;
+photo-cli skill --global
+
+Example with short argument names;
+photo-cli skill -g";
+		await RunHelpAndVerifyOutput("skill", skillExampleUsages);
 	}
 
 	private async Task RunHelpAndVerifyOutput(string verb, string expectedOutput)

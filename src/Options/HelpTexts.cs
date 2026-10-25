@@ -440,6 +440,22 @@ public static class HelpTexts
 
 	#endregion
 
+	#region Skill
+
+	public const string SkillVerbHelpText = """
+	                                        Installs the photo-cli agent skill into `.claude/skills/photocli` of the current folder.
+
+	                                        Lets AI coding agents (Claude Code and compatible) build, verify and run photo-cli commands step by step. Existing skill files are overwritten with the bundled version.
+	                                        """;
+
+	public const string Global = $"""
+	                              (Optional) Install into the user's Claude folder (`~/.claude/skills/photocli`) instead of the current folder, making the skill available in every project. (no extra parameter needed)
+
+	                              Environment variable {Constants.ClaudeConfigDirectoryEnvironmentKey} overrides the `~/.claude` location.
+	                              """;
+
+	#endregion
+
 	#region List
 
 	public const string ArchivePath = """

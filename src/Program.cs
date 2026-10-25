@@ -134,6 +134,17 @@ public static class Program
 					}
 					return RunMcpServer(mcpOptions);
 				}
+			case SkillOptions skillOptions:
+				{
+					var validationResultSkill = new SkillOptionsValidator().Validate(skillOptions);
+					if (!validationResultSkill.IsValid)
+					{
+						WriteErrorOutputValidationErrors(validationResultSkill);
+						return ReturnExitCode(ExitCode.SkillOptionsValidationFailed);
+					}
+					host = BuildHost<SkillRunner, SkillOptions>(skillOptions, ansiConsole);
+					break;
+				}
 			default:
 				throw new PhotoCliException($"Not defined: {baseOptions}");
 		}
@@ -351,7 +362,7 @@ public static class Program
 
 	private static bool ParseArgs(IReadOnlyList<string> args, out object parsedObject, out ExitCode exitCode, IAnsiConsole ansiConsole)
 	{
-		var commandLineArgsParsed = Parser.Default.ParseArguments<CopyOptions, InfoOptions, ArchiveOptions, AddressOptions, SettingsOptions, ListOptions, McpOptions>(args);
+		var commandLineArgsParsed = Parser.Default.ParseArguments<CopyOptions, InfoOptions, ArchiveOptions, AddressOptions, SettingsOptions, ListOptions, McpOptions, SkillOptions>(args);
 		if (commandLineArgsParsed.Tag == ParserResultType.NotParsed)
 		{
 			var notParsedResult = (NotParsed<object>)commandLineArgsParsed;
