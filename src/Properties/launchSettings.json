@@ -32,6 +32,10 @@
     "help": {
       "commandLineArgs": "--help",
       "commandName": "Project"
+    },
+    "skill": {
+      "commandLineArgs": "skill",
+      "commandName": "Project"
     }
   }
 }

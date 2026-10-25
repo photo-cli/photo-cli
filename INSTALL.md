@@ -67,6 +67,12 @@ The `mcp` command is built into `photo-cli` and requires no additional installat
 
 See the [MCP section in README](README.md#mcp-model-context-protocol-server) for setup instructions for Claude Code, Claude Desktop, VS Code, and MCP Inspector.
 
+## Agent Skill Setup
+
+The `skill` command is built into `photo-cli` and requires no additional installation. It writes the bundled `photocli` agent skill into `.claude/skills/photocli` of the current folder, or into `~/.claude/skills/photocli` with `--global`.
+
+See the [Agent Skill section in README](README.md#agent-skill) for usage details.
+
 ## Issues
 
 ### Command Not Found Issue Solution for .NET Tool Installations

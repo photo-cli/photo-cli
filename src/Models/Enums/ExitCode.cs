@@ -18,6 +18,7 @@ public enum ExitCode
 	SettingsOptionsValidationFailed = 14,
 	ArchiveOptionsValidationFailed = 15,
 	McpOptionsValidationFailed = 16,
+	SkillOptionsValidationFailed = 17,
 
 	// File system
 	InputFolderNotExists = 20,
@@ -28,6 +29,7 @@ public enum ExitCode
 	OutputPathDontHaveCreateDirectoryPermission = 25,
 	InputFileNotExists = 26,
 	FileVerifyErrors = 27,
+	UserHomeDirectoryNotFound = 28,
 
 	// Photo exif info
 	PhotosWithNoDatePreventedProcess = 30,

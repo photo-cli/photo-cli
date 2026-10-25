@@ -47,6 +47,7 @@
         <None Update="appsettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <EmbeddedResource Include="Skills\**\*" LogicalName="Skills/%(RecursiveDir)%(Filename)%(Extension)" />
         <None Include="..\docs\assets\nuget-readme.md" Pack="true" PackagePath="\" />
         <None Include="..\docs\assets\icon.png" Pack="true" PackagePath="\" />
     </ItemGroup>

@@ -81,6 +81,16 @@
             "console": "internalConsole"
         },
         {
+            "name": "skill",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/bin/Debug/net10.0/PhotoCli.dll",
+            "args": ["skill"],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole"
+        },
+        {
             "name": "help",
             "type": "coreclr",
             "request": "launch",

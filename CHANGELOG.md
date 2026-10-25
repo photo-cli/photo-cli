@@ -1,5 +1,6 @@
 # 0.5.0 (unreleased)
 - MCP `view_*` tools return photos as inline images in the chat (Claude Desktop / claude.ai), downscaled and JPEG-encoded server-side; `open_*` tools still open full-resolution originals in macOS Preview
+- `skill` verb writes a `photocli` agent skill into `.claude/skills/photocli` of the current folder (or `~/.claude` with `--global`), so AI agents can guide you through options, verify the command with you, run it and summarize the statistics
 
 # 0.4.1 (2026-08-07)
 - custom database path option on archive, list and mcp verbs to point directly at a SQLite database file instead of the default location inside the archive folder

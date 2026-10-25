@@ -9,7 +9,7 @@ internal static class OptionNames
 		d - copy, archive
 		e - copy, info, address, archive, list
 		f - copy, archive
-		g - copy
+		g - copy, skill
 		h - copy, info, archive
 		i - copy, info, address, archive
 		j - archive, list, mcp
@@ -40,6 +40,7 @@ internal static class OptionNames
 	internal const string ArchiveVerb = "archive";
 	internal const string ListVerb = "list";
 	internal const string McpVerb = "mcp";
+	internal const string SkillVerb = "skill";
 
 	#region Copy
 
@@ -125,6 +126,13 @@ internal static class OptionNames
 
 	internal const char AlbumDeleteSourceShort = 'f';
 	internal const string AlbumDeleteSourceLong = "delete-on-source";
+
+	#endregion
+
+	#region Skill
+
+	internal const char GlobalOptionNameShort = 'g';
+	internal const string GlobalOptionNameLong = "global";
 
 	#endregion
 
